@@ -437,9 +437,9 @@ void QMC5883L_ReadData_Multiple(int16_t* x_mag, int16_t* y_mag, int16_t* z_mag)
 		ucReadBuf[index] = QMC5883L_ReadByte(QMC_DATA_OUT_X_L + index);
 	}
 	
-	*x_mag = ((ucReadBuf[1] << 8 ) | ucReadBuf[0]) >>3;
-	*y_mag = ((ucReadBuf[3] << 8 ) | ucReadBuf[2]) >>3;
-	*z_mag = ((ucReadBuf[5] << 8 ) | ucReadBuf[4]) >>3;
+	*x_mag = ((int16_t)(ucReadBuf[1] << 8 ) | ucReadBuf[0]) >> 3;
+	*y_mag = ((int16_t)(ucReadBuf[3] << 8 ) | ucReadBuf[2]) >> 3;
+	*z_mag = ((int16_t)(ucReadBuf[5] << 8 ) | ucReadBuf[4]) >> 3;
 }
 
 /**********************************************************************************************************

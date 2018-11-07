@@ -912,6 +912,11 @@
               <FileType>1</FileType>
               <FilePath>..\Libraries\InspectFlow\inspectflowparameter.c</FilePath>
             </File>
+            <File>
+              <FileName>inspectflowmessageoperate.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Libraries\InspectFlow\inspectflowmessageoperate.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

@@ -56,6 +56,22 @@ void Inspect_Flow_Init(void)
 **********************************************************************************************************/
 void Inspect_Flow_ExistenceDetect(void)
 {
+	INSPECT_FlowStatusTypeDef retStatus = FLOW_CAR_NONE;
+	
+	QMC5883L_ReadData_Multiple(&InspectFlowClientHandler.magnetismX, &InspectFlowClientHandler.magnetismY, &InspectFlowClientHandler.magnetismZ);
+	
+	retStatus = INSPECT_FLOW_Func_PassDetect(&InspectFlowClientHandler, InspectFlowClientHandler.magnetismX, InspectFlowClientHandler.magnetismY, InspectFlowClientHandler.magnetismZ);
+	
+	if (retStatus == FLOW_CAR_GO) {
+		BEEP_CtrlRepeat_Extend(1, 30, 70);
+	}
+	else if (retStatus == FLOW_CAR_COME) {
+		BEEP_CtrlRepeat_Extend(2, 30, 70);
+	}
+	
+	
+	
+	
 	
 	
 	

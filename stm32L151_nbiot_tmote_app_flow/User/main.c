@@ -44,6 +44,8 @@
 #include "tmesh_xtea.h"
 #include "inspectconfig.h"
 #include "inspectmessageoperate.h"
+#include "inspectflowconfig.h"
+#include "inspectflowmessageoperate.h"
 
 /****************************************** Select DEBUG *************************************************/
 //#define	DEVICE_DEBUG																	//定义开启设备调试
