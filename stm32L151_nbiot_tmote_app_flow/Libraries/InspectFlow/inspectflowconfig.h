@@ -11,6 +11,16 @@
 #define INSPECT_FLOW_DISTANCE_HIGH			20												//启动分类算法上限值
 #define INSPECT_FLOW_CNT_1_MIN			3												//检测为有车状态的最少次数
 
+#define INSPECT_FLOW_MEASURE_FREQ			MEASURE_FREQ_50HZ									//地磁扫描频率
+#define INSPECT_FLOW_CARIN_THRESHHOLD		77												//车辆触发灵敏度
+#define INSPECT_FLOW_CAROUT_THRESHHOLD		15												//车辆离开参数
+#define INSPECT_FLOW_RECALIBRA_OVERNUM		10												//基准值更新阈值
+#define INSPECT_FLOW_RECALIBRA_OVERTIME		5												//背景值重新计算时间
+#define INSPECT_FLOW_RECALIBRA_OVERTIMECNT	3000 * INSPECT_FLOW_RECALIBRA_OVERTIME					//背景重计算累加器
+#define INSPECT_FLOW_RECALIBRA_BACKSECONDS	0												//背景校准之后时间
+
+
+
 
 
 typedef struct INSPECT_FlowClientsTypeDef	INSPECT_FlowClientsTypeDef;
@@ -112,6 +122,10 @@ typedef struct
 /* Inspect Flow Clients */
 struct INSPECT_FlowClientsTypeDef
 {
+	int16_t							magnetismX;										//x轴磁场值
+	int16_t							magnetismY;										//y轴磁场值
+	int16_t							magnetismZ;										//z轴磁场值
+	
 	INSPECT_FlowDetectDataTypeDef			DetectData[INSPECT_FLOW_PROCESS_NUM];					//处理数据
 	INSPECT_FlowDetectCtrlTypeDef			DetectCtrl;										//处理控制
 	INSPECT_FlowClusterGroupTypeDef		ClusterGroup[INSPECT_FLOW_CLUSTER_NUM];					//集群数据

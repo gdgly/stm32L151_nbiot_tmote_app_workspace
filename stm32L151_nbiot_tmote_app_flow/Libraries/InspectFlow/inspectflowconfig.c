@@ -18,6 +18,9 @@
 #include "inspectflowparameter.h"
 #include "platform_config.h"
 #include "platform_map.h"
+#include "hal_beep.h"
+#include "hal_qmc5883l.h"
+#include "radio_rf_app.h"
 
 INSPECT_FlowClientsTypeDef				InspectFlowClientHandler;
 
@@ -29,11 +32,14 @@ INSPECT_FlowClientsTypeDef				InspectFlowClientHandler;
 **********************************************************************************************************/
 void Inspect_Flow_Init(void)
 {
-	InspectFlowClientHandler.Configuration.magMeasureFreq			= MEASURE_FREQ_50HZ;							//地磁扫描频率
-	InspectFlowClientHandler.Configuration.carinThreshhold			= 77;										//车辆触发灵敏度
-	InspectFlowClientHandler.Configuration.caroutThreshhold		= 15;										//车辆离开参数
-	InspectFlowClientHandler.Configuration.recalibrationOvernum		= 10;										//基准值更新阈值
-	InspectFlowClientHandler.Configuration.recalibrationOvertime	= 5;											//背景值重新计算时间
+	InspectFlowClientHandler.Configuration.magMeasureFreq			= INSPECT_FLOW_MEASURE_FREQ;						//地磁扫描频率
+	InspectFlowClientHandler.Configuration.carinThreshhold			= INSPECT_FLOW_CARIN_THRESHHOLD;					//车辆触发灵敏度
+	InspectFlowClientHandler.Configuration.caroutThreshhold		= INSPECT_FLOW_CAROUT_THRESHHOLD;					//车辆离开参数
+	InspectFlowClientHandler.Configuration.recalibrationOvernum		= INSPECT_FLOW_RECALIBRA_OVERNUM;					//基准值更新阈值
+	InspectFlowClientHandler.Configuration.recalibrationOvertime	= INSPECT_FLOW_RECALIBRA_OVERTIME;					//背景值重新计算时间
+	InspectFlowClientHandler.Configuration.recalibrationOvertimeCnt	= INSPECT_FLOW_RECALIBRA_OVERTIMECNT;				//背景重计算累加器
+	InspectFlowClientHandler.Configuration.recalibrationBackSeconds	= INSPECT_FLOW_RECALIBRA_BACKSECONDS;				//背景校准之后时间
+	
 	
 	
 	

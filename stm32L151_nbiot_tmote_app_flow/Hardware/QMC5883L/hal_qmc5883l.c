@@ -195,6 +195,34 @@ void QMC5883L_Init(void)
 }
 
 /**********************************************************************************************************
+ @Function			void QMC5883L_Flow_Init(void)
+ @Description			QMC5883L初始化
+ @Input				void
+ @Return				void
+**********************************************************************************************************/
+void QMC5883L_Flow_Init(void)
+{
+	IIC_Init();														//IIC初始化
+	
+	QMC5883L_WriteByte(QMC5883L_CR2, QMC_SOFT_REST);							//复位QMC5883L
+	
+	QMC5883L_WriteByte(0x0B, 0x01);
+	QMC5883L_WriteByte(0x20, 0x40);
+	QMC5883L_WriteByte(0x21, 0x01);
+	
+	/* 64滤波, 8高斯范围, 50Hz输出, 初始化为StandBy */
+	QMC5883L_WriteByte(QMC5883L_CR1, QMC_OSR_256 | QMC_RANGE_8G | QMC_RATES_50HZ | QMC_MODE_CONTINOUS);
+	/* 引脚中断使能, 数据读取完指针自动偏转失能 */
+	QMC5883L_WriteByte(QMC5883L_CR2, QMC_INT_ENABLE | QMC_POINT_ROLL_DISABLE);
+	
+#if QMC_DRDY_EXIT
+	QMC5883L_Drdy_Exti_Init();											//QMC5883L引脚配置PA11高电平读取(中断)
+#else
+	QMC5883L_Drdy_Init();												//QMC5883L引脚配置PA11高电平读取(非中断)
+#endif
+}
+
+/**********************************************************************************************************
  @Function			unsigned char QMC5883L_ReadData_Simplify(void)
  @Description			QMC5883L读取数据
  @Input				void
@@ -392,6 +420,26 @@ void QMC5883L_ReadData_Single(short* x, short* y, short* z)
 	}
 	
 	QMC5883L_Mode_Selection(QMC_MODE_STANDBY);
+}
+
+/**********************************************************************************************************
+ @Function			void QMC5883L_ReadData_Multiple(int16_t* x_mag, int16_t* y_mag, int16_t* z_mag)
+ @Description			QMC5883L读取数据
+ @Input				x_mag, y_mag, z_mag
+ @Return				void
+**********************************************************************************************************/
+void QMC5883L_ReadData_Multiple(int16_t* x_mag, int16_t* y_mag, int16_t* z_mag)
+{
+	u8 ucReadBuf[QMC_REG_MAG];
+	u8 index = 0;
+	
+	for (index = 0; index < QMC_REG_MAG; index++) {
+		ucReadBuf[index] = QMC5883L_ReadByte(QMC_DATA_OUT_X_L + index);
+	}
+	
+	*x_mag = ((ucReadBuf[1] << 8 ) | ucReadBuf[0]) >>3;
+	*y_mag = ((ucReadBuf[3] << 8 ) | ucReadBuf[2]) >>3;
+	*z_mag = ((ucReadBuf[5] << 8 ) | ucReadBuf[4]) >>3;
 }
 
 /**********************************************************************************************************
@@ -618,7 +666,7 @@ void QMC5883L_measure_qmc_coef(signed char* kx, signed char* ky, signed char* kz
 	
 	//---------\|/加热,最多加热时间5秒--------------------
 	time_start = Stm32_GetSecondTick();
-	QmsWarmupPower(ON);
+	QmcWarmupPower(ON);
 	while ((time_start + 20) > Stm32_GetSecondTick()) {
 		//Delay_MS(100);
 		BEEP_CtrlRepeat_Extend(1,30,70);
@@ -627,7 +675,7 @@ void QMC5883L_measure_qmc_coef(signed char* kx, signed char* ky, signed char* kz
 		}
 		IWDG_Feed();
 	}
-	QmsWarmupPower(OFF);
+	QmcWarmupPower(OFF);
 	Delay_MS(100);
 	
 	//---------\|/计算加热后的温度和地磁值----------------

@@ -54,6 +54,7 @@
 #define QMC_SAMPLE_TIMES			5										//采样次数
 
 void	QMC5883L_Init(void);												//QMC5883L初始化
+void QMC5883L_Flow_Init(void);											//QMC5883L初始化
 void QMC5883L_Drdy_Init(void);											//QMC5883L引脚配置PA11高电平读取
 void QMC5883L_Drdy_DeInit(void);											//QMC5883L引脚配置PA11反初始化
 void QMC5883L_Drdy_Exti_Init(void);										//QMC5883L引脚配置PA11高电平读取(中断)
@@ -61,6 +62,7 @@ void QMC5883L_Discharge(void);											//QMC5883L复位
 unsigned char QMC5883L_ReadData_Simplify(void);								//QMC5883L读取数据
 unsigned char QMC5883L_ReadData_Extend(void);								//QMC5883L读取数据
 void QMC5883L_ReadData_Single(short* x, short* y, short* z);					//QMC5883L读取数据
+void QMC5883L_ReadData_Multiple(int16_t* x_mag, int16_t* y_mag, int16_t* z_mag);	//QMC5883L读取数据
 void QMC5883L_ClearInsideData(void);										//QMC5883L清除内部待读取数据缓存
 void QMC5883L_Mode_Selection(u8 mode);										//QMC5883L工作模式选择
 void QMC5883L_Rates_Selection(u8 rates);									//QMC5883L数据输出速率选择
