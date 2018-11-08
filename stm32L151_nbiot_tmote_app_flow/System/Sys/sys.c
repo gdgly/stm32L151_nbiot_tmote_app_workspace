@@ -17,6 +17,9 @@
 #include "platform_config.h"
 #include "platform_map.h"
 #include "tmesh_algorithm.h"
+#include "inspectflowconfig.h"
+#include "inspectflowparameter.h"
+#include "inspectflowmessageoperate.h"
 
 __IO u32 SystemRunningTimesSecond = 0;										//系统运行时间(S)
 __IO u32 SystemSoftResetTime = 0;											//系统运行超时软件复位时间(MS)
@@ -127,6 +130,12 @@ void Stm32_System_Software_Reboot(u8 deviceRbtMode)
 {
 	TCFG_SystemData.DeviceRbtMode = deviceRbtMode;
 	TCFG_EEPROM_SetDeviceRbtMode(TCFG_SystemData.DeviceRbtMode);
+	
+	TCFG_EEPROM_SetFlowMagScanCnt(INSPECT_FLOW_Para_ObtainMagnetismScanCnt());
+	TCFG_EEPROM_SetFlowCarNumber(INSPECT_FLOW_Para_ObtainCarFlowNumber());
+	TCFG_EEPROM_SetFlowMagXBack(INSPECT_FLOW_Para_ObtainMagnetismBackX());
+	TCFG_EEPROM_SetFlowMagYBack(INSPECT_FLOW_Para_ObtainMagnetismBackY());
+	TCFG_EEPROM_SetFlowMagZBack(INSPECT_FLOW_Para_ObtainMagnetismBackZ());
 	
 	TCFG_SystemData.MagBackgroundX = Qmc5883lData.X_Back;
 	TCFG_SystemData.MagBackgroundY = Qmc5883lData.Y_Back;

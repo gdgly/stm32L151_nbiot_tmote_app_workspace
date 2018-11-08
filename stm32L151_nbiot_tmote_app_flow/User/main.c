@@ -45,6 +45,7 @@
 #include "inspectconfig.h"
 #include "inspectmessageoperate.h"
 #include "inspectflowconfig.h"
+#include "inspectflowparameter.h"
 #include "inspectflowmessageoperate.h"
 
 /****************************************** Select DEBUG *************************************************/
@@ -460,7 +461,7 @@ void MainHandleRoutine(void)
 	if (Stm32_GetSecondTick() != SystemRunningTime.seconds) {
 		SystemRunningTime.seconds = Stm32_GetSecondTick();
 		
-		
+		Inspect_Flow_AddRecalibrationBackSeconds();
 	}
 	/* Every Ten Secound Running */
 	if ((Stm32_GetSecondTick() / 10) != SystemRunningTime.tenseconds) {
@@ -524,6 +525,12 @@ void MainHandleRoutine(void)
 		QmcStatusData.Temperature = Qmc5883lData.temp_now;
 		QmcStatusData.Status = talgo_get_spotstatus();
 		Inspect_Message_QmcStatusEnqueue(QmcStatusData);
+		
+		TCFG_EEPROM_SetFlowMagScanCnt(INSPECT_FLOW_Para_ObtainMagnetismScanCnt());
+		TCFG_EEPROM_SetFlowCarNumber(INSPECT_FLOW_Para_ObtainCarFlowNumber());
+		TCFG_EEPROM_SetFlowMagXBack(INSPECT_FLOW_Para_ObtainMagnetismBackX());
+		TCFG_EEPROM_SetFlowMagYBack(INSPECT_FLOW_Para_ObtainMagnetismBackY());
+		TCFG_EEPROM_SetFlowMagZBack(INSPECT_FLOW_Para_ObtainMagnetismBackZ());
 	}
 	/* Every FortyMinutes Running */
 	if ((Stm32_GetSecondTick() / 2400) != SystemRunningTime.fortyMinutes) {
@@ -537,6 +544,10 @@ void MainHandleRoutine(void)
 			if (TCFG_EEPROM_GetNbiotHeart() > NBIOT_HEART_DATA_HOURS) {
 				TCFG_SystemData.NBIotHeart = NBIOT_HEART_DATA_HOURS;
 				TCFG_EEPROM_SetNbiotHeart(TCFG_SystemData.NBIotHeart);
+			}
+			
+			if (INSPECT_FLOW_Para_ObtainCarFlowStatus() == 0) {
+				ReInitModule();
 			}
 		}
 	}

@@ -47,6 +47,20 @@ void Inspect_Flow_Init(void)
 	
 	InspectFlowClientHandler.qmc5883lDataReady					= false;										//数据准备标志位
 	InspectFlowClientHandler.qmc5883lRunFail					= false;										//运行异常标志位
+	
+	INSPECT_FLOW_Para_SetDetectMode(TCFG_EEPROM_GetFlowDetectMode());											//工作模式
+	INSPECT_FLOW_Para_SetMagMeasureFreq(TCFG_EEPROM_GetFlowMeasureFreq());										//地磁扫描频率
+	INSPECT_FLOW_Para_SetCarinThreshhold(TCFG_EEPROM_GetFlowCarinThresh());										//车辆触发灵敏度
+	INSPECT_FLOW_Para_SetCaroutThreshhold(TCFG_EEPROM_GetFlowCaroutThresh());										//车辆离开参数
+	INSPECT_FLOW_Para_SetRecalibrationOvernum(TCFG_EEPROM_GetFlowRecalNum());										//基准值更新阈值
+	INSPECT_FLOW_Para_SetRecalibrationOvertime(TCFG_EEPROM_GetFlowRecalTime());									//背景值重新计算时间
+	INSPECT_FLOW_Para_SetWaitSendHeartbeatMin(TCFG_EEPROM_GetFlowWaitHeart());										//心跳等待时间
+	
+	InspectFlowClientHandler.DetectCtrl.detectCnt = TCFG_EEPROM_GetFlowMagScanCnt();								//地磁扫描次数
+	InspectFlowClientHandler.Parameter.carNumber = TCFG_EEPROM_GetFlowCarNumber();									//车辆数
+	InspectFlowClientHandler.MagnetismVal.x_back = TCFG_EEPROM_GetFlowMagXBack();									//地磁X轴背景值
+	InspectFlowClientHandler.MagnetismVal.y_back = TCFG_EEPROM_GetFlowMagYBack();									//地磁Y轴背景值
+	InspectFlowClientHandler.MagnetismVal.z_back = TCFG_EEPROM_GetFlowMagZBack();									//地磁Z轴背景值
 }
 
 /**********************************************************************************************************
@@ -76,11 +90,13 @@ void Inspect_Flow_ExistenceDetect(void)
 		retStatus = INSPECT_FLOW_Func_PassDetect(&InspectFlowClientHandler, InspectFlowClientHandler.magnetismX, InspectFlowClientHandler.magnetismY, InspectFlowClientHandler.magnetismZ);
 		
 #if INSPECT_FLOW_BEEP_TYPE
-		if (retStatus == FLOW_CAR_COME) {
-			BEEP_CtrlRepeat_Extend(2, 30, 70);
-		}
-		else if (retStatus == FLOW_CAR_GO) {
-			BEEP_CtrlRepeat_Extend(1, 30, 70);
+		if (DEBUG_WORK == Radio_Trf_Get_Workmode()) {
+			if (retStatus == FLOW_CAR_COME) {
+				BEEP_CtrlRepeat_Extend(2, 30, 70);
+			}
+			else if (retStatus == FLOW_CAR_GO) {
+				BEEP_CtrlRepeat_Extend(1, 30, 70);
+			}
 		}
 #endif
 		
@@ -175,6 +191,17 @@ void Inspect_Flow_ExistenceDetect(void)
 		}
 		snedHeartTime = Stm32_GetSecondTick();
 	}
+}
+
+/**********************************************************************************************************
+ @Function			void Inspect_Flow_AddRecalibrationBackSeconds(void)
+ @Description			Inspect_Flow_AddRecalibrationBackSeconds	: 车流量检测算法学习时间累加
+ @Input				void
+ @Return				void
+**********************************************************************************************************/
+void Inspect_Flow_AddRecalibrationBackSeconds(void)
+{
+	InspectFlowClientHandler.Configuration.recalibrationBackSeconds++;
 }
 
 /**********************************************************************************************************

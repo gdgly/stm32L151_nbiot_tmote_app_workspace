@@ -382,7 +382,7 @@ char Radio_Rf_Operate_Recvmsg(uint8_t *inmsg, uint8_t len)
 				/* MagInit */
 				else if (strstr(((tmote_general_cmd_s*)CFG_P_FRAME_PAYLOAD(inmsg))->buf, "maginit")) {
 			#if RADIO_DOWNLOAD_CMD_MAGINIT
-					QMC5883L_InitBackgroud();
+					Inspect_Flow_InitBackground();
 					BEEP_CtrlRepeat_Extend(5, 30, 70);
 				#if RADIO_CMD_ECHO_TYPE
 					Radio_Trf_Printf("MagInit : OK");

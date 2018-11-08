@@ -150,6 +150,7 @@ extern INSPECT_FlowClientsTypeDef			InspectFlowClientHandler;
 
 void Inspect_Flow_Init(void);																//车流量检测算法初始化
 void Inspect_Flow_ExistenceDetect(void);													//车流量检测算法处理
+void Inspect_Flow_AddRecalibrationBackSeconds(void);											//车流量检测算法学习时间累加
 void Inspect_Flow_InitBackground(void);														//车流量检测算法初始化背景
 void Inspect_Flow_ISR(void);																//车流量检测算法中断处理
 

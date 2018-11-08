@@ -457,7 +457,7 @@ void LowPowerAfterSleepInit(void)
 		MODELPOWER(OFF);
 		QMC5883L_Discharge();
 		MODELPOWER(ON);
-		QMC5883L_Init();
+		QMC5883L_Flow_Init();
 #ifdef RADIO_SI4438
 		Radio_Rf_Init();
 #endif

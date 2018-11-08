@@ -292,6 +292,18 @@ typedef struct
 	unsigned short						NBIdleLifetime;									//NBIot休眠模式保活时间(10S)
 	unsigned char						BeepCtrlOff;										//蜂鸣器控制
 	unsigned char						DeviceRbtMode;										//设备重启方式
+	unsigned char						FlowDetectMode;									//检测模式
+	unsigned char						FlowMeasureFreq;									//地磁扫描频率
+	unsigned char						FlowCarinThresh;									//车辆驶入参数
+	unsigned char						FlowCaroutThresh;									//车辆离开参数
+	unsigned char						FlowRecalNum;										//微小变化重计算次数
+	unsigned char						FlowRecalTime;										//激烈变化重计算时间
+	unsigned int						FlowWaitHeart;										//心跳包等待时间
+	unsigned int						FlowMagScanCnt;									//地磁扫描次数
+	unsigned short						FlowCarNumber;										//车辆数
+	unsigned short						FlowMagXBack;										//地磁X轴背景值
+	unsigned short						FlowMagYBack;										//地磁Y轴背景值
+	unsigned short						FlowMagZBack;										//地磁Z轴背景值
 	unsigned char						NBCoapCDPServerIP[16];								//NB核心网IP地址
 	unsigned char						NBCoapCDPServerPort[6];								//NB核心网IP端口
 	NBIOT_ServerAddr					NBCoapCDPServer;									//NB核心网地址
@@ -462,6 +474,42 @@ unsigned char	TCFG_EEPROM_GetBeepOff(void);													//读取BeepOff
 
 void			TCFG_EEPROM_SetDeviceRbtMode(uint8_t val);										//保存DeviceRbtMode
 unsigned char	TCFG_EEPROM_GetDeviceRbtMode(void);											//读取DeviceRbtMode
+
+void TCFG_EEPROM_SetFlowDetectMode(uint8_t val);												//保存FlowDetectMode
+unsigned char TCFG_EEPROM_GetFlowDetectMode(void);											//读取FlowDetectMode
+
+void TCFG_EEPROM_SetFlowMeasureFreq(uint8_t val);												//保存FlowMeasureFreq
+unsigned char TCFG_EEPROM_GetFlowMeasureFreq(void);											//读取FlowMeasureFreq
+
+void TCFG_EEPROM_SetFlowCarinThresh(uint8_t val);												//保存FlowCarinThresh
+unsigned char TCFG_EEPROM_GetFlowCarinThresh(void);											//读取FlowCarinThresh
+
+void TCFG_EEPROM_SetFlowCaroutThresh(uint8_t val);											//保存FlowCaroutThresh
+unsigned char TCFG_EEPROM_GetFlowCaroutThresh(void);											//读取FlowCaroutThresh
+
+void TCFG_EEPROM_SetFlowRecalNum(uint8_t val);												//保存FlowRecalNum
+unsigned char TCFG_EEPROM_GetFlowRecalNum(void);												//读取FlowRecalNum
+
+void TCFG_EEPROM_SetFlowRecalTime(uint8_t val);												//保存FlowRecalTime
+unsigned char TCFG_EEPROM_GetFlowRecalTime(void);												//读取FlowRecalTime
+
+void TCFG_EEPROM_SetFlowWaitHeart(unsigned int val);											//保存FlowWaitHeart
+unsigned int TCFG_EEPROM_GetFlowWaitHeart(void);												//读取FlowWaitHeart
+
+void TCFG_EEPROM_SetFlowMagScanCnt(unsigned int val);											//保存FlowMagScanCnt
+unsigned int TCFG_EEPROM_GetFlowMagScanCnt(void);												//读取FlowMagScanCnt
+
+void TCFG_EEPROM_SetFlowCarNumber(unsigned short val);											//保存FlowCarNumber
+unsigned short TCFG_EEPROM_GetFlowCarNumber(void);											//读取FlowCarNumber
+
+void TCFG_EEPROM_SetFlowMagXBack(unsigned short val);											//保存FlowMagXBack
+unsigned short TCFG_EEPROM_GetFlowMagXBack(void);												//读取FlowMagXBack
+
+void TCFG_EEPROM_SetFlowMagYBack(unsigned short val);											//保存FlowMagYBack
+unsigned short TCFG_EEPROM_GetFlowMagYBack(void);												//读取FlowMagYBack
+
+void TCFG_EEPROM_SetFlowMagZBack(unsigned short val);											//保存FlowMagZBack
+unsigned short TCFG_EEPROM_GetFlowMagZBack(void);												//读取FlowMagZBack
 
 void			TCFG_Utility_Add_Device_BootCount(void);										//Device重启次数累加
 unsigned short TCFG_Utility_Get_Device_BootCount(void);										//Device重启次数获取

@@ -21,6 +21,7 @@
 #include "hal_spiflash.h"
 #include "radio_hal_rf.h"
 #include "radio_rf_app.h"
+#include "inspectflowconfig.h"
 #include "inspectmessageoperate.h"
 #include "inspectflowmessageoperate.h"
 #include "string.h"
@@ -188,6 +189,54 @@ void TCFG_EEPROM_WriteConfigData(void)
 	TCFG_SystemData.DeviceRbtMode = RBTMODE_MODE_NONE;
 	TCFG_EEPROM_SetDeviceRbtMode(TCFG_SystemData.DeviceRbtMode);
 	
+	/* 检测模式 */
+	TCFG_SystemData.FlowDetectMode = INSPECT_FLOW_DETECT_MODE;
+	TCFG_EEPROM_SetFlowDetectMode(TCFG_SystemData.FlowDetectMode);
+	
+	/* 地磁扫描频率 */
+	TCFG_SystemData.FlowMeasureFreq = INSPECT_FLOW_MEASURE_FREQ;
+	TCFG_EEPROM_SetFlowMeasureFreq(TCFG_SystemData.FlowMeasureFreq);
+	
+	/* 车辆驶入参数 */
+	TCFG_SystemData.FlowCarinThresh = INSPECT_FLOW_CARIN_THRESHHOLD;
+	TCFG_EEPROM_SetFlowCarinThresh(TCFG_SystemData.FlowCarinThresh);
+	
+	/* 车辆离开参数 */
+	TCFG_SystemData.FlowCaroutThresh = INSPECT_FLOW_CAROUT_THRESHHOLD;
+	TCFG_EEPROM_SetFlowCaroutThresh(TCFG_SystemData.FlowCaroutThresh);
+	
+	/* 微小变化重计算次数 */
+	TCFG_SystemData.FlowRecalNum = INSPECT_FLOW_RECALIBRA_OVERNUM;
+	TCFG_EEPROM_SetFlowRecalNum(TCFG_SystemData.FlowRecalNum);
+	
+	/* 激烈变化重计算时间 */
+	TCFG_SystemData.FlowRecalTime = INSPECT_FLOW_RECALIBRA_OVERTIME;
+	TCFG_EEPROM_SetFlowRecalTime(TCFG_SystemData.FlowRecalTime);
+	
+	/* 心跳包等待时间 */
+	TCFG_SystemData.FlowWaitHeart = INSPECT_FLOW_WAITSEND_HEARTMIN;
+	TCFG_EEPROM_SetFlowWaitHeart(TCFG_SystemData.FlowWaitHeart);
+	
+	/* 地磁扫描次数 */
+	TCFG_SystemData.FlowMagScanCnt = 0;
+	TCFG_EEPROM_SetFlowMagScanCnt(TCFG_SystemData.FlowMagScanCnt);
+	
+	/* 车辆数 */
+	TCFG_SystemData.FlowCarNumber = 0;
+	TCFG_EEPROM_SetFlowCarNumber(TCFG_SystemData.FlowCarNumber);
+	
+	/* 地磁X轴背景值 */
+	TCFG_SystemData.FlowMagXBack = 0;
+	TCFG_EEPROM_SetFlowMagXBack(TCFG_SystemData.FlowMagXBack);
+	
+	/* 地磁Y轴背景值 */
+	TCFG_SystemData.FlowMagYBack = 0;
+	TCFG_EEPROM_SetFlowMagYBack(TCFG_SystemData.FlowMagYBack);
+	
+	/* 地磁Z轴背景值 */
+	TCFG_SystemData.FlowMagZBack = 0;
+	TCFG_EEPROM_SetFlowMagZBack(TCFG_SystemData.FlowMagZBack);
+	
 	/* NB核心网地址 */
 	sscanf(COAPCDPADDR, "%d.%d.%d.%d", &serverip[3], &serverip[2], &serverip[1], &serverip[0]);
 	TCFG_SystemData.NBCoapCDPServer.ip.ip8[3] = serverip[3];
@@ -332,6 +381,70 @@ void TCFG_EEPROM_ReadConfigData(void)
 	TCFG_SystemData.CoapIdleTime = TCFG_EEPROM_GetCoapIdleTime();
 	NbiotClientHandler.CoapIdleTimeSec = TCFG_SystemData.CoapIdleTime;
 	
+	/* 检测模式 */
+	TCFG_SystemData.FlowDetectMode = TCFG_EEPROM_GetFlowDetectMode();
+	if ((TCFG_SystemData.FlowDetectMode == FLOW_MODE_CLOSED) || (TCFG_SystemData.FlowDetectMode > FLOW_MODE_CAR_COME_GO)) {
+		TCFG_SystemData.FlowDetectMode = INSPECT_FLOW_DETECT_MODE;
+		TCFG_EEPROM_SetFlowDetectMode(TCFG_SystemData.FlowDetectMode);
+	}
+	
+	/* 地磁扫描频率 */
+	TCFG_SystemData.FlowMeasureFreq = TCFG_EEPROM_GetFlowMeasureFreq();
+	if ((TCFG_SystemData.FlowMeasureFreq == MEASURE_FREQ_10HZ) || (TCFG_SystemData.FlowMeasureFreq  > MEASURE_FREQ_200HZ)) {
+		TCFG_SystemData.FlowMeasureFreq = INSPECT_FLOW_MEASURE_FREQ;
+		TCFG_EEPROM_SetFlowMeasureFreq(TCFG_SystemData.FlowMeasureFreq);
+	}
+	
+	/* 车辆驶入参数 */
+	TCFG_SystemData.FlowCarinThresh = TCFG_EEPROM_GetFlowCarinThresh();
+	if (TCFG_SystemData.FlowCarinThresh == 0) {
+		TCFG_SystemData.FlowCarinThresh = INSPECT_FLOW_CARIN_THRESHHOLD;
+		TCFG_EEPROM_SetFlowCarinThresh(TCFG_SystemData.FlowCarinThresh);
+	}
+	
+	/* 车辆离开参数 */
+	TCFG_SystemData.FlowCaroutThresh = TCFG_EEPROM_GetFlowCaroutThresh();
+	if (TCFG_SystemData.FlowCaroutThresh == 0) {
+		TCFG_SystemData.FlowCaroutThresh = INSPECT_FLOW_CAROUT_THRESHHOLD;
+		TCFG_EEPROM_SetFlowCaroutThresh(TCFG_SystemData.FlowCaroutThresh);
+	}
+	
+	/* 微小变化重计算次数 */
+	TCFG_SystemData.FlowRecalNum = TCFG_EEPROM_GetFlowRecalNum();
+	if (TCFG_SystemData.FlowRecalNum == 0) {
+		TCFG_SystemData.FlowRecalNum = INSPECT_FLOW_RECALIBRA_OVERNUM;
+		TCFG_EEPROM_SetFlowRecalNum(TCFG_SystemData.FlowRecalNum);
+	}
+	
+	/* 激烈变化重计算时间 */
+	TCFG_SystemData.FlowRecalTime = TCFG_EEPROM_GetFlowRecalTime();
+	if (TCFG_SystemData.FlowRecalTime == 0) {
+		TCFG_SystemData.FlowRecalTime = INSPECT_FLOW_RECALIBRA_OVERTIME;
+		TCFG_EEPROM_SetFlowRecalTime(TCFG_SystemData.FlowRecalTime);
+	}
+	
+	/* 心跳包等待时间 */
+	TCFG_SystemData.FlowWaitHeart = TCFG_EEPROM_GetFlowWaitHeart();
+	if (TCFG_SystemData.FlowWaitHeart == 0) {
+		TCFG_SystemData.FlowWaitHeart = INSPECT_FLOW_WAITSEND_HEARTMIN;
+		TCFG_EEPROM_SetFlowWaitHeart(TCFG_SystemData.FlowWaitHeart);
+	}
+	
+	/* 地磁扫描次数 */
+	TCFG_SystemData.FlowMagScanCnt = TCFG_EEPROM_GetFlowMagScanCnt();
+	
+	/* 车辆数 */
+	TCFG_SystemData.FlowCarNumber = TCFG_EEPROM_GetFlowCarNumber();
+	
+	/* 地磁X轴背景值 */
+	TCFG_SystemData.FlowMagXBack = TCFG_EEPROM_GetFlowMagXBack();
+	
+	/* 地磁Y轴背景值 */
+	TCFG_SystemData.FlowMagYBack = TCFG_EEPROM_GetFlowMagYBack();
+	
+	/* 地磁Z轴背景值 */
+	TCFG_SystemData.FlowMagZBack = TCFG_EEPROM_GetFlowMagZBack();
+	
 	/* NB核心网地址 */
 	TCFG_SystemData.NBCoapCDPServer.ip.ip32 = TCFG_EEPROM_GetServerIP();
 	TCFG_SystemData.NBCoapCDPServer.port = TCFG_EEPROM_GetServerPort();
@@ -367,6 +480,54 @@ void TCFG_EEPROM_WriteParameterData(void)
 	/* 升级信号质量限制下限 */
 	TCFG_SystemData.UpgradeLimitSnr = NBCOAP_PCP_UPGRADE_LIMIT_SNR;
 	TCFG_EEPROM_SetUpgradeLimitSnr(TCFG_SystemData.UpgradeLimitSnr);
+	
+	/* 检测模式 */
+	TCFG_SystemData.FlowDetectMode = INSPECT_FLOW_DETECT_MODE;
+	TCFG_EEPROM_SetFlowDetectMode(TCFG_SystemData.FlowDetectMode);
+	
+	/* 地磁扫描频率 */
+	TCFG_SystemData.FlowMeasureFreq = INSPECT_FLOW_MEASURE_FREQ;
+	TCFG_EEPROM_SetFlowMeasureFreq(TCFG_SystemData.FlowMeasureFreq);
+	
+	/* 车辆驶入参数 */
+	TCFG_SystemData.FlowCarinThresh = INSPECT_FLOW_CARIN_THRESHHOLD;
+	TCFG_EEPROM_SetFlowCarinThresh(TCFG_SystemData.FlowCarinThresh);
+	
+	/* 车辆离开参数 */
+	TCFG_SystemData.FlowCaroutThresh = INSPECT_FLOW_CAROUT_THRESHHOLD;
+	TCFG_EEPROM_SetFlowCaroutThresh(TCFG_SystemData.FlowCaroutThresh);
+	
+	/* 微小变化重计算次数 */
+	TCFG_SystemData.FlowRecalNum = INSPECT_FLOW_RECALIBRA_OVERNUM;
+	TCFG_EEPROM_SetFlowRecalNum(TCFG_SystemData.FlowRecalNum);
+	
+	/* 激烈变化重计算时间 */
+	TCFG_SystemData.FlowRecalTime = INSPECT_FLOW_RECALIBRA_OVERTIME;
+	TCFG_EEPROM_SetFlowRecalTime(TCFG_SystemData.FlowRecalTime);
+	
+	/* 心跳包等待时间 */
+	TCFG_SystemData.FlowWaitHeart = INSPECT_FLOW_WAITSEND_HEARTMIN;
+	TCFG_EEPROM_SetFlowWaitHeart(TCFG_SystemData.FlowWaitHeart);
+	
+	/* 地磁扫描次数 */
+	TCFG_SystemData.FlowMagScanCnt = 0;
+	TCFG_EEPROM_SetFlowMagScanCnt(TCFG_SystemData.FlowMagScanCnt);
+	
+	/* 车辆数 */
+	TCFG_SystemData.FlowCarNumber = 0;
+	TCFG_EEPROM_SetFlowCarNumber(TCFG_SystemData.FlowCarNumber);
+	
+	/* 地磁X轴背景值 */
+	TCFG_SystemData.FlowMagXBack = 0;
+	TCFG_EEPROM_SetFlowMagXBack(TCFG_SystemData.FlowMagXBack);
+	
+	/* 地磁Y轴背景值 */
+	TCFG_SystemData.FlowMagYBack = 0;
+	TCFG_EEPROM_SetFlowMagYBack(TCFG_SystemData.FlowMagYBack);
+	
+	/* 地磁Z轴背景值 */
+	TCFG_SystemData.FlowMagZBack = 0;
+	TCFG_EEPROM_SetFlowMagZBack(TCFG_SystemData.FlowMagZBack);
 	
 	/* NB核心网地址 */
 	sscanf(COAPCDPADDR, "%d.%d.%d.%d", &serverip[3], &serverip[2], &serverip[1], &serverip[0]);
@@ -1831,6 +1992,270 @@ void TCFG_EEPROM_SetDeviceRbtMode(uint8_t val)
 unsigned char TCFG_EEPROM_GetDeviceRbtMode(void)
 {
 	return FLASH_EEPROM_ReadByte(TCFG_DEVICE_RBTMODE_OFFSET);
+}
+
+/**********************************************************************************************************
+ @Function			void TCFG_EEPROM_SetFlowDetectMode(uint8_t val)
+ @Description			TCFG_EEPROM_SetFlowDetectMode						: 保存FlowDetectMode
+ @Input				val
+ @Return				void
+**********************************************************************************************************/
+void TCFG_EEPROM_SetFlowDetectMode(uint8_t val)
+{
+	FLASH_EEPROM_WriteByte(TCFG_FLOW_DETECTMODE_OFFSET, val);
+}
+
+/**********************************************************************************************************
+ @Function			unsigned char TCFG_EEPROM_GetFlowDetectMode(void)
+ @Description			TCFG_EEPROM_GetFlowDetectMode						: 读取FlowDetectMode
+ @Input				void
+ @Return				val
+**********************************************************************************************************/
+unsigned char TCFG_EEPROM_GetFlowDetectMode(void)
+{
+	return FLASH_EEPROM_ReadByte(TCFG_FLOW_DETECTMODE_OFFSET);
+}
+
+/**********************************************************************************************************
+ @Function			void TCFG_EEPROM_SetFlowMeasureFreq(uint8_t val)
+ @Description			TCFG_EEPROM_SetFlowMeasureFreq					: 保存FlowMeasureFreq
+ @Input				val
+ @Return				void
+**********************************************************************************************************/
+void TCFG_EEPROM_SetFlowMeasureFreq(uint8_t val)
+{
+	FLASH_EEPROM_WriteByte(TCFG_FLOW_MEASUREFREQ_OFFSET, val);
+}
+
+/**********************************************************************************************************
+ @Function			unsigned char TCFG_EEPROM_GetFlowMeasureFreq(void)
+ @Description			TCFG_EEPROM_GetFlowMeasureFreq					: 读取FlowMeasureFreq
+ @Input				void
+ @Return				val
+**********************************************************************************************************/
+unsigned char TCFG_EEPROM_GetFlowMeasureFreq(void)
+{
+	return FLASH_EEPROM_ReadByte(TCFG_FLOW_MEASUREFREQ_OFFSET);
+}
+
+/**********************************************************************************************************
+ @Function			void TCFG_EEPROM_SetFlowCarinThresh(uint8_t val)
+ @Description			TCFG_EEPROM_SetFlowCarinThresh					: 保存FlowCarinThresh
+ @Input				val
+ @Return				void
+**********************************************************************************************************/
+void TCFG_EEPROM_SetFlowCarinThresh(uint8_t val)
+{
+	FLASH_EEPROM_WriteByte(TCFG_FLOW_CARINTHRE_OFFSET, val);
+}
+
+/**********************************************************************************************************
+ @Function			unsigned char TCFG_EEPROM_GetFlowCarinThresh(void)
+ @Description			TCFG_EEPROM_GetFlowCarinThresh					: 读取FlowCarinThresh
+ @Input				void
+ @Return				val
+**********************************************************************************************************/
+unsigned char TCFG_EEPROM_GetFlowCarinThresh(void)
+{
+	return FLASH_EEPROM_ReadByte(TCFG_FLOW_CARINTHRE_OFFSET);
+}
+
+/**********************************************************************************************************
+ @Function			void TCFG_EEPROM_SetFlowCaroutThresh(uint8_t val)
+ @Description			TCFG_EEPROM_SetFlowCaroutThresh					: 保存FlowCaroutThresh
+ @Input				val
+ @Return				void
+**********************************************************************************************************/
+void TCFG_EEPROM_SetFlowCaroutThresh(uint8_t val)
+{
+	FLASH_EEPROM_WriteByte(TCFG_FLOW_CAROUTTHRE_OFFSET, val);
+}
+
+/**********************************************************************************************************
+ @Function			unsigned char TCFG_EEPROM_GetFlowCaroutThresh(void)
+ @Description			TCFG_EEPROM_GetFlowCaroutThresh					: 读取FlowCaroutThresh
+ @Input				void
+ @Return				val
+**********************************************************************************************************/
+unsigned char TCFG_EEPROM_GetFlowCaroutThresh(void)
+{
+	return FLASH_EEPROM_ReadByte(TCFG_FLOW_CAROUTTHRE_OFFSET);
+}
+
+/**********************************************************************************************************
+ @Function			void TCFG_EEPROM_SetFlowRecalNum(uint8_t val)
+ @Description			TCFG_EEPROM_SetFlowRecalNum						: 保存FlowRecalNum
+ @Input				val
+ @Return				void
+**********************************************************************************************************/
+void TCFG_EEPROM_SetFlowRecalNum(uint8_t val)
+{
+	FLASH_EEPROM_WriteByte(TCFG_FLOW_RECAL_NUM_OFFSET, val);
+}
+
+/**********************************************************************************************************
+ @Function			unsigned char TCFG_EEPROM_GetFlowRecalNum(void)
+ @Description			TCFG_EEPROM_GetFlowRecalNum						: 读取FlowRecalNum
+ @Input				void
+ @Return				val
+**********************************************************************************************************/
+unsigned char TCFG_EEPROM_GetFlowRecalNum(void)
+{
+	return FLASH_EEPROM_ReadByte(TCFG_FLOW_RECAL_NUM_OFFSET);
+}
+
+/**********************************************************************************************************
+ @Function			void TCFG_EEPROM_SetFlowRecalTime(uint8_t val)
+ @Description			TCFG_EEPROM_SetFlowRecalTime						: 保存FlowRecalTime
+ @Input				val
+ @Return				void
+**********************************************************************************************************/
+void TCFG_EEPROM_SetFlowRecalTime(uint8_t val)
+{
+	FLASH_EEPROM_WriteByte(TCFG_FLOW_RECAL_TIME_OFFSET, val);
+}
+
+/**********************************************************************************************************
+ @Function			unsigned char TCFG_EEPROM_GetFlowRecalTime(void)
+ @Description			TCFG_EEPROM_GetFlowRecalTime						: 读取FlowRecalTime
+ @Input				void
+ @Return				val
+**********************************************************************************************************/
+unsigned char TCFG_EEPROM_GetFlowRecalTime(void)
+{
+	return FLASH_EEPROM_ReadByte(TCFG_FLOW_RECAL_TIME_OFFSET);
+}
+
+/**********************************************************************************************************
+ @Function			void TCFG_EEPROM_SetFlowWaitHeart(unsigned int val)
+ @Description			TCFG_EEPROM_SetFlowWaitHeart						: 保存FlowWaitHeart
+ @Input				val
+ @Return				void
+**********************************************************************************************************/
+void TCFG_EEPROM_SetFlowWaitHeart(unsigned int val)
+{
+	FLASH_EEPROM_WriteWord(TCFG_FLOW_WAIT_HEART_OFFSET, val);
+}
+
+/**********************************************************************************************************
+ @Function			unsigned int TCFG_EEPROM_GetFlowWaitHeart(void)
+ @Description			TCFG_EEPROM_GetFlowWaitHeart						: 读取FlowWaitHeart
+ @Input				void
+ @Return				val
+**********************************************************************************************************/
+unsigned int TCFG_EEPROM_GetFlowWaitHeart(void)
+{
+	return FLASH_EEPROM_ReadWord(TCFG_FLOW_WAIT_HEART_OFFSET);
+}
+
+/**********************************************************************************************************
+ @Function			void TCFG_EEPROM_SetFlowMagScanCnt(unsigned int val)
+ @Description			TCFG_EEPROM_SetFlowMagScanCnt						: 保存FlowMagScanCnt
+ @Input				val
+ @Return				void
+**********************************************************************************************************/
+void TCFG_EEPROM_SetFlowMagScanCnt(unsigned int val)
+{
+	FLASH_EEPROM_WriteWord(TCFG_FLOW_MAG_SCANCNT_OFFSET, val);
+}
+
+/**********************************************************************************************************
+ @Function			unsigned int TCFG_EEPROM_GetFlowMagScanCnt(void)
+ @Description			TCFG_EEPROM_GetFlowMagScanCnt						: 读取FlowMagScanCnt
+ @Input				void
+ @Return				val
+**********************************************************************************************************/
+unsigned int TCFG_EEPROM_GetFlowMagScanCnt(void)
+{
+	return FLASH_EEPROM_ReadWord(TCFG_FLOW_MAG_SCANCNT_OFFSET);
+}
+
+/**********************************************************************************************************
+ @Function			void TCFG_EEPROM_SetFlowCarNumber(unsigned short val)
+ @Description			TCFG_EEPROM_SetFlowCarNumber						: 保存FlowCarNumber
+ @Input				val
+ @Return				void
+**********************************************************************************************************/
+void TCFG_EEPROM_SetFlowCarNumber(unsigned short val)
+{
+	FLASH_EEPROM_WriteHalfWord(TCFG_FLOW_CAR_NUMBER_OFFSET, val);
+}
+
+/**********************************************************************************************************
+ @Function			unsigned short TCFG_EEPROM_GetFlowCarNumber(void)
+ @Description			TCFG_EEPROM_GetFlowCarNumber						: 读取FlowCarNumber
+ @Input				void
+ @Return				val
+**********************************************************************************************************/
+unsigned short TCFG_EEPROM_GetFlowCarNumber(void)
+{
+	return FLASH_EEPROM_ReadHalfWord(TCFG_FLOW_CAR_NUMBER_OFFSET);
+}
+
+/**********************************************************************************************************
+ @Function			void TCFG_EEPROM_SetFlowMagXBack(unsigned short val)
+ @Description			TCFG_EEPROM_SetFlowMagXBack						: 保存FlowMagXBack
+ @Input				val
+ @Return				void
+**********************************************************************************************************/
+void TCFG_EEPROM_SetFlowMagXBack(unsigned short val)
+{
+	FLASH_EEPROM_WriteHalfWord(TCFG_FLOW_MAG_XBACK_OFFSET, val);
+}
+
+/**********************************************************************************************************
+ @Function			unsigned short TCFG_EEPROM_GetFlowMagXBack(void)
+ @Description			TCFG_EEPROM_GetFlowMagXBack						: 读取FlowMagXBack
+ @Input				void
+ @Return				val
+**********************************************************************************************************/
+unsigned short TCFG_EEPROM_GetFlowMagXBack(void)
+{
+	return FLASH_EEPROM_ReadHalfWord(TCFG_FLOW_MAG_XBACK_OFFSET);
+}
+
+/**********************************************************************************************************
+ @Function			void TCFG_EEPROM_SetFlowMagYBack(unsigned short val)
+ @Description			TCFG_EEPROM_SetFlowMagYBack						: 保存FlowMagYBack
+ @Input				val
+ @Return				void
+**********************************************************************************************************/
+void TCFG_EEPROM_SetFlowMagYBack(unsigned short val)
+{
+	FLASH_EEPROM_WriteHalfWord(TCFG_FLOW_MAG_YBACK_OFFSET, val);
+}
+
+/**********************************************************************************************************
+ @Function			unsigned short TCFG_EEPROM_GetFlowMagYBack(void)
+ @Description			TCFG_EEPROM_GetFlowMagYBack						: 读取FlowMagYBack
+ @Input				void
+ @Return				val
+**********************************************************************************************************/
+unsigned short TCFG_EEPROM_GetFlowMagYBack(void)
+{
+	return FLASH_EEPROM_ReadHalfWord(TCFG_FLOW_MAG_YBACK_OFFSET);
+}
+
+/**********************************************************************************************************
+ @Function			void TCFG_EEPROM_SetFlowMagZBack(unsigned short val)
+ @Description			TCFG_EEPROM_SetFlowMagZBack						: 保存FlowMagZBack
+ @Input				val
+ @Return				void
+**********************************************************************************************************/
+void TCFG_EEPROM_SetFlowMagZBack(unsigned short val)
+{
+	FLASH_EEPROM_WriteHalfWord(TCFG_FLOW_MAG_ZBACK_OFFSET, val);
+}
+
+/**********************************************************************************************************
+ @Function			unsigned short TCFG_EEPROM_GetFlowMagZBack(void)
+ @Description			TCFG_EEPROM_GetFlowMagZBack						: 读取FlowMagZBack
+ @Input				void
+ @Return				val
+**********************************************************************************************************/
+unsigned short TCFG_EEPROM_GetFlowMagZBack(void)
+{
+	return FLASH_EEPROM_ReadHalfWord(TCFG_FLOW_MAG_ZBACK_OFFSET);
 }
 
 /**********************************************************************************************************
