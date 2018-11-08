@@ -22,6 +22,7 @@
 #include "radio_hal_rf.h"
 #include "radio_rf_app.h"
 #include "inspectmessageoperate.h"
+#include "inspectflowmessageoperate.h"
 #include "string.h"
 
 TCFG_SystemDataTypeDef			TCFG_SystemData;

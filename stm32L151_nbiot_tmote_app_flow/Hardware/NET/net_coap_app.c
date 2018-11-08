@@ -20,6 +20,7 @@
 #include "hal_beep.h"
 #include "radar_api.h"
 #include "hal_qmc5883l.h"
+#include "inspectflowconfig.h"
 #include "string.h"
 #include "radio_rf_app.h"
 
@@ -1901,8 +1902,7 @@ void NET_COAP_NBIOT_Event_ExecutDownlinkData(NBIOT_ClientsTypeDef* pClient)
 							"{(Background):{(val):%hu,(Magic):%hu}}", &backgroundval, &recvMagicNum);
 						if (recvMagicNum == TCLOD_MAGIC_NUM) {
 							if (((radar_targetinfo.strenth_total_diff > (backgroundval-5)) && (radar_targetinfo.strenth_total_diff < (backgroundval+5))) || (backgroundval == 0)) {
-								Radar_InitBackground(TO_SAVE_RADAR_BACKGROUND);
-								QMC5883L_InitBackgroud();
+								Inspect_Flow_InitBackground();
 							}
 							else {
 								ret = NETIP_ERRORPARAM;

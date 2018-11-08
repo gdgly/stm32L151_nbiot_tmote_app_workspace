@@ -18,6 +18,30 @@
 #include "platform_map.h"
 
 /**********************************************************************************************************
+ @Function			void INSPECT_FLOW_Para_SetDetectMode(unsigned char detectMode)
+ @Description			INSPECT_FLOW_Para_SetDetectMode				: 设置detectMode工作模式
+ @Input				detectMode
+ @Return				void
+**********************************************************************************************************/
+void INSPECT_FLOW_Para_SetDetectMode(unsigned char detectMode)
+{
+	detectMode = (detectMode > FLOW_MODE_CAR_COME_GO) ? INSPECT_FLOW_DETECT_MODE : detectMode;
+	
+	InspectFlowClientHandler.Configuration.detectMode = (INSPECT_FlowDetectModeTypeDef)detectMode;
+}
+
+/**********************************************************************************************************
+ @Function			unsigned char INSPECT_FLOW_Para_GetDetectMode(void)
+ @Description			INSPECT_FLOW_Para_GetDetectMode				: 读取detectMode工作模式
+ @Input				void
+ @Return				detectMode
+**********************************************************************************************************/
+unsigned char INSPECT_FLOW_Para_GetDetectMode(void)
+{
+	return InspectFlowClientHandler.Configuration.detectMode;
+}
+
+/**********************************************************************************************************
  @Function			void INSPECT_FLOW_Para_SetMagMeasureFreq(unsigned char magFreq)
  @Description			INSPECT_FLOW_Para_SetMagMeasureFreq			: 设置magFreq地磁扫描频率
  @Input				magFreq
@@ -25,7 +49,7 @@
 **********************************************************************************************************/
 void INSPECT_FLOW_Para_SetMagMeasureFreq(unsigned char magFreq)
 {
-	magFreq = (magFreq > MEASURE_FREQ_200HZ) ? MEASURE_FREQ_200HZ : magFreq;
+	magFreq = (magFreq > MEASURE_FREQ_200HZ) ? INSPECT_FLOW_MEASURE_FREQ : magFreq;
 	
 	InspectFlowClientHandler.Configuration.magMeasureFreq = (INSPECT_FlowMeasureFreqTypeDef)magFreq;
 	
@@ -171,6 +195,74 @@ unsigned char INSPECT_FLOW_Para_GetRecalibrationOvertime(void)
 	return InspectFlowClientHandler.Configuration.recalibrationOvertime;
 }
 
+/**********************************************************************************************************
+ @Function			void INSPECT_FLOW_Para_SetWaitSendHeartbeatMin(unsigned int waitSendHeartbeatMin)
+ @Description			INSPECT_FLOW_Para_SetWaitSendHeartbeatMin		: 设置waitSendHeartbeatMin心跳等待时间
+ @Input				waitSendHeartbeatMin
+ @Return				void
+**********************************************************************************************************/
+void INSPECT_FLOW_Para_SetWaitSendHeartbeatMin(unsigned int waitSendHeartbeatMin)
+{
+	waitSendHeartbeatMin = (waitSendHeartbeatMin > 12 * 60) ? 12 * 60 : waitSendHeartbeatMin;
+	
+	InspectFlowClientHandler.Configuration.waitSendHeartbeatMin = waitSendHeartbeatMin;
+}
+
+/**********************************************************************************************************
+ @Function			unsigned int INSPECT_FLOW_Para_GetWaitSendHeartbeatMin(void)
+ @Description			INSPECT_FLOW_Para_GetWaitSendHeartbeatMin		: 读取waitSendHeartbeatMin心跳等待时间
+ @Input				void
+ @Return				waitSendHeartbeatMin
+**********************************************************************************************************/
+unsigned int INSPECT_FLOW_Para_GetWaitSendHeartbeatMin(void)
+{
+	return InspectFlowClientHandler.Configuration.waitSendHeartbeatMin;
+}
+
+/**********************************************************************************************************
+ @Function			void INSPECT_FLOW_Para_SetQmc5883lDataReady(bool qmc5883lDataReady)
+ @Description			INSPECT_FLOW_Para_SetQmc5883lDataReady			: 设置qmc5883lDataReady数据准备标志位
+ @Input				qmc5883lDataReady
+ @Return				void
+**********************************************************************************************************/
+void INSPECT_FLOW_Para_SetQmc5883lDataReady(bool qmc5883lDataReady)
+{
+	InspectFlowClientHandler.qmc5883lDataReady = qmc5883lDataReady;
+}
+
+/**********************************************************************************************************
+ @Function			bool INSPECT_FLOW_Para_GetQmc5883lDataReady(void)
+ @Description			INSPECT_FLOW_Para_GetQmc5883lDataReady			: 读取qmc5883lDataReady数据准备标志位
+ @Input				void
+ @Return				qmc5883lDataReady
+**********************************************************************************************************/
+bool INSPECT_FLOW_Para_GetQmc5883lDataReady(void)
+{
+	return InspectFlowClientHandler.qmc5883lDataReady;
+}
+
+/**********************************************************************************************************
+ @Function			void INSPECT_FLOW_Para_SetQmc5883lRunFail(bool qmc5883lRunFail)
+ @Description			INSPECT_FLOW_Para_SetQmc5883lRunFail			: 设置qmc5883lRunFail运行异常标志位
+ @Input				qmc5883lRunFail
+ @Return				void
+**********************************************************************************************************/
+void INSPECT_FLOW_Para_SetQmc5883lRunFail(bool qmc5883lRunFail)
+{
+	InspectFlowClientHandler.qmc5883lRunFail = qmc5883lRunFail;
+}
+
+/**********************************************************************************************************
+ @Function			bool INSPECT_FLOW_Para_GetQmc5883lRunFail(void)
+ @Description			INSPECT_FLOW_Para_GetQmc5883lRunFail			: 读取qmc5883lRunFaily运行异常标志位
+ @Input				void
+ @Return				qmc5883lRunFail
+**********************************************************************************************************/
+bool INSPECT_FLOW_Para_GetQmc5883lRunFail(void)
+{
+	return InspectFlowClientHandler.qmc5883lRunFail;
+}
+
 
 /**********************************************************************************************************
  @Function			unsigned int INSPECT_FLOW_Para_ObtainMagnetismScanCnt(void)
@@ -257,6 +349,7 @@ signed short INSPECT_FLOW_Para_ObtainMagnetismZ(void)
 **********************************************************************************************************/
 signed short INSPECT_FLOW_Para_ObtainMagnetismBackX(void)
 {
+	InspectFlowClientHandler.Parameter.magnetismBackX = InspectFlowClientHandler.MagnetismVal.x_back;
 	return InspectFlowClientHandler.Parameter.magnetismBackX;
 }
 
@@ -268,6 +361,7 @@ signed short INSPECT_FLOW_Para_ObtainMagnetismBackX(void)
 **********************************************************************************************************/
 signed short INSPECT_FLOW_Para_ObtainMagnetismBackY(void)
 {
+	InspectFlowClientHandler.Parameter.magnetismBackY = InspectFlowClientHandler.MagnetismVal.y_back;
 	return InspectFlowClientHandler.Parameter.magnetismBackY;
 }
 
@@ -279,32 +373,8 @@ signed short INSPECT_FLOW_Para_ObtainMagnetismBackY(void)
 **********************************************************************************************************/
 signed short INSPECT_FLOW_Para_ObtainMagnetismBackZ(void)
 {
+	InspectFlowClientHandler.Parameter.magnetismBackZ = InspectFlowClientHandler.MagnetismVal.z_back;
 	return InspectFlowClientHandler.Parameter.magnetismBackZ;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /********************************************** END OF FLEE **********************************************/

@@ -11,17 +11,19 @@
 #define INSPECT_FLOW_DISTANCE_HIGH			20												//启动分类算法上限值
 #define INSPECT_FLOW_CNT_1_MIN			3												//检测为有车状态的最少次数
 
+#define INSPECT_FLOW_DETECT_MODE			FLOW_MODE_FLOW										//工作模式
 #define INSPECT_FLOW_MEASURE_FREQ			MEASURE_FREQ_50HZ									//地磁扫描频率
 #define INSPECT_FLOW_CARIN_THRESHHOLD		77												//车辆触发灵敏度
 #define INSPECT_FLOW_CAROUT_THRESHHOLD		15												//车辆离开参数
 #define INSPECT_FLOW_RECALIBRA_OVERNUM		10												//基准值更新阈值
 #define INSPECT_FLOW_RECALIBRA_OVERTIME		5												//背景值重新计算时间
-#define INSPECT_FLOW_RECALIBRA_OVERTIMECNT	3000 * INSPECT_FLOW_RECALIBRA_OVERTIME					//背景重计算累加器
+#define INSPECT_FLOW_RECALIBRA_OVERTIMECNT	15000											//背景重计算累加器
 #define INSPECT_FLOW_RECALIBRA_BACKSECONDS	0												//背景校准之后时间
+#define INSPECT_FLOW_WAITSEND_HEARTMIN		5												//心跳等待时间
 
-
-
-
+#define INSPECT_FLOW_BEEP_DISABLE			0
+#define INSPECT_FLOW_BEEP_ENABLE			1
+#define INSPECT_FLOW_BEEP_TYPE			INSPECT_FLOW_BEEP_ENABLE								//蜂鸣器提示
 
 typedef struct INSPECT_FlowClientsTypeDef	INSPECT_FlowClientsTypeDef;
 
@@ -34,7 +36,7 @@ typedef enum
 	FLOW_CAR_EXIST						= 0x03
 }INSPECT_FlowStatusTypeDef;
 
-/* Inspect Flow MeasureFreqTypeDef */
+/* Inspect Flow MeasureFreq */
 typedef enum
 {
 	MEASURE_FREQ_10HZ					= 0x00,
@@ -42,6 +44,16 @@ typedef enum
 	MEASURE_FREQ_100HZ					= 0x02,
 	MEASURE_FREQ_200HZ					= 0x03
 }INSPECT_FlowMeasureFreqTypeDef;
+
+/* Inspect Flow DetectMode */
+typedef enum
+{
+	FLOW_MODE_CLOSED					= 0x00,
+	FLOW_MODE_FLOW						= 0x01,
+	FLOW_MODE_CAR_COME					= 0x02,
+	FLOW_MODE_CAR_GO					= 0x03,
+	FLOW_MODE_CAR_COME_GO				= 0x04
+}INSPECT_FlowDetectModeTypeDef;
 
 /* Inspect Flow DetectData */
 typedef struct
@@ -95,6 +107,7 @@ typedef struct
 /* Inspect Flow Configuration */
 typedef struct
 {
+	INSPECT_FlowDetectModeTypeDef			detectMode;										//工作模式
 	INSPECT_FlowMeasureFreqTypeDef		magMeasureFreq;									//地磁扫描频率
 	unsigned char						carinThreshhold;									//车辆进入参数
 	unsigned char						caroutThreshhold;									//车辆离开参数
@@ -102,6 +115,7 @@ typedef struct
 	unsigned char						recalibrationOvertime:4;								//激烈变化重计算时间
 	unsigned int						recalibrationOvertimeCnt;							//背景重计算累加器
 	unsigned int						recalibrationBackSeconds;							//背景校准之后时间
+	unsigned int						waitSendHeartbeatMin;								//心跳等待时间
 }INSPECT_FlowConfigurationTypeDef;
 
 /* Inspect Flow Parameter */
@@ -113,11 +127,6 @@ typedef struct
 	int16_t							magnetismBackY;									//Y轴背景值
 	int16_t							magnetismBackZ;									//Z轴背景值
 }INSPECT_FlowParameterTypeDef;
-
-
-
-
-
 
 /* Inspect Flow Clients */
 struct INSPECT_FlowClientsTypeDef
@@ -133,25 +142,15 @@ struct INSPECT_FlowClientsTypeDef
 	INSPECT_FlowConfigurationTypeDef		Configuration;										//配置信息
 	INSPECT_FlowParameterTypeDef			Parameter;										//参数信息
 	
-	
-	
-	
+	bool								qmc5883lDataReady;									//数据准备标志位
+	bool								qmc5883lRunFail;									//运行异常标志位
 };
 
 extern INSPECT_FlowClientsTypeDef			InspectFlowClientHandler;
 
-
-
-
-
 void Inspect_Flow_Init(void);																//车流量检测算法初始化
 void Inspect_Flow_ExistenceDetect(void);													//车流量检测算法处理
-
-
-
-
-
-
-
+void Inspect_Flow_InitBackground(void);														//车流量检测算法初始化背景
+void Inspect_Flow_ISR(void);																//车流量检测算法中断处理
 
 #endif /* __INSPECT_FLOW_CONFIG_H */

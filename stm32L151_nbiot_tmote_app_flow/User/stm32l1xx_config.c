@@ -396,21 +396,15 @@ void QmcWarmupPower(signed char val)
 **********************************************************************************************************/
 void LowPowerEnterStop(void)
 {
-	RADARPOWER(OFF);
-	
-	Radar_DMA_DeInit();
-	Radar_ADC_DeInit();
-	Radar_DAC_DeInit();
-	
 	__HAL_RCC_PWR_CLK_ENABLE();
 	SysTick->CTRL &= (~SysTick_CTRL_ENABLE_Msk);
 	
 	HAL_RTCEx_DeactivateWakeUpTimer(&RTC_Handler);
-	HAL_RTCEx_SetWakeUpTimer_IT(&RTC_Handler, 0x800, RTC_WAKEUPCLOCK_RTCCLK_DIV16);
+	HAL_RTCEx_SetWakeUpTimer_IT(&RTC_Handler, 0xCD, RTC_WAKEUPCLOCK_RTCCLK_DIV4);
 	
 	HAL_PWR_EnterSTOPMode(PWR_LOWPOWERREGULATOR_ON, PWR_STOPENTRY_WFI);
 	
-	uwTick += 1000;
+	uwTick += 25;
 	Stm32_IncSecondTick();
 	
 	SysTick->CTRL |= SysTick_CTRL_ENABLE_Msk;
@@ -445,7 +439,6 @@ void LowPowerBeforeSleepInit(void)
 		Radio_Rf_Interface_Deinit();
 	}
 #endif
-	QMC5883L_Drdy_DeInit();
 }
 
 /**********************************************************************************************************
@@ -470,8 +463,6 @@ void LowPowerAfterSleepInit(void)
 #endif
 		TimeToInitModule = Stm32_GetSecondTick();
 	}
-	QMC5883L_ClearInsideData();
-	QMC5883L_Drdy_Init();
 }
 
 /**********************************************************************************************************

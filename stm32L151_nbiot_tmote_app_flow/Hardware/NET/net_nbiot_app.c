@@ -24,6 +24,7 @@
 #include "platform_config.h"
 #include "platform_map.h"
 #include "inspectmessageoperate.h"
+#include "inspectflowmessageoperate.h"
 #include "hal_rtc.h"
 #include "radar_api.h"
 #include "string.h"
@@ -130,10 +131,10 @@ void NET_NBIOT_DataProcessing(NET_NBIOT_ClientsTypeDef* pClient)
 #if NETPROTOCAL == NETCOAP
 	
 	u32 len = 0;
-	SpotStatusTypedef SpotStatusData;
+	FlowStatusTypeDef FlowStatusData;
 	
 	/* 检查是否有数据需要发送 */
-	if (Inspect_Message_SpotStatusisEmpty() == false) {
+	if (Inspect_Message_FlowStatusisEmpty() == false) {
 	#if NBCOAP_SENDCODE_LONG_STATUS
 		NETCoapNeedSendCode.LongStatus = 1;
 	#endif
@@ -142,7 +143,7 @@ void NET_NBIOT_DataProcessing(NET_NBIOT_ClientsTypeDef* pClient)
 	/* COAP SHORT STATUS DATA ENQUEUE */
 	if (NETCoapNeedSendCode.ShortStatus) {
 #if NBCOAP_SENDCODE_SHORT_STATUS
-		Inspect_Message_SpotStatusDequeue(&SpotStatusData);
+		Inspect_Message_FlowStatusDequeue(&FlowStatusData);
 		CoapShortStructure.HeadPacket.DeviceSN				= TCFG_EEPROM_Get_MAC_SN();
 		CoapShortStructure.HeadPacket.DataLen				= 0x00;
 		CoapShortStructure.HeadPacket.ProtocolType			= 0x00;
@@ -154,12 +155,12 @@ void NET_NBIOT_DataProcessing(NET_NBIOT_ClientsTypeDef* pClient)
 		CoapShortStructure.MsgPacket.DestSN				= 0x00;
 		CoapShortStructure.MsgPacket.Version				= 0x01;
 		CoapShortStructure.MsgPacket.Type					= COAP_MSGTYPE_TYPE_SHORT_STATUS;
-		CoapShortStructure.DateTime						= SpotStatusData.unixTime;
-		CoapShortStructure.SpotStatus						= SpotStatusData.spot_status;
-		CoapShortStructure.SpotCount						= SpotStatusData.spot_count;
+		CoapShortStructure.DateTime						= FlowStatusData.unixTime;
+		CoapShortStructure.SpotStatus						= FlowStatusData.FlowState;
+		CoapShortStructure.SpotCount						= FlowStatusData.FlowCount;
 		NET_Coap_Message_SendDataEnqueue((unsigned char *)&CoapShortStructure, sizeof(CoapShortStructure));
 		NETCoapNeedSendCode.ShortStatus = 0;
-		Inspect_Message_SpotStatusOffSet();
+		Inspect_Message_FlowStatusOffSet();
 		TCFG_Utility_Add_Coap_SentCount();
 	#if NBCOAP_LISTEN_PARAMETER_TYPE == NBCOAP_LISTEN_PARAMETER_ENABLE
 		NbiotClientHandler.ListenRunCtl.ListenEnterParameter.listenEnable = true;
@@ -169,7 +170,7 @@ void NET_NBIOT_DataProcessing(NET_NBIOT_ClientsTypeDef* pClient)
 	/* COAP LONG STATUS DATA ENQUEUE */
 	else if (NETCoapNeedSendCode.LongStatus) {
 #if NBCOAP_SENDCODE_LONG_STATUS
-		Inspect_Message_SpotStatusDequeue(&SpotStatusData);
+		Inspect_Message_FlowStatusDequeue(&FlowStatusData);
 		CoapLongStructure.HeadPacket.DeviceSN				= TCFG_EEPROM_Get_MAC_SN();
 		CoapLongStructure.HeadPacket.DataLen				= 0x00;
 		CoapLongStructure.HeadPacket.ProtocolType			= 0x00;
@@ -185,34 +186,34 @@ void NET_NBIOT_DataProcessing(NET_NBIOT_ClientsTypeDef* pClient)
 		CoapLongStructure.MsgPacket.Version				= 0x02;
 #endif
 		CoapLongStructure.MsgPacket.Type					= COAP_MSGTYPE_TYPE_LONG_STATUS;
-		CoapLongStructure.DateTime						= SpotStatusData.unixTime;
-		CoapLongStructure.SpotStatus						= SpotStatusData.spot_status;
-		CoapLongStructure.SpotCount						= SpotStatusData.spot_count;
-		CoapLongStructure.MagneticX						= SpotStatusData.qmc5883lData.X_Now;
-		CoapLongStructure.MagneticY						= SpotStatusData.qmc5883lData.Y_Now;
-		CoapLongStructure.MagneticZ						= SpotStatusData.qmc5883lData.Z_Now;
-		CoapLongStructure.MagneticDiff					= SpotStatusData.qmc5883lDiff.BackVal_Diff;
-		CoapLongStructure.RadarDistance					= SpotStatusData.radarData.DisVal;
-		CoapLongStructure.RadarStrength					= SpotStatusData.radarData.MagVal;
-		CoapLongStructure.RadarCoverCount					= SpotStatusData.radarData.Diff_v2;
-		CoapLongStructure.RadarDiff						= SpotStatusData.radarData.Diff;
+		CoapLongStructure.DateTime						= FlowStatusData.unixTime;
+		CoapLongStructure.SpotStatus						= FlowStatusData.FlowState;
+		CoapLongStructure.SpotCount						= FlowStatusData.FlowCount;
+		CoapLongStructure.MagneticX						= FlowStatusData.magnetismX;
+		CoapLongStructure.MagneticY						= FlowStatusData.magnetismY;
+		CoapLongStructure.MagneticZ						= FlowStatusData.magnetismZ;
+		CoapLongStructure.MagneticDiff					= FlowStatusData.magnetismDiff;
+		CoapLongStructure.RadarDistance					= 0;
+		CoapLongStructure.RadarStrength					= 0;
+		CoapLongStructure.RadarCoverCount					= 0;
+		CoapLongStructure.RadarDiff						= 0;
 #if NBIOT_STATUS_MSG_VERSION_TYPE == NBIOT_STATUS_MSG_VERSION_77BYTE_V2
 		CoapLongStructure.NBRssi							= TCFG_Utility_Get_Nbiot_Rssi_IntVal();
 		CoapLongStructure.NBSnr							= TCFG_Utility_Get_Nbiot_RadioSNR();
 		CoapLongStructure.MCUTemp						= TCFG_Utility_Get_Device_Temperature();
 		CoapLongStructure.QMCTemp						= Qmc5883lData.temp_now;
-		CoapLongStructure.MagneticBackX					= Qmc5883lData.X_Back;
-		CoapLongStructure.MagneticBackY					= Qmc5883lData.Y_Back;
-		CoapLongStructure.MagneticBackZ					= Qmc5883lData.Z_Back;
-		CoapLongStructure.Debugval						= SpotStatusData.radarData.timedomain_dif;
+		CoapLongStructure.MagneticBackX					= FlowStatusData.magnetismBackX;
+		CoapLongStructure.MagneticBackY					= FlowStatusData.magnetismBackY;
+		CoapLongStructure.MagneticBackZ					= FlowStatusData.magnetismBackZ;
+		CoapLongStructure.Debugval						= 0;
 		for (int i = 0; i < 16; i++) {
-			CoapLongStructure.Radarval[i] = radar_targetinfo.pMagNow[i+2]>255?255:radar_targetinfo.pMagNow[i+2];
-			CoapLongStructure.Radarback[i] = radar_targetinfo.pMagBG[i+2]>255?255:radar_targetinfo.pMagBG[i+2];
+			CoapLongStructure.Radarval[i] = 0;
+			CoapLongStructure.Radarback[i] = 0;
 		}
 #endif
 		NET_Coap_Message_SendDataEnqueue((unsigned char *)&CoapLongStructure, sizeof(CoapLongStructure));
 		NETCoapNeedSendCode.LongStatus = 0;
-		Inspect_Message_SpotStatusOffSet();
+		Inspect_Message_FlowStatusOffSet();
 		TCFG_Utility_Add_Coap_SentCount();
 	#if NBCOAP_LISTEN_PARAMETER_TYPE == NBCOAP_LISTEN_PARAMETER_ENABLE
 		NbiotClientHandler.ListenRunCtl.ListenEnterParameter.listenEnable = true;

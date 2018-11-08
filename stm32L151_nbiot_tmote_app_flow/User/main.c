@@ -123,17 +123,9 @@ int main(void)
 	Radio_Trf_Xmit_Heartbeat();															//SI4438发送心跳包
 #endif
 	
-	QMC5883L_Init();																	//地磁初始化
-	Radar_Init();																		//雷达初始化
+	QMC5883L_Flow_Init();																//地磁初始化
 	
-	Inspect_Spot_Init();																//车位检测算法初始化
-	
-#if DEVICE_BOOT_START_MAGINIT_TYPE
-	if (SoftResetFlag == RCC_RESET_FLAG_PORRST) {
-		Radar_InitBackground(TO_SAVE_RADAR_BACKGROUND);										//雷达背景初始化
-		QMC5883L_InitBackgroud();														//地磁背景初始化
-	}
-#endif
+	Inspect_Flow_Init();																//车流量检测算法初始化
 	
 	NET_NBIOT_Initialization();															//NBIOT初始化
 	
@@ -160,7 +152,7 @@ int main(void)
 		LowPowerEnterStop();
 		LowPowerAfterSleepInit();
 #elif LOWPOWERMODE == LOWPOWERDISABLE
-		Delay_MS(1000);
+		Delay_MS(25);
 #endif
 		
 		/* 喂狗 */
@@ -192,7 +184,7 @@ void MainMajorCycleMqttSN(void)
 	Radio_Trf_App_Task();
 	
 	/* 车辆检测 */
-	Inspect_Spot_ExistenceDetect();
+	Inspect_Flow_ExistenceDetect();
 	
 	/* 检测是否需要初始化传感器背景 */
 	RollingOverInitSensorBackground();
@@ -259,8 +251,10 @@ void MainMajorCycleOneNET(void)
 **********************************************************************************************************/
 void MainRollingEnteredUpWork(void)
 {
+	Delay_MS(800);
 	Radio_Trf_Printf("Entered Up Work");
 	BEEP_CtrlRepeat_Extend(3, 30, 70);
+	Delay_MS(500);
 #if NETPROTOCAL == NETCOAP
 	NETCoapNeedSendCode.WorkInfoWait = 3;
 #elif NETPROTOCAL == NETMQTTSN
@@ -278,8 +272,10 @@ void MainRollingEnteredUpWork(void)
 **********************************************************************************************************/
 void MainRollingEnteringUpWork(void)
 {
+	Delay_MS(800);
 	Radio_Trf_Printf("Entering Up Work");
 	BEEP_CtrlRepeat_Extend(1, 500, 0);
+	Delay_MS(500);
 }
 
 /**********************************************************************************************************
@@ -291,34 +287,36 @@ void MainRollingEnteringUpWork(void)
 void MainRollingUpwardsActived(void)
 {
 	/* 车辆检测 */
-	Inspect_Spot_ExistenceDetect();
+	Inspect_Flow_ExistenceDetect();
 	
-	/* 日常处理 */
-	MainHandleRoutine();
-	
-	if (!((NETCoapNeedSendCode.WorkInfoWait > 0) || (NETMqttSNNeedSendCode.InfoWorkWait > 0) || (NETOneNETNeedSendCode.WorkInfoWait > 0))) {
-#if PRODUCTTEST_READ_TYPE
-		if (ProductTest_Read()) {
+	if (Stm32_GetSecondTick() != SystemRunningTime.seconds) {
+		/* 日常处理 */
+		MainHandleRoutine();
+		
+		if (!((NETCoapNeedSendCode.WorkInfoWait > 0) || (NETMqttSNNeedSendCode.InfoWorkWait > 0) || (NETOneNETNeedSendCode.WorkInfoWait > 0))) {
+	#if PRODUCTTEST_READ_TYPE
+			if (ProductTest_Read()) {
+				/* NBIOT APP Task */
+				NET_NBIOT_App_Task();
+			}
+			else {
+				/* NBIOT Power OFF */
+				if (NBIOTPOWER_IO_READ()) {
+					NBIOT_Neul_NBxx_CheckReadIMEI(&NbiotClientHandler);
+					NET_NBIOT_Initialization();
+					NBIOTPOWER(OFF);
+				}
+				Radio_Trf_Printf("imei:%s", TCFG_Utility_Get_Nbiot_Imei_String());
+			}
+	#else
 			/* NBIOT APP Task */
 			NET_NBIOT_App_Task();
+	#endif
 		}
-		else {
-			/* NBIOT Power OFF */
-			if (NBIOTPOWER_IO_READ()) {
-				NBIOT_Neul_NBxx_CheckReadIMEI(&NbiotClientHandler);
-				NET_NBIOT_Initialization();
-				NBIOTPOWER(OFF);
-			}
-			Radio_Trf_Printf("imei:%s", TCFG_Utility_Get_Nbiot_Imei_String());
-		}
-#else
-		/* NBIOT APP Task */
-		NET_NBIOT_App_Task();
-#endif
+		
+		/* 小无线处理 */
+		Radio_Trf_App_Task();
 	}
-	
-	/* 小无线处理 */
-	Radio_Trf_App_Task();
 }
 
 /**********************************************************************************************************
@@ -329,23 +327,25 @@ void MainRollingUpwardsActived(void)
 **********************************************************************************************************/
 void MainRollingUpwardsSleep(void)
 {
-	/* 日常处理 */
-	MainHandleRoutine();
-	
-	if (TCFG_Utility_Get_Nbiot_IdleLifetime() > 0) {
-		/* NBIOT APP Task */
-		NET_NBIOT_App_Task();
-	}
-	else {
-		/* NBIOT Power OFF */
-		if (NBIOTPOWER_IO_READ()) {
-			NET_NBIOT_Initialization();
-			NBIOTPOWER(OFF);
+	if (Stm32_GetSecondTick() != SystemRunningTime.seconds) {
+		/* 日常处理 */
+		MainHandleRoutine();
+		
+		if (TCFG_Utility_Get_Nbiot_IdleLifetime() > 0) {
+			/* NBIOT APP Task */
+			NET_NBIOT_App_Task();
 		}
+		else {
+			/* NBIOT Power OFF */
+			if (NBIOTPOWER_IO_READ()) {
+				NET_NBIOT_Initialization();
+				NBIOTPOWER(OFF);
+			}
+		}
+		
+		/* 小无线处理 */
+		Radio_Trf_App_Task();
 	}
-	
-	/* 小无线处理 */
-	Radio_Trf_App_Task();
 }
 
 /* ============================================ 倒放处理 =============================================== */
@@ -358,7 +358,9 @@ void MainRollingUpwardsSleep(void)
 **********************************************************************************************************/
 void MainRollingEnteredDownSleep(void)
 {
+	Delay_MS(800);
 	BEEP_CtrlRepeat_Extend(1, 500, 0);
+	Delay_MS(500);
 }
 
 /**********************************************************************************************************
@@ -386,26 +388,28 @@ void MainRollingEnteredDownWork(void)
 **********************************************************************************************************/
 void MainRollingEnteredDownSleepKeepActived(void)
 {
-	/* 日常处理 */
-	MainHandleRoutine();
-	
-	if (!((NETCoapNeedSendCode.WorkInfoWait > 0) || (NETMqttSNNeedSendCode.InfoWorkWait > 0) || (NETOneNETNeedSendCode.WorkInfoWait > 0))) {
-#if PRODUCTTEST_READ_TYPE
-		if (ProductTest_Read()) {
+	if (Stm32_GetSecondTick() != SystemRunningTime.seconds) {
+		/* 日常处理 */
+		MainHandleRoutine();
+		
+		if (!((NETCoapNeedSendCode.WorkInfoWait > 0) || (NETMqttSNNeedSendCode.InfoWorkWait > 0) || (NETOneNETNeedSendCode.WorkInfoWait > 0))) {
+	#if PRODUCTTEST_READ_TYPE
+			if (ProductTest_Read()) {
+				/* NBIOT APP Task */
+				NET_NBIOT_App_Task();
+			}
+			else {
+				/* NBIOT Power OFF */
+				if (NBIOTPOWER_IO_READ()) {
+					NET_NBIOT_Initialization();
+					NBIOTPOWER(OFF);
+				}
+			}
+	#else
 			/* NBIOT APP Task */
 			NET_NBIOT_App_Task();
+	#endif
 		}
-		else {
-			/* NBIOT Power OFF */
-			if (NBIOTPOWER_IO_READ()) {
-				NET_NBIOT_Initialization();
-				NBIOTPOWER(OFF);
-			}
-		}
-#else
-		/* NBIOT APP Task */
-		NET_NBIOT_App_Task();
-#endif
 	}
 }
 

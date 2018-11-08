@@ -15,6 +15,7 @@
 
 #include "net_coap_message_operate.h"
 #include "inspectmessageoperate.h"
+#include "inspectflowmessageoperate.h"
 #include "platform_config.h"
 #include "platform_map.h"
 #include "stm32l1xx_config.h"

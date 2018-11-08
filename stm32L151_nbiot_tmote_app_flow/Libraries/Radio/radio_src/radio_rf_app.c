@@ -32,6 +32,8 @@
 #include <stdarg.h>
 
 #include "tmesh_algorithm.h"
+#include "inspectflowconfig.h"
+#include "inspectflowparameter.h"
 
 static int32_t cmdtime_pre = -180;
 char gateway_nearby = 10;
@@ -277,8 +279,7 @@ char Radio_Rf_Operate_Recvmsg(uint8_t *inmsg, uint8_t len)
 			}
 			/* 初始化传感器指令 */
 			else if (pPayload->head.type == TRF_MSG_INITBACKGROUND) {
-				Radar_InitBackground(TO_SAVE_RADAR_BACKGROUND);
-				QMC5883L_InitBackgroud();
+				Inspect_Flow_InitBackground();
 				#if RADIO_CMD_ECHO_TYPE
 				Radio_Trf_Printf("Init Sensor Background");
 				#endif
@@ -768,7 +769,7 @@ void Radio_Trf_Xmit_Heartbeat(void)
 		pHeartBeat->workmode	= NOTACTIVE_WORK;
 	}
 	/* 0=free, 1=occupy */
-	pHeartBeat->status			= talgo_get_spotstatus();
+	pHeartBeat->status			= INSPECT_FLOW_Para_ObtainCarFlowStatus();
 	/* 0=sending,1=sent */
 	pHeartBeat->nbstate			= TCFG_Utility_Get_Nbiot_NetStateIdentification();
 	
@@ -945,9 +946,8 @@ void Radio_Trf_Printf(const char *fmt, ...)
 void Radio_Trf_Printf_SensorBackground(void)
 {
 #ifdef	RADIO_SI4438
-	Radio_Trf_Printf("bbbbbxyz=%d,%d,%d,%d,%d,%d,%d,%d,", \
-	radar_targetinfo.pMagBG[2], radar_targetinfo.pMagBG[3], radar_targetinfo.pMagBG[4], radar_targetinfo.pMagBG[5], radar_targetinfo.pMagBG[6], \
-	Qmc5883lData.X_Now, Qmc5883lData.Y_Now, Qmc5883lData.Z_Now);
+	Radio_Trf_Printf("bbbbbxyz=%d,%d,%d,%d,%d,%d,%d,%d,", 0, 0, 0, 0, 0, \
+	INSPECT_FLOW_Para_ObtainMagnetismX(), INSPECT_FLOW_Para_ObtainMagnetismY(), INSPECT_FLOW_Para_ObtainMagnetismZ());
 #endif
 }
 

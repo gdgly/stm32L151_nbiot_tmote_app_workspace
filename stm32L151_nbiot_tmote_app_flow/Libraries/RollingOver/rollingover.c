@@ -21,6 +21,7 @@
 #include "radar_api.h"
 #include "radio_rf_app.h"
 #include "inspectconfig.h"
+#include "inspectflowconfig.h"
 #include "delay.h"
 #include "usart.h"
 #include "main.h"
@@ -236,10 +237,10 @@ void RollingOverCheckToInitSensorBackground(void)
 {
 	if (InitSensorBackgroundCntdown > 1) {
 		BEEP_CtrlRepeat_Extend(6, 75, 150);
+		Delay_MS(700);
 	}
 	else if (InitSensorBackgroundCntdown > 0) {
-		Radar_InitBackground(TO_SAVE_RADAR_BACKGROUND);
-		QMC5883L_InitBackgroud();
+		Inspect_Flow_InitBackground();
 		Radio_Trf_Printf("Init Sensor Background");
 		BEEP_CtrlRepeat_Extend(1, 800, 0);
 	}
