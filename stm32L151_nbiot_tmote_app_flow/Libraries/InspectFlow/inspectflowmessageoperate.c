@@ -83,6 +83,12 @@ void Inspect_Message_FlowStatusEnqueue(FlowStatusTypeDef dataBuf)
 	InspectFlowStatus.FlowStatus[InspectFlowStatus.Rear].magnetismBackZ			= dataBuf.magnetismBackZ;
 	InspectFlowStatus.FlowStatus[InspectFlowStatus.Rear].magnetismDiff			= dataBuf.magnetismDiff;
 	
+	InspectFlowStatus.FlowStatus[InspectFlowStatus.Rear].detectMode				= dataBuf.detectMode;
+	InspectFlowStatus.FlowStatus[InspectFlowStatus.Rear].carinThreshhold			= dataBuf.carinThreshhold;
+	InspectFlowStatus.FlowStatus[InspectFlowStatus.Rear].caroutThreshhold			= dataBuf.caroutThreshhold;
+	InspectFlowStatus.FlowStatus[InspectFlowStatus.Rear].recalibrationOvertime		= dataBuf.recalibrationOvertime;
+	InspectFlowStatus.FlowStatus[InspectFlowStatus.Rear].waitSendHeartbeatMin		= dataBuf.waitSendHeartbeatMin;
+	
 	InspectFlowStatus.FlowStatus[InspectFlowStatus.Rear].timeCounter				= dataBuf.timeCounter;
 	InspectFlowStatus.FlowStatus[InspectFlowStatus.Rear].unixTime				= dataBuf.unixTime;
 	
@@ -109,19 +115,25 @@ bool Inspect_Message_FlowStatusDequeue(FlowStatusTypeDef* dataBuf)
 	else {																								//队列未空
 		front = (InspectFlowStatus.Front + 1) % INSPECT_FLOW_STATUS_PACK_NUM;											//队头偏移1
 		
-		dataBuf->FlowState			= InspectFlowStatus.FlowStatus[front].FlowState;
-		dataBuf->FlowCount			= InspectFlowStatus.FlowStatus[front].FlowCount;
+		dataBuf->FlowState				= InspectFlowStatus.FlowStatus[front].FlowState;
+		dataBuf->FlowCount				= InspectFlowStatus.FlowStatus[front].FlowCount;
 		
-		dataBuf->magnetismX			= InspectFlowStatus.FlowStatus[front].magnetismX;
-		dataBuf->magnetismY			= InspectFlowStatus.FlowStatus[front].magnetismY;
-		dataBuf->magnetismZ			= InspectFlowStatus.FlowStatus[front].magnetismZ;
-		dataBuf->magnetismBackX		= InspectFlowStatus.FlowStatus[front].magnetismBackX;
-		dataBuf->magnetismBackY		= InspectFlowStatus.FlowStatus[front].magnetismBackY;
-		dataBuf->magnetismBackZ		= InspectFlowStatus.FlowStatus[front].magnetismBackZ;
-		dataBuf->magnetismDiff		= InspectFlowStatus.FlowStatus[front].magnetismDiff;
+		dataBuf->magnetismX				= InspectFlowStatus.FlowStatus[front].magnetismX;
+		dataBuf->magnetismY				= InspectFlowStatus.FlowStatus[front].magnetismY;
+		dataBuf->magnetismZ				= InspectFlowStatus.FlowStatus[front].magnetismZ;
+		dataBuf->magnetismBackX			= InspectFlowStatus.FlowStatus[front].magnetismBackX;
+		dataBuf->magnetismBackY			= InspectFlowStatus.FlowStatus[front].magnetismBackY;
+		dataBuf->magnetismBackZ			= InspectFlowStatus.FlowStatus[front].magnetismBackZ;
+		dataBuf->magnetismDiff			= InspectFlowStatus.FlowStatus[front].magnetismDiff;
 		
-		dataBuf->timeCounter		= InspectFlowStatus.FlowStatus[front].timeCounter;
-		dataBuf->unixTime			= InspectFlowStatus.FlowStatus[front].unixTime;
+		dataBuf->detectMode				= InspectFlowStatus.FlowStatus[front].detectMode;
+		dataBuf->carinThreshhold			= InspectFlowStatus.FlowStatus[front].carinThreshhold;
+		dataBuf->caroutThreshhold		= InspectFlowStatus.FlowStatus[front].caroutThreshhold;
+		dataBuf->recalibrationOvertime	= InspectFlowStatus.FlowStatus[front].recalibrationOvertime;
+		dataBuf->waitSendHeartbeatMin		= InspectFlowStatus.FlowStatus[front].waitSendHeartbeatMin;
+		
+		dataBuf->timeCounter			= InspectFlowStatus.FlowStatus[front].timeCounter;
+		dataBuf->unixTime				= InspectFlowStatus.FlowStatus[front].unixTime;
 		
 		MessageState = true;
 	}
@@ -137,19 +149,25 @@ bool Inspect_Message_FlowStatusDequeue(FlowStatusTypeDef* dataBuf)
 **********************************************************************************************************/
 void Inspect_Message_FlowStatusDequeueEx(FlowStatusTypeDef* dataBuf)
 {
-	dataBuf->FlowState			= InspectFlowStatus.FlowStatus[InspectFlowStatus.Rear].FlowState;
-	dataBuf->FlowCount			= InspectFlowStatus.FlowStatus[InspectFlowStatus.Rear].FlowCount;
+	dataBuf->FlowState					= InspectFlowStatus.FlowStatus[InspectFlowStatus.Rear].FlowState;
+	dataBuf->FlowCount					= InspectFlowStatus.FlowStatus[InspectFlowStatus.Rear].FlowCount;
 	
-	dataBuf->magnetismX			= InspectFlowStatus.FlowStatus[InspectFlowStatus.Rear].magnetismX;
-	dataBuf->magnetismY			= InspectFlowStatus.FlowStatus[InspectFlowStatus.Rear].magnetismY;
-	dataBuf->magnetismZ			= InspectFlowStatus.FlowStatus[InspectFlowStatus.Rear].magnetismZ;
-	dataBuf->magnetismBackX		= InspectFlowStatus.FlowStatus[InspectFlowStatus.Rear].magnetismBackX;
-	dataBuf->magnetismBackY		= InspectFlowStatus.FlowStatus[InspectFlowStatus.Rear].magnetismBackY;
-	dataBuf->magnetismBackZ		= InspectFlowStatus.FlowStatus[InspectFlowStatus.Rear].magnetismBackZ;
-	dataBuf->magnetismDiff		= InspectFlowStatus.FlowStatus[InspectFlowStatus.Rear].magnetismDiff;
+	dataBuf->magnetismX					= InspectFlowStatus.FlowStatus[InspectFlowStatus.Rear].magnetismX;
+	dataBuf->magnetismY					= InspectFlowStatus.FlowStatus[InspectFlowStatus.Rear].magnetismY;
+	dataBuf->magnetismZ					= InspectFlowStatus.FlowStatus[InspectFlowStatus.Rear].magnetismZ;
+	dataBuf->magnetismBackX				= InspectFlowStatus.FlowStatus[InspectFlowStatus.Rear].magnetismBackX;
+	dataBuf->magnetismBackY				= InspectFlowStatus.FlowStatus[InspectFlowStatus.Rear].magnetismBackY;
+	dataBuf->magnetismBackZ				= InspectFlowStatus.FlowStatus[InspectFlowStatus.Rear].magnetismBackZ;
+	dataBuf->magnetismDiff				= InspectFlowStatus.FlowStatus[InspectFlowStatus.Rear].magnetismDiff;
 	
-	dataBuf->timeCounter		= InspectFlowStatus.FlowStatus[InspectFlowStatus.Rear].timeCounter;
-	dataBuf->unixTime			= InspectFlowStatus.FlowStatus[InspectFlowStatus.Rear].unixTime;
+	dataBuf->detectMode					= InspectFlowStatus.FlowStatus[InspectFlowStatus.Rear].detectMode;
+	dataBuf->carinThreshhold				= InspectFlowStatus.FlowStatus[InspectFlowStatus.Rear].carinThreshhold;
+	dataBuf->caroutThreshhold			= InspectFlowStatus.FlowStatus[InspectFlowStatus.Rear].caroutThreshhold;
+	dataBuf->recalibrationOvertime		= InspectFlowStatus.FlowStatus[InspectFlowStatus.Rear].recalibrationOvertime;
+	dataBuf->waitSendHeartbeatMin			= InspectFlowStatus.FlowStatus[InspectFlowStatus.Rear].waitSendHeartbeatMin;
+	
+	dataBuf->timeCounter				= InspectFlowStatus.FlowStatus[InspectFlowStatus.Rear].timeCounter;
+	dataBuf->unixTime					= InspectFlowStatus.FlowStatus[InspectFlowStatus.Rear].unixTime;
 }
 
 /**********************************************************************************************************

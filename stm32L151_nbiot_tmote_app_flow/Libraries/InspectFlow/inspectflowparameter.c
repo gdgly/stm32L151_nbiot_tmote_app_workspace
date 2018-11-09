@@ -263,6 +263,72 @@ bool INSPECT_FLOW_Para_GetQmc5883lRunFail(void)
 	return InspectFlowClientHandler.qmc5883lRunFail;
 }
 
+/**********************************************************************************************************
+ @Function			void INSPECT_FLOW_Para_SetSavedSensitivity(unsigned char Sens)
+ @Description			INSPECT_FLOW_Para_SetSavedSensitivity			: 设置Sens传感器灵敏度
+ @Input				Sens
+ @Return				void
+**********************************************************************************************************/
+void INSPECT_FLOW_Para_SetSavedSensitivity(unsigned char Sens)
+{
+	switch (Sens)
+	{
+	case SENSE_HIGHEST:
+		TCFG_SystemData.FlowCarinThresh = INSPECT_FLOW_CARIN_THRESH_HIGHEST;
+		TCFG_EEPROM_SetFlowCarinThresh(TCFG_SystemData.FlowCarinThresh);
+		TCFG_SystemData.FlowCaroutThresh = INSPECT_FLOW_CAROUT_THRESH_HIGHEST;
+		TCFG_EEPROM_SetFlowCaroutThresh(TCFG_SystemData.FlowCaroutThresh);
+		INSPECT_FLOW_Para_SetCarinThreshhold(INSPECT_FLOW_CARIN_THRESH_HIGHEST);
+		INSPECT_FLOW_Para_SetCaroutThreshhold(INSPECT_FLOW_CAROUT_THRESH_HIGHEST);
+		break;
+	
+	case SENSE_HIGH:
+		TCFG_SystemData.FlowCarinThresh = INSPECT_FLOW_CARIN_THRESH_HIGH;
+		TCFG_EEPROM_SetFlowCarinThresh(TCFG_SystemData.FlowCarinThresh);
+		TCFG_SystemData.FlowCaroutThresh = INSPECT_FLOW_CAROUT_THRESH_HIGH;
+		TCFG_EEPROM_SetFlowCaroutThresh(TCFG_SystemData.FlowCaroutThresh);
+		INSPECT_FLOW_Para_SetCarinThreshhold(INSPECT_FLOW_CARIN_THRESH_HIGH);
+		INSPECT_FLOW_Para_SetCaroutThreshhold(INSPECT_FLOW_CAROUT_THRESH_HIGH);
+		break;
+	
+	case SENSE_MIDDLE:
+		TCFG_SystemData.FlowCarinThresh = INSPECT_FLOW_CARIN_THRESH_MIDDLE;
+		TCFG_EEPROM_SetFlowCarinThresh(TCFG_SystemData.FlowCarinThresh);
+		TCFG_SystemData.FlowCaroutThresh = INSPECT_FLOW_CAROUT_THRESH_MIDDLE;
+		TCFG_EEPROM_SetFlowCaroutThresh(TCFG_SystemData.FlowCaroutThresh);
+		INSPECT_FLOW_Para_SetCarinThreshhold(INSPECT_FLOW_CARIN_THRESH_MIDDLE);
+		INSPECT_FLOW_Para_SetCaroutThreshhold(INSPECT_FLOW_CAROUT_THRESH_MIDDLE);
+		break;
+	
+	case SENSE_LOW:
+		TCFG_SystemData.FlowCarinThresh = INSPECT_FLOW_CARIN_THRESH_LOW;
+		TCFG_EEPROM_SetFlowCarinThresh(TCFG_SystemData.FlowCarinThresh);
+		TCFG_SystemData.FlowCaroutThresh = INSPECT_FLOW_CAROUT_THRESH_LOW;
+		TCFG_EEPROM_SetFlowCaroutThresh(TCFG_SystemData.FlowCaroutThresh);
+		INSPECT_FLOW_Para_SetCarinThreshhold(INSPECT_FLOW_CARIN_THRESH_LOW);
+		INSPECT_FLOW_Para_SetCaroutThreshhold(INSPECT_FLOW_CAROUT_THRESH_LOW);
+		break;
+	
+	case SENSE_LOWEST:
+		TCFG_SystemData.FlowCarinThresh = INSPECT_FLOW_CARIN_THRESH_LOWEST;
+		TCFG_EEPROM_SetFlowCarinThresh(TCFG_SystemData.FlowCarinThresh);
+		TCFG_SystemData.FlowCaroutThresh = INSPECT_FLOW_CAROUT_THRESH_LOWEST;
+		TCFG_EEPROM_SetFlowCaroutThresh(TCFG_SystemData.FlowCaroutThresh);
+		INSPECT_FLOW_Para_SetCarinThreshhold(INSPECT_FLOW_CARIN_THRESH_LOWEST);
+		INSPECT_FLOW_Para_SetCaroutThreshhold(INSPECT_FLOW_CAROUT_THRESH_LOWEST);
+		break;
+	
+	default:
+		TCFG_SystemData.FlowCarinThresh = INSPECT_FLOW_CARIN_THRESH_MIDDLE;
+		TCFG_EEPROM_SetFlowCarinThresh(TCFG_SystemData.FlowCarinThresh);
+		TCFG_SystemData.FlowCaroutThresh = INSPECT_FLOW_CAROUT_THRESH_MIDDLE;
+		TCFG_EEPROM_SetFlowCaroutThresh(TCFG_SystemData.FlowCaroutThresh);
+		INSPECT_FLOW_Para_SetCarinThreshhold(INSPECT_FLOW_CARIN_THRESH_MIDDLE);
+		INSPECT_FLOW_Para_SetCaroutThreshhold(INSPECT_FLOW_CAROUT_THRESH_MIDDLE);
+		break;
+	}
+}
+
 
 /**********************************************************************************************************
  @Function			unsigned int INSPECT_FLOW_Para_ObtainMagnetismScanCnt(void)

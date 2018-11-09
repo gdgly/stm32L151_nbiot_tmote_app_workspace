@@ -21,6 +21,12 @@ typedef __packed struct
 	
 	unsigned short int					magnetismDiff;
 	
+	unsigned char						detectMode;
+	unsigned char						carinThreshhold;
+	unsigned char						caroutThreshhold;
+	unsigned char						recalibrationOvertime;
+	unsigned int						waitSendHeartbeatMin;
+	
 	unsigned int						timeCounter;
 	unsigned int						unixTime;
 }FlowStatusTypeDef;

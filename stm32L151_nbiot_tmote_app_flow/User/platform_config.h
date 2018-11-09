@@ -73,7 +73,7 @@
 
 #define	RADIO_CMD_ECHO_DISABLE			0
 #define	RADIO_CMD_ECHO_ENABLE			1
-#define	RADIO_CMD_ECHO_TYPE				RADIO_CMD_ECHO_DISABLE				//无线命令回显
+#define	RADIO_CMD_ECHO_TYPE				RADIO_CMD_ECHO_ENABLE				//无线命令回显
 
 #define	DEVICE_BOOT_START_MAGINIT_DISABLE	0
 #define	DEVICE_BOOT_START_MAGINIT_ENABLE	1
@@ -110,6 +110,7 @@
 #define	RADIO_PRINT_WORKINFO			1								//无线输出Workinfo
 #define	RADIO_PRINT_NETINFO				1								//无线输出NetInfo
 #define	RADIO_PRINT_DEVINFO				1								//无线输出DeviceInfo
+#define	RADIO_PRINT_FLOWINFO			1								//无线输出FlowInfo
 #define	RADIO_PRINT_UPGRADEINFO			1								//无线输出UpgradeInfo
 
 #define	RADIO_CMD_UPLOAD_WORKINFO		1								//无线命令主动上报WorkInfo
@@ -155,6 +156,12 @@
 #define	RADIO_DOWNLOAD_CMD_UPLIMIT		1								//RADIO下行指令UpLimit
 #define	RADIO_DOWNLOAD_CMD_RFDPRINTLV		1								//RADIO下行指令RFDprintLv
 #define	RADIO_DOWNLOAD_CMD_RESTORE		1								//RADIO下行指令Restore
+#define	RADIO_DOWNLOAD_CMD_CARIN			1								//RADIO下行指令Carin
+#define	RADIO_DOWNLOAD_CMD_CAROUT		1								//RADIO下行指令Carout
+#define	RADIO_DOWNLOAD_CMD_DETECTMODE		1								//RADIO下行指令DetectMode
+#define	RADIO_DOWNLOAD_CMD_RECALOVERNUM	1								//RADIO下行指令RecalOvernum
+#define	RADIO_DOWNLOAD_CMD_RECALOVERTIME	1								//RADIO下行指令RecalOvertime
+#define	RADIO_DOWNLOAD_CMD_WAITHEARTMIN	1								//RADIO下行指令WaitHeart
 
 #define	NBCOAP_DOWNLOAD_CMD_WORKMODE		1								//NBCOAP下行指令Workmode
 #define	NBCOAP_DOWNLOAD_CMD_SENSE		1								//NBCOAP下行指令Sense
@@ -418,6 +425,7 @@ extern NBIOT_NBandTypeDef				DNSNBIoTBandType;					//DNS NBIoT Band
 void RadioPrintWorkinfo(void);											//Radio Print WorkInfo
 void RadioPrintNetinfo(void);												//Radio Print NetInfo
 void RadioPrintDeviceinfo(void);											//Radio Print DeviceInfo
+void RadioPrintFlowinfo(void);											//Radio Print FlowInfo
 void RadioPrintUpgradeinfo(void);											//Radio Print UpgradeInfo
 
 #endif

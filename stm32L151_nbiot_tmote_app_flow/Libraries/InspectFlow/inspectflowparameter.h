@@ -31,6 +31,8 @@ bool			INSPECT_FLOW_Para_GetQmc5883lDataReady(void);									//读取qmc5883lDat
 void			INSPECT_FLOW_Para_SetQmc5883lRunFail(bool qmc5883lRunFail);							//设置qmc5883lRunFail运行异常标志位
 bool			INSPECT_FLOW_Para_GetQmc5883lRunFail(void);										//读取qmc5883lRunFaily运行异常标志位
 
+void			INSPECT_FLOW_Para_SetSavedSensitivity(unsigned char Sens);							//设置Sens传感器灵敏度
+
 unsigned int	INSPECT_FLOW_Para_ObtainMagnetismScanCnt(void);									//获取MagnetismScanCnt地磁扫描次数
 unsigned char	INSPECT_FLOW_Para_ObtainCarFlowStatus(void);										//获取CarFlowStatus车辆状态值
 unsigned short	INSPECT_FLOW_Para_ObtainCarFlowNumber(void);										//获取CarFlowNumber车辆数

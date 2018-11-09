@@ -240,13 +240,15 @@ char Radio_Rf_Operate_Recvmsg(uint8_t *inmsg, uint8_t len)
 				TCFG_SystemData.Sensitivity = ((tmote_sensitivity_s*)CFG_P_FRAME_PAYLOAD(inmsg))->sensitivity;
 				if ((TCFG_SystemData.Sensitivity > SENSE_LOWEST) || (TCFG_SystemData.Sensitivity < SENSE_HIGHEST)) {
 					TCFG_SystemData.Sensitivity = SENSE_MIDDLE;
-					TCFG_EEPROM_SetSavedSensitivity(TCFG_SystemData.Sensitivity);
+					INSPECT_FLOW_Para_SetSavedSensitivity(TCFG_SystemData.Sensitivity);
 				}
 				else {
-					TCFG_EEPROM_SetSavedSensitivity(TCFG_SystemData.Sensitivity);
+					INSPECT_FLOW_Para_SetSavedSensitivity(TCFG_SystemData.Sensitivity);
 				}
 				#if RADIO_CMD_ECHO_TYPE
-				Radio_Trf_Printf("Inspect Spot Sensitivity : %hu", TCFG_EEPROM_GetSavedSensitivity());
+				Radio_Trf_Printf("Inspect Flow Sensitivity : %hu", TCFG_EEPROM_GetSavedSensitivity());
+				Radio_Trf_Printf("CarinThreshhold:%d", INSPECT_FLOW_Para_GetCarinThreshhold());
+				Radio_Trf_Printf("CaroutThreshhold:%d", INSPECT_FLOW_Para_GetCaroutThreshhold());
 				#endif
 			}
 			/* 工作模式配置指令 */
@@ -482,6 +484,78 @@ char Radio_Rf_Operate_Recvmsg(uint8_t *inmsg, uint8_t len)
 				#endif
 			#endif
 				}
+				/* Carin */
+				else if (strstr(((tmote_general_cmd_s*)CFG_P_FRAME_PAYLOAD(inmsg))->buf, "carin")) {
+			#if RADIO_DOWNLOAD_CMD_CARIN
+					sscanf(((tmote_general_cmd_s*)CFG_P_FRAME_PAYLOAD(inmsg))->buf, "carin:%hd", &uval16);
+					TCFG_SystemData.FlowCarinThresh = uval16;
+					TCFG_EEPROM_SetFlowCarinThresh(TCFG_SystemData.FlowCarinThresh);
+					INSPECT_FLOW_Para_SetCarinThreshhold(TCFG_SystemData.FlowCarinThresh);
+				#if RADIO_CMD_ECHO_TYPE
+					Radio_Trf_Printf("CarinThreshhold:%d", INSPECT_FLOW_Para_GetCarinThreshhold());
+				#endif
+			#endif
+				}
+				/* Carout */
+				else if (strstr(((tmote_general_cmd_s*)CFG_P_FRAME_PAYLOAD(inmsg))->buf, "carout")) {
+			#if RADIO_DOWNLOAD_CMD_CAROUT
+					sscanf(((tmote_general_cmd_s*)CFG_P_FRAME_PAYLOAD(inmsg))->buf, "carout:%hd", &uval16);
+					TCFG_SystemData.FlowCaroutThresh = uval16;
+					TCFG_EEPROM_SetFlowCaroutThresh(TCFG_SystemData.FlowCaroutThresh);
+					INSPECT_FLOW_Para_SetCaroutThreshhold(TCFG_SystemData.FlowCaroutThresh);
+				#if RADIO_CMD_ECHO_TYPE
+					Radio_Trf_Printf("CaroutThreshhold:%d", INSPECT_FLOW_Para_GetCaroutThreshhold());
+				#endif
+			#endif
+				}
+				/* DetectMode */
+				else if (strstr(((tmote_general_cmd_s*)CFG_P_FRAME_PAYLOAD(inmsg))->buf, "detectmode")) {
+			#if RADIO_DOWNLOAD_CMD_DETECTMODE
+					sscanf(((tmote_general_cmd_s*)CFG_P_FRAME_PAYLOAD(inmsg))->buf, "detectmode:%hd", &uval16);
+					TCFG_SystemData.FlowDetectMode = uval16;
+					TCFG_EEPROM_SetFlowDetectMode(TCFG_SystemData.FlowDetectMode);
+					INSPECT_FLOW_Para_SetDetectMode(TCFG_SystemData.FlowDetectMode);
+				#if RADIO_CMD_ECHO_TYPE
+					Radio_Trf_Printf("DetectMode:%d", INSPECT_FLOW_Para_GetDetectMode());
+				#endif
+			#endif
+				}
+				/* RecalOvernum */
+				else if (strstr(((tmote_general_cmd_s*)CFG_P_FRAME_PAYLOAD(inmsg))->buf, "recalnum")) {
+			#if RADIO_DOWNLOAD_CMD_RECALOVERNUM
+					sscanf(((tmote_general_cmd_s*)CFG_P_FRAME_PAYLOAD(inmsg))->buf, "recalnum:%hd", &uval16);
+					TCFG_SystemData.FlowRecalNum = uval16;
+					TCFG_EEPROM_SetFlowRecalNum(TCFG_SystemData.FlowRecalNum);
+					INSPECT_FLOW_Para_SetRecalibrationOvernum(TCFG_SystemData.FlowRecalNum);
+				#if RADIO_CMD_ECHO_TYPE
+					Radio_Trf_Printf("RecalOvernum:%d", INSPECT_FLOW_Para_GetRecalibrationOvernum());
+				#endif
+			#endif
+				}
+				/* RecalOvertime */
+				else if (strstr(((tmote_general_cmd_s*)CFG_P_FRAME_PAYLOAD(inmsg))->buf, "recaltime")) {
+			#if RADIO_DOWNLOAD_CMD_RECALOVERTIME
+					sscanf(((tmote_general_cmd_s*)CFG_P_FRAME_PAYLOAD(inmsg))->buf, "recaltime:%hd", &uval16);
+					TCFG_SystemData.FlowRecalTime = uval16;
+					TCFG_EEPROM_SetFlowRecalTime(TCFG_SystemData.FlowRecalTime);
+					INSPECT_FLOW_Para_SetRecalibrationOvertime(TCFG_SystemData.FlowRecalTime);
+				#if RADIO_CMD_ECHO_TYPE
+					Radio_Trf_Printf("RecalOvertime:%d", INSPECT_FLOW_Para_GetRecalibrationOvertime());
+				#endif
+			#endif
+				}
+				/* WaitHeart */
+				else if (strstr(((tmote_general_cmd_s*)CFG_P_FRAME_PAYLOAD(inmsg))->buf, "waitheart")) {
+			#if RADIO_DOWNLOAD_CMD_WAITHEARTMIN
+					sscanf(((tmote_general_cmd_s*)CFG_P_FRAME_PAYLOAD(inmsg))->buf, "waitheart:%hd", &uval16);
+					TCFG_SystemData.FlowWaitHeart = uval16;
+					TCFG_EEPROM_SetFlowWaitHeart(TCFG_SystemData.FlowWaitHeart);
+					INSPECT_FLOW_Para_SetWaitSendHeartbeatMin(TCFG_SystemData.FlowWaitHeart);
+				#if RADIO_CMD_ECHO_TYPE
+					Radio_Trf_Printf("WaitSendHeartMin:%d", INSPECT_FLOW_Para_GetWaitSendHeartbeatMin());
+				#endif
+			#endif
+				}
 				/* WorkInfo */
 				else if (strstr(((tmote_general_cmd_s*)CFG_P_FRAME_PAYLOAD(inmsg))->buf, "workinfo")) {
 			#if RADIO_CMD_UPLOAD_WORKINFO
@@ -537,6 +611,12 @@ char Radio_Rf_Operate_Recvmsg(uint8_t *inmsg, uint8_t len)
 				else if (strstr(((tmote_general_cmd_s*)CFG_P_FRAME_PAYLOAD(inmsg))->buf, "devinfo")) {
 			#if RADIO_PRINT_DEVINFO
 					RadioPrintDeviceinfo();
+			#endif
+				}
+				/* FlowInfo */
+				else if (strstr(((tmote_general_cmd_s*)CFG_P_FRAME_PAYLOAD(inmsg))->buf, "flowinfo")) {
+			#if RADIO_PRINT_FLOWINFO
+					RadioPrintFlowinfo();
 			#endif
 				}
 				/* UpgradeInfo */

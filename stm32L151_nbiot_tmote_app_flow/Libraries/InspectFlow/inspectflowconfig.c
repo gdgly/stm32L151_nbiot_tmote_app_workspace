@@ -114,6 +114,12 @@ void Inspect_Flow_ExistenceDetect(void)
 				FlowStatusData.magnetismBackZ			= INSPECT_FLOW_Para_ObtainMagnetismBackZ();
 				FlowStatusData.magnetismDiff			= INSPECT_FLOW_Para_ObtainMagnetismDiff();
 				
+				FlowStatusData.detectMode			= INSPECT_FLOW_Para_GetDetectMode();
+				FlowStatusData.carinThreshhold		= INSPECT_FLOW_Para_GetCarinThreshhold();
+				FlowStatusData.caroutThreshhold		= INSPECT_FLOW_Para_GetCaroutThreshhold();
+				FlowStatusData.recalibrationOvertime	= INSPECT_FLOW_Para_GetRecalibrationOvertime();
+				FlowStatusData.waitSendHeartbeatMin	= INSPECT_FLOW_Para_GetWaitSendHeartbeatMin();
+				
 				FlowStatusData.timeCounter			= Stm32_GetSecondTick();
 				FlowStatusData.unixTime				= RTC_GetUnixTimeToStamp();
 				
@@ -135,6 +141,12 @@ void Inspect_Flow_ExistenceDetect(void)
 				FlowStatusData.magnetismBackY			= INSPECT_FLOW_Para_ObtainMagnetismBackY();
 				FlowStatusData.magnetismBackZ			= INSPECT_FLOW_Para_ObtainMagnetismBackZ();
 				FlowStatusData.magnetismDiff			= INSPECT_FLOW_Para_ObtainMagnetismDiff();
+				
+				FlowStatusData.detectMode			= INSPECT_FLOW_Para_GetDetectMode();
+				FlowStatusData.carinThreshhold		= INSPECT_FLOW_Para_GetCarinThreshhold();
+				FlowStatusData.caroutThreshhold		= INSPECT_FLOW_Para_GetCaroutThreshhold();
+				FlowStatusData.recalibrationOvertime	= INSPECT_FLOW_Para_GetRecalibrationOvertime();
+				FlowStatusData.waitSendHeartbeatMin	= INSPECT_FLOW_Para_GetWaitSendHeartbeatMin();
 				
 				FlowStatusData.timeCounter			= Stm32_GetSecondTick();
 				FlowStatusData.unixTime				= RTC_GetUnixTimeToStamp();
@@ -160,15 +172,21 @@ void Inspect_Flow_ExistenceDetect(void)
 			FlowStatusData.magnetismBackZ				= INSPECT_FLOW_Para_ObtainMagnetismBackZ();
 			FlowStatusData.magnetismDiff				= INSPECT_FLOW_Para_ObtainMagnetismDiff();
 			
+			FlowStatusData.detectMode				= INSPECT_FLOW_Para_GetDetectMode();
+			FlowStatusData.carinThreshhold			= INSPECT_FLOW_Para_GetCarinThreshhold();
+			FlowStatusData.caroutThreshhold			= INSPECT_FLOW_Para_GetCaroutThreshhold();
+			FlowStatusData.recalibrationOvertime		= INSPECT_FLOW_Para_GetRecalibrationOvertime();
+			FlowStatusData.waitSendHeartbeatMin		= INSPECT_FLOW_Para_GetWaitSendHeartbeatMin();
+			
 			FlowStatusData.timeCounter				= Stm32_GetSecondTick();
 			FlowStatusData.unixTime					= RTC_GetUnixTimeToStamp();
 			
 			Inspect_Message_FlowStatusEnqueue(FlowStatusData);
 			
-			sendFlowTime = Stm32_GetSecondTick();
-			snedHeartTime = Stm32_GetSecondTick();
 			carNumberCnt = FlowStatusData.FlowCount;
+			snedHeartTime = Stm32_GetSecondTick();
 		}
+		sendFlowTime = Stm32_GetSecondTick();
 	}
 	
 	/* 心跳数据包 */
@@ -185,10 +203,45 @@ void Inspect_Flow_ExistenceDetect(void)
 			FlowStatusData.magnetismBackZ				= INSPECT_FLOW_Para_ObtainMagnetismBackZ();
 			FlowStatusData.magnetismDiff				= INSPECT_FLOW_Para_ObtainMagnetismDiff();
 			
+			FlowStatusData.detectMode				= INSPECT_FLOW_Para_GetDetectMode();
+			FlowStatusData.carinThreshhold			= INSPECT_FLOW_Para_GetCarinThreshhold();
+			FlowStatusData.caroutThreshhold			= INSPECT_FLOW_Para_GetCaroutThreshhold();
+			FlowStatusData.recalibrationOvertime		= INSPECT_FLOW_Para_GetRecalibrationOvertime();
+			FlowStatusData.waitSendHeartbeatMin		= INSPECT_FLOW_Para_GetWaitSendHeartbeatMin();
+			
 			FlowStatusData.timeCounter				= Stm32_GetSecondTick();
 			
 			Inspect_Message_FlowStatusEnqueue(FlowStatusData);
 		}
+		snedHeartTime = Stm32_GetSecondTick();
+	}
+	
+	/* 上电心跳包 */
+	if (snedHeartTime == 0) {
+		FlowStatusData.FlowState					= INSPECT_FLOW_Para_ObtainCarFlowStatus() ? SPOT_CAR_OCCUPY : SPOT_CAR_FREE;
+		FlowStatusData.FlowState					|= 0x02;
+		FlowStatusData.FlowCount					= INSPECT_FLOW_Para_ObtainCarFlowNumber();
+		
+		FlowStatusData.magnetismX				= INSPECT_FLOW_Para_ObtainMagnetismX();
+		FlowStatusData.magnetismY				= INSPECT_FLOW_Para_ObtainMagnetismY();
+		FlowStatusData.magnetismZ				= INSPECT_FLOW_Para_ObtainMagnetismZ();
+		FlowStatusData.magnetismBackX				= INSPECT_FLOW_Para_ObtainMagnetismBackX();
+		FlowStatusData.magnetismBackY				= INSPECT_FLOW_Para_ObtainMagnetismBackY();
+		FlowStatusData.magnetismBackZ				= INSPECT_FLOW_Para_ObtainMagnetismBackZ();
+		FlowStatusData.magnetismDiff				= INSPECT_FLOW_Para_ObtainMagnetismDiff();
+		
+		FlowStatusData.detectMode				= INSPECT_FLOW_Para_GetDetectMode();
+		FlowStatusData.carinThreshhold			= INSPECT_FLOW_Para_GetCarinThreshhold();
+		FlowStatusData.caroutThreshhold			= INSPECT_FLOW_Para_GetCaroutThreshhold();
+		FlowStatusData.recalibrationOvertime		= INSPECT_FLOW_Para_GetRecalibrationOvertime();
+		FlowStatusData.waitSendHeartbeatMin		= INSPECT_FLOW_Para_GetWaitSendHeartbeatMin();
+		
+		FlowStatusData.timeCounter				= Stm32_GetSecondTick();
+		FlowStatusData.unixTime					= RTC_GetUnixTimeToStamp();
+		
+		Inspect_Message_FlowStatusEnqueue(FlowStatusData);
+		
+		carNumberCnt = FlowStatusData.FlowCount;
 		snedHeartTime = Stm32_GetSecondTick();
 	}
 }

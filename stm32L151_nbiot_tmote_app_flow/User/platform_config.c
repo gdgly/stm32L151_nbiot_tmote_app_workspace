@@ -19,6 +19,10 @@
 #include "radio_rf_app.h"
 #include "radio_hal_rf.h"
 #include "pcpupgrade.h"
+#include "inspectflowconfig.h"
+#include "inspectflowfunc.h"
+#include "inspectflowparameter.h"
+#include "inspectflowmessageoperate.h"
 
 bool BootUp					= true;									//BootUp
 
@@ -215,6 +219,31 @@ void RadioPrintDeviceinfo(void)
 	Radio_Trf_Printf("Nbboot:%d", TCFG_Utility_Get_Nbiot_BootCount());
 	Radio_Trf_Printf("Nbsent:%d", TCFG_Utility_Get_Nbiot_SentCount());
 	Radio_Trf_Printf("Nbrecv:%d", TCFG_Utility_Get_Nbiot_RecvCount());
+}
+
+/**********************************************************************************************************
+ @Function			void RadioPrintFlowinfo(void)
+ @Description			RadioPrintFlowinfo
+ @Input				void
+ @Return				void
+**********************************************************************************************************/
+void RadioPrintFlowinfo(void)
+{
+	Radio_Trf_Printf("FlowInspectInfo:");
+	
+	Radio_Trf_Printf("CarFlowStatus:%d", INSPECT_FLOW_Para_ObtainCarFlowStatus());
+	Radio_Trf_Printf("CarFlowNumber:%d", INSPECT_FLOW_Para_ObtainCarFlowNumber());
+	Radio_Trf_Printf("DetectMode:%d", INSPECT_FLOW_Para_GetDetectMode());
+	Radio_Trf_Printf("MagMeasureFreq:%d", INSPECT_FLOW_Para_GetMagMeasureFreq());
+	Radio_Trf_Printf("CarinThreshhold:%d", INSPECT_FLOW_Para_GetCarinThreshhold());
+	Radio_Trf_Printf("CaroutThreshhold:%d", INSPECT_FLOW_Para_GetCaroutThreshhold());
+	Radio_Trf_Printf("RecalOvernum:%d", INSPECT_FLOW_Para_GetRecalibrationOvernum());
+	Radio_Trf_Printf("RecalOvertime:%d", INSPECT_FLOW_Para_GetRecalibrationOvertime());
+	Radio_Trf_Printf("WaitSendHeartMin:%d", INSPECT_FLOW_Para_GetWaitSendHeartbeatMin());
+	Radio_Trf_Printf("MagnetismScanCnt:%d", INSPECT_FLOW_Para_ObtainMagnetismScanCnt());
+	Radio_Trf_Printf("MagnetismBackX:%d", INSPECT_FLOW_Para_ObtainMagnetismBackX());
+	Radio_Trf_Printf("MagnetismBackY:%d", INSPECT_FLOW_Para_ObtainMagnetismBackY());
+	Radio_Trf_Printf("MagnetismBackZ:%d", INSPECT_FLOW_Para_ObtainMagnetismBackZ());
 }
 
 /**********************************************************************************************************

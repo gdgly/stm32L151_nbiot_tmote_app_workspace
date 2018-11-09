@@ -193,10 +193,10 @@ void NET_NBIOT_DataProcessing(NET_NBIOT_ClientsTypeDef* pClient)
 		CoapLongStructure.MagneticY						= FlowStatusData.magnetismY;
 		CoapLongStructure.MagneticZ						= FlowStatusData.magnetismZ;
 		CoapLongStructure.MagneticDiff					= FlowStatusData.magnetismDiff;
-		CoapLongStructure.RadarDistance					= 0;
-		CoapLongStructure.RadarStrength					= 0;
-		CoapLongStructure.RadarCoverCount					= 0;
-		CoapLongStructure.RadarDiff						= 0;
+		CoapLongStructure.RadarDistance					= FlowStatusData.carinThreshhold;
+		CoapLongStructure.RadarStrength					= FlowStatusData.caroutThreshhold;
+		CoapLongStructure.RadarCoverCount					= FlowStatusData.recalibrationOvertime;
+		CoapLongStructure.RadarDiff						= FlowStatusData.detectMode;
 #if NBIOT_STATUS_MSG_VERSION_TYPE == NBIOT_STATUS_MSG_VERSION_77BYTE_V2
 		CoapLongStructure.NBRssi							= TCFG_Utility_Get_Nbiot_Rssi_IntVal();
 		CoapLongStructure.NBSnr							= TCFG_Utility_Get_Nbiot_RadioSNR();
@@ -205,7 +205,7 @@ void NET_NBIOT_DataProcessing(NET_NBIOT_ClientsTypeDef* pClient)
 		CoapLongStructure.MagneticBackX					= FlowStatusData.magnetismBackX;
 		CoapLongStructure.MagneticBackY					= FlowStatusData.magnetismBackY;
 		CoapLongStructure.MagneticBackZ					= FlowStatusData.magnetismBackZ;
-		CoapLongStructure.Debugval						= 0;
+		CoapLongStructure.Debugval						= FlowStatusData.waitSendHeartbeatMin;
 		for (int i = 0; i < 16; i++) {
 			CoapLongStructure.Radarval[i] = 0;
 			CoapLongStructure.Radarback[i] = 0;
