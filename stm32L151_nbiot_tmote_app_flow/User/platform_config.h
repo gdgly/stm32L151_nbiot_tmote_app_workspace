@@ -182,6 +182,12 @@
 #define	NBCOAP_DOWNLOAD_CMD_SETQMCCOEF	1								//NBCOAP下行指令SetQmcCoef
 #define	NBCOAP_DOWNLOAD_CMD_BEEPOFF		1								//NBCOAP下行指令BeepOff
 #define	NBCOAP_DOWNLOAD_CMD_UPLIMIT		1								//NBCOAP下行指令UpLimit
+#define	NBCOAP_DOWNLOAD_CMD_CARIN		1								//NBCOAP下行指令Carin
+#define	NBCOAP_DOWNLOAD_CMD_CAROUT		1								//NBCOAP下行指令Carout
+#define	NBCOAP_DOWNLOAD_CMD_DETECTMODE	1								//NBCOAP下行指令DetectMode
+#define	NBCOAP_DOWNLOAD_CMD_RECALOVERNUM	1								//NBCOAP下行指令RecalOvernum
+#define	NBCOAP_DOWNLOAD_CMD_RECALOVERTIME	1								//NBCOAP下行指令RecalOvertime
+#define	NBCOAP_DOWNLOAD_CMD_WAITHEARTMIN	1								//NBCOAP下行指令WaitHeart
 
 #define	MQTTSN_DOWNLOAD_CMD_WORKMODE		1								//MQTTSN下行指令Workmode
 #define	MQTTSN_DOWNLOAD_CMD_SENSE		1								//MQTTSN下行指令Sense
