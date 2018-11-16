@@ -355,10 +355,10 @@ void NET_NBIOT_DataProcessing(NET_NBIOT_ClientsTypeDef* pClient)
 #if MQTTSN_MSG_VERSION_STREAM_TYPE == MQTTSN_MSG_VERSION_BYTE_STREAM
 	u32 len = 0;
 #endif
-	SpotStatusTypedef SpotStatusData;
+	FlowStatusTypeDef FlowStatusData;
 	
 	/* 检查是否有数据需要发送 */
-	if (Inspect_Message_SpotStatusisEmpty() == false) {
+	if (Inspect_Message_FlowStatusisEmpty() == false) {
 	#if NBMQTTSN_SENDCODE_STATUS_EXTEND
 		NETMqttSNNeedSendCode.StatusExtend = 1;
 	#endif
@@ -369,14 +369,14 @@ void NET_NBIOT_DataProcessing(NET_NBIOT_ClientsTypeDef* pClient)
 	/* MQTTSN STATUS BASIC DATA ENQUEUE */
 	if (NETMqttSNNeedSendCode.StatusBasic) {
 #if NBMQTTSN_SENDCODE_STATUS_BASIC
-		Inspect_Message_SpotStatusDequeue(&SpotStatusData);
+		Inspect_Message_FlowStatusDequeue(&FlowStatusData);
 		MqttSNStatusBasicStructure.DeviceSN				= TCFG_EEPROM_Get_MAC_SN();
-		MqttSNStatusBasicStructure.Status					= SpotStatusData.spot_status;
-		MqttSNStatusBasicStructure.Count					= SpotStatusData.spot_count;
-		MqttSNStatusBasicStructure.DateTime				= SpotStatusData.unixTime;
+		MqttSNStatusBasicStructure.Status					= FlowStatusData.FlowState;
+		MqttSNStatusBasicStructure.Count					= FlowStatusData.FlowCount;
+		MqttSNStatusBasicStructure.DateTime				= FlowStatusData.unixTime;
 		NET_MqttSN_Message_StatusBasicEnqueue(MqttSNStatusBasicStructure);
 		NETMqttSNNeedSendCode.StatusBasic = 0;
-		Inspect_Message_SpotStatusOffSet();
+		Inspect_Message_FlowStatusOffSet();
 		TCFG_Utility_Add_MqttSN_SentCount();
 	#if NBMQTTSN_LISTEN_PARAMETER_TYPE == NBMQTTSN_LISTEN_PARAMETER_ENABLE
 		MqttSNClientHandler.ListenRunCtl.ListenEnterParameter.listenEnable = true;
@@ -386,36 +386,36 @@ void NET_NBIOT_DataProcessing(NET_NBIOT_ClientsTypeDef* pClient)
 	/* MQTTSN STATUS EXTEND DATA ENQUEUE */
 	else if (NETMqttSNNeedSendCode.StatusExtend) {
 #if NBMQTTSN_SENDCODE_STATUS_EXTEND
-		Inspect_Message_SpotStatusDequeue(&SpotStatusData);
+		Inspect_Message_FlowStatusDequeue(&FlowStatusData);
 		MqttSNStatusExtendStructure.DeviceSN				= TCFG_EEPROM_Get_MAC_SN();
-		MqttSNStatusExtendStructure.Status					= SpotStatusData.spot_status;
-		MqttSNStatusExtendStructure.Count					= SpotStatusData.spot_count;
-		MqttSNStatusExtendStructure.DateTime				= SpotStatusData.unixTime;
-		MqttSNStatusExtendStructure.MagX					= SpotStatusData.qmc5883lData.X_Now;
-		MqttSNStatusExtendStructure.MagY					= SpotStatusData.qmc5883lData.Y_Now;
-		MqttSNStatusExtendStructure.MagZ					= SpotStatusData.qmc5883lData.Z_Now;
-		MqttSNStatusExtendStructure.MagDiff				= SpotStatusData.qmc5883lDiff.BackVal_Diff;
-		MqttSNStatusExtendStructure.Distance				= SpotStatusData.radarData.DisVal;
-		MqttSNStatusExtendStructure.Strength				= SpotStatusData.radarData.MagVal;
-		MqttSNStatusExtendStructure.CoverCount				= SpotStatusData.radarData.Diff_v2;
-		MqttSNStatusExtendStructure.RadarDiff				= SpotStatusData.radarData.Diff;
+		MqttSNStatusExtendStructure.Status					= FlowStatusData.FlowState;
+		MqttSNStatusExtendStructure.Count					= FlowStatusData.FlowCount;
+		MqttSNStatusExtendStructure.DateTime				= FlowStatusData.unixTime;
+		MqttSNStatusExtendStructure.MagX					= FlowStatusData.magnetismX;
+		MqttSNStatusExtendStructure.MagY					= FlowStatusData.magnetismY;
+		MqttSNStatusExtendStructure.MagZ					= FlowStatusData.magnetismZ;
+		MqttSNStatusExtendStructure.MagDiff				= FlowStatusData.magnetismDiff;
+		MqttSNStatusExtendStructure.Distance				= FlowStatusData.carinThreshhold;
+		MqttSNStatusExtendStructure.Strength				= FlowStatusData.caroutThreshhold;
+		MqttSNStatusExtendStructure.CoverCount				= FlowStatusData.recalibrationOvertime;
+		MqttSNStatusExtendStructure.RadarDiff				= FlowStatusData.detectMode;
 #if MQTTSN_STATUS_MSG_VERSION_TYPE == MQTTSN_STATUS_MSG_VERSION_V2
 		MqttSNStatusExtendStructure.NBRssi					= TCFG_Utility_Get_Nbiot_Rssi_IntVal();
 		MqttSNStatusExtendStructure.NBSnr					= TCFG_Utility_Get_Nbiot_RadioSNR();
 		MqttSNStatusExtendStructure.MCUTemp				= TCFG_Utility_Get_Device_Temperature();
 		MqttSNStatusExtendStructure.QMCTemp				= Qmc5883lData.temp_now;
-		MqttSNStatusExtendStructure.MagneticBackX			= Qmc5883lData.X_Back;
-		MqttSNStatusExtendStructure.MagneticBackY			= Qmc5883lData.Y_Back;
-		MqttSNStatusExtendStructure.MagneticBackZ			= Qmc5883lData.Z_Back;
-		MqttSNStatusExtendStructure.Debugval				= SpotStatusData.radarData.timedomain_dif;
+		MqttSNStatusExtendStructure.MagneticBackX			= FlowStatusData.magnetismBackX;
+		MqttSNStatusExtendStructure.MagneticBackY			= FlowStatusData.magnetismBackY;
+		MqttSNStatusExtendStructure.MagneticBackZ			= FlowStatusData.magnetismBackZ;
+		MqttSNStatusExtendStructure.Debugval				= FlowStatusData.waitSendHeartbeatMin;
 		for (int i = 0; i < 16; i++) {
-			MqttSNStatusExtendStructure.Radarval[i] = radar_targetinfo.pMagNow[i+2]>255?255:radar_targetinfo.pMagNow[i+2];
-			MqttSNStatusExtendStructure.Radarback[i] = radar_targetinfo.pMagBG[i+2]>255?255:radar_targetinfo.pMagBG[i+2];
+			MqttSNStatusExtendStructure.Radarval[i] = 0;
+			MqttSNStatusExtendStructure.Radarback[i] = 0;
 		}
 #endif
 		NET_MqttSN_Message_StatusExtendEnqueue(MqttSNStatusExtendStructure);
 		NETMqttSNNeedSendCode.StatusExtend = 0;
-		Inspect_Message_SpotStatusOffSet();
+		Inspect_Message_FlowStatusOffSet();
 		TCFG_Utility_Add_MqttSN_SentCount();
 	#if NBMQTTSN_LISTEN_PARAMETER_TYPE == NBMQTTSN_LISTEN_PARAMETER_ENABLE
 		MqttSNClientHandler.ListenRunCtl.ListenEnterParameter.listenEnable = true;
@@ -487,7 +487,7 @@ void NET_NBIOT_DataProcessing(NET_NBIOT_ClientsTypeDef* pClient)
 	/* MQTTSN SHORT STATUS DATA ENQUEUE */
 	if (NETMqttSNNeedSendCode.StatusBasic) {
 #if NBMQTTSN_SENDCODE_STATUS_BASIC
-		Inspect_Message_SpotStatusDequeue(&SpotStatusData);
+		Inspect_Message_FlowStatusDequeue(&FlowStatusData);
 		MqttSNShortStructure.HeadPacket.DeviceSN			= TCFG_EEPROM_Get_MAC_SN();
 		MqttSNShortStructure.HeadPacket.DataLen				= 0x00;
 		MqttSNShortStructure.HeadPacket.ProtocolType			= 0x00;
@@ -499,12 +499,12 @@ void NET_NBIOT_DataProcessing(NET_NBIOT_ClientsTypeDef* pClient)
 		MqttSNShortStructure.MsgPacket.DestSN				= 0x00;
 		MqttSNShortStructure.MsgPacket.Version				= 0x01;
 		MqttSNShortStructure.MsgPacket.Type				= MQTTSN_MSGTYPE_TYPE_SHORT_STATUS;
-		MqttSNShortStructure.DateTime						= SpotStatusData.unixTime;
-		MqttSNShortStructure.SpotStatus					= SpotStatusData.spot_status;
-		MqttSNShortStructure.SpotCount					= SpotStatusData.spot_count;
+		MqttSNShortStructure.DateTime						= FlowStatusData.unixTime;
+		MqttSNShortStructure.SpotStatus					= FlowStatusData.FlowState;
+		MqttSNShortStructure.SpotCount					= FlowStatusData.FlowCount;
 		NET_MqttSN_Message_SendDataEnqueue((unsigned char *)&MqttSNShortStructure, sizeof(MqttSNShortStructure));
 		NETMqttSNNeedSendCode.StatusBasic = 0;
-		Inspect_Message_SpotStatusOffSet();
+		Inspect_Message_FlowStatusOffSet();
 		TCFG_Utility_Add_MqttSN_SentCount();
 	#if NBMQTTSN_LISTEN_PARAMETER_TYPE == NBMQTTSN_LISTEN_PARAMETER_ENABLE
 		MqttSNClientHandler.ListenRunCtl.ListenEnterParameter.listenEnable = true;
@@ -514,7 +514,7 @@ void NET_NBIOT_DataProcessing(NET_NBIOT_ClientsTypeDef* pClient)
 	/* MQTTSN LONG STATUS DATA ENQUEUE */
 	else if (NETMqttSNNeedSendCode.StatusExtend) {
 #if NBMQTTSN_SENDCODE_STATUS_EXTEND
-		Inspect_Message_SpotStatusDequeue(&SpotStatusData);
+		Inspect_Message_FlowStatusDequeue(&FlowStatusData);
 		MqttSNLongStructure.HeadPacket.DeviceSN				= TCFG_EEPROM_Get_MAC_SN();
 		MqttSNLongStructure.HeadPacket.DataLen				= 0x00;
 		MqttSNLongStructure.HeadPacket.ProtocolType			= 0x00;
@@ -530,34 +530,34 @@ void NET_NBIOT_DataProcessing(NET_NBIOT_ClientsTypeDef* pClient)
 		MqttSNLongStructure.MsgPacket.Version				= 0x02;
 #endif
 		MqttSNLongStructure.MsgPacket.Type					= MQTTSN_MSGTYPE_TYPE_LONG_STATUS;
-		MqttSNLongStructure.DateTime						= SpotStatusData.unixTime;
-		MqttSNLongStructure.SpotStatus					= SpotStatusData.spot_status;
-		MqttSNLongStructure.SpotCount						= SpotStatusData.spot_count;
-		MqttSNLongStructure.MagneticX						= SpotStatusData.qmc5883lData.X_Now;
-		MqttSNLongStructure.MagneticY						= SpotStatusData.qmc5883lData.Y_Now;
-		MqttSNLongStructure.MagneticZ						= SpotStatusData.qmc5883lData.Z_Now;
-		MqttSNLongStructure.MagneticDiff					= SpotStatusData.qmc5883lDiff.BackVal_Diff;
-		MqttSNLongStructure.RadarDistance					= SpotStatusData.radarData.DisVal;
-		MqttSNLongStructure.RadarStrength					= SpotStatusData.radarData.MagVal;
-		MqttSNLongStructure.RadarCoverCount				= SpotStatusData.radarData.Diff_v2;
-		MqttSNLongStructure.RadarDiff						= SpotStatusData.radarData.Diff;
+		MqttSNLongStructure.DateTime						= FlowStatusData.unixTime;
+		MqttSNLongStructure.SpotStatus					= FlowStatusData.FlowState;
+		MqttSNLongStructure.SpotCount						= FlowStatusData.FlowCount;
+		MqttSNLongStructure.MagneticX						= FlowStatusData.magnetismX;
+		MqttSNLongStructure.MagneticY						= FlowStatusData.magnetismY;
+		MqttSNLongStructure.MagneticZ						= FlowStatusData.magnetismZ;
+		MqttSNLongStructure.MagneticDiff					= FlowStatusData.magnetismDiff;
+		MqttSNLongStructure.RadarDistance					= FlowStatusData.carinThreshhold;
+		MqttSNLongStructure.RadarStrength					= FlowStatusData.caroutThreshhold;
+		MqttSNLongStructure.RadarCoverCount				= FlowStatusData.recalibrationOvertime;
+		MqttSNLongStructure.RadarDiff						= FlowStatusData.detectMode;
 #if MQTTSN_STATUS_MSG_VERSION_TYPE == MQTTSN_STATUS_MSG_VERSION_V2
 		MqttSNLongStructure.NBRssi						= TCFG_Utility_Get_Nbiot_Rssi_IntVal();
 		MqttSNLongStructure.NBSnr						= TCFG_Utility_Get_Nbiot_RadioSNR();
 		MqttSNLongStructure.MCUTemp						= TCFG_Utility_Get_Device_Temperature();
 		MqttSNLongStructure.QMCTemp						= Qmc5883lData.temp_now;
-		MqttSNLongStructure.MagneticBackX					= Qmc5883lData.X_Back;
-		MqttSNLongStructure.MagneticBackY					= Qmc5883lData.Y_Back;
-		MqttSNLongStructure.MagneticBackZ					= Qmc5883lData.Z_Back;
-		MqttSNLongStructure.Debugval						= SpotStatusData.radarData.timedomain_dif;
+		MqttSNLongStructure.MagneticBackX					= FlowStatusData.magnetismBackX;
+		MqttSNLongStructure.MagneticBackY					= FlowStatusData.magnetismBackY;
+		MqttSNLongStructure.MagneticBackZ					= FlowStatusData.magnetismBackZ;
+		MqttSNLongStructure.Debugval						= FlowStatusData.waitSendHeartbeatMin;
 		for (int i = 0; i < 16; i++) {
-			MqttSNLongStructure.Radarval[i] = radar_targetinfo.pMagNow[i+2]>255?255:radar_targetinfo.pMagNow[i+2];
-			MqttSNLongStructure.Radarback[i] = radar_targetinfo.pMagBG[i+2]>255?255:radar_targetinfo.pMagBG[i+2];
+			MqttSNLongStructure.Radarval[i] = 0;
+			MqttSNLongStructure.Radarback[i] = 0;
 		}
 #endif
 		NET_MqttSN_Message_SendDataEnqueue((unsigned char *)&MqttSNLongStructure, sizeof(MqttSNLongStructure));
 		NETMqttSNNeedSendCode.StatusExtend = 0;
-		Inspect_Message_SpotStatusOffSet();
+		Inspect_Message_FlowStatusOffSet();
 		TCFG_Utility_Add_MqttSN_SentCount();
 	#if NBMQTTSN_LISTEN_PARAMETER_TYPE == NBMQTTSN_LISTEN_PARAMETER_ENABLE
 		MqttSNClientHandler.ListenRunCtl.ListenEnterParameter.listenEnable = true;

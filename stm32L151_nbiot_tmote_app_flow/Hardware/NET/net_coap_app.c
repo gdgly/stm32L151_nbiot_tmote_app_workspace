@@ -692,9 +692,9 @@ void NET_COAP_NBIOT_Event_SimICCIDCheck(NBIOT_ClientsTypeDef* pClient)
 		
 #ifdef COAP_DEBUG_LOG_RF_PRINT
 	#if NBIOT_PRINT_ERROR_CODE_TYPE
-		Radio_Trf_Debug_Printf_Level2("NB ICCID Check Fail ECde %d", NBStatus);
+		Radio_Trf_Debug_Printf_Level2("NB ICCID Fail ECde %d", NBStatus);
 	#else
-		Radio_Trf_Debug_Printf_Level2("NB ICCID Check Fail");
+		Radio_Trf_Debug_Printf_Level2("NB ICCID Fail");
 	#endif
 #endif
 	}
@@ -844,9 +844,9 @@ void NET_COAP_NBIOT_Event_CDPServerCheck(NBIOT_ClientsTypeDef* pClient)
 		
 #ifdef COAP_DEBUG_LOG_RF_PRINT
 	#if NBIOT_PRINT_ERROR_CODE_TYPE
-		Radio_Trf_Debug_Printf_Level2("CoAP CDP Read Fail ECde %d", NBStatus);
+		Radio_Trf_Debug_Printf_Level2("CoAP CDP Fail ECde %d", NBStatus);
 	#else
-		Radio_Trf_Debug_Printf_Level2("CoAP CDP Read Fail");
+		Radio_Trf_Debug_Printf_Level2("CoAP CDP Fail");
 	#endif
 #endif
 	}
@@ -887,9 +887,9 @@ void NET_COAP_NBIOT_Event_CDPServerConfig(NBIOT_ClientsTypeDef* pClient)
 		
 #ifdef COAP_DEBUG_LOG_RF_PRINT
 	#if NBIOT_PRINT_ERROR_CODE_TYPE
-		Radio_Trf_Debug_Printf_Level2("CoAP CDP Read Fail ECde %d", NBStatus);
+		Radio_Trf_Debug_Printf_Level2("CoAP CDP Fail ECde %d", NBStatus);
 	#else
-		Radio_Trf_Debug_Printf_Level2("CoAP CDP Read Fail");
+		Radio_Trf_Debug_Printf_Level2("CoAP CDP Fail");
 	#endif
 #endif
 	}
@@ -968,9 +968,9 @@ void NET_COAP_NBIOT_Event_NbandModeCheck(NBIOT_ClientsTypeDef* pClient)
 		
 #ifdef COAP_DEBUG_LOG_RF_PRINT
 	#if NBIOT_PRINT_ERROR_CODE_TYPE
-		Radio_Trf_Debug_Printf_Level2("CoAP BAND Read Fail ECde %d", NBStatus);
+		Radio_Trf_Debug_Printf_Level2("CoAP BAND Fail ECde %d", NBStatus);
 	#else
-		Radio_Trf_Debug_Printf_Level2("CoAP BAND Read Fail");
+		Radio_Trf_Debug_Printf_Level2("CoAP BAND Fail");
 	#endif
 #endif
 	}
@@ -1011,9 +1011,9 @@ void NET_COAP_NBIOT_Event_NbandModeConfig(NBIOT_ClientsTypeDef* pClient)
 		
 #ifdef COAP_DEBUG_LOG_RF_PRINT
 	#if NBIOT_PRINT_ERROR_CODE_TYPE
-		Radio_Trf_Debug_Printf_Level2("CoAP BAND Read Fail ECde %d", NBStatus);
+		Radio_Trf_Debug_Printf_Level2("CoAP BAND Fail ECde %d", NBStatus);
 	#else
-		Radio_Trf_Debug_Printf_Level2("CoAP BAND Read Fail");
+		Radio_Trf_Debug_Printf_Level2("CoAP BAND Fail");
 	#endif
 #endif
 	}
@@ -1078,9 +1078,9 @@ void NET_COAP_NBIOT_Event_MiscEquipConfig(NBIOT_ClientsTypeDef* pClient)
 		
 #ifdef COAP_DEBUG_LOG_RF_PRINT
 	#if NBIOT_PRINT_ERROR_CODE_TYPE
-		Radio_Trf_Debug_Printf_Level2("CoAP Misc Read Fail ECde %d", NBStatus);
+		Radio_Trf_Debug_Printf_Level2("CoAP Misc Fail ECde %d", NBStatus);
 	#else
-		Radio_Trf_Debug_Printf_Level2("CoAP Misc Read Fail");
+		Radio_Trf_Debug_Printf_Level2("CoAP Misc Fail");
 	#endif
 #endif
 		return;

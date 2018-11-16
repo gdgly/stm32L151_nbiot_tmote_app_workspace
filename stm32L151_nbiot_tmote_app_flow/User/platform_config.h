@@ -66,7 +66,7 @@
 #define	NBCOAP_RATIME_NORMAL_TYPE		NBCOAP_RATIME_NORMAL_2HOUR			//Coap间隔时间发送普通数据包
 
 #define	NBCOAP_PCP_UPGRADE_LIMIT_RSSI		10								//PCP升级限制信号值
-#define	NBCOAP_PCP_UPGRADE_LIMIT_SNR		5								//PCP升级限制信噪比
+#define	NBCOAP_PCP_UPGRADE_LIMIT_SNR		-30								//PCP升级限制信噪比
 
 #define	NBIOT_CONTINUE_LIFETIME			2								//NBIOT休眠正放继续活跃20秒
 #define	NBIOT_MAX_LIFETIME				12								//NBIOT休眠正放最大活跃120秒
@@ -103,7 +103,7 @@
 #define	BEEP_OFF_US					230								//无源蜂鸣器关时间
 
 #define	SOFTWAREMAJOR					20								//主固件版本
-#define	SOFTWARESUB					131								//从固件版本
+#define	SOFTWARESUB					132								//从固件版本
 #define	HARDWAREMAJOR_V1				2								//主硬件版本
 #define	HARDWAREMAJOR_V2				12								//主硬件版本
 
@@ -229,6 +229,10 @@
 #define	USART3_DISABLE					0
 #define	USART3_ENABLE					1
 #define	USART3_TYPE					USART3_DISABLE						//串口3状态
+
+#define	USART_IRQ_CTRL_DISABLE			0
+#define	USART_IRQ_CTRL_ENABLE			1
+#define	USART_IRQ_CTRL_TYPE				USART_IRQ_CTRL_DISABLE				//串口控制中断
 
 #define	IDLE_WORK						4								//休眠
 #define	NOTACTIVE_WORK					3								//不工作
