@@ -160,7 +160,7 @@ void Inspect_Flow_ExistenceDetect(void)
 	
 	/* 流量统计模式 */
 	if ((INSPECT_FLOW_Para_GetDetectMode() == FLOW_MODE_FLOW) && (Stm32_GetSecondTick() > sendFlowTime + 60 * INSPECT_FLOW_Para_GetWaitSendHeartbeatMin())) {
-		if (INSPECT_FLOW_Para_ObtainCarFlowNumber() != carNumberCnt) {
+		if (INSPECT_FLOW_Para_ObtainCarFlowNumber() != (carNumberCnt - CARFLOW_FLOWMODE_TYPE)) {
 			FlowStatusData.FlowState					= INSPECT_FLOW_Para_ObtainCarFlowStatus() ? SPOT_CAR_OCCUPY : SPOT_CAR_FREE;
 			FlowStatusData.FlowCount					= INSPECT_FLOW_Para_ObtainCarFlowNumber();
 			

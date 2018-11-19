@@ -99,11 +99,15 @@
 #define	BEEP_PASSIVE					1
 #define	BEEP_MODEL_TYPE				BEEP_PASSIVE						//蜂鸣器类型
 
+#define	CARFLOW_FLOWMODE_CARNUMIN		0
+#define	CARFLOW_FLOWMODE_REALTIME		1
+#define	CARFLOW_FLOWMODE_TYPE			CARFLOW_FLOWMODE_CARNUMIN			//数据间隔发送类型
+
 #define	BEEP_ON_US					230								//无源蜂鸣器开时间
 #define	BEEP_OFF_US					230								//无源蜂鸣器关时间
 
 #define	SOFTWAREMAJOR					20								//主固件版本
-#define	SOFTWARESUB					132								//从固件版本
+#define	SOFTWARESUB					133								//从固件版本
 #define	HARDWAREMAJOR_V1				2								//主硬件版本
 #define	HARDWAREMAJOR_V2				12								//主硬件版本
 

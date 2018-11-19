@@ -400,11 +400,11 @@ void LowPowerEnterStop(void)
 	SysTick->CTRL &= (~SysTick_CTRL_ENABLE_Msk);
 	
 	HAL_RTCEx_DeactivateWakeUpTimer(&RTC_Handler);
-	HAL_RTCEx_SetWakeUpTimer_IT(&RTC_Handler, 0xCD, RTC_WAKEUPCLOCK_RTCCLK_DIV4);
+	HAL_RTCEx_SetWakeUpTimer_IT(&RTC_Handler, 0x52, RTC_WAKEUPCLOCK_RTCCLK_DIV8);
 	
 	HAL_PWR_EnterSTOPMode(PWR_LOWPOWERREGULATOR_ON, PWR_STOPENTRY_WFI);
 	
-	uwTick += 25;
+	uwTick += 22;
 	Stm32_IncSecondTick();
 	
 	SysTick->CTRL |= SysTick_CTRL_ENABLE_Msk;
