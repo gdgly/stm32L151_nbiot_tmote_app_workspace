@@ -21,6 +21,7 @@
 #include "radar_api.h"
 #include "hal_qmc5883l.h"
 #include "inspectflowconfig.h"
+#include "inspectflowparameter.h"
 #include "string.h"
 #include "radio_rf_app.h"
 
@@ -2173,12 +2174,108 @@ MQTTSN_StatusTypeDef messageHandlerFunction(MQTTSN_ClientsTypeDef* pClient, MQTT
 			#if MQTTSN_DOWNLOAD_CMD_UPLIMIT
 					short limitRssi, limitSnr;
 					sscanf((char *)messageHandler->message->payload + recvBufOffset + TCLOD_DATA_OFFSET, \
-						"{(UpLimit):{%hd,%hd,(Magic):%hu}}", &limitRssi, &limitSnr, &recvMagicNum);
+						"{(UpLimit):{(rssi):%hd,(snr):%hd,(Magic):%hu}}", &limitRssi, &limitSnr, &recvMagicNum);
 					if (recvMagicNum == TCLOD_MAGIC_NUM) {
 						TCFG_SystemData.UpgradeLimitRssi = limitRssi;
 						TCFG_SystemData.UpgradeLimitSnr = limitSnr;
 						TCFG_EEPROM_SetUpgradeLimitRssi(TCFG_SystemData.UpgradeLimitRssi);
 						TCFG_EEPROM_SetUpgradeLimitSnr(TCFG_SystemData.UpgradeLimitSnr);
+					}
+					else {
+						ret = NETIP_UNKNOWNERROR;
+					}
+			#endif
+				}
+				/* CarIn */
+				else if (strstr((char *)messageHandler->message->payload + recvBufOffset + TCLOD_DATA_OFFSET, "CarIn") != NULL) {
+			#if MQTTSN_DOWNLOAD_CMD_CARIN
+					short carin;
+					sscanf((char *)messageHandler->message->payload + recvBufOffset + TCLOD_DATA_OFFSET, \
+						"{(CarIn):{(val):%hd,(Magic):%hu}}", &carin, &recvMagicNum);
+					if (recvMagicNum == TCLOD_MAGIC_NUM) {
+						TCFG_SystemData.FlowCarinThresh = carin;
+						TCFG_EEPROM_SetFlowCarinThresh(TCFG_SystemData.FlowCarinThresh);
+						INSPECT_FLOW_Para_SetCarinThreshhold(TCFG_SystemData.FlowCarinThresh);
+					}
+					else {
+						ret = NETIP_UNKNOWNERROR;
+					}
+			#endif
+				}
+				/* CarOut */
+				else if (strstr((char *)messageHandler->message->payload + recvBufOffset + TCLOD_DATA_OFFSET, "CarOut") != NULL) {
+			#if MQTTSN_DOWNLOAD_CMD_CAROUT
+					short carout;
+					sscanf((char *)messageHandler->message->payload + recvBufOffset + TCLOD_DATA_OFFSET, \
+						"{(CarOut):{(val):%hd,(Magic):%hu}}", &carout, &recvMagicNum);
+					if (recvMagicNum == TCLOD_MAGIC_NUM) {
+						TCFG_SystemData.FlowCaroutThresh = carout;
+						TCFG_EEPROM_SetFlowCaroutThresh(TCFG_SystemData.FlowCaroutThresh);
+						INSPECT_FLOW_Para_SetCaroutThreshhold(TCFG_SystemData.FlowCaroutThresh);
+					}
+					else {
+						ret = NETIP_UNKNOWNERROR;
+					}
+			#endif
+				}
+				/* DetectMode */
+				else if (strstr((char *)messageHandler->message->payload + recvBufOffset + TCLOD_DATA_OFFSET, "DetectMode") != NULL) {
+			#if MQTTSN_DOWNLOAD_CMD_DETECTMODE
+					short detectmode;
+					sscanf((char *)messageHandler->message->payload + recvBufOffset + TCLOD_DATA_OFFSET, \
+						"{(DetectMode):{(val):%hd,(Magic):%hu}}", &detectmode, &recvMagicNum);
+					if (recvMagicNum == TCLOD_MAGIC_NUM) {
+						TCFG_SystemData.FlowDetectMode = detectmode;
+						TCFG_EEPROM_SetFlowDetectMode(TCFG_SystemData.FlowDetectMode);
+						INSPECT_FLOW_Para_SetDetectMode(TCFG_SystemData.FlowDetectMode);
+					}
+					else {
+						ret = NETIP_UNKNOWNERROR;
+					}
+			#endif
+				}
+				/* RecalOvernum */
+				else if (strstr((char *)messageHandler->message->payload + recvBufOffset + TCLOD_DATA_OFFSET, "RecalOvernum") != NULL) {
+			#if MQTTSN_DOWNLOAD_CMD_RECALOVERNUM
+					short recalOvernum;
+					sscanf((char *)messageHandler->message->payload + recvBufOffset + TCLOD_DATA_OFFSET, \
+						"{(RecalOvernum):{(val):%hd,(Magic):%hu}}", &recalOvernum, &recvMagicNum);
+					if (recvMagicNum == TCLOD_MAGIC_NUM) {
+						TCFG_SystemData.FlowRecalNum = recalOvernum;
+						TCFG_EEPROM_SetFlowRecalNum(TCFG_SystemData.FlowRecalNum);
+						INSPECT_FLOW_Para_SetRecalibrationOvernum(TCFG_SystemData.FlowRecalNum);
+					}
+					else {
+						ret = NETIP_UNKNOWNERROR;
+					}
+			#endif
+				}
+				/* RecalOvertime */
+				else if (strstr((char *)messageHandler->message->payload + recvBufOffset + TCLOD_DATA_OFFSET, "RecalOvertime") != NULL) {
+			#if MQTTSN_DOWNLOAD_CMD_RECALOVERTIME
+					short recalOvertime;
+					sscanf((char *)messageHandler->message->payload + recvBufOffset + TCLOD_DATA_OFFSET, \
+						"{(RecalOvertime):{(val):%hd,(Magic):%hu}}", &recalOvertime, &recvMagicNum);
+					if (recvMagicNum == TCLOD_MAGIC_NUM) {
+						TCFG_SystemData.FlowRecalTime = recalOvertime;
+						TCFG_EEPROM_SetFlowRecalTime(TCFG_SystemData.FlowRecalTime);
+						INSPECT_FLOW_Para_SetRecalibrationOvertime(TCFG_SystemData.FlowRecalTime);
+					}
+					else {
+						ret = NETIP_UNKNOWNERROR;
+					}
+			#endif
+				}
+				/* WaitHeart */
+				else if (strstr((char *)messageHandler->message->payload + recvBufOffset + TCLOD_DATA_OFFSET, "WaitHeart") != NULL) {
+			#if MQTTSN_DOWNLOAD_CMD_WAITHEARTMIN
+					short waitHeart;
+					sscanf((char *)messageHandler->message->payload + recvBufOffset + TCLOD_DATA_OFFSET, \
+						"{(WaitHeart):{(val):%hd,(Magic):%hu}}", &waitHeart, &recvMagicNum);
+					if (recvMagicNum == TCLOD_MAGIC_NUM) {
+						TCFG_SystemData.FlowWaitHeart = waitHeart;
+						TCFG_EEPROM_SetFlowWaitHeart(TCFG_SystemData.FlowWaitHeart);
+						INSPECT_FLOW_Para_SetWaitSendHeartbeatMin(TCFG_SystemData.FlowWaitHeart);
 					}
 					else {
 						ret = NETIP_UNKNOWNERROR;

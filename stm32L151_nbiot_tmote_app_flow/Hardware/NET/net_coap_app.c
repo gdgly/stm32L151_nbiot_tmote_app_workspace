@@ -2142,7 +2142,7 @@ void NET_COAP_NBIOT_Event_ExecutDownlinkData(NBIOT_ClientsTypeDef* pClient)
 				#if NBCOAP_DOWNLOAD_CMD_UPLIMIT
 						short limitRssi, limitSnr;
 						sscanf((char *)pClient->Recvbuf + recvBufOffset + TCLOD_DATA_OFFSET, \
-							"{(UpLimit):{%hd,%hd,(Magic):%hu}}", &limitRssi, &limitSnr, &recvMagicNum);
+							"{(UpLimit):{(rssi):%hd,(snr):%hd,(Magic):%hu}}", &limitRssi, &limitSnr, &recvMagicNum);
 						if (recvMagicNum == TCLOD_MAGIC_NUM) {
 							TCFG_SystemData.UpgradeLimitRssi = limitRssi;
 							TCFG_SystemData.UpgradeLimitSnr = limitSnr;
@@ -2159,7 +2159,7 @@ void NET_COAP_NBIOT_Event_ExecutDownlinkData(NBIOT_ClientsTypeDef* pClient)
 				#if NBCOAP_DOWNLOAD_CMD_CARIN
 						short carin;
 						sscanf((char *)pClient->Recvbuf + recvBufOffset + TCLOD_DATA_OFFSET, \
-							"{(CarIn):{%hd,(Magic):%hu}}", &carin, &recvMagicNum);
+							"{(CarIn):{(val):%hd,(Magic):%hu}}", &carin, &recvMagicNum);
 						if (recvMagicNum == TCLOD_MAGIC_NUM) {
 							TCFG_SystemData.FlowCarinThresh = carin;
 							TCFG_EEPROM_SetFlowCarinThresh(TCFG_SystemData.FlowCarinThresh);
@@ -2175,7 +2175,7 @@ void NET_COAP_NBIOT_Event_ExecutDownlinkData(NBIOT_ClientsTypeDef* pClient)
 				#if NBCOAP_DOWNLOAD_CMD_CAROUT
 						short carout;
 						sscanf((char *)pClient->Recvbuf + recvBufOffset + TCLOD_DATA_OFFSET, \
-							"{(CarOut):{%hd,(Magic):%hu}}", &carout, &recvMagicNum);
+							"{(CarOut):{(val):%hd,(Magic):%hu}}", &carout, &recvMagicNum);
 						if (recvMagicNum == TCLOD_MAGIC_NUM) {
 							TCFG_SystemData.FlowCaroutThresh = carout;
 							TCFG_EEPROM_SetFlowCaroutThresh(TCFG_SystemData.FlowCaroutThresh);
@@ -2191,7 +2191,7 @@ void NET_COAP_NBIOT_Event_ExecutDownlinkData(NBIOT_ClientsTypeDef* pClient)
 				#if NBCOAP_DOWNLOAD_CMD_DETECTMODE
 						short detectmode;
 						sscanf((char *)pClient->Recvbuf + recvBufOffset + TCLOD_DATA_OFFSET, \
-							"{(DetectMode):{%hd,(Magic):%hu}}", &detectmode, &recvMagicNum);
+							"{(DetectMode):{(val):%hd,(Magic):%hu}}", &detectmode, &recvMagicNum);
 						if (recvMagicNum == TCLOD_MAGIC_NUM) {
 							TCFG_SystemData.FlowDetectMode = detectmode;
 							TCFG_EEPROM_SetFlowDetectMode(TCFG_SystemData.FlowDetectMode);
@@ -2207,7 +2207,7 @@ void NET_COAP_NBIOT_Event_ExecutDownlinkData(NBIOT_ClientsTypeDef* pClient)
 				#if NBCOAP_DOWNLOAD_CMD_RECALOVERNUM
 						short recalOvernum;
 						sscanf((char *)pClient->Recvbuf + recvBufOffset + TCLOD_DATA_OFFSET, \
-							"{(RecalOvernum):{%hd,(Magic):%hu}}", &recalOvernum, &recvMagicNum);
+							"{(RecalOvernum):{(val):%hd,(Magic):%hu}}", &recalOvernum, &recvMagicNum);
 						if (recvMagicNum == TCLOD_MAGIC_NUM) {
 							TCFG_SystemData.FlowRecalNum = recalOvernum;
 							TCFG_EEPROM_SetFlowRecalNum(TCFG_SystemData.FlowRecalNum);
@@ -2223,7 +2223,7 @@ void NET_COAP_NBIOT_Event_ExecutDownlinkData(NBIOT_ClientsTypeDef* pClient)
 				#if NBCOAP_DOWNLOAD_CMD_RECALOVERTIME
 						short recalOvertime;
 						sscanf((char *)pClient->Recvbuf + recvBufOffset + TCLOD_DATA_OFFSET, \
-							"{(RecalOvertime):{%hd,(Magic):%hu}}", &recalOvertime, &recvMagicNum);
+							"{(RecalOvertime):{(val):%hd,(Magic):%hu}}", &recalOvertime, &recvMagicNum);
 						if (recvMagicNum == TCLOD_MAGIC_NUM) {
 							TCFG_SystemData.FlowRecalTime = recalOvertime;
 							TCFG_EEPROM_SetFlowRecalTime(TCFG_SystemData.FlowRecalTime);
@@ -2239,7 +2239,7 @@ void NET_COAP_NBIOT_Event_ExecutDownlinkData(NBIOT_ClientsTypeDef* pClient)
 				#if NBCOAP_DOWNLOAD_CMD_WAITHEARTMIN
 						short waitHeart;
 						sscanf((char *)pClient->Recvbuf + recvBufOffset + TCLOD_DATA_OFFSET, \
-							"{(WaitHeart):{%hd,(Magic):%hu}}", &waitHeart, &recvMagicNum);
+							"{(WaitHeart):{(val):%hd,(Magic):%hu}}", &waitHeart, &recvMagicNum);
 						if (recvMagicNum == TCLOD_MAGIC_NUM) {
 							TCFG_SystemData.FlowWaitHeart = waitHeart;
 							TCFG_EEPROM_SetFlowWaitHeart(TCFG_SystemData.FlowWaitHeart);

@@ -211,6 +211,12 @@
 #define	MQTTSN_DOWNLOAD_CMD_SETQMCCOEF	1								//MQTTSN下行指令SetQmcCoef
 #define	MQTTSN_DOWNLOAD_CMD_BEEPOFF		1								//MQTTSN下行指令BeepOff
 #define	MQTTSN_DOWNLOAD_CMD_UPLIMIT		1								//MQTTSN下行指令UpLimit
+#define	MQTTSN_DOWNLOAD_CMD_CARIN		1								//MQTTSN下行指令Carin
+#define	MQTTSN_DOWNLOAD_CMD_CAROUT		1								//MQTTSN下行指令Carout
+#define	MQTTSN_DOWNLOAD_CMD_DETECTMODE	1								//MQTTSN下行指令DetectMode
+#define	MQTTSN_DOWNLOAD_CMD_RECALOVERNUM	1								//MQTTSN下行指令RecalOvernum
+#define	MQTTSN_DOWNLOAD_CMD_RECALOVERTIME	1								//MQTTSN下行指令RecalOvertime
+#define	MQTTSN_DOWNLOAD_CMD_WAITHEARTMIN	1								//MQTTSN下行指令WaitHeart
 
 #define	RF_DPRINT_LV_0					0								//调试信息不打印
 #define	RF_DPRINT_LV_1					1								//基本信息打印
