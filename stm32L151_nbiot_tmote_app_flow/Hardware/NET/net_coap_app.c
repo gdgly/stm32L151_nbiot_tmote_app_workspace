@@ -105,19 +105,27 @@ void NET_COAP_APP_PollExecution(NBIOT_ClientsTypeDef* pClient)
 		break;
 	
 	case SEND_DATA:
+#if NBCOAP_SENDMODE_CONFIG_TYPE == NBCOAP_SENDMODE_NORMAL_MODE
 		NET_COAP_NBIOT_Event_SendData(pClient);
+#endif
 		break;
 	
 	case RECV_DATA:
+#if NBCOAP_SENDMODE_CONFIG_TYPE == NBCOAP_SENDMODE_NORMAL_MODE
 		NET_COAP_NBIOT_Event_RecvData(pClient);
+#endif
 		break;
 	
 	case SEND_DATA_RA_NORMAL:
+#if NBCOAP_SENDMODE_CONFIG_TYPE == NBCOAP_SENDMODE_RAIDLE_MODE
 		NET_COAP_NBIOT_Event_SendDataRANormal(pClient);
+#endif
 		break;
 	
 	case RECV_DATA_RA_NORMAL:
+#if NBCOAP_SENDMODE_CONFIG_TYPE == NBCOAP_SENDMODE_RAIDLE_MODE
 		NET_COAP_NBIOT_Event_RecvDataRANormal(pClient);
+#endif
 		break;
 	
 	case EXECUT_DOWNLINK_DATA:
@@ -237,6 +245,7 @@ static unsigned char* COAP_NBIOT_GetDictateFailureCnt(NBIOT_ClientsTypeDef* pCli
 		dictateFailureCnt = &pClient->DictateRunCtl.dictatePatameterCheckOutFailureCnt;
 		break;
 	
+#if NBCOAP_SENDMODE_CONFIG_TYPE == NBCOAP_SENDMODE_NORMAL_MODE
 	case SEND_DATA:
 		dictateFailureCnt = &pClient->DictateRunCtl.dictateSendDataFailureCnt;
 		break;
@@ -244,7 +253,9 @@ static unsigned char* COAP_NBIOT_GetDictateFailureCnt(NBIOT_ClientsTypeDef* pCli
 	case RECV_DATA:
 		dictateFailureCnt = &pClient->DictateRunCtl.dictateRecvDataFailureCnt;
 		break;
+#endif
 	
+#if NBCOAP_SENDMODE_CONFIG_TYPE == NBCOAP_SENDMODE_RAIDLE_MODE
 	case SEND_DATA_RA_NORMAL:
 		dictateFailureCnt = &pClient->DictateRunCtl.dictateSendDataRANormalFailureCnt;
 		break;
@@ -252,6 +263,7 @@ static unsigned char* COAP_NBIOT_GetDictateFailureCnt(NBIOT_ClientsTypeDef* pCli
 	case RECV_DATA_RA_NORMAL:
 		dictateFailureCnt = &pClient->DictateRunCtl.dictateRecvDataRANormalFailureCnt;
 		break;
+#endif
 	
 	default :
 		dictateFailureCnt = &pClient->DictateRunCtl.dictateRebootFailureCnt;

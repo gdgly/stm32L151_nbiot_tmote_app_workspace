@@ -50,6 +50,10 @@
 #define	NBCOAP_SENDMODE_RAIDLE			SEND_DATA_RA_NORMAL
 #define	NBCOAP_SENDMODE_TYPE			NBCOAP_SENDMODE_RAIDLE				//COAP发送模式
 
+#define	NBCOAP_SENDMODE_NORMAL_MODE		0
+#define	NBCOAP_SENDMODE_RAIDLE_MODE		1
+#define	NBCOAP_SENDMODE_CONFIG_TYPE		NBCOAP_SENDMODE_RAIDLE_MODE			//COAP发送模式
+
 #define	NBCOAP_RASENDMODE_NORMAL			0
 #define	NBCOAP_RASENDMODE_IDLE			1
 #define	NBCOAP_RASENDMODE_TYPE			NBCOAP_RASENDMODE_IDLE				//COAP发送RA模式
@@ -108,15 +112,28 @@
 #define	BEEP_OFF_US					230								//无源蜂鸣器关时间
 
 #define	SOFTWAREMAJOR					20								//主固件版本
-#define	SOFTWARESUB					133								//从固件版本
+#define	SOFTWARESUB					134								//从固件版本
 #define	HARDWAREMAJOR_V1				2								//主硬件版本
 #define	HARDWAREMAJOR_V2				12								//主硬件版本
 
+#if NETPROTOCAL == NETCOAP
 #define	RADIO_PRINT_WORKINFO			1								//无线输出Workinfo
 #define	RADIO_PRINT_NETINFO				1								//无线输出NetInfo
 #define	RADIO_PRINT_DEVINFO				1								//无线输出DeviceInfo
-#define	RADIO_PRINT_FLOWINFO			1								//无线输出FlowInfo
 #define	RADIO_PRINT_UPGRADEINFO			1								//无线输出UpgradeInfo
+#endif
+#if NETPROTOCAL == NETMQTTSN
+#define	RADIO_PRINT_WORKINFO			1								//无线输出Workinfo
+#define	RADIO_PRINT_NETINFO				1								//无线输出NetInfo
+#define	RADIO_PRINT_DEVINFO				0								//无线输出DeviceInfo
+#define	RADIO_PRINT_UPGRADEINFO			0								//无线输出UpgradeInfo
+#endif
+#if NETPROTOCAL == NETONENET
+#define	RADIO_PRINT_WORKINFO			1								//无线输出Workinfo
+#define	RADIO_PRINT_NETINFO				1								//无线输出NetInfo
+#define	RADIO_PRINT_DEVINFO				1								//无线输出DeviceInfo
+#define	RADIO_PRINT_UPGRADEINFO			1								//无线输出UpgradeInfo
+#endif
 
 #define	RADIO_CMD_UPLOAD_WORKINFO		1								//无线命令主动上报WorkInfo
 #define	RADIO_CMD_UPLOAD_NETINFO			1								//无线命令主动上报NetInfo
