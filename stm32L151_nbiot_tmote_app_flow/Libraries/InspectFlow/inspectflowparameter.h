@@ -25,6 +25,9 @@ unsigned char	INSPECT_FLOW_Para_GetRecalibrationOvertime(void);									//读取
 void			INSPECT_FLOW_Para_SetWaitSendHeartbeatMin(unsigned int waitSendHeartbeatMin);			//设置waitSendHeartbeatMin心跳等待时间
 unsigned int	INSPECT_FLOW_Para_GetWaitSendHeartbeatMin(void);									//读取waitSendHeartbeatMin心跳等待时间
 
+void			INSPECT_FLOW_Para_SetWaitSendFlowCarCount(unsigned int waitSendFlowCarCount);			//设置waitSendFlowCarCount统计车辆发送次数
+unsigned int	INSPECT_FLOW_Para_GetWaitSendFlowCarCount(void);									//读取waitSendFlowCarCount统计车辆发送次数
+
 void			INSPECT_FLOW_Para_SetQmc5883lDataReady(bool qmc5883lDataReady);						//设置qmc5883lDataReady数据准备标志位
 bool			INSPECT_FLOW_Para_GetQmc5883lDataReady(void);									//读取qmc5883lDataReady数据准备标志位
 

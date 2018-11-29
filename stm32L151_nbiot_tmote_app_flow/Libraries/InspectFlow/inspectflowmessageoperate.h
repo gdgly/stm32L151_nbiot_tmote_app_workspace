@@ -26,6 +26,7 @@ typedef __packed struct
 	unsigned char						caroutThreshhold;
 	unsigned char						recalibrationOvertime;
 	unsigned int						waitSendHeartbeatMin;
+	unsigned int						waitSendFlowCarCount;
 	
 	unsigned int						timeCounter;
 	unsigned int						unixTime;

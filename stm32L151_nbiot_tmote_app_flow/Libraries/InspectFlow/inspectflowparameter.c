@@ -220,6 +220,30 @@ unsigned int INSPECT_FLOW_Para_GetWaitSendHeartbeatMin(void)
 }
 
 /**********************************************************************************************************
+ @Function			void INSPECT_FLOW_Para_SetWaitSendFlowCarCount(unsigned int waitSendFlowCarCount)
+ @Description			INSPECT_FLOW_Para_SetWaitSendFlowCarCount		: 设置waitSendFlowCarCount统计车辆发送次数
+ @Input				waitSendFlowCarCount
+ @Return				void
+**********************************************************************************************************/
+void INSPECT_FLOW_Para_SetWaitSendFlowCarCount(unsigned int waitSendFlowCarCount)
+{
+	waitSendFlowCarCount = (waitSendFlowCarCount > 65535) ? 65535 : waitSendFlowCarCount;
+	
+	InspectFlowClientHandler.Configuration.waitSendFlowCnt = waitSendFlowCarCount;
+}
+
+/**********************************************************************************************************
+ @Function			unsigned int INSPECT_FLOW_Para_GetWaitSendFlowCarCount(void)
+ @Description			INSPECT_FLOW_Para_GetWaitSendFlowCarCount		: 读取waitSendFlowCarCount统计车辆发送次数
+ @Input				void
+ @Return				waitSendFlowCarCount
+**********************************************************************************************************/
+unsigned int INSPECT_FLOW_Para_GetWaitSendFlowCarCount(void)
+{
+	return InspectFlowClientHandler.Configuration.waitSendFlowCnt;
+}
+
+/**********************************************************************************************************
  @Function			void INSPECT_FLOW_Para_SetQmc5883lDataReady(bool qmc5883lDataReady)
  @Description			INSPECT_FLOW_Para_SetQmc5883lDataReady			: 设置qmc5883lDataReady数据准备标志位
  @Input				qmc5883lDataReady

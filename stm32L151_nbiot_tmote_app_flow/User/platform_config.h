@@ -184,6 +184,7 @@
 #define	RADIO_DOWNLOAD_CMD_RECALOVERNUM	1								//RADIO下行指令RecalOvernum
 #define	RADIO_DOWNLOAD_CMD_RECALOVERTIME	1								//RADIO下行指令RecalOvertime
 #define	RADIO_DOWNLOAD_CMD_WAITHEARTMIN	1								//RADIO下行指令WaitHeart
+#define	RADIO_DOWNLOAD_CMD_WAITCARCOUNT	1								//RADIO下行指令WaitCount
 
 #define	NBCOAP_DOWNLOAD_CMD_WORKMODE		1								//NBCOAP下行指令Workmode
 #define	NBCOAP_DOWNLOAD_CMD_SENSE		1								//NBCOAP下行指令Sense
@@ -210,6 +211,7 @@
 #define	NBCOAP_DOWNLOAD_CMD_RECALOVERNUM	1								//NBCOAP下行指令RecalOvernum
 #define	NBCOAP_DOWNLOAD_CMD_RECALOVERTIME	1								//NBCOAP下行指令RecalOvertime
 #define	NBCOAP_DOWNLOAD_CMD_WAITHEARTMIN	1								//NBCOAP下行指令WaitHeart
+#define	NBCOAP_DOWNLOAD_CMD_WAITCARCOUNT	1								//NBCOAP下行指令WaitCount
 
 #define	MQTTSN_DOWNLOAD_CMD_WORKMODE		1								//MQTTSN下行指令Workmode
 #define	MQTTSN_DOWNLOAD_CMD_SENSE		1								//MQTTSN下行指令Sense
@@ -234,6 +236,7 @@
 #define	MQTTSN_DOWNLOAD_CMD_RECALOVERNUM	1								//MQTTSN下行指令RecalOvernum
 #define	MQTTSN_DOWNLOAD_CMD_RECALOVERTIME	1								//MQTTSN下行指令RecalOvertime
 #define	MQTTSN_DOWNLOAD_CMD_WAITHEARTMIN	1								//MQTTSN下行指令WaitHeart
+#define	MQTTSN_DOWNLOAD_CMD_WAITCARCOUNT	1								//MQTTSN下行指令WaitCount
 
 #define	RF_DPRINT_LV_0					0								//调试信息不打印
 #define	RF_DPRINT_LV_1					1								//基本信息打印

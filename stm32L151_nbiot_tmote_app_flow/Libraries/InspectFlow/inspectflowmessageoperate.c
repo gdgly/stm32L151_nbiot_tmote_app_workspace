@@ -88,6 +88,7 @@ void Inspect_Message_FlowStatusEnqueue(FlowStatusTypeDef dataBuf)
 	InspectFlowStatus.FlowStatus[InspectFlowStatus.Rear].caroutThreshhold			= dataBuf.caroutThreshhold;
 	InspectFlowStatus.FlowStatus[InspectFlowStatus.Rear].recalibrationOvertime		= dataBuf.recalibrationOvertime;
 	InspectFlowStatus.FlowStatus[InspectFlowStatus.Rear].waitSendHeartbeatMin		= dataBuf.waitSendHeartbeatMin;
+	InspectFlowStatus.FlowStatus[InspectFlowStatus.Rear].waitSendFlowCarCount		= dataBuf.waitSendFlowCarCount;
 	
 	InspectFlowStatus.FlowStatus[InspectFlowStatus.Rear].timeCounter				= dataBuf.timeCounter;
 	InspectFlowStatus.FlowStatus[InspectFlowStatus.Rear].unixTime				= dataBuf.unixTime;
@@ -131,6 +132,7 @@ bool Inspect_Message_FlowStatusDequeue(FlowStatusTypeDef* dataBuf)
 		dataBuf->caroutThreshhold		= InspectFlowStatus.FlowStatus[front].caroutThreshhold;
 		dataBuf->recalibrationOvertime	= InspectFlowStatus.FlowStatus[front].recalibrationOvertime;
 		dataBuf->waitSendHeartbeatMin		= InspectFlowStatus.FlowStatus[front].waitSendHeartbeatMin;
+		dataBuf->waitSendFlowCarCount		= InspectFlowStatus.FlowStatus[front].waitSendFlowCarCount;
 		
 		dataBuf->timeCounter			= InspectFlowStatus.FlowStatus[front].timeCounter;
 		dataBuf->unixTime				= InspectFlowStatus.FlowStatus[front].unixTime;
@@ -165,6 +167,7 @@ void Inspect_Message_FlowStatusDequeueEx(FlowStatusTypeDef* dataBuf)
 	dataBuf->caroutThreshhold			= InspectFlowStatus.FlowStatus[InspectFlowStatus.Rear].caroutThreshhold;
 	dataBuf->recalibrationOvertime		= InspectFlowStatus.FlowStatus[InspectFlowStatus.Rear].recalibrationOvertime;
 	dataBuf->waitSendHeartbeatMin			= InspectFlowStatus.FlowStatus[InspectFlowStatus.Rear].waitSendHeartbeatMin;
+	dataBuf->waitSendFlowCarCount			= InspectFlowStatus.FlowStatus[InspectFlowStatus.Rear].waitSendFlowCarCount;
 	
 	dataBuf->timeCounter				= InspectFlowStatus.FlowStatus[InspectFlowStatus.Rear].timeCounter;
 	dataBuf->unixTime					= InspectFlowStatus.FlowStatus[InspectFlowStatus.Rear].unixTime;

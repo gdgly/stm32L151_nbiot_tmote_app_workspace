@@ -2282,6 +2282,22 @@ MQTTSN_StatusTypeDef messageHandlerFunction(MQTTSN_ClientsTypeDef* pClient, MQTT
 					}
 			#endif
 				}
+				/* WaitCount */
+				else if (strstr((char *)messageHandler->message->payload + recvBufOffset + TCLOD_DATA_OFFSET, "WaitCount") != NULL) {
+			#if MQTTSN_DOWNLOAD_CMD_WAITCARCOUNT
+					short waitCount;
+					sscanf((char *)messageHandler->message->payload + recvBufOffset + TCLOD_DATA_OFFSET, \
+						"{(WaitCount):{(val):%hd,(Magic):%hu}}", &waitCount, &recvMagicNum);
+					if (recvMagicNum == TCLOD_MAGIC_NUM) {
+						TCFG_SystemData.FlowWaitCount = waitCount;
+						TCFG_EEPROM_SetFlowWaitCount(TCFG_SystemData.FlowWaitCount);
+						INSPECT_FLOW_Para_SetWaitSendFlowCarCount(TCFG_SystemData.FlowWaitCount);
+					}
+					else {
+						ret = NETIP_UNKNOWNERROR;
+					}
+			#endif
+				}
 				/* ...... */
 			}
 			else if (messageHandler->message->payload[recvBufOffset + TCLOD_MSGID_OFFSET] == TCLOD_CONFIG_GET) {

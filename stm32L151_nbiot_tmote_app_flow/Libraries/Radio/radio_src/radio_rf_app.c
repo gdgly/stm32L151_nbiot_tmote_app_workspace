@@ -569,6 +569,18 @@ char Radio_Rf_Operate_Recvmsg(uint8_t *inmsg, uint8_t len)
 				#endif
 			#endif
 				}
+				/* WaitCount */
+				else if (strstr(((tmote_general_cmd_s*)CFG_P_FRAME_PAYLOAD(inmsg))->buf, "waitcount")) {
+			#if RADIO_DOWNLOAD_CMD_WAITCARCOUNT
+					sscanf(((tmote_general_cmd_s*)CFG_P_FRAME_PAYLOAD(inmsg))->buf, "waitcount:%hd", &uval16);
+					TCFG_SystemData.FlowWaitCount = uval16;
+					TCFG_EEPROM_SetFlowWaitCount(TCFG_SystemData.FlowWaitCount);
+					INSPECT_FLOW_Para_SetWaitSendFlowCarCount(TCFG_SystemData.FlowWaitCount);
+				#if RADIO_CMD_ECHO_TYPE
+					Radio_Trf_Printf("WaitSendCarCount:%d", INSPECT_FLOW_Para_GetWaitSendFlowCarCount());
+				#endif
+			#endif
+				}
 				/* WorkInfo */
 				else if (strstr(((tmote_general_cmd_s*)CFG_P_FRAME_PAYLOAD(inmsg))->buf, "workinfo")) {
 			#if RADIO_CMD_UPLOAD_WORKINFO

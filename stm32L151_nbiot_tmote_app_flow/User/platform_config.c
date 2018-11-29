@@ -240,6 +240,7 @@ void RadioPrintFlowinfo(void)
 	Radio_Trf_Printf("RecalOvernum:%d", INSPECT_FLOW_Para_GetRecalibrationOvernum());
 	Radio_Trf_Printf("RecalOvertime:%d", INSPECT_FLOW_Para_GetRecalibrationOvertime());
 	Radio_Trf_Printf("WaitSendHeartMin:%d", INSPECT_FLOW_Para_GetWaitSendHeartbeatMin());
+	Radio_Trf_Printf("WaitSendFlowCount:%d", INSPECT_FLOW_Para_GetWaitSendFlowCarCount());
 	Radio_Trf_Printf("MagnetismScanCnt:%d", INSPECT_FLOW_Para_ObtainMagnetismScanCnt());
 	Radio_Trf_Printf("MagnetismBackX:%d", INSPECT_FLOW_Para_ObtainMagnetismBackX());
 	Radio_Trf_Printf("MagnetismBackY:%d", INSPECT_FLOW_Para_ObtainMagnetismBackY());

@@ -192,7 +192,7 @@ void NET_NBIOT_DataProcessing(NET_NBIOT_ClientsTypeDef* pClient)
 		CoapLongStructure.MagneticX						= FlowStatusData.magnetismX;
 		CoapLongStructure.MagneticY						= FlowStatusData.magnetismY;
 		CoapLongStructure.MagneticZ						= FlowStatusData.magnetismZ;
-		CoapLongStructure.MagneticDiff					= FlowStatusData.magnetismDiff;
+		CoapLongStructure.MagneticDiff					= FlowStatusData.waitSendFlowCarCount;
 		CoapLongStructure.RadarDistance					= FlowStatusData.carinThreshhold;
 		CoapLongStructure.RadarStrength					= FlowStatusData.caroutThreshhold;
 		CoapLongStructure.RadarCoverCount					= FlowStatusData.recalibrationOvertime;
@@ -394,7 +394,7 @@ void NET_NBIOT_DataProcessing(NET_NBIOT_ClientsTypeDef* pClient)
 		MqttSNStatusExtendStructure.MagX					= FlowStatusData.magnetismX;
 		MqttSNStatusExtendStructure.MagY					= FlowStatusData.magnetismY;
 		MqttSNStatusExtendStructure.MagZ					= FlowStatusData.magnetismZ;
-		MqttSNStatusExtendStructure.MagDiff				= FlowStatusData.magnetismDiff;
+		MqttSNStatusExtendStructure.MagDiff				= FlowStatusData.waitSendFlowCarCount;
 		MqttSNStatusExtendStructure.Distance				= FlowStatusData.carinThreshhold;
 		MqttSNStatusExtendStructure.Strength				= FlowStatusData.caroutThreshhold;
 		MqttSNStatusExtendStructure.CoverCount				= FlowStatusData.recalibrationOvertime;
@@ -536,7 +536,7 @@ void NET_NBIOT_DataProcessing(NET_NBIOT_ClientsTypeDef* pClient)
 		MqttSNLongStructure.MagneticX						= FlowStatusData.magnetismX;
 		MqttSNLongStructure.MagneticY						= FlowStatusData.magnetismY;
 		MqttSNLongStructure.MagneticZ						= FlowStatusData.magnetismZ;
-		MqttSNLongStructure.MagneticDiff					= FlowStatusData.magnetismDiff;
+		MqttSNLongStructure.MagneticDiff					= FlowStatusData.waitSendFlowCarCount;
 		MqttSNLongStructure.RadarDistance					= FlowStatusData.carinThreshhold;
 		MqttSNLongStructure.RadarStrength					= FlowStatusData.caroutThreshhold;
 		MqttSNLongStructure.RadarCoverCount				= FlowStatusData.recalibrationOvertime;

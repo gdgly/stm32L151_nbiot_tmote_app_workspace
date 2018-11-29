@@ -260,6 +260,10 @@ void TCFG_EEPROM_WriteConfigData(void)
 	TCFG_SystemData.FlowWaitHeart = INSPECT_FLOW_WAITSEND_HEARTMIN;
 	TCFG_EEPROM_SetFlowWaitHeart(TCFG_SystemData.FlowWaitHeart);
 	
+	/* 统计车辆发送次数 */
+	TCFG_SystemData.FlowWaitCount = INSPECT_FLOW_WAITSEND_CARCOUNT;
+	TCFG_EEPROM_SetFlowWaitCount(TCFG_SystemData.FlowWaitCount);
+	
 	/* 地磁扫描次数 */
 	TCFG_SystemData.FlowMagScanCnt = 0;
 	TCFG_EEPROM_SetFlowMagScanCnt(TCFG_SystemData.FlowMagScanCnt);
@@ -471,6 +475,13 @@ void TCFG_EEPROM_ReadConfigData(void)
 		TCFG_EEPROM_SetFlowWaitHeart(TCFG_SystemData.FlowWaitHeart);
 	}
 	
+	/* 统计车辆发送次数 */
+	TCFG_SystemData.FlowWaitCount = TCFG_EEPROM_GetFlowWaitCount();
+	if (TCFG_SystemData.FlowWaitCount == 0) {
+		TCFG_SystemData.FlowWaitCount = INSPECT_FLOW_WAITSEND_CARCOUNT;
+		TCFG_EEPROM_SetFlowWaitCount(TCFG_SystemData.FlowWaitCount);
+	}
+	
 	/* 地磁扫描次数 */
 	TCFG_SystemData.FlowMagScanCnt = TCFG_EEPROM_GetFlowMagScanCnt();
 	
@@ -551,6 +562,10 @@ void TCFG_EEPROM_WriteParameterData(void)
 	/* 心跳包等待时间 */
 	TCFG_SystemData.FlowWaitHeart = INSPECT_FLOW_WAITSEND_HEARTMIN;
 	TCFG_EEPROM_SetFlowWaitHeart(TCFG_SystemData.FlowWaitHeart);
+	
+	/* 统计车辆发送次数 */
+	TCFG_SystemData.FlowWaitCount = INSPECT_FLOW_WAITSEND_CARCOUNT;
+	TCFG_EEPROM_SetFlowWaitCount(TCFG_SystemData.FlowWaitCount);
 	
 	/* 地磁扫描次数 */
 	TCFG_SystemData.FlowMagScanCnt = 0;
@@ -2192,6 +2207,28 @@ unsigned int TCFG_EEPROM_GetFlowWaitHeart(void)
 }
 
 /**********************************************************************************************************
+ @Function			void TCFG_EEPROM_SetFlowWaitCount(unsigned int val)
+ @Description			TCFG_EEPROM_SetFlowWaitCount						: 保存FlowWaitCount
+ @Input				val
+ @Return				void
+**********************************************************************************************************/
+void TCFG_EEPROM_SetFlowWaitCount(unsigned int val)
+{
+	FLASH_EEPROM_WriteWord(TCFG_FLOW_WAIT_COUNT_OFFSET, val);
+}
+
+/**********************************************************************************************************
+ @Function			unsigned int TCFG_EEPROM_GetFlowWaitCount(void)
+ @Description			TCFG_EEPROM_GetFlowWaitCount						: 读取FlowWaitCount
+ @Input				void
+ @Return				val
+**********************************************************************************************************/
+unsigned int TCFG_EEPROM_GetFlowWaitCount(void)
+{
+	return FLASH_EEPROM_ReadWord(TCFG_FLOW_WAIT_COUNT_OFFSET);
+}
+
+/**********************************************************************************************************
  @Function			void TCFG_EEPROM_SetFlowMagScanCnt(unsigned int val)
  @Description			TCFG_EEPROM_SetFlowMagScanCnt						: 保存FlowMagScanCnt
  @Input				val
@@ -3559,7 +3596,7 @@ unsigned char TCFG_Utility_Get_RadarLibNum(void)
 **********************************************************************************************************/
 unsigned char TCFG_Utility_Get_AlgoLibNum(void)
 {
-	return talgo_get_lib_num();
+	return INSPECT_FLOW_LIB_VERSION;
 }
 
 /**********************************************************************************************************

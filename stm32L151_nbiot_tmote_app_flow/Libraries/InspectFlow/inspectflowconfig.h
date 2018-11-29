@@ -3,7 +3,7 @@
 
 #include "sys.h"
 
-#define INSPECT_FLOW_LIB_VERSION			1												//检测算法库
+#define INSPECT_FLOW_LIB_VERSION			2												//检测算法库
 
 #define INSPECT_FLOW_PROCESS_NUM			100												//处理数据量
 #define INSPECT_FLOW_CLUSTER_NUM			2												//集群数据量
@@ -35,6 +35,7 @@
 #define INSPECT_FLOW_RECALIBRA_OVERTIMECNT	15000											//背景重计算累加器
 #define INSPECT_FLOW_RECALIBRA_BACKSECONDS	0												//背景校准之后时间
 #define INSPECT_FLOW_WAITSEND_HEARTMIN		15												//心跳等待时间
+#define INSPECT_FLOW_WAITSEND_CARCOUNT		30												//统计车辆发送次数
 
 #define INSPECT_FLOW_BEEP_DISABLE			0
 #define INSPECT_FLOW_BEEP_ENABLE			1
@@ -131,6 +132,7 @@ typedef struct
 	unsigned int						recalibrationOvertimeCnt;							//背景重计算累加器
 	unsigned int						recalibrationBackSeconds;							//背景校准之后时间
 	unsigned int						waitSendHeartbeatMin;								//心跳等待时间
+	unsigned int						waitSendFlowCnt;									//统计车辆发送次数
 }INSPECT_FlowConfigurationTypeDef;
 
 /* Inspect Flow Parameter */
