@@ -31,7 +31,8 @@ GD25Q_StatusTypeDef GD25QStatus = GD25Q80CSIG_OK;
 **********************************************************************************************************/
 void GD25Q_SPIFLASH_Init(void)
 {
-	u32 ReadIdentificationID;
+	u32 ReadDeviceID;
+	GD25QStatus = GD25Q80CSIG_OK;
 	
 	GD25Q_SPIFLASH_Handler.Instance				= GD25Q_FLASH_SPIx;						//SPI1
 	GD25Q_SPIFLASH_Handler.Init.Mode				= SPI_MODE_MASTER;						//设置SPI工作模式为主模式
@@ -64,9 +65,16 @@ void GD25Q_SPIFLASH_Init(void)
 	}
 	
 	GD25Q_SPIFLASH_WakeUp();
-	ReadIdentificationID = GD25Q_SPIFLASH_ReadIdentificationID();
-	if ((ReadIdentificationID != GD25Q80CSIGIdentificationID) && (ReadIdentificationID != GD25Q40BSIGIdentificationID)) {
-		GD25QStatus = GD25Q80CSIG_ERROR;
+	
+	for (int nCount = 0; nCount < 3; nCount++) {
+		ReadDeviceID = GD25Q_SPIFLASH_ReadDeviceID();
+		if ((ReadDeviceID != GD25Q80CSIGDeviceID) && (ReadDeviceID != GD25Q40BSIGDeviceID)) {
+			GD25QStatus = GD25Q80CSIG_ERROR;
+		}
+		else {
+			GD25QStatus = GD25Q80CSIG_OK;
+			break;
+		}
 	}
 }
 
