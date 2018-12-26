@@ -34,8 +34,8 @@
 #define INSPECT_FLOW_RECALIBRA_OVERTIME		5												//背景值重新计算时间
 #define INSPECT_FLOW_RECALIBRA_OVERTIMECNT	15000											//背景重计算累加器
 #define INSPECT_FLOW_RECALIBRA_BACKSECONDS	0												//背景校准之后时间
-#define INSPECT_FLOW_WAITSEND_HEARTMIN		15												//心跳等待时间
-#define INSPECT_FLOW_WAITSEND_CARCOUNT		30												//统计车辆发送次数
+#define INSPECT_FLOW_WAITSEND_HEARTMIN		10												//心跳等待时间
+#define INSPECT_FLOW_WAITSEND_CARCOUNT		65535											//统计车辆发送次数
 
 #define INSPECT_FLOW_BEEP_DISABLE			0
 #define INSPECT_FLOW_BEEP_ENABLE			1
