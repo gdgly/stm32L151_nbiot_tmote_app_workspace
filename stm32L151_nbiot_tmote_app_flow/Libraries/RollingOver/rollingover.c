@@ -73,7 +73,13 @@ bool RollingOverCheckToActive(void)
 		ROLLINGOVER_LOG_PRINTF("rolup:[4]-[0]=%d", (rollingover_time[4] - rollingover_time[0]));
 #endif
 		if (((rollingover_time[4] - rollingover_time[0]) < 24) && ((rollingover_time[4] - rollingover_time[0]) > 8)) {
+	#if ROLLINGOVER_INITSENSOR_TYPE
 			InitSensorBackgroundCntdown = 3;
+	#else
+			if (TCFG_EEPROM_GetRollingOverInitSensor() != 0) {
+				InitSensorBackgroundCntdown = 3;
+			}
+	#endif
 			rollingover_time[0] = 0;
 			rollingover_time[1] = 0;
 			rollingover_time[2] = 0;

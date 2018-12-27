@@ -1,6 +1,23 @@
-# stm32L151_nbiot_tmote_app_spot
-movebroad Knagkang ps: 版本号以下为此版本修改、增加、去除等内容记录！
+# stm32L151_nbiot_tmote_app_flow
+> ##### Copyright (C) 2018 Movebroad Version:20.136 Design by Movebroad
+> ##### movebroad Kangkang ps: 版本号以下为此版本修改、增加、去除等内容记录！
 
+* 2018-12-28 :
+	* Workinfo包中增加RadioRv字段,1:附近有配置器且收到配置器下发数据,0:附近无配置器或没收到配置器下发数据。
+	* 优化各个Message的内存占用,采用不限定包长Fifo存储。
+	* 去掉Info包中Rssi与Snr字段。
+	* Info包最大上传字节修改为450字节。
+	* 优化NetFifo内存大小的设置。
+	* 命令控制是否开启翻转初始化,默认开启。
+	* 下行指令宏控制整理。
+	* CoAP发送Fifo增加到3072字节,接收Fifo增加到2048字节。
+	* PCP接收Fifo增加到2048字节。
+* 2018-12-27 :
+	* 优化底层hal库中检测传递形参是否为空指针的无用代码,减少Flash占用。
+	* 远程升级限制信噪比降低至-80。
+	* 优化Net数据包创建相同代码Flash占用。
+* 2018-12-27 :
+	* 版本号修改为136。
 * 2018-12-07 :
 	* 版本号修改为135。
 	* 增加测试点超时5分钟后由测试模式变为工作模式。

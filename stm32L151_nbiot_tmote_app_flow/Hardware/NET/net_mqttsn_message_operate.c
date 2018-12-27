@@ -19,6 +19,7 @@
 #include "platform_config.h"
 #include "platform_map.h"
 #include "stm32l1xx_config.h"
+#include "fifomessage.h"
 #include "hal_rtc.h"
 #include "radar_api.h"
 #include "tmesh_algorithm.h"
@@ -37,7 +38,18 @@ MQTTSN_SwapInfoResponseTypeDef	NETMqttSNMessageParkInfoResponse;
 
 #if MQTTSN_MSG_VERSION_STREAM_TYPE == MQTTSN_MSG_VERSION_BYTE_STREAM
 
+#if NETFIFOMESSAGETYPE == NETFIFOMESSAGEDISABLE
 MQTTSN_SwapSendDataTypeDef		NETMqttSNMessageSendPark;
+#endif
+
+#if NETFIFOMESSAGETYPE == NETFIFOMESSAGEENABLE
+#define MESSAGEMQTTSNFIFO_SENDPARKNUM_MAX		NETFIFO_MQTTSNSENDPARKNUM_MAX
+#define MESSAGEMQTTSNFIFO_SENDPARKSIZE_MAX		NETFIFO_MQTTSNSENDPARKSIZE_MAX
+
+MessageFifoTypeDef			NETMqttSNFifoMessageSendPark;
+
+unsigned char				MqttSNFifoMessageSendBuf[MESSAGEMQTTSNFIFO_SENDPARKSIZE_MAX];
+#endif
 
 #endif
 
@@ -210,7 +222,8 @@ int NET_Message_Operate_Creat_Json_MoteInfo_Work(char* outBuffer)
 				"\"Nbruntime\":\"%d.%d\","
 				"\"PCP\":\"%d.%d-%d.%d.V%d.%d\","
 				"\"Coef\":\"%d.%d.%d\","
-				"\"Beepoff\":\"%d\""
+				"\"Beepoff\":\"%d\","
+				"\"RadioRv\":\"%d\""
 			"}"
 		"}",
 		
@@ -227,7 +240,8 @@ int NET_Message_Operate_Creat_Json_MoteInfo_Work(char* outBuffer)
 		TCFG_Utility_Get_Nbiot_PCPUpgradeStartTimes(), TCFG_Utility_Get_Nbiot_PCPUpgradePackSliceIndex(), TCFG_Utility_Get_Nbiot_PCPUpgradePackSliceNum(),
 		TCFG_Utility_Get_Nbiot_PCPUpgradePackSliceSize(), TCFG_Utility_Get_Nbiot_PCPPlatformSoftVersionMajor(), TCFG_Utility_Get_Nbiot_PCPPlatformSoftVersionSub(),
 		TCFG_SystemData.MagCoefX, TCFG_SystemData.MagCoefY, TCFG_SystemData.MagCoefZ,
-		TCFG_EEPROM_GetBeepOff()
+		TCFG_EEPROM_GetBeepOff(),
+		TCFG_Utility_Get_RadioGatewayNearby()
 	);
 	
 	return strlen(outBuffer);
@@ -307,8 +321,6 @@ int NET_Message_Operate_Creat_Json_MoteInfo_Dynamic(char* outBuffer)
 			"\"TMoteInfo\":"
 			"{"
 				"\"Runtime\":%d,"
-				"\"Rssi\":%d,"
-				"\"Snr\":%d,"
 				"\"Batt\":%d,"
 				"\"Rlib\":\"%d\","
 				"\"Rcnt\":%d,"
@@ -325,8 +337,6 @@ int NET_Message_Operate_Creat_Json_MoteInfo_Dynamic(char* outBuffer)
 		
 		dataBuf.DeviceSN,
 		TCFG_Utility_Get_Run_Time(),
-		TCFG_Utility_Get_Nbiot_Rssi_IntVal(),
-		TCFG_Utility_Get_Nbiot_RadioSNR(),
 		TCFG_Utility_Get_Device_Batt_ShortVal(),
 		TCFG_Utility_Get_RadarLibNum(),
 		TCFG_GetRadarCount(),
@@ -384,7 +394,7 @@ int NET_Message_Operate_Creat_Json_MoteInfo_Response(char* outBuffer)
  @Description			NET_MQTTSN_Message_Operate_Creat_Json_Work_Info
  @Input				outBuffer
  @Return				Length
- @attention			!!<<< MaxLength 300Byte >>>!!
+ @attention			!!<<< MaxLength 450Byte >>>!!
 **********************************************************************************************************/
 int NET_MQTTSN_Message_Operate_Creat_Json_Work_Info(char* outBuffer)
 {
@@ -406,7 +416,9 @@ int NET_MQTTSN_Message_Operate_Creat_Json_Work_Info(char* outBuffer)
 				"\"Nbruntime\":\"%d.%d\","
 				"\"PCP\":\"%d.%d-%d.%d.V%d.%d\","
 				"\"Coef\":\"%d.%d.%d\","
-				"\"Beepoff\":\"%d\""
+				"\"Beepoff\":%d,"
+				"\"Rollinit\":%d,"
+				"\"RadioRv\":%d"
 			"}"
 		"}",
 		
@@ -423,7 +435,9 @@ int NET_MQTTSN_Message_Operate_Creat_Json_Work_Info(char* outBuffer)
 		TCFG_Utility_Get_Nbiot_PCPUpgradeStartTimes(), TCFG_Utility_Get_Nbiot_PCPUpgradePackSliceIndex(), TCFG_Utility_Get_Nbiot_PCPUpgradePackSliceNum(),
 		TCFG_Utility_Get_Nbiot_PCPUpgradePackSliceSize(), TCFG_Utility_Get_Nbiot_PCPPlatformSoftVersionMajor(), TCFG_Utility_Get_Nbiot_PCPPlatformSoftVersionSub(),
 		TCFG_SystemData.MagCoefX, TCFG_SystemData.MagCoefY, TCFG_SystemData.MagCoefZ,
-		TCFG_EEPROM_GetBeepOff()
+		TCFG_EEPROM_GetBeepOff(),
+		TCFG_EEPROM_GetRollingOverInitSensor(),
+		TCFG_Utility_Get_RadioGatewayNearby()
 	);
 	
 	return strlen(outBuffer);
@@ -434,7 +448,7 @@ int NET_MQTTSN_Message_Operate_Creat_Json_Work_Info(char* outBuffer)
  @Description			NET_MQTTSN_Message_Operate_Creat_Json_Basic_Info
  @Input				outBuffer
  @Return				Length
- @attention			!!<<< MaxLength 300Byte >>>!!
+ @attention			!!<<< MaxLength 450Byte >>>!!
 **********************************************************************************************************/
 int NET_MQTTSN_Message_Operate_Creat_Json_Basic_Info(char* outBuffer)
 {
@@ -481,7 +495,7 @@ int NET_MQTTSN_Message_Operate_Creat_Json_Basic_Info(char* outBuffer)
  @Description			NET_MQTTSN_Message_Operate_Creat_Json_Dynamic_Info
  @Input				outBuffer
  @Return				Length
- @attention			!!<<< MaxLength 300Byte >>>!!
+ @attention			!!<<< MaxLength 450Byte >>>!!
 **********************************************************************************************************/
 int NET_MQTTSN_Message_Operate_Creat_Json_Dynamic_Info(char* outBuffer)
 {
@@ -491,8 +505,6 @@ int NET_MQTTSN_Message_Operate_Creat_Json_Dynamic_Info(char* outBuffer)
 			"\"TMoteInfo\":"
 			"{"
 				"\"Runtime\":%d,"
-				"\"Rssi\":%d,"
-				"\"Snr\":%d,"
 				"\"Batt\":%d,"
 				"\"Rlib\":\"%d\","
 				"\"Rcnt\":%d,"
@@ -509,8 +521,6 @@ int NET_MQTTSN_Message_Operate_Creat_Json_Dynamic_Info(char* outBuffer)
 		
 		TCFG_EEPROM_Get_MAC_SN(),
 		TCFG_Utility_Get_Run_Time(),
-		TCFG_Utility_Get_Nbiot_Rssi_IntVal(),
-		TCFG_Utility_Get_Nbiot_RadioSNR(),
 		TCFG_Utility_Get_Device_Batt_ShortVal(),
 		TCFG_Utility_Get_RadarLibNum(),
 		TCFG_GetRadarCount(),
@@ -533,7 +543,7 @@ int NET_MQTTSN_Message_Operate_Creat_Json_Dynamic_Info(char* outBuffer)
  @Input				outBuffer
 					errcode
  @Return				Length
- @attention			!!<<< MaxLength 300Byte >>>!!
+ @attention			!!<<< MaxLength 450Byte >>>!!
 **********************************************************************************************************/
 int NET_MQTTSN_Message_Operate_Creat_Json_Response_Info(char* outBuffer, u16 errcode)
 {
@@ -1347,6 +1357,20 @@ unsigned char NET_MqttSN_Message_InfoResponseRear(void)
 #if MQTTSN_MSG_VERSION_STREAM_TYPE == MQTTSN_MSG_VERSION_BYTE_STREAM
 
 /**********************************************************************************************************
+ @Function			void NET_MqttSN_FifoSendMessageInit(void)
+ @Description			NET_MqttSN_FifoSendMessageInit	: 发送数据Fifo初始化
+ @Input				void
+ @Return				void
+**********************************************************************************************************/
+void NET_MqttSN_FifoSendMessageInit(void)
+{
+#if NETFIFOMESSAGETYPE == NETFIFOMESSAGEENABLE
+	netMessageFifoInit(&NETMqttSNFifoMessageSendPark, MqttSNFifoMessageSendBuf, sizeof(MqttSNFifoMessageSendBuf), MESSAGEMQTTSNFIFO_SENDPARKNUM_MAX);
+#endif
+}
+
+#if NETFIFOMESSAGETYPE == NETFIFOMESSAGEDISABLE
+/**********************************************************************************************************
  @Function			bool NET_MqttSN_Message_SendDataisFull(void)
  @Description			NET_MqttSN_Message_SendDataisFull	: 检查发送队列是否已满
  @Input				void
@@ -1366,6 +1390,7 @@ bool NET_MqttSN_Message_SendDataisFull(void)
 	
 	return MessageState;
 }
+#endif
 
 /**********************************************************************************************************
  @Function			bool NET_MqttSN_Message_SendDataisEmpty(void)
@@ -1376,6 +1401,7 @@ bool NET_MqttSN_Message_SendDataisFull(void)
 **********************************************************************************************************/
 bool NET_MqttSN_Message_SendDataisEmpty(void)
 {
+#if NETFIFOMESSAGETYPE == NETFIFOMESSAGEDISABLE
 	bool MessageState;
 	
 	if (NETMqttSNMessageSendPark.Front == NETMqttSNMessageSendPark.Rear) {
@@ -1386,6 +1412,11 @@ bool NET_MqttSN_Message_SendDataisEmpty(void)
 	}
 	
 	return MessageState;
+#endif
+	
+#if NETFIFOMESSAGETYPE == NETFIFOMESSAGEENABLE
+	return netMessageFifoisEmpty(&NETMqttSNFifoMessageSendPark);
+#endif
 }
 
 /**********************************************************************************************************
@@ -1397,6 +1428,7 @@ bool NET_MqttSN_Message_SendDataisEmpty(void)
 **********************************************************************************************************/
 void NET_MqttSN_Message_SendDataEnqueue(unsigned char* dataBuf, unsigned short dataLength)
 {
+#if NETFIFOMESSAGETYPE == NETFIFOMESSAGEDISABLE
 	if ((dataBuf == NULL) || (dataLength > MQTTSN_SEND_BUFFER_SIZE)) {
 		return;
 	}
@@ -1409,6 +1441,11 @@ void NET_MqttSN_Message_SendDataEnqueue(unsigned char* dataBuf, unsigned short d
 	if (NET_MqttSN_Message_SendDataisFull() == true) {												//队列已满
 		NETMqttSNMessageSendPark.Front = (NETMqttSNMessageSendPark.Front + 1) % MQTTSN_SEND_PARK_NUM;			//队头偏移1
 	}
+#endif
+	
+#if NETFIFOMESSAGETYPE == NETFIFOMESSAGEENABLE
+	netMessageFifoEnqueue(&NETMqttSNFifoMessageSendPark, dataBuf, dataLength);
+#endif
 }
 
 /**********************************************************************************************************
@@ -1421,6 +1458,7 @@ void NET_MqttSN_Message_SendDataEnqueue(unsigned char* dataBuf, unsigned short d
 **********************************************************************************************************/
 bool NET_MqttSN_Message_SendDataDequeue(unsigned char* dataBuf, unsigned short* dataLength)
 {
+#if NETFIFOMESSAGETYPE == NETFIFOMESSAGEDISABLE
 	bool MessageState;
 	unsigned char front;
 	
@@ -1435,6 +1473,11 @@ bool NET_MqttSN_Message_SendDataDequeue(unsigned char* dataBuf, unsigned short* 
 	}
 	
 	return MessageState;
+#endif
+	
+#if NETFIFOMESSAGETYPE == NETFIFOMESSAGEENABLE
+	return netMessageFifoDequeue(&NETMqttSNFifoMessageSendPark, dataBuf, dataLength);
+#endif
 }
 
 /**********************************************************************************************************
@@ -1446,6 +1489,7 @@ bool NET_MqttSN_Message_SendDataDequeue(unsigned char* dataBuf, unsigned short* 
 **********************************************************************************************************/
 bool NET_MqttSN_Message_SendDataOffSet(void)
 {
+#if NETFIFOMESSAGETYPE == NETFIFOMESSAGEDISABLE
 	bool MessageState;
 	
 	if (NET_MqttSN_Message_SendDataisEmpty() == true) {												//队列已空
@@ -1457,6 +1501,11 @@ bool NET_MqttSN_Message_SendDataOffSet(void)
 	}
 	
 	return MessageState;
+#endif
+	
+#if NETFIFOMESSAGETYPE == NETFIFOMESSAGEENABLE
+	return netMessageFifoDiscard(&NETMqttSNFifoMessageSendPark);
+#endif
 }
 
 /**********************************************************************************************************
@@ -1467,7 +1516,13 @@ bool NET_MqttSN_Message_SendDataOffSet(void)
 **********************************************************************************************************/
 unsigned char NET_MqttSN_Message_SendDataRear(void)
 {
+#if NETFIFOMESSAGETYPE == NETFIFOMESSAGEDISABLE
 	return NETMqttSNMessageSendPark.Rear;
+#endif
+	
+#if NETFIFOMESSAGETYPE == NETFIFOMESSAGEENABLE
+	return netMessageFifoRear(&NETMqttSNFifoMessageSendPark);
+#endif
 }
 
 #endif

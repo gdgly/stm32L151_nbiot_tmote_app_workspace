@@ -103,6 +103,9 @@ void Inspect_Spot_ExistenceDetect(void)
 	static uint8_t prepare2send_radar = 0;
 	
 	talgo_set_sensitivity(TCFG_SystemData.Sensitivity - 1);
+	tradar_set_gain_in_cover(TCFG_SystemData.CoverGain);
+	talgo_set_sense_mode(TCFG_SystemData.SenseMode);
+	tradar_set_highpass(TCFG_SystemData.RadarHighPass);
 	
 	SpotStatus = (TALGO_SPOTSTATUS)talgro_vechile_judge(&SpotStatusData);
 	
@@ -112,6 +115,8 @@ void Inspect_Spot_ExistenceDetect(void)
 		SpotStatusDataBackUp = SpotStatusData;
 		noStatusSent = 0;
 		Radio_Trf_Do_Heartbeat();
+		
+		Radio_Trf_Debug_Printf_Level3("ispect:errcode=%d", SpotStatusData.radarData.timedomain_dif);
 		
 		if (SpotStatus == SPOT_OCCUPY2FREE) {
 			BEEP_CtrlRepeat_Extend(1, 30, 70);

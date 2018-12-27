@@ -19,19 +19,35 @@
 #include "platform_config.h"
 #include "platform_map.h"
 #include "stm32l1xx_config.h"
+#include "fifomessage.h"
 #include "radar_api.h"
 #include "tmesh_algorithm.h"
 #include "string.h"
 
+#if NETFIFOMESSAGETYPE == NETFIFOMESSAGEDISABLE
 COAP_SwapSendDataTypeDef		NETCoapMessageSendPark;
 COAP_SwapRecvDataTypeDef		NETCoapMessageRecvPark;
+#endif
+
+#if NETFIFOMESSAGETYPE == NETFIFOMESSAGEENABLE
+#define MESSAGEFIFO_SENDPARKNUM_MAX			NETFIFO_COAPSENDPARKNUM_MAX
+#define MESSAGEFIFO_RECVPARKNUM_MAX			NETFIFO_COAPRECVPARKNUM_MAX
+#define MESSAGEFIFO_SENDPARKSIZE_MAX			NETFIFO_COAPSENDPARKSIZE_MAX
+#define MESSAGEFIFO_RECVPARKSIZE_MAX			NETFIFO_COAPRECVPARKSIZE_MAX
+
+MessageFifoTypeDef			NETCoapFifoMessageSendPark;
+MessageFifoTypeDef			NETCoapFifoMessageRecvPark;
+
+unsigned char				FifoMessageSendBuf[MESSAGEFIFO_SENDPARKSIZE_MAX];
+unsigned char				FifoMessageRecvBuf[MESSAGEFIFO_RECVPARKSIZE_MAX];
+#endif
 
 /**********************************************************************************************************
  @Function			int NET_COAP_Message_Operate_Creat_Json_Work_Info(char* outBuffer)
  @Description			NET_COAP_Message_Operate_Creat_Json_Work_Info
  @Input				outBuffer
  @Return				Length
- @attention			!!<<< MaxLength 300Byte >>>!!
+ @attention			!!<<< MaxLength 450Byte >>>!!
 **********************************************************************************************************/
 int NET_COAP_Message_Operate_Creat_Json_Work_Info(char* outBuffer)
 {
@@ -53,7 +69,9 @@ int NET_COAP_Message_Operate_Creat_Json_Work_Info(char* outBuffer)
 				"\"Nbruntime\":\"%d.%d\","
 				"\"PCP\":\"%d.%d-%d.%d.V%d.%d\","
 				"\"Coef\":\"%d.%d.%d\","
-				"\"Beepoff\":\"%d\""
+				"\"Beepoff\":%d,"
+				"\"Rollinit\":%d,"
+				"\"RadioRv\":%d"
 			"}"
 		"}",
 		
@@ -70,7 +88,9 @@ int NET_COAP_Message_Operate_Creat_Json_Work_Info(char* outBuffer)
 		TCFG_Utility_Get_Nbiot_PCPUpgradeStartTimes(), TCFG_Utility_Get_Nbiot_PCPUpgradePackSliceIndex(), TCFG_Utility_Get_Nbiot_PCPUpgradePackSliceNum(),
 		TCFG_Utility_Get_Nbiot_PCPUpgradePackSliceSize(), TCFG_Utility_Get_Nbiot_PCPPlatformSoftVersionMajor(), TCFG_Utility_Get_Nbiot_PCPPlatformSoftVersionSub(),
 		TCFG_SystemData.MagCoefX, TCFG_SystemData.MagCoefY, TCFG_SystemData.MagCoefZ,
-		TCFG_EEPROM_GetBeepOff()
+		TCFG_EEPROM_GetBeepOff(),
+		TCFG_EEPROM_GetRollingOverInitSensor(),
+		TCFG_Utility_Get_RadioGatewayNearby()
 	);
 	
 	return strlen(outBuffer);
@@ -81,7 +101,7 @@ int NET_COAP_Message_Operate_Creat_Json_Work_Info(char* outBuffer)
  @Description			NET_COAP_Message_Operate_Creat_Json_Basic_Info
  @Input				outBuffer
  @Return				Length
- @attention			!!<<< MaxLength 300Byte >>>!!
+ @attention			!!<<< MaxLength 450Byte >>>!!
 **********************************************************************************************************/
 int NET_COAP_Message_Operate_Creat_Json_Basic_Info(char* outBuffer)
 {
@@ -128,7 +148,7 @@ int NET_COAP_Message_Operate_Creat_Json_Basic_Info(char* outBuffer)
  @Description			NET_COAP_Message_Operate_Creat_Json_Dynamic_Info
  @Input				outBuffer
  @Return				Length
- @attention			!!<<< MaxLength 300Byte >>>!!
+ @attention			!!<<< MaxLength 450Byte >>>!!
 **********************************************************************************************************/
 int NET_COAP_Message_Operate_Creat_Json_Dynamic_Info(char* outBuffer)
 {
@@ -138,8 +158,6 @@ int NET_COAP_Message_Operate_Creat_Json_Dynamic_Info(char* outBuffer)
 			"\"TMoteInfo\":"
 			"{"
 				"\"Runtime\":%d,"
-				"\"Rssi\":%d,"
-				"\"Snr\":%d,"
 				"\"Batt\":%d,"
 				"\"Rlib\":\"%d\","
 				"\"Rcnt\":%d,"
@@ -156,8 +174,6 @@ int NET_COAP_Message_Operate_Creat_Json_Dynamic_Info(char* outBuffer)
 		
 		TCFG_EEPROM_Get_MAC_SN(),
 		TCFG_Utility_Get_Run_Time(),
-		TCFG_Utility_Get_Nbiot_Rssi_IntVal(),
-		TCFG_Utility_Get_Nbiot_RadioSNR(),
 		TCFG_Utility_Get_Device_Batt_ShortVal(),
 		TCFG_Utility_Get_RadarLibNum(),
 		TCFG_GetRadarCount(),
@@ -180,7 +196,7 @@ int NET_COAP_Message_Operate_Creat_Json_Dynamic_Info(char* outBuffer)
  @Input				outBuffer
 					errcode
  @Return				Length
- @attention			!!<<< MaxLength 300Byte >>>!!
+ @attention			!!<<< MaxLength 450Byte >>>!!
 **********************************************************************************************************/
 int NET_COAP_Message_Operate_Creat_Json_Response_Info(char* outBuffer, u16 errcode)
 {
@@ -231,6 +247,7 @@ int NET_COAP_Message_Operate_Creat_Qmc5883L_Data(unsigned char* outBuffer)
 	return bufoffset;
 }
 
+#if NETFIFOMESSAGETYPE == NETFIFOMESSAGEDISABLE
 /**********************************************************************************************************
  @Function			static bool NET_Coap_Message_SendDataisFull(void)
  @Description			NET_Coap_Message_SendDataisFull	: 检查发送队列是否已满
@@ -314,6 +331,33 @@ static bool NET_Coap_Message_RecvDataisEmpty(void)
 	
 	return MessageState;
 }
+#endif
+
+/**********************************************************************************************************
+ @Function			void NET_Coap_FifoSendMessageInit(void)
+ @Description			NET_Coap_FifoSendMessageInit		: 发送数据Fifo初始化
+ @Input				void
+ @Return				void
+**********************************************************************************************************/
+void NET_Coap_FifoSendMessageInit(void)
+{
+#if NETFIFOMESSAGETYPE == NETFIFOMESSAGEENABLE
+	netMessageFifoInit(&NETCoapFifoMessageSendPark, FifoMessageSendBuf, sizeof(FifoMessageSendBuf), MESSAGEFIFO_SENDPARKNUM_MAX);
+#endif
+}
+
+/**********************************************************************************************************
+ @Function			void NET_Coap_FifoRecvMessageInit(void)
+ @Description			NET_Coap_FifoRecvMessageInit		: 接收数据Fifo初始化
+ @Input				void
+ @Return				void
+**********************************************************************************************************/
+void NET_Coap_FifoRecvMessageInit(void)
+{
+#if NETFIFOMESSAGETYPE == NETFIFOMESSAGEENABLE
+	netMessageFifoInit(&NETCoapFifoMessageRecvPark, FifoMessageRecvBuf, sizeof(FifoMessageRecvBuf), MESSAGEFIFO_RECVPARKNUM_MAX);
+#endif
+}
 
 /**********************************************************************************************************
  @Function			void NET_Coap_Message_SendDataEnqueue(unsigned char* dataBuf, unsigned short dataLength)
@@ -324,6 +368,7 @@ static bool NET_Coap_Message_RecvDataisEmpty(void)
 **********************************************************************************************************/
 void NET_Coap_Message_SendDataEnqueue(unsigned char* dataBuf, unsigned short dataLength)
 {
+#if NETFIFOMESSAGETYPE == NETFIFOMESSAGEDISABLE
 	if ((dataBuf == NULL) || (dataLength > COAP_SEND_BUFFER_SIZE)) {
 		return;
 	}
@@ -336,6 +381,11 @@ void NET_Coap_Message_SendDataEnqueue(unsigned char* dataBuf, unsigned short dat
 	if (NET_Coap_Message_SendDataisFull() == true) {													//队列已满
 		NETCoapMessageSendPark.Front = (NETCoapMessageSendPark.Front + 1) % COAP_SEND_PARK_NUM;				//队头偏移1
 	}
+#endif
+	
+#if NETFIFOMESSAGETYPE == NETFIFOMESSAGEENABLE
+	netMessageFifoEnqueue(&NETCoapFifoMessageSendPark, dataBuf, dataLength);
+#endif
 }
 
 /**********************************************************************************************************
@@ -347,6 +397,7 @@ void NET_Coap_Message_SendDataEnqueue(unsigned char* dataBuf, unsigned short dat
 **********************************************************************************************************/
 void NET_Coap_Message_RecvDataEnqueue(unsigned char* dataBuf, unsigned short dataLength)
 {
+#if NETFIFOMESSAGETYPE == NETFIFOMESSAGEDISABLE
 	if ((dataBuf == NULL) || (dataLength > COAP_RECV_BUFFER_SIZE)) {
 		return;
 	}
@@ -359,6 +410,11 @@ void NET_Coap_Message_RecvDataEnqueue(unsigned char* dataBuf, unsigned short dat
 	if (NET_Coap_Message_RecvDataisFull() == true) {													//队列已满
 		NETCoapMessageRecvPark.Front = (NETCoapMessageRecvPark.Front + 1) % COAP_RECV_PARK_NUM;				//队头偏移1
 	}
+#endif
+	
+#if NETFIFOMESSAGETYPE == NETFIFOMESSAGEENABLE
+	netMessageFifoEnqueue(&NETCoapFifoMessageRecvPark, dataBuf, dataLength);
+#endif
 }
 
 /**********************************************************************************************************
@@ -371,6 +427,7 @@ void NET_Coap_Message_RecvDataEnqueue(unsigned char* dataBuf, unsigned short dat
 **********************************************************************************************************/
 bool NET_Coap_Message_SendDataDequeue(unsigned char* dataBuf, unsigned short* dataLength)
 {
+#if NETFIFOMESSAGETYPE == NETFIFOMESSAGEDISABLE
 	bool MessageState;
 	unsigned char front;
 	
@@ -385,6 +442,11 @@ bool NET_Coap_Message_SendDataDequeue(unsigned char* dataBuf, unsigned short* da
 	}
 	
 	return MessageState;
+#endif
+	
+#if NETFIFOMESSAGETYPE == NETFIFOMESSAGEENABLE
+	return netMessageFifoDequeue(&NETCoapFifoMessageSendPark, dataBuf, dataLength);
+#endif
 }
 
 /**********************************************************************************************************
@@ -397,6 +459,7 @@ bool NET_Coap_Message_SendDataDequeue(unsigned char* dataBuf, unsigned short* da
 **********************************************************************************************************/
 bool NET_Coap_Message_RecvDataDequeue(unsigned char* dataBuf, unsigned short* dataLength)
 {
+#if NETFIFOMESSAGETYPE == NETFIFOMESSAGEDISABLE
 	bool MessageState;
 	unsigned char front;
 	
@@ -411,6 +474,11 @@ bool NET_Coap_Message_RecvDataDequeue(unsigned char* dataBuf, unsigned short* da
 	}
 	
 	return MessageState;
+#endif
+	
+#if NETFIFOMESSAGETYPE == NETFIFOMESSAGEENABLE
+	return netMessageFifoDequeue(&NETCoapFifoMessageRecvPark, dataBuf, dataLength);
+#endif
 }
 
 /**********************************************************************************************************
@@ -422,6 +490,7 @@ bool NET_Coap_Message_RecvDataDequeue(unsigned char* dataBuf, unsigned short* da
 **********************************************************************************************************/
 bool NET_Coap_Message_SendDataOffSet(void)
 {
+#if NETFIFOMESSAGETYPE == NETFIFOMESSAGEDISABLE
 	bool MessageState;
 	
 	if (NET_Coap_Message_SendDataisEmpty() == true) {													//队列已空
@@ -433,6 +502,11 @@ bool NET_Coap_Message_SendDataOffSet(void)
 	}
 	
 	return MessageState;
+#endif
+	
+#if NETFIFOMESSAGETYPE == NETFIFOMESSAGEENABLE
+	return netMessageFifoDiscard(&NETCoapFifoMessageSendPark);
+#endif
 }
 
 /**********************************************************************************************************
@@ -444,6 +518,7 @@ bool NET_Coap_Message_SendDataOffSet(void)
 **********************************************************************************************************/
 bool NET_Coap_Message_RecvDataOffSet(void)
 {
+#if NETFIFOMESSAGETYPE == NETFIFOMESSAGEDISABLE
 	bool MessageState;
 	
 	if (NET_Coap_Message_RecvDataisEmpty() == true) {													//队列已空
@@ -455,6 +530,11 @@ bool NET_Coap_Message_RecvDataOffSet(void)
 	}
 	
 	return MessageState;
+#endif
+	
+#if NETFIFOMESSAGETYPE == NETFIFOMESSAGEENABLE
+	return netMessageFifoDiscard(&NETCoapFifoMessageRecvPark);
+#endif
 }
 
 /**********************************************************************************************************
@@ -465,7 +545,13 @@ bool NET_Coap_Message_RecvDataOffSet(void)
 **********************************************************************************************************/
 unsigned char NET_Coap_Message_SendDataRear(void)
 {
+#if NETFIFOMESSAGETYPE == NETFIFOMESSAGEDISABLE
 	return NETCoapMessageSendPark.Rear;
+#endif
+	
+#if NETFIFOMESSAGETYPE == NETFIFOMESSAGEENABLE
+	return netMessageFifoRear(&NETCoapFifoMessageSendPark);
+#endif
 }
 
 /**********************************************************************************************************
@@ -476,7 +562,13 @@ unsigned char NET_Coap_Message_SendDataRear(void)
 **********************************************************************************************************/
 unsigned char NET_Coap_Message_RecvDataRear(void)
 {
+#if NETFIFOMESSAGETYPE == NETFIFOMESSAGEDISABLE
 	return NETCoapMessageRecvPark.Rear;
+#endif
+	
+#if NETFIFOMESSAGETYPE == NETFIFOMESSAGEENABLE
+	return netMessageFifoRear(&NETCoapFifoMessageRecvPark);
+#endif
 }
 
 /********************************************** END OF FLEE **********************************************/

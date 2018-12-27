@@ -266,6 +266,9 @@ void MainRollingEnteredUpWork(void)
 #elif NETPROTOCAL == NETONENET
 	NETOneNETNeedSendCode.WorkInfoWait = 3;
 #endif
+	
+	if (TCFG_SystemData.NBIotSentCountDay != 0) TCFG_SystemData.NBIotSentCountDay = 0;
+	if (TCFG_EEPROM_GetNBIotSentCountDay() != 0) TCFG_EEPROM_SetNBIotSentCountDay(TCFG_SystemData.NBIotSentCountDay);
 }
 
 /**********************************************************************************************************
@@ -300,8 +303,30 @@ void MainRollingUpwardsActived(void)
 		if (!((NETCoapNeedSendCode.WorkInfoWait > 0) || (NETMqttSNNeedSendCode.InfoWorkWait > 0) || (NETOneNETNeedSendCode.WorkInfoWait > 0))) {
 	#if PRODUCTTEST_READ_TYPE
 			if (ProductTest_Read()) {
+			#if NBIOT_SNEDCOUNTDAY_LIMIT_TYPE
+				if (TCFG_Utility_Get_NBIot_SentCountDay() == TCFG_EEPROM_GetNBIotSentCountLimit()) {
+				#if NETPROTOCAL == NETCOAP
+					NETCoapNeedSendCode.DynamicInfo = 1;
+				#elif NETPROTOCAL == NETMQTTSN
+					NETMqttSNNeedSendCode.InfoDynamic = 1;
+				#elif NETPROTOCAL == NETONENET
+					NETOneNETNeedSendCode.DynamicInfo = 1;
+				#endif
+				}
+				if (TCFG_Utility_Get_NBIot_SentCountDay() > TCFG_EEPROM_GetNBIotSentCountLimit() + 1) {
+					if (NBIOTPOWER_IO_READ()) {
+						NET_NBIOT_Initialization();
+						NBIOTPOWER(OFF);
+					}
+				}
+				else {
+					/* NBIOT APP Task */
+					NET_NBIOT_App_Task();
+				}
+			#else
 				/* NBIOT APP Task */
 				NET_NBIOT_App_Task();
+			#endif
 			}
 			else {
 				/* NBIOT Power OFF */
@@ -313,8 +338,30 @@ void MainRollingUpwardsActived(void)
 				Radio_Trf_Printf("imei:%s", TCFG_Utility_Get_Nbiot_Imei_String());
 			}
 	#else
+		#if NBIOT_SNEDCOUNTDAY_LIMIT_TYPE
+			if (TCFG_Utility_Get_NBIot_SentCountDay() == TCFG_EEPROM_GetNBIotSentCountLimit()) {
+			#if NETPROTOCAL == NETCOAP
+				NETCoapNeedSendCode.DynamicInfo = 1;
+			#elif NETPROTOCAL == NETMQTTSN
+				NETMqttSNNeedSendCode.InfoDynamic = 1;
+			#elif NETPROTOCAL == NETONENET
+				NETOneNETNeedSendCode.DynamicInfo = 1;
+			#endif
+			}
+			if (TCFG_Utility_Get_NBIot_SentCountDay() > TCFG_EEPROM_GetNBIotSentCountLimit() + 1) {
+				if (NBIOTPOWER_IO_READ()) {
+					NET_NBIOT_Initialization();
+					NBIOTPOWER(OFF);
+				}
+			}
+			else {
+				/* NBIOT APP Task */
+				NET_NBIOT_App_Task();
+			}
+		#else
 			/* NBIOT APP Task */
 			NET_NBIOT_App_Task();
+		#endif
 	#endif
 		}
 		
@@ -539,7 +586,7 @@ void MainHandleRoutine(void)
 	if ((Stm32_GetSecondTick() / 2400) != SystemRunningTime.fortyMinutes) {
 		SystemRunningTime.fortyMinutes = Stm32_GetSecondTick() / 2400;
 		
-		if (RTC_Time_GetCurrentHour() == 0) {
+		if (RTC_Time_GetCurrentHour() == 7) {
 			if (Inspect_Message_SpotStatusisEmpty() != false) {
 				NET_NBIOT_Initialization();
 			}
@@ -547,6 +594,11 @@ void MainHandleRoutine(void)
 			if (TCFG_EEPROM_GetNbiotHeart() > NBIOT_HEART_DATA_HOURS) {
 				TCFG_SystemData.NBIotHeart = NBIOT_HEART_DATA_HOURS;
 				TCFG_EEPROM_SetNbiotHeart(TCFG_SystemData.NBIotHeart);
+			}
+			
+			if ((TCFG_EEPROM_GetNBIotSentCountDay() != 0) || (TCFG_SystemData.NBIotSentCountDay != 0)) {
+				TCFG_SystemData.NBIotSentCountDay = 0;
+				TCFG_EEPROM_SetNBIotSentCountDay(TCFG_SystemData.NBIotSentCountDay);
 			}
 			
 			if (INSPECT_FLOW_Para_ObtainCarFlowStatus() == 0) {

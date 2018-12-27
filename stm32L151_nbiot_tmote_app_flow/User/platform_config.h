@@ -48,9 +48,32 @@
 #define	NETCARRIEROTHERUNICOM			30								//其他网段
 #define	NETCARRIERTYPE					NETCARRIERCHINATELECOM				//运营商
 
-#define	NBIOT_PRINT_ERRORCODE_DISABLE		0
-#define	NBIOT_PRINT_ERRORCODE_ENABLE		1
-#define	NBIOT_PRINT_ERROR_CODE_TYPE		NBIOT_PRINT_ERRORCODE_ENABLE			//NBIOT输出错误码模式
+#define	NETFIFOMESSAGEDISABLE			0
+#define	NETFIFOMESSAGEENABLE			1
+#define	NETFIFOMESSAGETYPE				NETFIFOMESSAGEENABLE				//Net使能FifoMessage
+
+#define	NETFIFO_COAPSENDPARKNUM_MAX		40								//NetCoAP发送缓存最大包数
+#define	NETFIFO_COAPRECVPARKNUM_MAX		20								//NetCoAP接收缓存最大包数
+#define	NETFIFO_COAPSENDPARKSIZE_MAX		3032								//NetCoAP发送缓存大小
+#define	NETFIFO_COAPRECVPARKSIZE_MAX		2048								//NetCoAP接收缓存大小
+
+#define	NETFIFO_COAPPCPSENDPARKNUM_MAX	20								//NetCoAPPCP发送缓存最大包数
+#define	NETFIFO_COAPPCPRECVPARKNUM_MAX	20								//NetCoAPPCP接收缓存最大包数
+#define	NETFIFO_COAPPCPSENDPARKSIZE_MAX	512								//NetCoAPPCP发送缓存大小
+#define	NETFIFO_COAPPCPRECVPARKSIZE_MAX	2048								//NetCoAPPCP接收缓存大小
+
+#define	NETFIFO_MQTTSNSENDPARKNUM_MAX		30								//NetMqttSN发送缓存最大包数
+#define	NETFIFO_MQTTSNSENDPARKSIZE_MAX	2080								//NetMqttSN发送缓存大小
+
+#define	NETFIFO_MQTTSNPCPSENDPARKNUM_MAX	20								//NetMqttSNPCP发送缓存最大包数
+#define	NETFIFO_MQTTSNPCPRECVPARKNUM_MAX	20								//NetMqttSNPCP接收缓存最大包数
+#define	NETFIFO_MQTTSNPCPSENDPARKSIZE_MAX	512								//NetMqttSNPCP发送缓存大小
+#define	NETFIFO_MQTTSNPCPRECVPARKSIZE_MAX	2048								//NetMqttSNPCP接收缓存大小
+
+#define	NETFIFO_ONENETSENDPARKNUM_MAX		30								//NetOneNET发送缓存最大包数
+#define	NETFIFO_ONENETRECVPARKNUM_MAX		10								//NetOneNET接收缓存最大包数
+#define	NETFIFO_ONENETSENDPARKSIZE_MAX	2048								//NetOneNET发送缓存大小
+#define	NETFIFO_ONENETRECVPARKSIZE_MAX	1536								//NetOneNET接收缓存大小
 
 #define	NBCOAP_SENDMODE_NORMAL			SEND_DATA
 #define	NBCOAP_SENDMODE_RAIDLE			SEND_DATA_RA_NORMAL
@@ -77,7 +100,7 @@
 #define	NBCOAP_RATIME_NORMAL_TYPE		NBCOAP_RATIME_NORMAL_2HOUR			//Coap间隔时间发送普通数据包
 
 #define	NBCOAP_PCP_UPGRADE_LIMIT_RSSI		10								//PCP升级限制信号值
-#define	NBCOAP_PCP_UPGRADE_LIMIT_SNR		-30								//PCP升级限制信噪比
+#define	NBCOAP_PCP_UPGRADE_LIMIT_SNR		-80								//PCP升级限制信噪比
 
 #define	NBIOT_CONTINUE_LIFETIME			2								//NBIOT休眠正放继续活跃20秒
 #define	NBIOT_MAX_LIFETIME				12								//NBIOT休眠正放最大活跃120秒
@@ -108,6 +131,20 @@
 
 #define	PRODUCTTEST_OVER_TIME			300								//测试点超时时间
 
+#define	ROLLINGOVER_INITSENSOR_CLOSE		0
+#define	ROLLINGOVER_INITSENSOR_OPEN		1
+#define	ROLLINGOVER_INITSENSOR_DEFAULT	ROLLINGOVER_INITSENSOR_OPEN			//翻转初始化默认
+
+#define	ROLLINGOVER_INITSENSOR_DISABLE	0
+#define	ROLLINGOVER_INITSENSOR_ENABLE		1
+#define	ROLLINGOVER_INITSENSOR_TYPE		ROLLINGOVER_INITSENSOR_ENABLE			//翻转初始化背景
+
+#define	NBIOT_SNEDCOUNTDAY_LIMIT_DISABLE	0
+#define	NBIOT_SNEDCOUNTDAY_LIMIT_ENABLE	1
+#define	NBIOT_SNEDCOUNTDAY_LIMIT_TYPE		NBIOT_SNEDCOUNTDAY_LIMIT_DISABLE		//限定一天NB发送包数使能
+
+#define	NBIOT_SNEDCOUNTDAY_LIMIT_NUM		200								//限定一天NB发送包数
+
 #define	RADAR_MODEL_V1					1
 #define	RADAR_MODEL_V2					2
 #define	RADAR_MODEL_TYPE				RADAR_MODEL_V2						//雷达类型
@@ -124,31 +161,172 @@
 #define	BEEP_OFF_US					230								//无源蜂鸣器关时间
 
 #define	SOFTWAREMAJOR					20								//主固件版本
-#define	SOFTWARESUB					135								//从固件版本
+#define	SOFTWARESUB					136								//从固件版本
 #define	HARDWAREMAJOR_V1				2								//主硬件版本
 #define	HARDWAREMAJOR_V2				12								//主硬件版本
 
 #if NETPROTOCAL == NETCOAP
+#define	NBIOT_PRINT_ERRORCODE_DISABLE		0
+#define	NBIOT_PRINT_ERRORCODE_ENABLE		1
+#define	NBIOT_PRINT_ERROR_CODE_TYPE		NBIOT_PRINT_ERRORCODE_ENABLE			//NBIOT输出错误码模式
+
 #define	RADIO_PRINT_WORKINFO			1								//无线输出Workinfo
 #define	RADIO_PRINT_NETINFO				1								//无线输出NetInfo
 #define	RADIO_PRINT_DEVINFO				1								//无线输出DeviceInfo
+#define	RADIO_PRINT_FLOWINFO			1								//无线输出FlowInfo
 #define	RADIO_PRINT_UPGRADEINFO			1								//无线输出UpgradeInfo
+
+#define	RADIO_PRINT_WORKINFO_SOFT		1								//无线输出Workinfo SOFT
+#define	RADIO_PRINT_WORKINFO_SENSE		1								//无线输出Workinfo SENSE
+#define	RADIO_PRINT_WORKINFO_MODE		1								//无线输出Workinfo MODE
+#define	RADIO_PRINT_WORKINFO_CHANNEL		1								//无线输出Workinfo CHANNEL
+#define	RADIO_PRINT_WORKINFO_RANGE		1								//无线输出Workinfo RANGE
+#define	RADIO_PRINT_WORKINFO_EARFCN		1								//无线输出Workinfo EARFCN
+#define	RADIO_PRINT_WORKINFO_TAC			1								//无线输出Workinfo TAC
+#define	RADIO_PRINT_WORKINFO_CI			1								//无线输出Workinfo CI
+#define	RADIO_PRINT_WORKINFO_CMDCNT		1								//无线输出Workinfo CMDCNT
+#define	RADIO_PRINT_WORKINFO_NBRUNTIME	1								//无线输出Workinfo NBRUNTIME
+#define	RADIO_PRINT_WORKINFO_COEF		1								//无线输出Workinfo COEF
+
+#define	RADIO_PRINT_NETINFO_MUFTUR		1								//无线输出NetInfo MUFTUR
+#define	RADIO_PRINT_NETINFO_MUFTURMD		1								//无线输出NetInfo MUFTURMD
+#define	RADIO_PRINT_NETINFO_MDUVER		1								//无线输出NetInfo MDUVER
+#define	RADIO_PRINT_NETINFO_IMEI			1								//无线输出NetInfo IMEI
+#define	RADIO_PRINT_NETINFO_ICCID		1								//无线输出NetInfo ICCID
+#define	RADIO_PRINT_NETINFO_IMSI			1								//无线输出NetInfo IMSI
+#define	RADIO_PRINT_NETINFO_CGP			1								//无线输出NetInfo CGP
+#define	RADIO_PRINT_NETINFO_PDPTYPE		1								//无线输出NetInfo PDPTYPE
+#define	RADIO_PRINT_NETINFO_APN			1								//无线输出NetInfo APN
+#define	RADIO_PRINT_NETINFO_RSSI			1								//无线输出NetInfo RSSI
+#define	RADIO_PRINT_NETINFO_SNR			1								//无线输出NetInfo SNR
+#define	RADIO_PRINT_NETINFO_OTHER		1								//无线输出NetInfo OTHER
+
+#define	RADIO_PRINT_DEVINFO_RUNTIME		1								//无线输出DeviceInfo RUNTIME
+#define	RADIO_PRINT_DEVINFO_BATT			1								//无线输出DeviceInfo BATT
+#define	RADIO_PRINT_DEVINFO_RDLIB		1								//无线输出DeviceInfo RDLIB
+#define	RADIO_PRINT_DEVINFO_RDCNT		1								//无线输出DeviceInfo RDCNT
+#define	RADIO_PRINT_DEVINFO_MCUTEMP		1								//无线输出DeviceInfo MCUTEMP
+#define	RADIO_PRINT_DEVINFO_ALGOLIB		1								//无线输出DeviceInfo ALGOLIB
+#define	RADIO_PRINT_DEVINFO_QMCREBOOT		1								//无线输出DeviceInfo QMCREBOOT
+#define	RADIO_PRINT_DEVINFO_NBBOOT		1								//无线输出DeviceInfo NBBOOT
+#define	RADIO_PRINT_DEVINFO_NBSENT		1								//无线输出DeviceInfo NBSENT
+#define	RADIO_PRINT_DEVINFO_NBRECV		1								//无线输出DeviceInfo NBRECV
+#define	RADIO_PRINT_DEVINFO_INDELAY		1								//无线输出DeviceInfo INDELAY
+#define	RADIO_PRINT_DEVINFO_NBHEART		1								//无线输出DeviceInfo NBHEART
+#define	RADIO_PRINT_DEVINFO_CGAIN		1								//无线输出DeviceInfo CGAIN
+#define	RADIO_PRINT_DEVINFO_RGAIN		1								//无线输出DeviceInfo RGAIN
+#define	RADIO_PRINT_DEVINFO_SMODE		1								//无线输出DeviceInfo SMODE
 #endif
 #if NETPROTOCAL == NETMQTTSN
-#define	RADIO_PRINT_WORKINFO			1								//无线输出Workinfo
-#define	RADIO_PRINT_NETINFO				1								//无线输出NetInfo
-#define	RADIO_PRINT_DEVINFO				0								//无线输出DeviceInfo
-#define	RADIO_PRINT_UPGRADEINFO			0								//无线输出UpgradeInfo
-#endif
-#if NETPROTOCAL == NETONENET
+#define	NBIOT_PRINT_ERRORCODE_DISABLE		0
+#define	NBIOT_PRINT_ERRORCODE_ENABLE		1
+#define	NBIOT_PRINT_ERROR_CODE_TYPE		NBIOT_PRINT_ERRORCODE_ENABLE			//NBIOT输出错误码模式
+
 #define	RADIO_PRINT_WORKINFO			1								//无线输出Workinfo
 #define	RADIO_PRINT_NETINFO				1								//无线输出NetInfo
 #define	RADIO_PRINT_DEVINFO				1								//无线输出DeviceInfo
+#define	RADIO_PRINT_FLOWINFO			1								//无线输出FlowInfo
 #define	RADIO_PRINT_UPGRADEINFO			1								//无线输出UpgradeInfo
+
+#define	RADIO_PRINT_WORKINFO_SOFT		1								//无线输出Workinfo SOFT
+#define	RADIO_PRINT_WORKINFO_SENSE		1								//无线输出Workinfo SENSE
+#define	RADIO_PRINT_WORKINFO_MODE		1								//无线输出Workinfo MODE
+#define	RADIO_PRINT_WORKINFO_CHANNEL		1								//无线输出Workinfo CHANNEL
+#define	RADIO_PRINT_WORKINFO_RANGE		1								//无线输出Workinfo RANGE
+#define	RADIO_PRINT_WORKINFO_EARFCN		1								//无线输出Workinfo EARFCN
+#define	RADIO_PRINT_WORKINFO_TAC			1								//无线输出Workinfo TAC
+#define	RADIO_PRINT_WORKINFO_CI			1								//无线输出Workinfo CI
+#define	RADIO_PRINT_WORKINFO_CMDCNT		1								//无线输出Workinfo CMDCNT
+#define	RADIO_PRINT_WORKINFO_NBRUNTIME	1								//无线输出Workinfo NBRUNTIME
+#define	RADIO_PRINT_WORKINFO_COEF		1								//无线输出Workinfo COEF
+
+#define	RADIO_PRINT_NETINFO_MUFTUR		1								//无线输出NetInfo MUFTUR
+#define	RADIO_PRINT_NETINFO_MUFTURMD		1								//无线输出NetInfo MUFTURMD
+#define	RADIO_PRINT_NETINFO_MDUVER		1								//无线输出NetInfo MDUVER
+#define	RADIO_PRINT_NETINFO_IMEI			1								//无线输出NetInfo IMEI
+#define	RADIO_PRINT_NETINFO_ICCID		1								//无线输出NetInfo ICCID
+#define	RADIO_PRINT_NETINFO_IMSI			1								//无线输出NetInfo IMSI
+#define	RADIO_PRINT_NETINFO_CGP			1								//无线输出NetInfo CGP
+#define	RADIO_PRINT_NETINFO_PDPTYPE		1								//无线输出NetInfo PDPTYPE
+#define	RADIO_PRINT_NETINFO_APN			1								//无线输出NetInfo APN
+#define	RADIO_PRINT_NETINFO_RSSI			1								//无线输出NetInfo RSSI
+#define	RADIO_PRINT_NETINFO_SNR			1								//无线输出NetInfo SNR
+#define	RADIO_PRINT_NETINFO_OTHER		1								//无线输出NetInfo OTHER
+
+#define	RADIO_PRINT_DEVINFO_RUNTIME		1								//无线输出DeviceInfo RUNTIME
+#define	RADIO_PRINT_DEVINFO_BATT			1								//无线输出DeviceInfo BATT
+#define	RADIO_PRINT_DEVINFO_RDLIB		1								//无线输出DeviceInfo RDLIB
+#define	RADIO_PRINT_DEVINFO_RDCNT		1								//无线输出DeviceInfo RDCNT
+#define	RADIO_PRINT_DEVINFO_MCUTEMP		1								//无线输出DeviceInfo MCUTEMP
+#define	RADIO_PRINT_DEVINFO_ALGOLIB		1								//无线输出DeviceInfo ALGOLIB
+#define	RADIO_PRINT_DEVINFO_QMCREBOOT		1								//无线输出DeviceInfo QMCREBOOT
+#define	RADIO_PRINT_DEVINFO_NBBOOT		1								//无线输出DeviceInfo NBBOOT
+#define	RADIO_PRINT_DEVINFO_NBSENT		1								//无线输出DeviceInfo NBSENT
+#define	RADIO_PRINT_DEVINFO_NBRECV		1								//无线输出DeviceInfo NBRECV
+#define	RADIO_PRINT_DEVINFO_INDELAY		1								//无线输出DeviceInfo INDELAY
+#define	RADIO_PRINT_DEVINFO_NBHEART		1								//无线输出DeviceInfo NBHEART
+#define	RADIO_PRINT_DEVINFO_CGAIN		1								//无线输出DeviceInfo CGAIN
+#define	RADIO_PRINT_DEVINFO_RGAIN		1								//无线输出DeviceInfo RGAIN
+#define	RADIO_PRINT_DEVINFO_SMODE		1								//无线输出DeviceInfo SMODE
+#endif
+#if NETPROTOCAL == NETONENET
+#define	NBIOT_PRINT_ERRORCODE_DISABLE		0
+#define	NBIOT_PRINT_ERRORCODE_ENABLE		1
+#define	NBIOT_PRINT_ERROR_CODE_TYPE		NBIOT_PRINT_ERRORCODE_ENABLE			//NBIOT输出错误码模式
+
+#define	RADIO_PRINT_WORKINFO			1								//无线输出Workinfo
+#define	RADIO_PRINT_NETINFO				1								//无线输出NetInfo
+#define	RADIO_PRINT_DEVINFO				1								//无线输出DeviceInfo
+#define	RADIO_PRINT_FLOWINFO			1								//无线输出FlowInfo
+#define	RADIO_PRINT_UPGRADEINFO			1								//无线输出UpgradeInfo
+
+#define	RADIO_PRINT_WORKINFO_SOFT		1								//无线输出Workinfo SOFT
+#define	RADIO_PRINT_WORKINFO_SENSE		1								//无线输出Workinfo SENSE
+#define	RADIO_PRINT_WORKINFO_MODE		1								//无线输出Workinfo MODE
+#define	RADIO_PRINT_WORKINFO_CHANNEL		1								//无线输出Workinfo CHANNEL
+#define	RADIO_PRINT_WORKINFO_RANGE		1								//无线输出Workinfo RANGE
+#define	RADIO_PRINT_WORKINFO_EARFCN		1								//无线输出Workinfo EARFCN
+#define	RADIO_PRINT_WORKINFO_TAC			1								//无线输出Workinfo TAC
+#define	RADIO_PRINT_WORKINFO_CI			1								//无线输出Workinfo CI
+#define	RADIO_PRINT_WORKINFO_CMDCNT		1								//无线输出Workinfo CMDCNT
+#define	RADIO_PRINT_WORKINFO_NBRUNTIME	1								//无线输出Workinfo NBRUNTIME
+#define	RADIO_PRINT_WORKINFO_COEF		1								//无线输出Workinfo COEF
+
+#define	RADIO_PRINT_NETINFO_MUFTUR		1								//无线输出NetInfo MUFTUR
+#define	RADIO_PRINT_NETINFO_MUFTURMD		1								//无线输出NetInfo MUFTURMD
+#define	RADIO_PRINT_NETINFO_MDUVER		1								//无线输出NetInfo MDUVER
+#define	RADIO_PRINT_NETINFO_IMEI			1								//无线输出NetInfo IMEI
+#define	RADIO_PRINT_NETINFO_ICCID		1								//无线输出NetInfo ICCID
+#define	RADIO_PRINT_NETINFO_IMSI			1								//无线输出NetInfo IMSI
+#define	RADIO_PRINT_NETINFO_CGP			1								//无线输出NetInfo CGP
+#define	RADIO_PRINT_NETINFO_PDPTYPE		1								//无线输出NetInfo PDPTYPE
+#define	RADIO_PRINT_NETINFO_APN			1								//无线输出NetInfo APN
+#define	RADIO_PRINT_NETINFO_RSSI			1								//无线输出NetInfo RSSI
+#define	RADIO_PRINT_NETINFO_SNR			1								//无线输出NetInfo SNR
+#define	RADIO_PRINT_NETINFO_OTHER		1								//无线输出NetInfo OTHER
+
+#define	RADIO_PRINT_DEVINFO_RUNTIME		1								//无线输出DeviceInfo RUNTIME
+#define	RADIO_PRINT_DEVINFO_BATT			1								//无线输出DeviceInfo BATT
+#define	RADIO_PRINT_DEVINFO_RDLIB		1								//无线输出DeviceInfo RDLIB
+#define	RADIO_PRINT_DEVINFO_RDCNT		1								//无线输出DeviceInfo RDCNT
+#define	RADIO_PRINT_DEVINFO_MCUTEMP		1								//无线输出DeviceInfo MCUTEMP
+#define	RADIO_PRINT_DEVINFO_ALGOLIB		1								//无线输出DeviceInfo ALGOLIB
+#define	RADIO_PRINT_DEVINFO_QMCREBOOT		1								//无线输出DeviceInfo QMCREBOOT
+#define	RADIO_PRINT_DEVINFO_NBBOOT		1								//无线输出DeviceInfo NBBOOT
+#define	RADIO_PRINT_DEVINFO_NBSENT		1								//无线输出DeviceInfo NBSENT
+#define	RADIO_PRINT_DEVINFO_NBRECV		1								//无线输出DeviceInfo NBRECV
+#define	RADIO_PRINT_DEVINFO_INDELAY		1								//无线输出DeviceInfo INDELAY
+#define	RADIO_PRINT_DEVINFO_NBHEART		1								//无线输出DeviceInfo NBHEART
+#define	RADIO_PRINT_DEVINFO_CGAIN		1								//无线输出DeviceInfo CGAIN
+#define	RADIO_PRINT_DEVINFO_RGAIN		1								//无线输出DeviceInfo RGAIN
+#define	RADIO_PRINT_DEVINFO_SMODE		1								//无线输出DeviceInfo SMODE
 #endif
 
 #define	RADIO_CMD_UPLOAD_WORKINFO		1								//无线命令主动上报WorkInfo
 #define	RADIO_CMD_UPLOAD_NETINFO			1								//无线命令主动上报NetInfo
+#define	RADIO_CMD_UPLOAD_DEVINFO			1								//无线命令主动上报DeviceInfo
+#define	RADIO_CMD_UPLOAD_FLOWINFO		1								//无线命令主动上报FlowInfo
+#define	RADIO_CMD_UPLOAD_UPGRADEINFO		1								//无线命令主动上报UpgradeInfo
 
 #define	NBCOAP_SENDCODE_SHORT_STATUS		0								//NB上报信息使能CoapShortStatus
 #define	NBCOAP_SENDCODE_LONG_STATUS		1								//NB上报信息使能CoapLongStatus
@@ -174,6 +352,7 @@
 #define	NBONENET_SENDCODE_RESPONSE_INFO	1								//NB上报信息使能OneNETResponseInfo
 #define	NBONENET_SENDCODE_QMC_DATA		1								//NB上报信息使能OneNETQmcData
 
+#if NETPROTOCAL == NETCOAP
 #define	RADIO_DOWNLOAD_CMD_REBOOT		1								//RADIO下行指令Reboot
 #define	RADIO_DOWNLOAD_CMD_NEWSN			1								//RADIO下行指令NewSn
 #define	RADIO_DOWNLOAD_CMD_CDPIP			1								//RADIO下行指令CDPIP
@@ -187,7 +366,14 @@
 #define	RADIO_DOWNLOAD_CMD_MAGTEMPCOEF	1								//RADIO下行指令MagTempCoef
 #define	RADIO_DOWNLOAD_CMD_SETQMCCOEF		1								//RADIO下行指令SetQmcCoef
 #define	RADIO_DOWNLOAD_CMD_BEEPOFF		1								//RADIO下行指令BeepOff
+#define	RADIO_DOWNLOAD_CMD_ROLLINIT		1								//RADIO下行指令RollInit
 #define	RADIO_DOWNLOAD_CMD_UPLIMIT		1								//RADIO下行指令UpLimit
+#define	RADIO_DOWNLOAD_CMD_NBLIMIT		0								//RADIO下行指令NBLimit
+#define	RADIO_DOWNLOAD_CMD_COVERGAIN		0								//RADIO下行指令CoverGain
+#define	RADIO_DOWNLOAD_CMD_RADARGAIN		0								//RADIO下行指令RadarGain
+#define	RADIO_DOWNLOAD_CMD_SENSORMODE		0								//RADIO下行指令SensorMode
+#define	RADIO_DOWNLOAD_CMD_INTERVAL		0								//RADIO下行指令RadarSampleInterval
+#define	RADIO_DOWNLOAD_CMD_HIGHPASS		0								//RADIO下行指令RadarHighPass
 #define	RADIO_DOWNLOAD_CMD_RFDPRINTLV		1								//RADIO下行指令RFDprintLv
 #define	RADIO_DOWNLOAD_CMD_RESTORE		1								//RADIO下行指令Restore
 #define	RADIO_DOWNLOAD_CMD_CARIN			1								//RADIO下行指令Carin
@@ -197,6 +383,71 @@
 #define	RADIO_DOWNLOAD_CMD_RECALOVERTIME	1								//RADIO下行指令RecalOvertime
 #define	RADIO_DOWNLOAD_CMD_WAITHEARTMIN	1								//RADIO下行指令WaitHeart
 #define	RADIO_DOWNLOAD_CMD_WAITCARCOUNT	1								//RADIO下行指令WaitCount
+#endif
+#if NETPROTOCAL == NETMQTTSN
+#define	RADIO_DOWNLOAD_CMD_REBOOT		1								//RADIO下行指令Reboot
+#define	RADIO_DOWNLOAD_CMD_NEWSN			1								//RADIO下行指令NewSn
+#define	RADIO_DOWNLOAD_CMD_CDPIP			1								//RADIO下行指令CDPIP
+#define	RADIO_DOWNLOAD_CMD_ACTIVE		1								//RADIO下行指令Active
+#define	RADIO_DOWNLOAD_CMD_MAGMOD		1								//RADIO下行指令MagMod
+#define	RADIO_DOWNLOAD_CMD_NBHEART		1								//RADIO下行指令NbHeart
+#define	RADIO_DOWNLOAD_CMD_MAGINIT		1								//RADIO下行指令MagInit
+#define	RADIO_DOWNLOAD_CMD_DISRANGE		1								//RADIO下行指令DisRange
+#define	RADIO_DOWNLOAD_CMD_CARINDELAY		1								//RADIO下行指令CarInDelay
+#define	RADIO_DOWNLOAD_CMD_RATIME		1								//RADIO下行指令RATime
+#define	RADIO_DOWNLOAD_CMD_MAGTEMPCOEF	1								//RADIO下行指令MagTempCoef
+#define	RADIO_DOWNLOAD_CMD_SETQMCCOEF		1								//RADIO下行指令SetQmcCoef
+#define	RADIO_DOWNLOAD_CMD_BEEPOFF		1								//RADIO下行指令BeepOff
+#define	RADIO_DOWNLOAD_CMD_ROLLINIT		1								//RADIO下行指令RollInit
+#define	RADIO_DOWNLOAD_CMD_UPLIMIT		1								//RADIO下行指令UpLimit
+#define	RADIO_DOWNLOAD_CMD_NBLIMIT		0								//RADIO下行指令NBLimit
+#define	RADIO_DOWNLOAD_CMD_COVERGAIN		0								//RADIO下行指令CoverGain
+#define	RADIO_DOWNLOAD_CMD_RADARGAIN		0								//RADIO下行指令RadarGain
+#define	RADIO_DOWNLOAD_CMD_SENSORMODE		0								//RADIO下行指令SensorMode
+#define	RADIO_DOWNLOAD_CMD_INTERVAL		0								//RADIO下行指令RadarSampleInterval
+#define	RADIO_DOWNLOAD_CMD_HIGHPASS		0								//RADIO下行指令RadarHighPass
+#define	RADIO_DOWNLOAD_CMD_RFDPRINTLV		1								//RADIO下行指令RFDprintLv
+#define	RADIO_DOWNLOAD_CMD_RESTORE		1								//RADIO下行指令Restore
+#define	RADIO_DOWNLOAD_CMD_CARIN			1								//RADIO下行指令Carin
+#define	RADIO_DOWNLOAD_CMD_CAROUT		1								//RADIO下行指令Carout
+#define	RADIO_DOWNLOAD_CMD_DETECTMODE		1								//RADIO下行指令DetectMode
+#define	RADIO_DOWNLOAD_CMD_RECALOVERNUM	1								//RADIO下行指令RecalOvernum
+#define	RADIO_DOWNLOAD_CMD_RECALOVERTIME	1								//RADIO下行指令RecalOvertime
+#define	RADIO_DOWNLOAD_CMD_WAITHEARTMIN	1								//RADIO下行指令WaitHeart
+#define	RADIO_DOWNLOAD_CMD_WAITCARCOUNT	1								//RADIO下行指令WaitCount
+#endif
+#if NETPROTOCAL == NETONENET
+#define	RADIO_DOWNLOAD_CMD_REBOOT		1								//RADIO下行指令Reboot
+#define	RADIO_DOWNLOAD_CMD_NEWSN			1								//RADIO下行指令NewSn
+#define	RADIO_DOWNLOAD_CMD_CDPIP			1								//RADIO下行指令CDPIP
+#define	RADIO_DOWNLOAD_CMD_ACTIVE		1								//RADIO下行指令Active
+#define	RADIO_DOWNLOAD_CMD_MAGMOD		1								//RADIO下行指令MagMod
+#define	RADIO_DOWNLOAD_CMD_NBHEART		1								//RADIO下行指令NbHeart
+#define	RADIO_DOWNLOAD_CMD_MAGINIT		1								//RADIO下行指令MagInit
+#define	RADIO_DOWNLOAD_CMD_DISRANGE		1								//RADIO下行指令DisRange
+#define	RADIO_DOWNLOAD_CMD_CARINDELAY		1								//RADIO下行指令CarInDelay
+#define	RADIO_DOWNLOAD_CMD_RATIME		1								//RADIO下行指令RATime
+#define	RADIO_DOWNLOAD_CMD_MAGTEMPCOEF	1								//RADIO下行指令MagTempCoef
+#define	RADIO_DOWNLOAD_CMD_SETQMCCOEF		1								//RADIO下行指令SetQmcCoef
+#define	RADIO_DOWNLOAD_CMD_BEEPOFF		1								//RADIO下行指令BeepOff
+#define	RADIO_DOWNLOAD_CMD_ROLLINIT		1								//RADIO下行指令RollInit
+#define	RADIO_DOWNLOAD_CMD_UPLIMIT		1								//RADIO下行指令UpLimit
+#define	RADIO_DOWNLOAD_CMD_NBLIMIT		0								//RADIO下行指令NBLimit
+#define	RADIO_DOWNLOAD_CMD_COVERGAIN		0								//RADIO下行指令CoverGain
+#define	RADIO_DOWNLOAD_CMD_RADARGAIN		0								//RADIO下行指令RadarGain
+#define	RADIO_DOWNLOAD_CMD_SENSORMODE		0								//RADIO下行指令SensorMode
+#define	RADIO_DOWNLOAD_CMD_INTERVAL		0								//RADIO下行指令RadarSampleInterval
+#define	RADIO_DOWNLOAD_CMD_HIGHPASS		0								//RADIO下行指令RadarHighPass
+#define	RADIO_DOWNLOAD_CMD_RFDPRINTLV		1								//RADIO下行指令RFDprintLv
+#define	RADIO_DOWNLOAD_CMD_RESTORE		1								//RADIO下行指令Restore
+#define	RADIO_DOWNLOAD_CMD_CARIN			1								//RADIO下行指令Carin
+#define	RADIO_DOWNLOAD_CMD_CAROUT		1								//RADIO下行指令Carout
+#define	RADIO_DOWNLOAD_CMD_DETECTMODE		1								//RADIO下行指令DetectMode
+#define	RADIO_DOWNLOAD_CMD_RECALOVERNUM	1								//RADIO下行指令RecalOvernum
+#define	RADIO_DOWNLOAD_CMD_RECALOVERTIME	1								//RADIO下行指令RecalOvertime
+#define	RADIO_DOWNLOAD_CMD_WAITHEARTMIN	1								//RADIO下行指令WaitHeart
+#define	RADIO_DOWNLOAD_CMD_WAITCARCOUNT	1								//RADIO下行指令WaitCount
+#endif
 
 #define	NBCOAP_DOWNLOAD_CMD_WORKMODE		1								//NBCOAP下行指令Workmode
 #define	NBCOAP_DOWNLOAD_CMD_SENSE		1								//NBCOAP下行指令Sense
@@ -216,7 +467,14 @@
 #define	NBCOAP_DOWNLOAD_CMD_MAGTEMPCOEF	1								//NBCOAP下行指令MagTempCoef
 #define	NBCOAP_DOWNLOAD_CMD_SETQMCCOEF	1								//NBCOAP下行指令SetQmcCoef
 #define	NBCOAP_DOWNLOAD_CMD_BEEPOFF		1								//NBCOAP下行指令BeepOff
+#define	NBCOAP_DOWNLOAD_CMD_ROLLINIT		1								//NBCOAP下行指令RollInit
 #define	NBCOAP_DOWNLOAD_CMD_UPLIMIT		1								//NBCOAP下行指令UpLimit
+#define	NBCOAP_DOWNLOAD_CMD_NBLIMIT		0								//NBCOAP下行指令NBLimit
+#define	NBCOAP_DOWNLOAD_CMD_COVERGAIN		0								//NBCOAP下行指令CoverGain
+#define	NBCOAP_DOWNLOAD_CMD_RADARGAIN		0								//NBCOAP下行指令RadarGain
+#define	NBCOAP_DOWNLOAD_CMD_SENSORMODE	0								//NBCOAP下行指令SensorMode
+#define	NBCOAP_DOWNLOAD_CMD_SETMAG		0								//NBCOAP下行指令SetMag
+#define	NBCOAP_DOWNLOAD_CMD_CFGRADAR		0								//NBCOAP下行指令ConfigRadar
 #define	NBCOAP_DOWNLOAD_CMD_CARIN		1								//NBCOAP下行指令Carin
 #define	NBCOAP_DOWNLOAD_CMD_CAROUT		1								//NBCOAP下行指令Carout
 #define	NBCOAP_DOWNLOAD_CMD_DETECTMODE	1								//NBCOAP下行指令DetectMode
@@ -241,7 +499,14 @@
 #define	MQTTSN_DOWNLOAD_CMD_MAGTEMPCOEF	1								//MQTTSN下行指令MagTempCoef
 #define	MQTTSN_DOWNLOAD_CMD_SETQMCCOEF	1								//MQTTSN下行指令SetQmcCoef
 #define	MQTTSN_DOWNLOAD_CMD_BEEPOFF		1								//MQTTSN下行指令BeepOff
+#define	MQTTSN_DOWNLOAD_CMD_ROLLINIT		1								//MQTTSN下行指令RollInit
 #define	MQTTSN_DOWNLOAD_CMD_UPLIMIT		1								//MQTTSN下行指令UpLimit
+#define	MQTTSN_DOWNLOAD_CMD_NBLIMIT		0								//MQTTSN下行指令NBLimit
+#define	MQTTSN_DOWNLOAD_CMD_COVERGAIN		0								//MQTTSN下行指令CoverGain
+#define	MQTTSN_DOWNLOAD_CMD_RADARGAIN		0								//MQTTSN下行指令RadarGain
+#define	MQTTSN_DOWNLOAD_CMD_SENSORMODE	0								//MQTTSN下行指令SensorMode
+#define	MQTTSN_DOWNLOAD_CMD_SETMAG		0								//MQTTSN下行指令SetMag
+#define	MQTTSN_DOWNLOAD_CMD_CFGRADAR		0								//MQTTSN下行指令ConfigRadar
 #define	MQTTSN_DOWNLOAD_CMD_CARIN		1								//MQTTSN下行指令Carin
 #define	MQTTSN_DOWNLOAD_CMD_CAROUT		1								//MQTTSN下行指令Carout
 #define	MQTTSN_DOWNLOAD_CMD_DETECTMODE	1								//MQTTSN下行指令DetectMode

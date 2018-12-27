@@ -29,8 +29,13 @@
   *		    版本24: 当磁场和雷达波动后,雷达值为16以上而且雷达值和最近几分钟的最小值大一些,那么不管磁场变化值是多少,都认为有车.
   *		    版本25: 磁场波动很大,但是雷达的波动值小于8,那么认为无车.
   *		    版本26: 当雷达没有波动,但是磁场变成了长期无车,同时雷达距离超过16的话,那么人就认为有车.
-  *		    版本27: 当区别无车时的细分场景,积水下的无车抑或普通无车
-  * 20181023  版本28: 距离12及以下都认为疑似积水
+  *		    版本27: 当区别无车时的细分场景,积水下的无车抑或普通无车.
+  * 20181023  版本28: 距离12及以下都认为疑似积水.
+  *		    版本29: 当magdif值降低到150以下,同时还是积水状态,那么也判定为无车,在雷达和磁场不同时波动时,原先的距离<=16就疑似为覆盖改为<=12.
+  *		    版本30: 当magdif值降低到300以下,同时还是积水状态,那么也判定为无车.
+  *		    版本31: 增加检测模式,双传感器模式,纯雷达模式,单地磁模式.实际只生效单地磁模式和双传感器模式.
+  *				  当磁场为free,但是dis值>16时,强行判断为有车.
+  *		    版本32: 当设置了手动背景后,当前磁场与自动背景以及各手动背景分别比较,取最小的那个差值.
   *
   *********************************************************************************************************
   */
@@ -45,6 +50,13 @@
 #define TALGO_TRUE						1
 
 extern int errcode;
+
+enum TRADAR_SENSE_MODE
+{
+	TRADAR_SENSE_BOTH					= 0x00,
+	TRADAR_SENSE_MAG					= 0x01,
+	TRADAR_SENSE_RADAR					= 0x02
+};
 
 enum TRADAR_MAGMOD
 {
@@ -89,6 +101,15 @@ typedef __packed struct
 	signed char						Y_Coef;
 	signed char						Z_Coef;
 }QMC5883L_TypeDef;
+
+typedef __packed struct
+{
+	signed short int					X_Back[5];
+	signed short int					Y_Back[5];
+	signed short int					Z_Back[5];
+	
+	signed short int					temp_back;
+}QMC5883L_ManualBackGround;
 
 typedef __packed struct
 {
@@ -211,8 +232,10 @@ typedef __packed struct
 
 extern QMC5883L_TypeDef					Qmc5883lData;
 extern QMC5883LDIFF_TypeDef				Qmc5883lDiff;
+extern QMC5883L_ManualBackGround			Qmc5883lManualBack;
 extern RADAR_DataStruct					sRadarData;
 extern radar_least_s					s_radar_least;
+
 extern u8  RADARGETPACK;
 extern u32 Inspect_Detect_LastTime;
 extern u16 qmc_backgroud_times;
@@ -440,5 +463,22 @@ void QMC5883L_InitBackgroud_cmd(u16 x, u16 y, u16 z);
  @Return				none
 **********************************************************************************************************/
 void talgo_init(void);
+
+/**********************************************************************************************************
+ @Function			talgo_check_mag_motion_lately
+ @Description			check the variety of magnetic data in last two minute
+ @Input				val 
+ @Return				0=radar+magnetic, 1=magnetic only, 2=radar only.
+**********************************************************************************************************/
+void talgo_set_sense_mode(u8 val);
+
+/**********************************************************************************************************
+ @Function			talgo_set_manual_back
+ @Description			set the manual magnetic background
+ @Input				i:which group of magnetic data
+					x,y,z: magnetic value 
+ @Return				0=radar+magnetic,1=magnetic only,2=radar only.
+**********************************************************************************************************/
+void talgo_set_manual_back(u8 i, short x, short y, short z);
 
 #endif

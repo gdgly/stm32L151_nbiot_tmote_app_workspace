@@ -59,9 +59,13 @@ enum TRADAR_MODEL_TYPE
 #endif
 #endif
 
+char RADAR_COVERGAIN_DEFAULT = 7;
+char TRADAR_GAIN_DEFAULT = 14;
+char TRADAR_HIGHPASS_DEFAULT = RADAR_HIGHPASS_800;
+
 char radar_model = TRADAR_INFINEON;
 
-short val_vptat, val_vptat_adjust;
+short val_vptat = 100, val_vptat_adjust;
 
 u16 fre_magBG[TRADAR_BACKGROUND_NUM] = {10};
 s16 time_magBG[TRADAR_BACKGROUND_NUM] = {10};
@@ -74,6 +78,10 @@ int n_array = 0;
 int flag_main_go = 0;
 u8  bgTimes = 1;
 u8  radar_trigged_again = 0;
+int inteval = 7;
+u8  radar_vcc = 0;
+
+u16 talgo_get_radartunebase_vptat(void);
 
 /**********************************************************************************************************
  @Function			void Radar_Init(void)
@@ -93,6 +101,20 @@ void Radar_Init(void)
 	
 	Radar_TIM2_Init(10-1, 32-1);																	//10us中断一次
 	__HAL_TIM_DISABLE(&RADAR_TIM2_Handler);															//先关闭TIM2,等待使用雷达时开启
+	
+	radar_vcc = Radar_MeasureRadarVCC();
+	if (radar_vcc <= 26) {
+		RADAR_COVERGAIN_DEFAULT	= 7;
+		TRADAR_GAIN_DEFAULT 	= 13;
+		TRADAR_HIGHPASS_DEFAULT	= RADAR_HIGHPASS_800;
+	}
+	else {
+		RADAR_COVERGAIN_DEFAULT	= 10;
+		TRADAR_GAIN_DEFAULT 	= 15;
+		TRADAR_HIGHPASS_DEFAULT	= RADAR_HIGHPASS_1200;
+	}
+	
+	//talgo_get_radartunebase_vptat();
 	
 	FLASH_EEPROM_ReadBuffer(EEPROM_BASE_ADDR1, (u8 *)fre_magBG, sizeof(fre_magBG));							//读取EEPROM背景值
 	FLASH_EEPROM_ReadBuffer(EEPROM_BASE_ADDR1+256, (u8 *)time_magBG, sizeof(time_magBG));					//读取EEPROM背景值
@@ -170,6 +192,24 @@ void Radar_InitBG_Cmd(u32 v23456, u32 v7890a, u32 vbcdef, u32 vg)
 }
 
 /**********************************************************************************************************
+ @Function			void Radar_UpdateBG_Cmd(u8 oldgain, u8 newgain)
+ @Description			Radar_UpdateBG_Cmd
+ @Input				
+ @Return				void
+**********************************************************************************************************/
+void Radar_UpdateBG_Cmd(u8 oldgain, u8 newgain)
+{
+	FLASH_EEPROM_ReadBuffer(EEPROM_BASE_ADDR1, (u8 *)fre_magBG, sizeof(fre_magBG));							//读取EEPROM背景值
+	
+	fre_magBG[2] = (fre_magBG[2]*newgain+oldgain/2)/oldgain;
+	fre_magBG[3] = (fre_magBG[3]*newgain+oldgain/2)/oldgain;
+	fre_magBG[4] = (fre_magBG[4]*newgain+oldgain/2)/oldgain;
+	
+	FLASH_EEPROM_WriteBuffer(EEPROM_BASE_ADDR1, (u8 *)fre_magBG, sizeof(fre_magBG));
+	tradar_background_set(fre_magBG, (sizeof(fre_magBG))/2);
+}
+
+/**********************************************************************************************************
  @Function			u8 Radar_InitBackground(char mode)
  @Description			雷达初始化背景值
  @Input				mode
@@ -231,7 +271,7 @@ u8 Radar_InitBackground(char mode)
 				return TRADAR_ERROR;
 			}
 			
-#if 0
+#if 1
 #if RADAR_MODEL_TYPE == RADAR_MODEL_V1
 			
 #elif RADAR_MODEL_TYPE == RADAR_MODEL_V2
@@ -242,7 +282,7 @@ u8 Radar_InitBackground(char mode)
 #endif
 			BEEP_CtrlRepeat_Extend(1, 30, 0);
 			
-#if 0
+#if 1
 #if RADAR_MODEL_TYPE == RADAR_MODEL_V1
 			
 #elif RADAR_MODEL_TYPE == RADAR_MODEL_V2
@@ -251,7 +291,7 @@ u8 Radar_InitBackground(char mode)
 	#error RADAR_MODEL_TYPE Define Error
 #endif
 #endif
-			Delay_MS(30);
+			Delay_MS(10);
 			
 			flag_main_go = 0;
 		}
@@ -353,34 +393,69 @@ u8 Radar_GetData(tradar_targetinfo_s* pTargetinfo[], u8 dataNum)
 			pTargetinfo[0]->pMagBG[6]);
 		}
 		
-		Radio_Trf_Debug_Printf_Level3("%dlow%d.%dst%dds%ddf%d&%d;tdf%d.%d;%d,%d,%d,%d",
+		Radio_Trf_Debug_Printf_Level3("%dlow%d.%dst%dds%ddf%d&%d;%d,%d,%d,%d",
 				dataNum,RADER_LOW,val_vptat,(uint32_t)radar_targetinfo.status,
 				(uint32_t)radar_targetinfo.distance_cm,
 				radar_targetinfo.strenth_total_diff,radar_targetinfo.strenth_total_diff_v2,
-				radar_targetinfo.time_total_square_diff,radar_targetinfo.time_total_diff,
 				radar_targetinfo.overnum[0],radar_targetinfo.overnum[1],radar_targetinfo.overnum_bg[0],radar_targetinfo.overnum_bg[1]);
 		
-		Radio_Trf_Debug_Printf_Level3("n:%02d%02d%02d%02d%02d;%02d%02d%02d%02d%02d;%02d%02d%02d%02d%02d%02d.%d.%d",
+		Radio_Trf_Debug_Printf_Level3("n:%02d%02d%02d%02d%02d;%02d%02d%02d%02d%02d;%02d%02d%02d.%d.%d",
 				pTargetinfo[0]->pMagNow[2],
 				pTargetinfo[0]->pMagNow[3],pTargetinfo[0]->pMagNow[4],pTargetinfo[0]->pMagNow[5],
 				pTargetinfo[0]->pMagNow[6],pTargetinfo[0]->pMagNow[7],pTargetinfo[0]->pMagNow[8],
 				pTargetinfo[0]->pMagNow[9],pTargetinfo[0]->pMagNow[10],pTargetinfo[0]->pMagNow[11],
 				pTargetinfo[0]->pMagNow[12],pTargetinfo[0]->pMagNow[13],pTargetinfo[0]->pMagNow[14],
-				pTargetinfo[0]->pMagNow[15],pTargetinfo[0]->pMagNow[16],pTargetinfo[0]->pMagNow[17],
-				talgo_get_fredomain_least(),Qmc5883lDiff.BackVal_Diff);
+				Qmc5883lDiff.GraduaVal_Diff,Qmc5883lDiff.BackVal_Diff);
 		
-		Radio_Trf_Debug_Printf_Level3("b:%02d%02d%02d%02d%02d;%02d%02d%02d%02d%02d;%02d%02d%02d%02d%02d%02d.%d",
+		Radio_Trf_Debug_Printf_Level3("b:%02d%02d%02d%02d%02d;%02d%02d%02d%02d%02d;%02d%02d%02d.%d",
 				pTargetinfo[0]->pMagBG[2],
 				pTargetinfo[0]->pMagBG[3],pTargetinfo[0]->pMagBG[4],pTargetinfo[0]->pMagBG[5],
 				pTargetinfo[0]->pMagBG[6],pTargetinfo[0]->pMagBG[7],pTargetinfo[0]->pMagBG[8],
 				pTargetinfo[0]->pMagBG[9],pTargetinfo[0]->pMagBG[10],pTargetinfo[0]->pMagBG[11],
 				pTargetinfo[0]->pMagBG[12],pTargetinfo[0]->pMagBG[13],pTargetinfo[0]->pMagBG[14],
-				pTargetinfo[0]->pMagBG[15],pTargetinfo[0]->pMagBG[16],pTargetinfo[0]->pMagBG[17],
 				talgo_get_timedomain_least());
 	}
 #endif
 	
 	return 0;
+}
+
+/**********************************************************************************************************
+ @Function			u8 Radar_GetRadarVCC(void)
+ @Description			Radar_GetRadarVCC	: get the power voltage of radar ic
+ @Input				none 		: 
+ @Return				x * 10mv 		: 
+**********************************************************************************************************/
+u8 Radar_MeasureRadarVCC(void)
+{
+	uint16_t i;
+	char backup = RADER_RANGE;
+	char voltage;
+	
+	RADER_RANGE = 0;
+	RADARPOWER(ON);
+	RADAR_ENTER_CRITICAL_SECTION();
+	Delay_MS(100);
+	
+	flag_main_go = 0;
+	n_array = 0;
+	
+	__HAL_TIM_ENABLE(&RADAR_TIM2_Handler);
+	while (1) {
+		if (flag_main_go != 0) {
+			for (i = 1; i < SAMPLE_NUM; i++) {
+				sample_array0[0] += sample_array0[i];
+			}
+			voltage = 2*(sample_array0[0]*28)/(4096*SAMPLE_NUM);
+			break;
+		}
+	}
+	__HAL_TIM_DISABLE(&RADAR_TIM2_Handler);
+	RADARPOWER(OFF);
+	RADAR_EXIT_CRITICAL_SECTION();
+	RADER_RANGE = backup;
+	
+	return voltage;
 }
 
 /**********************************************************************************************************
@@ -423,7 +498,7 @@ void Radar_GetSample_Time(void)
 	
 	if (xx < 1) {
 #ifdef XIAMEN
-		xx = 13;
+		xx = inteval;
 #else
 		xx = 13;
 #endif
@@ -452,19 +527,29 @@ u16 talgo_get_radartunebase_vptat(void)
  @Input				void
  @Return				void
 **********************************************************************************************************/
+char times_measured = 0, vptat_is_ground = 0;
 void Radar_EnterCriticalSection(void)
 {
 #if RADAR_MODEL_TYPE == RADAR_MODEL_V1
 	//talgo_get_radartunebase_test();
 #elif RADAR_MODEL_TYPE == RADAR_MODEL_V2
-	talgo_get_radartunebase_vptat();
-	/* -<0.1v 那么是国产雷达- */
-	if (val_vptat < 10) {
-		RADER_RANGE = 15;												// 6x304 +650 = 2486
+	if (times_measured < 5) {											// measure the voltage everytime
+		talgo_get_radartunebase_vptat();
+		times_measured++;
+		/* -<0.1v 那么是国产雷达- */
+		if (val_vptat < 10)
+			vptat_is_ground++;
+		else
+			vptat_is_ground--;
+	}
+	
+	if (vptat_is_ground > 0) {
+		RADER_RANGE = TCFG_SystemData.RadarGain;							// 6x304 +650 = 2486
 		RADER_LOW = 100;
 		radar_model = TRADAR_IMSEMI;
 	}
 	else {
+		inteval = 13;													// 针对下沙老版本的雷达方案,采样周期仍旧为13
 		RADER_RANGE = 8;												// 6x304 +650 = 2486
 		RADER_LOW = 250;
 		radar_model = TRADAR_INFINEON;
@@ -519,6 +604,41 @@ void Radar_ExitCriticalSection(void)
 char Radar_GetModel(void)
 {
 	return radar_model;
+}
+
+/**********************************************************************************************************
+ @Function			void Radar_Set_SampleInterval(char val)
+ @Description			set the sample interval
+ @Input				val 				: sample interval 4~13
+ @Return				void
+**********************************************************************************************************/
+void Radar_Set_SampleInterval(char val)
+{
+	if ((val < 14) && (val > 3)) {
+		inteval = val;
+	}
+}
+
+/**********************************************************************************************************
+ @Function			char Radar_Get_SampleInterval(void)
+ @Description			get the sample interval
+ @Input				none
+ @Return				char				: sample interval 4~13
+**********************************************************************************************************/
+char Radar_Get_SampleInterval(void)
+{
+	return inteval;
+}
+
+/**********************************************************************************************************
+ @Function			char Radar_Get_RadarVcc(void)
+ @Description			get the vcc of radar ic
+ @Input				none
+ @Return				char				: x 10mv
+**********************************************************************************************************/
+u8 Radar_Get_RadarVcc(void)
+{
+	return radar_vcc;
 }
 
 /********************************************** END OF FLEE **********************************************/

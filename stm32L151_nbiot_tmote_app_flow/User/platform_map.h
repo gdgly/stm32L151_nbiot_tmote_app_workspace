@@ -139,6 +139,16 @@
 #define TCFG_MAG_BACK_TEMP_LENGTH			2												//Temperature Compensation BACK
 #define TCFG_BEEP_OFF_OFFSET				TCFG_MAG_BACK_TEMP_OFFSET + TCFG_MAG_BACK_TEMP_LENGTH		//0x080804E2
 #define TCFG_BEEP_OFF_LENGTH				1												//Beep Ctrl OFF		蜂鸣器关闭
+#define TCFG_ROLL_INITSENSOR_OFFSET		TCFG_BEEP_OFF_OFFSET + TCFG_BEEP_OFF_LENGTH				//0x080804E3
+#define TCFG_ROLL_INITSENSOR_LENGTH		1												//Rollingover Init Sensor
+#define TCFG_NBIOT_SENTCOUNT_OFFSET		TCFG_ROLL_INITSENSOR_OFFSET + TCFG_ROLL_INITSENSOR_LENGTH	//0x080804E4
+#define TCFG_NBIOT_SENTCOUNT_LENGTH		4												//NBIoT Sent Count		NB发送包数
+#define TCFG_NBIOT_RECVCOUNT_OFFSET		TCFG_NBIOT_SENTCOUNT_OFFSET + TCFG_NBIOT_SENTCOUNT_LENGTH	//0x080804E8
+#define TCFG_NBIOT_RECVCOUNT_LENGTH		4												//NBIoT Recv Count		NB接收包数
+#define TCFG_NBIOT_SENTCNTDAY_OFFSET		TCFG_NBIOT_RECVCOUNT_OFFSET + TCFG_NBIOT_RECVCOUNT_LENGTH	//0x080804EC
+#define TCFG_NBIOT_SENTCNTDAY_LENGTH		2												//NBIoT Sent Count Day	NB一天发送包数
+#define TCFG_NBIOT_SENTCNTLMT_OFFSET		TCFG_NBIOT_SENTCNTDAY_OFFSET + TCFG_NBIOT_SENTCNTDAY_LENGTH	//0x080804EE
+#define TCFG_NBIOT_SENTCNTLMT_LENGTH		2												//NBIoT Sent Count Limit	NB一天限定包数
 
 /************************************** The environment parameters are used both by extend ***************************************/
 #define EEPROM_CONFIG_PAGE2_ADDRESS		0x08080E00										//配置页2起始地址 EEPROM_BASE_ADD + 0x0E00(3.5K)
@@ -186,6 +196,29 @@
 
 #define TCFG_MQTTSN_SERVER_OFFSET			TCFG_DEVICE_RBTMODE_OFFSET + TCFG_DEVICE_RBTMODE_LENGTH	//0x08080E27
 #define TCFG_MQTTSN_SERVER_LENGTH			6												//Server MqttSN		MqttSN服务器地址
+
+#define TCFG_RADAR_COVER_GAIN_OFFSET		TCFG_MQTTSN_SERVER_OFFSET + TCFG_MQTTSN_SERVER_LENGTH		//0x08080E2D
+#define TCFG_RADAR_COVER_GAIN_LENGTH		1												//Gain in Cover		Radar覆水增益
+
+#define TCFG_RADAR_GAIN_OFFSET			TCFG_RADAR_COVER_GAIN_OFFSET + TCFG_RADAR_COVER_GAIN_LENGTH	//0x08080E2E
+#define TCFG_RADAR_GAIN_LENGTH			1												//Gain in				Radar增益
+
+#define TCFG_SENSE_MODE_OFFSET			TCFG_RADAR_GAIN_OFFSET + TCFG_RADAR_GAIN_LENGTH			//0x08080E2F
+#define TCFG_SENSE_MODE_LENGTH			1												//Sense Mode			传感器模式
+
+#define TCFG_MAG_MANUALBACK_X_OFFSET		TCFG_SENSE_MODE_OFFSET + TCFG_SENSE_MODE_LENGTH			//0x08080E30
+#define TCFG_MAG_MANUALBACK_X_LENGTH		10												//Mag X Back			地磁X背景值
+#define TCFG_MAG_MANUALBACK_Y_OFFSET		TCFG_MAG_MANUALBACK_X_OFFSET + TCFG_MAG_MANUALBACK_X_LENGTH	//0x08080E3A
+#define TCFG_MAG_MANUALBACK_Y_LENGTH		10												//Mag Y Back			地磁Y背景值
+#define TCFG_MAG_MANUALBACK_Z_OFFSET		TCFG_MAG_MANUALBACK_Y_OFFSET + TCFG_MAG_MANUALBACK_Y_LENGTH	//0x08080E44
+#define TCFG_MAG_MANUALBACK_Z_LENGTH		10												//Mag Z Back			地磁Z背景值
+
+#define TCFG_RADAR_HIGHPASS_OFFSET			TCFG_MAG_MANUALBACK_Z_OFFSET + TCFG_MAG_MANUALBACK_Z_LENGTH	//0x08080E4E
+#define TCFG_RADAR_HIGHPASS_LENGTH			1												//RadarHighPass		Radar高通滤波值
+
+#define TCFG_RADAR_SAMPLEINTERVAL_OFFSET	TCFG_RADAR_HIGHPASS_OFFSET + TCFG_RADAR_HIGHPASS_LENGTH	//0x08080E4F
+#define TCFG_RADAR_SAMPLEINTERVAL_LENGTH	1												//RadarSampleInterval	Radar采样频率
+
 /************************************** The environment parameters are used both by flow *****************************************/
 #define EEPROM_CONFIG_PAGE3_ADDRESS		0x08080100										//配置页3起始地址 EEPROM_BASE_ADD + 0x0100(0.5K)
 #define EEPROM_CONFIG_PAGE3_SIZE			0x0200											//配置页2大小     0x0200(512Byte)
@@ -269,23 +302,28 @@ typedef struct
 	signed char						MagCoefX;											//地磁温飘计算值X
 	signed char						MagCoefY;											//地磁温飘计算值Y
 	signed char						MagCoefZ;											//地磁温飘计算值Z
+	short							MagBackManualX[5];									//地磁手动背景值X
+	short							MagBackManualY[5];									//地磁手动背景值Y
+	short							MagBackManualZ[5];									//地磁手动背景值Z
 	unsigned char						WorkMode;											//工作模式
 	unsigned char						WorkModeStr[10];									//工作模式名
 	unsigned char						RFChannel;										//无线通道
 	unsigned char						RFDprintLv;										//无线调试信息输出等级
 	unsigned char						MagMode;											//地磁模式
+	unsigned char						SenseMode;										//传感器模式
 	unsigned int						RadarCount;										//雷达次数
 	unsigned char						RadarRange;										//雷达检测范围
+	unsigned char						CoverGain;										//雷达覆水增益
+	unsigned char						RadarGain;										//雷达增益
+	unsigned char						RadarHighPass;										//雷达高通滤波值
+	unsigned char						RadarSampleInterval;								//雷达采样频率
 	unsigned char						CarInDelay;										//车辆进入延时上报时间
 	unsigned int						SpotStatusCount;									//车位检测车辆次数
 	unsigned char						NBIotHeart;										//NBIot心跳间隔
 	unsigned int						NBIotBootCount;									//NBIot重启次数
-	unsigned int						CoapSentCount;										//Coap发送包数
-	unsigned int						CoapRecvCount;										//Coap接收包数
-	unsigned int						MqttSNSentCount;									//MqttSN发送包数
-	unsigned int						MqttSNRecvCount;									//MqttSN接收包数
-	unsigned int						OneNETSentCount;									//OneNET发送包数
-	unsigned int						OneNETRecvCount;									//OneNET接收包数
+	unsigned int						NBIotSentCount;									//NBIot发送包数
+	unsigned int						NBIotRecvCount;									//NBIot接收包数
+	unsigned short						NBIotSentCountDay;									//NBIot一天发送包数
 	unsigned char						RFCommandCount;									//RF命令接收条数
 	unsigned char						NBCommandCount;									//NB命令接收条数
 	unsigned short						DeviceBootCount;									//设备重启次数
@@ -296,6 +334,7 @@ typedef struct
 	short							UpgradeLimitSnr;									//信号质量限制下限
 	unsigned short						NBIdleLifetime;									//NBIot休眠模式保活时间(10S)
 	unsigned char						BeepCtrlOff;										//蜂鸣器控制
+	unsigned char						RollingOverInitSensor;								//翻转初始化控制
 	unsigned char						DeviceRbtMode;										//设备重启方式
 	unsigned char						FlowDetectMode;									//检测模式
 	unsigned char						FlowMeasureFreq;									//地磁扫描频率
@@ -352,6 +391,9 @@ unsigned char	TCFG_EEPROM_GetBootVersion(void);												//读取BootVersion
 void			TCFG_EEPROM_SetMagBackgroud(int16_t x_axis, int16_t y_axis, int16_t z_axis);			//保存地磁背景值
 unsigned short	TCFG_EEPROM_GetMagBackgroud(char axis);											//读取地磁背景值
 
+void			TCFG_EEPROM_SetMagManualBack(uint8_t i, int16_t x_axis, int16_t y_axis, int16_t z_axis);	//保存手动地磁背景值
+short		TCFG_EEPROM_GetMagManualBack(uint8_t i, char axis);								//读取手动地磁背景值
+
 void			TCFG_EEPROM_SetMagTempCoef(signed char coef_x, signed char coef_y, signed char coef_z);	//保存地磁温飘计算值
 void			TCFG_EEPROM_GetMagTempCoef(signed char* coef_x, signed char* coef_y, signed char* coef_z);//读取地磁温飘计算值
 
@@ -400,23 +442,17 @@ unsigned char	TCFG_EEPROM_GetActiveDevice(void);												//读取ActiveDevice
 void			TCFG_EEPROM_SetNbiotBootCnt(unsigned int val);									//保存NbiotBootCnt
 unsigned int	TCFG_EEPROM_GetNbiotBootCnt(void);												//读取NbiotBootCnt
 
-void			TCFG_EEPROM_SetCoapSentCnt(unsigned int val);									//保存CoapSentCnt
-unsigned int	TCFG_EEPROM_GetCoapSentCnt(void);												//读取CoapSentCnt
+void			TCFG_EEPROM_SetNBIotSentCount(unsigned int val);									//保存NBIotSentCount
+unsigned int	TCFG_EEPROM_GetNBIotSentCount(void);											//读取NBIotSentCount
 
-void			TCFG_EEPROM_SetCoapRecvCnt(unsigned int val);									//保存CoapRecvCnt
-unsigned int	TCFG_EEPROM_GetCoapRecvCnt(void);												//读取CoapRecvCnt
+void			TCFG_EEPROM_SetNBIotRecvCount(unsigned int val);									//保存NBIotRecvCount
+unsigned int	TCFG_EEPROM_GetNBIotRecvCount(void);											//读取NBIotRecvCount
 
-void			TCFG_EEPROM_SetMqttSNSentCnt(unsigned int val);									//保存MqttSNSentCnt
-unsigned int	TCFG_EEPROM_GetMqttSNSentCnt(void);											//读取MqttSNSentCnt
+void			TCFG_EEPROM_SetNBIotSentCountDay(unsigned short val);								//保存NBIotSentCountDay
+unsigned short	TCFG_EEPROM_GetNBIotSentCountDay(void);											//读取NBIotSentCountDay
 
-void			TCFG_EEPROM_SetMqttSNRecvCnt(unsigned int val);									//保存MqttSNRecvCnt
-unsigned int	TCFG_EEPROM_GetMqttSNRecvCnt(void);											//读取MqttSNRecvCnt
-
-void			TCFG_EEPROM_SetOneNETSentCnt(unsigned int val);									//保存OneNETSentCnt
-unsigned int	TCFG_EEPROM_GetOneNETSentCnt(void);											//读取OneNETSentCnt
-
-void			TCFG_EEPROM_SetOneNETRecvCnt(unsigned int val);									//保存OneNETRecvCnt
-unsigned int	TCFG_EEPROM_GetOneNETRecvCnt(void);											//读取OneNETRecvCnt
+void			TCFG_EEPROM_SetNBIotSentCountLimit(unsigned short val);							//保存NBIotSentCountLimit
+unsigned short	TCFG_EEPROM_GetNBIotSentCountLimit(void);										//读取NBIotSentCountLimit
 
 void			TCFG_EEPROM_SetDevBootCnt(unsigned short val);									//保存DevBootCnt
 unsigned short	TCFG_EEPROM_GetDevBootCnt(void);												//读取DevBootCnt
@@ -448,11 +484,26 @@ char*		TCFG_EEPROM_Get_Vender_String(void);											//读取vender字符串
 void			TCFG_EEPROM_SetMagMode(uint8_t val);											//保存MagMode
 unsigned char	TCFG_EEPROM_GetMagMode(void);													//读取MagMode
 
+void			TCFG_EEPROM_SetSenseMode(uint8_t val);											//保存 sense mode
+unsigned char	TCFG_EEPROM_GetSenseMode(void);												//读取 sense mode
+
 void			TCFG_EEPROM_SetNbiotHeart(uint8_t val);											//保存NbiotHeart
 unsigned char	TCFG_EEPROM_GetNbiotHeart(void);												//读取NbiotHeart
 
 void			TCFG_EEPROM_SetRadarRange(uint8_t val);											//保存RadarRange
 unsigned char	TCFG_EEPROM_GetRadarRange(void);												//读取RadarRange
+
+void			TCFG_EEPROM_SetCoverGain(unsigned char val);										//保存 radar gain in cover
+unsigned char	TCFG_EEPROM_GetCoverGain(void);												//读取 radar gain in cover
+
+void			TCFG_EEPROM_SetRadarGain(unsigned char val);										//保存 radar gain
+unsigned char	TCFG_EEPROM_GetRadarGain(void);												//读取 radar gain
+
+void			TCFG_EEPROM_SetHighPass(unsigned char val);										//保存 cut-off frequency of high pass
+unsigned char	TCFG_EEPROM_GetHighPass(void);												//读取 cut-off frequency of high pass
+
+void			TCFG_EEPROM_SetSampleInterval(unsigned char val);									//保存 采样间隔
+unsigned char	TCFG_EEPROM_GetSampleInterval(void);											//读取 采样间隔
 
 void			TCFG_EEPROM_SetCarInDelay(uint8_t val);											//保存CarInDelay
 unsigned char	TCFG_EEPROM_GetCarInDelay(void);												//读取CarInDelay
@@ -480,6 +531,9 @@ short		TCFG_EEPROM_GetUpgradeLimitSnr(void);											//读取UpgradeLimitSnr
 
 void			TCFG_EEPROM_SetBeepOff(uint8_t val);											//保存BeepOff
 unsigned char	TCFG_EEPROM_GetBeepOff(void);													//读取BeepOff
+
+void			TCFG_EEPROM_SetRollingOverInitSensor(uint8_t val);								//保存RollingOverInitSensor
+unsigned char	TCFG_EEPROM_GetRollingOverInitSensor(void);										//读取RollingOverInitSensor
 
 void			TCFG_EEPROM_SetDeviceRbtMode(uint8_t val);										//保存DeviceRbtMode
 unsigned char	TCFG_EEPROM_GetDeviceRbtMode(void);											//读取DeviceRbtMode
@@ -535,18 +589,14 @@ void			TCFG_Utility_Add_Device_BootCount(void);										//Device重启次数累
 unsigned short TCFG_Utility_Get_Device_BootCount(void);										//Device重启次数获取
 void			TCFG_Utility_Add_Nbiot_BootCount(void);											//NBIot重启次数累加
 unsigned int	TCFG_Utility_Get_Nbiot_BootCount(void);											//NBIot重启次数获取
-void			TCFG_Utility_Add_Coap_SentCount(void);											//NBIot Coap发送次数累加
-unsigned int	TCFG_Utility_Get_Coap_SentCount(void);											//NBIot Coap发送次数获取
-void			TCFG_Utility_Add_Coap_RecvCount(void);											//NBIot Coap接收次数累加
-unsigned int	TCFG_Utility_Get_Coap_RecvCount(void);											//NBIot Coap接收次数获取
-void			TCFG_Utility_Add_MqttSN_SentCount(void);										//NBIot MqttSN发送次数累加
-unsigned int	TCFG_Utility_Get_MqttSN_SentCount(void);										//NBIot MqttSN发送次数获取
-void			TCFG_Utility_Add_MqttSN_RecvCount(void);										//NBIot MqttSN接收次数累加
-unsigned int	TCFG_Utility_Get_MqttSN_RecvCount(void);										//NBIot MqttSN接收次数获取
-void			TCFG_Utility_Add_OneNET_SentCount(void);										//NBIot OneNET发送次数累加
-unsigned int	TCFG_Utility_Get_OneNET_SentCount(void);										//NBIot OneNET发送次数获取
-void			TCFG_Utility_Add_OneNET_RecvCount(void);										//NBIot OneNET接收次数累加
-unsigned int	TCFG_Utility_Get_OneNET_RecvCount(void);										//NBIot OneNET接收次数获取
+
+void			TCFG_Utility_Add_NBIot_SentCount(void);											//NBIot 发送次数累加
+unsigned int	TCFG_Utility_Get_NBIot_SentCount(void);											//NBIot 发送次数获取
+void			TCFG_Utility_Add_NBIot_RecvCount(void);											//NBIot 接收次数累加
+unsigned int	TCFG_Utility_Get_NBIot_RecvCount(void);											//NBIot 接收次数获取
+void			TCFG_Utility_Add_NBIot_SentCountDay(void);										//NBIot 一天发送次数累加
+unsigned short	TCFG_Utility_Get_NBIot_SentCountDay(void);										//NBIot 一天发送次数获取
+unsigned short	TCFG_Utility_Get_NBIot_SentCountLimit(void);										//NBIot 一天剩余次数获取
 
 void			TCFG_Utility_Set_Nbiot_IdleLifetime(unsigned short val);							//NBIot 休眠模式保活时间设置
 unsigned short	TCFG_Utility_Get_Nbiot_IdleLifetime(void);										//NBIot 休眠模式保活时间获取
@@ -617,6 +667,8 @@ unsigned char	TCFG_Utility_Get_AlgoLibNum(void);												//读取检测算法
 unsigned char	TCFG_Utility_Get_SoftResetFlag(void);											//读取设备重启标识符
 unsigned short TCFG_Utility_Get_ReInitModuleCount(void);										//读取模块异常初始化次数
 unsigned short TCFG_Utility_Get_DistanceRange(void);											//读取雷达检测范围
+unsigned char	TCFG_Utility_Get_GainCover(void);												//读取雷达覆水增益
+unsigned char	TCFG_Utility_Get_RadioGatewayNearby(void);										//读取小无线网关接收值
 unsigned char	TCFG_Utility_Get_Major_Softnumber(void);										//读取Major_Softnumber
 unsigned char	TCFG_Utility_Get_Sub_Softnumber(void);											//读取Sub_Softnumber
 unsigned char	TCFG_Utility_Get_Major_Hardnumber(void);										//读取Major_Hardnumber
