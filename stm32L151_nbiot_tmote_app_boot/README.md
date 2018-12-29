@@ -1,6 +1,9 @@
 # stm32L151_nbiot_tmote_app_boot
 movebroad Knagkang
 
+* 2018-12-29
+	* 0.31 当升级失败重启次数超过7次，跳转到SPIFlash恢复固件。
+	* 未检测到SPIFLASH或SPIFLASH未备份固件，则继续保留在boot。
 * 2018-12-11
 	* 0.30 修改SPIFLASH读取deviceid方式，兼容XTX型号。
 * 2018-12-5

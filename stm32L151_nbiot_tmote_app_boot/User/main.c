@@ -421,7 +421,7 @@ int main(void)
 		if(i%2 == 0)
 			g_bootmode = TCFG_ENV_BOOTMODE_UPDATING;
 		else
-			g_bootmode = TCFG_ENV_BOOTMODE_NORMAL;
+			g_bootmode = TCFG_ENV_BOOTMODE_SPIFLASH_UPGRADE;
 		if(i>100)
 			i = 7;
 	}
@@ -652,7 +652,17 @@ start:
 					
 					programUpdateSpiFlash(UpgradeSpiFlashBaseAddr, app_offset, UpgradeBlockNum);
 				}
+				else {
+					upgrad_state = TIME_OUT;
+					HAL_FLASH_Lock();
+					HAL_NVIC_SystemReset();
+				}
 				Beep_OUT(20, 30);
+			}
+			else {
+				upgrad_state = TIME_OUT;
+				HAL_FLASH_Lock();
+				HAL_NVIC_SystemReset();
 			}
 			
 			x_jump_to_application(app_offset);
