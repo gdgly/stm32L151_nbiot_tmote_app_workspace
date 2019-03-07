@@ -476,7 +476,7 @@ void Radar_GetSample(void)
 	}
 	
 	sample_array0[n_array] = RADAR_ADC_ConvertedValue;
-		
+	
 	/* 设置DAC通道值 */
 	HAL_DAC_SetValue(&RADAR_DAC_Handler, DAC_CHANNEL_1, DAC_ALIGN_12B_R, (SAMPLE_NUM - n_array) * RADER_RANGE + RADER_LOW);
 	
