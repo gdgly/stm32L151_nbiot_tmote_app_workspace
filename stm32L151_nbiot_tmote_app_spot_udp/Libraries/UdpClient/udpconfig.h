@@ -20,9 +20,11 @@
 typedef struct UDP_SocketNetTypeDef		UDP_SocketNetTypeDef;
 typedef struct UDP_ClientsTypeDef			UDP_ClientsTypeDef;
 
-
-
-
+/* UDP Is ProcessState */
+typedef enum
+{
+	UDP_PROCESS_CREAT_UDP_SOCKET			= 0x00
+}UDP_ProcessStateTypeDef;
 
 /* UDP Status */
 typedef enum
@@ -75,26 +77,25 @@ struct UDP_ClientsTypeDef
 	
 	
 	
+	struct UDPDictateRuningCtlTypeDef
+	{
+		bool							dictateEnable;
+		unsigned int					dictateTimeoutSec;
+		
+		
+		Stm32_CalculagraphTypeDef		dictateRunTime;
+	}DictateRunCtl;
 	
 	
+	
+	
+	UDP_ProcessStateTypeDef				ProcessState;
 	UDP_SocketNetTypeDef*				SocketStack;
 	NET_NBIOT_ClientsTypeDef*			NetNbiotStack;
 };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+/* Application Programming Interface */
+void UDP_Client_Init(UDP_ClientsTypeDef* pClient, UDP_SocketNetTypeDef* NetSock, NET_NBIOT_ClientsTypeDef* NetNbiotStack);		//UDP客户端初始化
 
 
 

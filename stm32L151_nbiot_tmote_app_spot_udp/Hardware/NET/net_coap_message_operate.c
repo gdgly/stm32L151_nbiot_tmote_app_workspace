@@ -19,6 +19,7 @@
 #include "platform_map.h"
 #include "stm32l1xx_config.h"
 #include "fifomessage.h"
+#include "hal_rtc.h"
 #include "radar_api.h"
 #include "tmesh_algorithm.h"
 #include "string.h"

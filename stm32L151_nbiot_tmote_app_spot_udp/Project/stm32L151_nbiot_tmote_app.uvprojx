@@ -1028,6 +1028,11 @@
               <FilePath>..\Libraries\UdpClient\udpfunc.c</FilePath>
             </File>
             <File>
+              <FileName>udpprotocol.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Libraries\UdpClient\udpprotocol.c</FilePath>
+            </File>
+            <File>
               <FileName>udptransport.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Libraries\UdpClient\udptransport.c</FilePath>
@@ -1221,6 +1226,16 @@
               <FileName>net_mqttsn_pcp_app.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Hardware\NET\net_mqttsn_pcp_app.c</FilePath>
+            </File>
+            <File>
+              <FileName>net_udp_message_operate.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Hardware\NET\net_udp_message_operate.c</FilePath>
+            </File>
+            <File>
+              <FileName>net_udp_app.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Hardware\NET\net_udp_app.c</FilePath>
             </File>
             <File>
               <FileName>net_dns_app.c</FileName>

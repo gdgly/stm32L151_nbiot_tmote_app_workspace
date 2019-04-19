@@ -122,7 +122,6 @@ void NET_NBIOT_Initialization(void)
 	
 	/* MQTTSN PCP数据传输接口初始化 */
 	MqttPCP_Transport_Init(&MqttSNPCPMqttNetHandler, &MqttSNClientHandler);
-	
 	/* MQTTSN PCP客户端初始化 */
 	MqttPCP_Client_Init(&MqttSNPCPClientHandler, &MqttSNPCPMqttNetHandler, &NetNbiotClientHandler);
 	

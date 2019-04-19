@@ -15,6 +15,7 @@
 
 #include "udpconfig.h"
 #include "udpfunc.h"
+#include "udpprotocol.h"
 #include "udptransport.h"
 
 unsigned char UDP_SendBuf[UDP_BUFFER_SIZE];
@@ -45,11 +46,15 @@ void UDP_Client_Init(UDP_ClientsTypeDef* pClient, UDP_SocketNetTypeDef* NetSock,
 	
 	
 	
+	pClient->DictateRunCtl.dictateEnable					= false;
+	pClient->DictateRunCtl.dictateTimeoutSec				= 0;
 	
 	
 	
 	
 	
+	
+	pClient->ProcessState								= UDP_PROCESS_CREAT_UDP_SOCKET;
 	pClient->SocketStack								= NetSock;
 	pClient->NetNbiotStack								= NetNbiotStack;
 }
