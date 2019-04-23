@@ -17,35 +17,9 @@
 #include "platform_config.h"
 #include "platform_map.h"
 #include "stm32l1xx_config.h"
+#include "sock.h"
 #include "delay.h"
 #include "usart.h"
-
-/* -短整型大小端互换- */
-#define BigLittleSwap16(A)		((((uint16_t)(A) & 0xFF00) >> 8) | (((uint16_t)(A) & 0x00FF) << 8))
-/* -长整型大小端互换- */
-#define BigLittleSwap32(A)		((((uint32_t)(A) & 0xFF000000) >> 24) | \
-							 (((uint32_t)(A) & 0x00FF0000) >> 8 ) | \
-							 (((uint32_t)(A) & 0x0000FF00) << 8 ) | \
-							 (((uint32_t)(A) & 0x000000FF) << 24))
-
-/**********************************************************************************************************
- @Function			static int checkCPUendian(void)
- @Description			checkCPUendian						: 检查CPU大小端模式
- @Input				void
- @Return				1								: 大端
-					0								: 小端
-**********************************************************************************************************/
-static int checkCPUendian(void)
-{
-	union {
-		unsigned long int i;
-		unsigned char s[4];
-	}c;
-	
-	c.i = 0x12345678;
-	
-	return (0x12 == c.s[0]);
-}
 
 /**********************************************************************************************************
  @Function			unsigned long int PCPSock_htonl(unsigned long int h)
@@ -55,7 +29,7 @@ static int checkCPUendian(void)
 **********************************************************************************************************/
 unsigned long int PCPSock_htonl(unsigned long int h)
 {
-	return checkCPUendian() ? h : BigLittleSwap32(h);
+	return htonl(h);
 }
 
 /**********************************************************************************************************
@@ -66,7 +40,7 @@ unsigned long int PCPSock_htonl(unsigned long int h)
 **********************************************************************************************************/
 unsigned long int PCPSock_ntohl(unsigned long int n)
 {
-	return checkCPUendian() ? n : BigLittleSwap32(n);
+	return ntohl(n);
 }
 
 /**********************************************************************************************************
@@ -77,7 +51,7 @@ unsigned long int PCPSock_ntohl(unsigned long int n)
 **********************************************************************************************************/
 unsigned short int PCPSock_htons(unsigned short int h)
 {
-	return checkCPUendian() ? h : BigLittleSwap16(h);
+	return htons(h);
 }
 
 /**********************************************************************************************************
@@ -88,7 +62,7 @@ unsigned short int PCPSock_htons(unsigned short int h)
 **********************************************************************************************************/
 unsigned short int PCPSock_ntohs(unsigned short int n)
 {
-	return checkCPUendian() ? n : BigLittleSwap16(n);
+	return ntohs(n);
 }
 
 /********************************************** END OF FLEE **********************************************/

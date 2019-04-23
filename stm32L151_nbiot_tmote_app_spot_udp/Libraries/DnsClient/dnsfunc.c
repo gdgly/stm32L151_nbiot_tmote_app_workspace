@@ -14,73 +14,9 @@
   */
 
 #include "dnsfunc.h"
+#include "sock.h"
 #include "string.h"
 #include "stdlib.h"
-
-#define BigLittleSwap16(A)	((((uint16_t)(A) & 0xff00) >> 8) | (((uint16_t)(A) & 0x00ff) << 8))
-#define BigLittleSwap32(A)	((((uint32_t)(A) & 0xff000000) >> 24) | (((uint32_t)(A) & 0x00ff0000) >> 8) | (((uint32_t)(A) & 0x0000ff00) << 8) | (((uint32_t)(A) & 0x000000ff) << 24))
-
-/**********************************************************************************************************
- @Function			static int checkCPUendian(void)
- @Description			checkCPUendian			: 本机大端返回1,小端返回0
- @Input				void
- @Return				int
-**********************************************************************************************************/
-static int checkCPUendian(void)
-{
-	union {
-		unsigned long int i;
-		unsigned char s[4];
-	}c;
-	
-	c.i = 0x12345678;
-	
-	return (0x12 == c.s[0]);
-}
-
-/**********************************************************************************************************
- @Function			unsigned long int htonl(unsigned long int h)
- @Description			htonl				: 本机字节序转网络字节序(u32)
- @Input				unsigned long int
- @Return				unsigned long int
-**********************************************************************************************************/
-unsigned long int htonl(unsigned long int h)
-{
-	return checkCPUendian() ? h : BigLittleSwap32(h);
-}
-
-/**********************************************************************************************************
- @Function			unsigned long int ntohl(unsigned long int n)
- @Description			ntohl				: 网络字节序转本机字节序(u32)
- @Input				unsigned long int
- @Return				unsigned long int
-**********************************************************************************************************/
-unsigned long int ntohl(unsigned long int n)
-{
-	return checkCPUendian() ? n : BigLittleSwap32(n);
-}
-
-/**********************************************************************************************************
- @Function			unsigned short int htons(unsigned short int h)
- @Description			htons				: 本机字节序转网络字节序(u16)
- @Input				unsigned short int
- @Return				unsigned short int
-**********************************************************************************************************/
-unsigned short int htons(unsigned short int h)
-{
-	return checkCPUendian() ? h : BigLittleSwap16(h);
-}
-
-/**********************************************************************************************************
- @Function			unsigned short int ntohs(unsigned short int n)
- @Description			ntohl				: 网络字节序转本机字节序(u16)
- @Input				unsigned short int
- @Return				unsigned short int
-**********************************************************************************************************/
-unsigned short int ntohs(unsigned short int n)
-{
-	return checkCPUendian() ? n : BigLittleSwap16(n);
-}
 
 /**********************************************************************************************************
  @Function			DNS_StatusTypeDef DNS_Seperate(DNS_ClientsTypeDef* pClient, unsigned char* name, unsigned char* host)

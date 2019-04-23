@@ -33,6 +33,29 @@ typedef __packed struct
 	u8								Tail;
 } UDP_AUTOCTRL_messageTail;
 
+/* AUTOCTRL Data connect */
+typedef __packed struct
+{
+	u8								MacSN[12];
+	u32								SerCode;
+	u8								VerInfo[5];
+	u8								IMEI[8];
+	u8								IMSI[10];
+	u8								SpotID[7];
+	u8								Reserved[8];
+	u8								PackNumber;
+} AUTOCTRL_Connect_Data;
+
+/* AUTOCTRL Data connack */
+typedef __packed struct
+{
+	u8								MacSN[12];
+	u32								SerCode;
+	u8								ResultCode;
+	u8								Reserved[3];
+	u8								PackNumber;
+} AUTOCTRL_Connack_Data;
+
 /* AUTOCTRL message Data connect */
 typedef __packed struct
 {
@@ -42,14 +65,7 @@ typedef __packed struct
 	u8								CmdCode;
 	u8								AckCode;
 	u8								DataLen;
-	u8								MacSN[12];
-	u32								SerCode;
-	u8								VerInfo[5];
-	u8								IMEI[8];
-	u8								IMSI[10];
-	u8								SpotID[7];
-	u8								Reserved[8];
-	u8								PackNumber;
+	AUTOCTRL_Connect_Data				ConnectData;
 	u8								DataCheck;
 	u8								EndCode;
 	UDP_AUTOCTRL_messageTail				messageTail;
@@ -64,15 +80,37 @@ typedef __packed struct
 	u8								CmdCode;
 	u8								AckCode;
 	u8								DataLen;
-	u8								MacSN[12];
-	u32								SerCode;
-	u8								ResultCode;
-	u8								Reserved[3];
-	u8								PackNumber;
+	AUTOCTRL_Connack_Data				ConnackData;
 	u8								DataCheck;
 	u8								EndCode;
 	UDP_AUTOCTRL_messageTail				messageTail;
 } UDP_AUTOCTRL_messageData_Connack;
+
+/* AUTOCTRL message connect options */
+typedef struct
+{
+	u32								MacSN;
+	char*							IMEI;
+	char*							IMSI;
+	u8								PackNumber;
+} UDP_AUTOCTRL_message_Connect_option;
+
+int UDPAUTOCTRLSerialize_connect(unsigned char* buf, int buflen, UDP_AUTOCTRL_message_Connect_option* options);
+int UDPAUTOCTRLDeserialize_connack(unsigned char* buf, int buflen, UDP_AUTOCTRL_message_Connect_option* options);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
