@@ -14,6 +14,7 @@
   */
 
 #include "udpprotocol.h"
+#include "hal_rtc.h"
 #include "sock.h"
 #include "string.h"
 #include "stdlib.h"
@@ -154,9 +155,137 @@ exit:
 	return rc;
 }
 
+/**********************************************************************************************************
+ @Function			int UDPAUTOCTRLSerialize_status(unsigned char* buf, int buflen, UDP_AUTOCTRL_message_Status_option* options)
+ @Description			UDPAUTOCTRLSerialize_status	: Serializes the status options into the buffer.
+ @Input				buf						: buf the buffer into which the packet will be serialized
+					len						: len the length in bytes of the supplied buffer
+					options					: options the options to be used to build the connect packet
+ @Return				serialized length, or error if 0
+**********************************************************************************************************/
+int UDPAUTOCTRLSerialize_status(unsigned char* buf, int buflen, UDP_AUTOCTRL_message_Status_option* options)
+{
+	UDP_AUTOCTRL_messageData_Status* status = (UDP_AUTOCTRL_messageData_Status*)buf;
+	
+	memset((void*)buf, 0x00, buflen);
+	
+	status->messageHead.Head  = AUTOCTRL_MESSAGEHEAD_HEAD;
+	status->messageHead.Cmd   = AUTOCTRL_MESSAGEHEAD_CMD;
+	status->messageHead.Len   = htons(sizeof(UDP_AUTOCTRL_messageData_Status) - sizeof(UDP_AUTOCTRL_messageHead) - sizeof(UDP_AUTOCTRL_messageTail));
+	status->messageHead.Com   = htons(AUTOCTRL_MESSAGEHEAD_COM);
+	
+	status->StartCode         = AUTOCTRL_STATUS_START;
+	status->DevCode           = htonl(AUTOCTRL_STATUS_DEV);
+	status->CmdCode           = AUTOCTRL_STATUS_CMD;
+	status->AckCode           = AUTOCTRL_STATUS_ACK;
+	status->DataLen           = sizeof(AUTOCTRL_Status_Data);
+	
+	status->StatusData.MacSN[sizeof(status->StatusData.MacSN) - 4] = (options->MacSN & 0xFF000000) >> 3*8;
+	status->StatusData.MacSN[sizeof(status->StatusData.MacSN) - 3] = (options->MacSN & 0x00FF0000) >> 2*8;
+	status->StatusData.MacSN[sizeof(status->StatusData.MacSN) - 2] = (options->MacSN & 0x0000FF00) >> 1*8;
+	status->StatusData.MacSN[sizeof(status->StatusData.MacSN) - 1] = (options->MacSN & 0x000000FF) >> 0*8;
+	
+	status->StatusData.SerCode = htonl(AUTOCTRL_STATUS_SER);
+	
+	status->StatusData.SpotStatus = options->SpotStatus;
+	status->StatusData.VbatStatus = options->VbatStatus;
+	
+	status->StatusData.Heartbeat  = options->Heartbeat;
+	status->StatusData.Algorithm  = options->Algorithm;
+	
+	struct tm Timer = RTC_ConvUnixToCalendar(options->unixTime);
+	u8 tempTimer[13] = {0};
+	sprintf((char*)tempTimer, "%02d%02d%02d%02d%02d%02d", Timer.tm_year, Timer.tm_mon, Timer.tm_mday, Timer.tm_hour, Timer.tm_min, Timer.tm_sec);
+	for (int i = 0; i < 6; i++) {
+		u32 utmp = 0;
+		sscanf((const char*)(tempTimer + i * 2), "%02X", &utmp);
+		status->StatusData.Timer[i] = utmp;
+	}
+	
+	status->StatusData.SpotCounts = htonl(options->SpotCounts);
+	
+	status->StatusData.BatchCode  = 0x00;
+	
+	status->StatusData.PackNumber = options->PackNumber;
+	
+	for (int i = 0; i < (sizeof(status->StatusData) + sizeof(status->DevCode) + sizeof(status->CmdCode) + sizeof(status->AckCode) + sizeof(status->DataLen)); i++) {
+		u8* StatusDataVal = (u8*)&status->DevCode;
+		status->DataCheck += *(StatusDataVal + i);
+	}
+	
+	status->EndCode           = AUTOCTRL_STATUS_END;
+	
+	for (int i = 0; i < (sizeof(UDP_AUTOCTRL_messageData_Status) - sizeof(status->messageTail) - sizeof(status->messageHead.Head)); i++) {
+		u8* CheckVal = (u8*)&status->messageHead.Cmd;
+		status->messageTail.CRCCheck += *(CheckVal + i);
+	}
+	
+	status->messageTail.Tail  = AUTOCTRL_MESSAGETAIL_TAIL;
+	
+	return sizeof(UDP_AUTOCTRL_messageData_Status);
+}
 
-
-
+/**********************************************************************************************************
+ @Function			int UDPAUTOCTRLDeserialize_staack(unsigned char* buf, int buflen, UDP_AUTOCTRL_message_Status_option* options)
+ @Description			UDPAUTOCTRLDeserialize_staack : Deserializes the supplied (wire) buffer into staack data - return code
+ @Input				buf						: buf the raw buffer data, of the correct length determined by the remaining length field
+					len						: len the length in bytes of the data in the supplied buffer
+					options					: options the options to be used to build the status packet
+ @Return				1 is success, 0 is failure
+**********************************************************************************************************/
+int UDPAUTOCTRLDeserialize_staack(unsigned char* buf, int buflen, UDP_AUTOCTRL_message_Status_option* options)
+{
+	UDP_AUTOCTRL_messageData_Staack* staack = (UDP_AUTOCTRL_messageData_Staack*)buf;
+	unsigned char checkCode;
+	int rc = 1;
+	
+	if (buflen != sizeof(UDP_AUTOCTRL_messageData_Staack)) {
+		rc = 0;
+		goto exit;
+	}
+	
+	if ((staack->messageHead.Head != AUTOCTRL_MESSAGEHEAD_HEAD) || (staack->messageTail.Tail != AUTOCTRL_MESSAGETAIL_TAIL)) {
+		rc = 0;
+		goto exit;
+	}
+	
+	checkCode = 0;
+	for (int i = 0; i < (sizeof(UDP_AUTOCTRL_messageData_Staack) - sizeof(staack->messageTail) - sizeof(staack->messageHead.Head)); i++) {
+		u8* CheckVal = (u8*)&staack->messageHead.Cmd;
+		checkCode += *(CheckVal + i);
+	}
+	
+	if (checkCode != staack->messageTail.CRCCheck) {
+		rc = 0;
+		goto exit;
+	}
+	
+	if ((staack->StartCode != AUTOCTRL_STATUS_START) || (staack->EndCode != AUTOCTRL_STATUS_END)) {
+		rc = 0;
+		goto exit;
+	}
+	
+	checkCode = 0;
+	for (int i = 0; i < (sizeof(staack->StaackData) + sizeof(staack->DevCode) + sizeof(staack->CmdCode) + sizeof(staack->AckCode) + sizeof(staack->DataLen)); i++) {
+		u8* ConnackDataVal = (u8*)&staack->DevCode;
+		checkCode += *(ConnackDataVal + i);
+	}
+	
+	if (checkCode != staack->DataCheck) {
+		rc = 0;
+		goto exit;
+	}
+	
+	if (staack->StaackData.PackNumber != options->PackNumber) {
+		rc = 0;
+		goto exit;
+	}
+	
+	rc = staack->StaackData.ResultCode;
+	
+exit:
+	return rc;
+}
 
 
 

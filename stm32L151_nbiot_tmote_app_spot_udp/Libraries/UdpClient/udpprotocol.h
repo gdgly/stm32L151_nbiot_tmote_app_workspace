@@ -17,6 +17,20 @@
 #define	AUTOCTRL_CONNECT_SER			0x88888888
 #define	AUTOCTRL_CONNECT_END			0xBB
 
+#define	AUTOCTRL_STATUS_START			0xAA
+#define	AUTOCTRL_STATUS_DEV				0x02000A83
+#define	AUTOCTRL_STATUS_CMD				0xE7
+#define	AUTOCTRL_STATUS_ACK				0xFF
+#define	AUTOCTRL_STATUS_SER				0x88888888
+#define	AUTOCTRL_STATUS_END				0xBB
+
+#define	AUTOCTRL_STATUS_SPOT_FREE		0x00
+#define	AUTOCTRL_STATUS_SPOT_OCCUPY		0x01
+
+#define	AUTOCTRL_STATUS_VBAT_NORMAL		0x00
+#define	AUTOCTRL_STATUS_VBAT_UNDER		0x01
+#define	AUTOCTRL_STATUS_VBAT_EXHAUST		0x02
+
 /* AUTOCTRL message Head */
 typedef __packed struct
 {
@@ -32,6 +46,19 @@ typedef __packed struct
 	u8								CRCCheck;
 	u8								Tail;
 } UDP_AUTOCTRL_messageTail;
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /* AUTOCTRL Data connect */
 typedef __packed struct
@@ -95,17 +122,175 @@ typedef struct
 	u8								PackNumber;
 } UDP_AUTOCTRL_message_Connect_option;
 
+
+
+
+
+
+
+
+
+
+/* AUTOCTRL Data status */
+typedef __packed struct
+{
+	u8								MacSN[12];
+	u32								SerCode;
+	u8								SpotStatus;
+	u8								VbatStatus;
+	u8								SpotID[7];
+	u8								Magnetic[12];
+	u8								Algorithm;
+	u8								Heartbeat;
+	u8								Timer[6];
+	u32								SpotCounts;
+	u8								BatchCode;
+	u8								Reserved[8];
+	u8								PackNumber;
+} AUTOCTRL_Status_Data;
+
+/* AUTOCTRL Data staack */
+typedef __packed struct
+{
+	u8								MacSN[12];
+	u32								SerCode;
+	u8								ResultCode;
+	u8								Reserved[3];
+	u8								PackNumber;
+} AUTOCTRL_Staack_Data;
+
+/* AUTOCTRL message Data status */
+typedef __packed struct
+{
+	UDP_AUTOCTRL_messageHead				messageHead;
+	u8								StartCode;
+	u32								DevCode;
+	u8								CmdCode;
+	u8								AckCode;
+	u8								DataLen;
+	AUTOCTRL_Status_Data				StatusData;
+	u8								DataCheck;
+	u8								EndCode;
+	UDP_AUTOCTRL_messageTail				messageTail;
+} UDP_AUTOCTRL_messageData_Status;
+
+/* AUTOCTRL message Data staack */
+typedef __packed struct
+{
+	UDP_AUTOCTRL_messageHead				messageHead;
+	u8								StartCode;
+	u32								DevCode;
+	u8								CmdCode;
+	u8								AckCode;
+	u8								DataLen;
+	AUTOCTRL_Staack_Data				StaackData;
+	u8								DataCheck;
+	u8								EndCode;
+	UDP_AUTOCTRL_messageTail				messageTail;
+} UDP_AUTOCTRL_messageData_Staack;
+
+/* AUTOCTRL message status options */
+typedef struct
+{
+	u32								MacSN;
+	u8								SpotStatus;
+	u32								SpotCounts;
+	u8								VbatStatus;
+	u8								Algorithm;
+	u8								Heartbeat;
+	u32								unixTime;
+	u8								PackNumber;
+} UDP_AUTOCTRL_message_Status_option;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* AUTOCTRL Data heart */
+typedef __packed struct
+{
+	u8								MacSN[12];
+	u32								SerCode;
+	u16								Debuff;
+	u8								SpotID[7];
+	u8								Magnetic[12];
+	u8								Algorithm;
+	u8								Heartbeat;
+	u8								SpotStatus;
+	u8								VbatStatus;
+	
+	
+	
+} AUTOCTRL_Heart_Data;
+
+/* AUTOCTRL Data heack */
+typedef __packed struct
+{
+	u8								MacSN[12];
+	u32								SerCode;
+	
+	
+	
+} AUTOCTRL_Heack_Data;
+
+/* AUTOCTRL message Data heart */
+typedef __packed struct
+{
+	UDP_AUTOCTRL_messageHead				messageHead;
+	u8								StartCode;
+	u32								DevCode;
+	u8								CmdCode;
+	u8								AckCode;
+	u8								DataLen;
+	AUTOCTRL_Heart_Data					HeartData;
+	u8								DataCheck;
+	u8								EndCode;
+	UDP_AUTOCTRL_messageTail				messageTail;
+} UDP_AUTOCTRL_messageData_Heart;
+
+
+/* AUTOCTRL message Data heack */
+typedef __packed struct
+{
+	UDP_AUTOCTRL_messageHead				messageHead;
+	u8								StartCode;
+	u32								DevCode;
+	u8								CmdCode;
+	u8								AckCode;
+	u8								DataLen;
+	AUTOCTRL_Heack_Data					HeackData;
+	u8								DataCheck;
+	u8								EndCode;
+	UDP_AUTOCTRL_messageTail				messageTail;
+} UDP_AUTOCTRL_messageData_Heack;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 int UDPAUTOCTRLSerialize_connect(unsigned char* buf, int buflen, UDP_AUTOCTRL_message_Connect_option* options);
 int UDPAUTOCTRLDeserialize_connack(unsigned char* buf, int buflen, UDP_AUTOCTRL_message_Connect_option* options);
 
-
-
-
-
-
-
-
-
+int UDPAUTOCTRLSerialize_status(unsigned char* buf, int buflen, UDP_AUTOCTRL_message_Status_option* options);
+int UDPAUTOCTRLDeserialize_staack(unsigned char* buf, int buflen, UDP_AUTOCTRL_message_Status_option* options);
 
 
 
