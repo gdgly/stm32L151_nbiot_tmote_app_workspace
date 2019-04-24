@@ -13,6 +13,7 @@
   *********************************************************************************************************
   */
 
+#include "main.h"
 #include "udpconfig.h"
 #include "udpfunc.h"
 #include "udpprotocol.h"
@@ -21,6 +22,18 @@
 unsigned char UDP_SendBuf[UDP_BUFFER_SIZE];
 unsigned char UDP_RecvBuf[UDP_BUFFER_SIZE];
 unsigned char UDP_DataStack[UDP_DATASTACK_SIZE];
+
+/**********************************************************************************************************
+ @Function			void UDP_WaitforCallback(UDP_ClientsTypeDef* pClient)
+ @Description			UDP_WaitforCallback		: UDP数据等待接收回调函数
+ @Input				pClient				: UDP客户端实例
+ @Return				void
+ @attention			UDP等待相应应答消息到来时间较长,此回调函数提供在等待时运行函数
+**********************************************************************************************************/
+void UDP_WaitforCallback(UDP_ClientsTypeDef* pClient)
+{
+	
+}
 
 /**********************************************************************************************************
  @Function			void UDP_Client_Init(UDP_ClientsTypeDef* pClient, UDP_SocketNetTypeDef* NetSock, NET_NBIOT_ClientsTypeDef* NetNbiotStack)

@@ -5,6 +5,8 @@
 #include "nbiotconfig.h"
 #include "net_nbiot_app.h"
 
+#define UDP_MAX_MSG_ID					255
+
 #define UDP_COMMAND_TIMEOUT_SEC			30
 #define UDP_COMMAND_FAILURE_CNT			3
 
@@ -30,7 +32,11 @@ typedef enum
 typedef enum
 {
 	UDP_OK       						= 0x00,
-	UDP_ERROR    						= 0x01
+	UDP_ERROR    						= 0x01,
+	UDP_BUFFER_OVERFLOW					= 0x02,
+	UDP_RECVPACKET_NONE					= 0x03,
+	UDP_CMD_TIMEOUT					= 0x04,
+	UDP_MESSAGE_HANDLERS_FULL			= 0x05
 }UDP_StatusTypeDef;
 
 
@@ -72,6 +78,7 @@ struct UDP_ClientsTypeDef
 	short							Recvlen;
 	unsigned char*						DataProcessStack;
 	size_t							DataProcessStack_size;
+	unsigned int						MsgId;
 	unsigned short						Command_Timeout_Sec;
 	unsigned short						Command_Failure_Cnt;
 	
@@ -95,6 +102,7 @@ struct UDP_ClientsTypeDef
 };
 
 /* Application Programming Interface */
+void UDP_WaitforCallback(UDP_ClientsTypeDef* pClient);																//UDP数据等待接收回调函数
 void UDP_Client_Init(UDP_ClientsTypeDef* pClient, UDP_SocketNetTypeDef* NetSock, NET_NBIOT_ClientsTypeDef* NetNbiotStack);		//UDP客户端初始化
 
 

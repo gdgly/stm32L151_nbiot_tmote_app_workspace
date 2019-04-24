@@ -38,6 +38,14 @@
 #define	AUTOCTRL_HEART_SER				0x88888888
 #define	AUTOCTRL_HEART_END				0xBB
 
+/* AUTOCTRL message Type */
+enum AUTOCTRL_msgTypes
+{
+	AUTOCTRL_CONNACK					= AUTOCTRL_CONNECT_CMD,
+	AUTOCTRL_STAACK					= AUTOCTRL_STATUS_CMD,
+	AUTOCTRL_HEACK						= AUTOCTRL_HEART_CMD
+};
+
 /* AUTOCTRL message Head */
 typedef __packed struct
 {
@@ -115,6 +123,8 @@ typedef struct
 	char*							IMSI;
 	u8								PackNumber;
 } UDP_AUTOCTRL_message_Connect_option;
+
+#define UDP_AUTOCTRL_Packet_connectData_initializer	{0x00000000, NULL, NULL, 0x00}
 
 /* AUTOCTRL Data status */
 typedef __packed struct
