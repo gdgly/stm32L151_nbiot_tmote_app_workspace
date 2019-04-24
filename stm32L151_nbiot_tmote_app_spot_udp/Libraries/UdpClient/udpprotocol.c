@@ -31,6 +31,8 @@ int UDPAUTOCTRLSerialize_connect(unsigned char* buf, int buflen, UDP_AUTOCTRL_me
 {
 	UDP_AUTOCTRL_messageData_Connect* connect = (UDP_AUTOCTRL_messageData_Connect*)buf;
 	
+	if (sizeof(UDP_AUTOCTRL_messageData_Connect) > buflen) return 0;
+	
 	memset((void*)buf, 0x00, buflen);
 	
 	connect->messageHead.Head = AUTOCTRL_MESSAGEHEAD_HEAD;
@@ -167,6 +169,8 @@ int UDPAUTOCTRLSerialize_status(unsigned char* buf, int buflen, UDP_AUTOCTRL_mes
 {
 	UDP_AUTOCTRL_messageData_Status* status = (UDP_AUTOCTRL_messageData_Status*)buf;
 	
+	if (sizeof(UDP_AUTOCTRL_messageData_Status) > buflen) return 0;
+	
 	memset((void*)buf, 0x00, buflen);
 	
 	status->messageHead.Head  = AUTOCTRL_MESSAGEHEAD_HEAD;
@@ -287,51 +291,129 @@ exit:
 	return rc;
 }
 
+/**********************************************************************************************************
+ @Function			int UDPAUTOCTRLSerialize_heart(unsigned char* buf, int buflen, UDP_AUTOCTRL_message_Heart_option* options)
+ @Description			UDPAUTOCTRLSerialize_heart	: Serializes the heart options into the buffer.
+ @Input				buf						: buf the buffer into which the packet will be serialized
+					len						: len the length in bytes of the supplied buffer
+					options					: options the options to be used to build the connect packet
+ @Return				serialized length, or error if 0
+**********************************************************************************************************/
+int UDPAUTOCTRLSerialize_heart(unsigned char* buf, int buflen, UDP_AUTOCTRL_message_Heart_option* options)
+{
+	UDP_AUTOCTRL_messageData_Heart* heart = (UDP_AUTOCTRL_messageData_Heart*)buf;
+	
+	if (sizeof(UDP_AUTOCTRL_messageData_Heart) > buflen) return 0;
+	
+	memset((void*)buf, 0x00, buflen);
+	
+	heart->messageHead.Head   = AUTOCTRL_MESSAGEHEAD_HEAD;
+	heart->messageHead.Cmd    = AUTOCTRL_MESSAGEHEAD_CMD;
+	heart->messageHead.Len    = htons(sizeof(UDP_AUTOCTRL_messageData_Heart) - sizeof(UDP_AUTOCTRL_messageHead) - sizeof(UDP_AUTOCTRL_messageTail));
+	heart->messageHead.Com    = htons(AUTOCTRL_MESSAGEHEAD_COM);
+	
+	heart->StartCode          = AUTOCTRL_HEART_START;
+	heart->DevCode            = htonl(AUTOCTRL_HEART_DEV);
+	heart->CmdCode            = AUTOCTRL_HEART_CMD;
+	heart->AckCode            = AUTOCTRL_HEART_ACK;
+	heart->DataLen            = sizeof(AUTOCTRL_Heart_Data);
+	
+	heart->HeartData.MacSN[sizeof(heart->HeartData.MacSN) - 4] = (options->MacSN & 0xFF000000) >> 3*8;
+	heart->HeartData.MacSN[sizeof(heart->HeartData.MacSN) - 3] = (options->MacSN & 0x00FF0000) >> 2*8;
+	heart->HeartData.MacSN[sizeof(heart->HeartData.MacSN) - 2] = (options->MacSN & 0x0000FF00) >> 1*8;
+	heart->HeartData.MacSN[sizeof(heart->HeartData.MacSN) - 1] = (options->MacSN & 0x000000FF) >> 0*8;
+	
+	heart->HeartData.SerCode = htonl(AUTOCTRL_HEART_SER);
+	
+	heart->HeartData.Debuff      = options->Debuff;
+	heart->HeartData.Algorithm   = options->Algorithm;
+	heart->HeartData.Heartbeat   = options->Heartbeat;
+	heart->HeartData.SpotStatus  = options->SpotStatus;
+	heart->HeartData.VbatStatus  = options->VbatStatus;
+	heart->HeartData.SleepTime   = options->SleepTime;
+	heart->HeartData.RSSI        = options->RSSI;
+	heart->HeartData.SNR         = options->SNR;
+	heart->HeartData.Temperature = options->Temperature;
+	
+	heart->HeartData.PackNumber  = options->PackNumber;
+	
+	for (int i = 0; i < (sizeof(heart->HeartData) + sizeof(heart->DevCode) + sizeof(heart->CmdCode) + sizeof(heart->AckCode) + sizeof(heart->DataLen)); i++) {
+		u8* HeartDataVal = (u8*)&heart->DevCode;
+		heart->DataCheck += *(HeartDataVal + i);
+	}
+	
+	heart->EndCode            = AUTOCTRL_HEART_END;
+	
+	for (int i = 0; i < (sizeof(UDP_AUTOCTRL_messageData_Heart) - sizeof(heart->messageTail) - sizeof(heart->messageHead.Head)); i++) {
+		u8* CheckVal = (u8*)&heart->messageHead.Cmd;
+		heart->messageTail.CRCCheck += *(CheckVal + i);
+	}
+	
+	heart->messageTail.Tail   = AUTOCTRL_MESSAGETAIL_TAIL;
+	
+	return sizeof(UDP_AUTOCTRL_messageData_Heart);
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+/**********************************************************************************************************
+ @Function			int UDPAUTOCTRLDeserialize_heack(unsigned char* buf, int buflen, UDP_AUTOCTRL_message_Heart_option* options)
+ @Description			UDPAUTOCTRLDeserialize_heack  : Deserializes the supplied (wire) buffer into heack data - return code
+ @Input				buf						: buf the raw buffer data, of the correct length determined by the remaining length field
+					len						: len the length in bytes of the data in the supplied buffer
+					options					: options the options to be used to build the status packet
+ @Return				1 is success, 0 is failure
+**********************************************************************************************************/
+int UDPAUTOCTRLDeserialize_heack(unsigned char* buf, int buflen, UDP_AUTOCTRL_message_Heart_option* options)
+{
+	UDP_AUTOCTRL_messageData_Heack* heack = (UDP_AUTOCTRL_messageData_Heack*)buf;
+	unsigned char checkCode;
+	int rc = 1;
+	
+	if (buflen != sizeof(UDP_AUTOCTRL_messageData_Heack)) {
+		rc = 0;
+		goto exit;
+	}
+	
+	if ((heack->messageHead.Head != AUTOCTRL_MESSAGEHEAD_HEAD) || (heack->messageTail.Tail != AUTOCTRL_MESSAGETAIL_TAIL)) {
+		rc = 0;
+		goto exit;
+	}
+	
+	checkCode = 0;
+	for (int i = 0; i < (sizeof(UDP_AUTOCTRL_messageData_Heack) - sizeof(heack->messageTail) - sizeof(heack->messageHead.Head)); i++) {
+		u8* CheckVal = (u8*)&heack->messageHead.Cmd;
+		checkCode += *(CheckVal + i);
+	}
+	
+	if (checkCode != heack->messageTail.CRCCheck) {
+		rc = 0;
+		goto exit;
+	}
+	
+	if ((heack->StartCode != AUTOCTRL_STATUS_START) || (heack->EndCode != AUTOCTRL_STATUS_END)) {
+		rc = 0;
+		goto exit;
+	}
+	
+	checkCode = 0;
+	for (int i = 0; i < (sizeof(heack->HeackData) + sizeof(heack->DevCode) + sizeof(heack->CmdCode) + sizeof(heack->AckCode) + sizeof(heack->DataLen)); i++) {
+		u8* ConnackDataVal = (u8*)&heack->DevCode;
+		checkCode += *(ConnackDataVal + i);
+	}
+	
+	if (checkCode != heack->DataCheck) {
+		rc = 0;
+		goto exit;
+	}
+	
+	if (heack->HeackData.PackNumber != options->PackNumber) {
+		rc = 0;
+		goto exit;
+	}
+	
+	rc = heack->HeackData.ResultCode;
+	
+exit:
+	return rc;
+}
 
 /********************************************** END OF FLEE **********************************************/

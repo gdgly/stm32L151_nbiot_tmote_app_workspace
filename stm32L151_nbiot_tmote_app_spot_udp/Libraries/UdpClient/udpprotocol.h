@@ -31,6 +31,13 @@
 #define	AUTOCTRL_STATUS_VBAT_UNDER		0x01
 #define	AUTOCTRL_STATUS_VBAT_EXHAUST		0x02
 
+#define	AUTOCTRL_HEART_START			0xAA
+#define	AUTOCTRL_HEART_DEV				0x02000A83
+#define	AUTOCTRL_HEART_CMD				0x0D
+#define	AUTOCTRL_HEART_ACK				0xFF
+#define	AUTOCTRL_HEART_SER				0x88888888
+#define	AUTOCTRL_HEART_END				0xBB
+
 /* AUTOCTRL message Head */
 typedef __packed struct
 {
@@ -46,19 +53,6 @@ typedef __packed struct
 	u8								CRCCheck;
 	u8								Tail;
 } UDP_AUTOCTRL_messageTail;
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /* AUTOCTRL Data connect */
 typedef __packed struct
@@ -121,15 +115,6 @@ typedef struct
 	char*							IMSI;
 	u8								PackNumber;
 } UDP_AUTOCTRL_message_Connect_option;
-
-
-
-
-
-
-
-
-
 
 /* AUTOCTRL Data status */
 typedef __packed struct
@@ -202,19 +187,6 @@ typedef struct
 	u8								PackNumber;
 } UDP_AUTOCTRL_message_Status_option;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 /* AUTOCTRL Data heart */
 typedef __packed struct
 {
@@ -227,9 +199,12 @@ typedef __packed struct
 	u8								Heartbeat;
 	u8								SpotStatus;
 	u8								VbatStatus;
-	
-	
-	
+	u8								SleepTime;
+	u8								RSSI;
+	u8								SNR;
+	u8								Temperature;
+	u8								Reserved[8];
+	u8								PackNumber;
 } AUTOCTRL_Heart_Data;
 
 /* AUTOCTRL Data heack */
@@ -237,9 +212,9 @@ typedef __packed struct
 {
 	u8								MacSN[12];
 	u32								SerCode;
-	
-	
-	
+	u8								ResultCode;
+	u8								Reserved[3];
+	u8								PackNumber;
 } AUTOCTRL_Heack_Data;
 
 /* AUTOCTRL message Data heart */
@@ -257,7 +232,6 @@ typedef __packed struct
 	UDP_AUTOCTRL_messageTail				messageTail;
 } UDP_AUTOCTRL_messageData_Heart;
 
-
 /* AUTOCTRL message Data heack */
 typedef __packed struct
 {
@@ -273,18 +247,21 @@ typedef __packed struct
 	UDP_AUTOCTRL_messageTail				messageTail;
 } UDP_AUTOCTRL_messageData_Heack;
 
-
-
-
-
-
-
-
-
-
-
-
-
+/* AUTOCTRL message heart options */
+typedef struct
+{
+	u32								MacSN;
+	u16								Debuff;
+	u8								Algorithm;
+	u8								Heartbeat;
+	u8								SpotStatus;
+	u8								VbatStatus;
+	u8								SleepTime;
+	u8								RSSI;
+	u8								SNR;
+	u8								Temperature;
+	u8								PackNumber;
+} UDP_AUTOCTRL_message_Heart_option;
 
 int UDPAUTOCTRLSerialize_connect(unsigned char* buf, int buflen, UDP_AUTOCTRL_message_Connect_option* options);
 int UDPAUTOCTRLDeserialize_connack(unsigned char* buf, int buflen, UDP_AUTOCTRL_message_Connect_option* options);
@@ -292,53 +269,7 @@ int UDPAUTOCTRLDeserialize_connack(unsigned char* buf, int buflen, UDP_AUTOCTRL_
 int UDPAUTOCTRLSerialize_status(unsigned char* buf, int buflen, UDP_AUTOCTRL_message_Status_option* options);
 int UDPAUTOCTRLDeserialize_staack(unsigned char* buf, int buflen, UDP_AUTOCTRL_message_Status_option* options);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+int UDPAUTOCTRLSerialize_heart(unsigned char* buf, int buflen, UDP_AUTOCTRL_message_Heart_option* options);
+int UDPAUTOCTRLDeserialize_heack(unsigned char* buf, int buflen, UDP_AUTOCTRL_message_Heart_option* options);
 
 #endif /* __UDP_PROTOCOL_H */

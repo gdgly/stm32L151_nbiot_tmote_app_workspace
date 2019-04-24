@@ -45,8 +45,6 @@
 #include "inspectconfig.h"
 #include "inspectmessageoperate.h"
 
-#include "udpprotocol.h"
-
 /****************************************** Select DEBUG *************************************************/
 //#define	DEVICE_DEBUG																	//定义开启设备调试
 /********************************************* DEBUG *****************************************************/
@@ -149,47 +147,6 @@ int main(void)
 	
 	Radio_Trf_Printf(" Device Reboot:%d Cause:%d Radar:%d Nor:%s", TCFG_SystemData.DeviceBootCount, SoftResetFlag, radar_vcc, GD25Q_SPIFLASH_Get_Status()?"None":"Ok");
 	Radio_Trf_Printf(" Copyright (C) 2019 Movebroad Version:%d.%d", TCFG_Utility_Get_Major_Softnumber(), TCFG_Utility_Get_Sub_Softnumber());
-	
-	
-	int rci;
-	u8 buff[200] = {0};
-	UDP_AUTOCTRL_message_Connect_option tconnect;
-	tconnect.MacSN = 0x8a0600f4;
-	tconnect.IMEI  = "869029030380314";
-	tconnect.IMSI  = "898604071118c2318998";
-	tconnect.PackNumber = 0x01;
-	UDPAUTOCTRLSerialize_connect(buff, 200, &tconnect);
-	__NOP();
-	
-	u8 buffin1[] = {0x80, 0xff, 0x00, 0x1f, 0x00, 0x00, 0xaa, 0x02, 0x00, 0x0a, 0x83, 0xf1, 0x00,
-				 0x15, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x8a, 0x06, 0x00, 0xf4,
-				 0x88, 0x88, 0x88, 0x88, 0x01, 0x00, 0x00, 0x00, 0x01, 0x3b, 0xbb, 0xf9, 0x81};
-	rci = UDPAUTOCTRLDeserialize_connack(buffin1, sizeof(buffin1), &tconnect);
-	Radio_Trf_Printf("RCI : %d", rci);
-	__NOP();
-	
-	UDP_AUTOCTRL_message_Status_option tstatus;
-	tstatus.MacSN = 0x8a0600f4;
-	tstatus.SpotStatus = 0x00;
-	tstatus.SpotCounts = 0x01;
-	tstatus.VbatStatus = 0x00;
-	tstatus.Heartbeat  = 0x00;
-	tstatus.Algorithm  = 0x00;
-	tstatus.unixTime   = RTC_TimeToStamp(19, 4, 18, 17, 13, 56);
-	tstatus.PackNumber = 0x01;
-	UDPAUTOCTRLSerialize_status(buff, 200, &tstatus);
-	__NOP();
-	
-	u8 buffin2[] = {0x80, 0xff, 0x00, 0x1f, 0x00, 0x00, 0xaa, 0x02, 0x00, 0x0a, 0x83, 0xe7, 0x00,
-				 0x15, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x8a, 0x06, 0x00, 0xf4,
-				 0x88, 0x88, 0x88, 0x88, 0x01, 0x00, 0x00, 0x00, 0x01, 0x31, 0xbb, 0xE5, 0x81};
-	rci = UDPAUTOCTRLDeserialize_staack(buffin2, sizeof(buffin2), &tstatus);
-	Radio_Trf_Printf("RCI : %d", rci);
-	__NOP();
-	
-	Radio_Trf_Printf("Status : %d", sizeof(UDP_AUTOCTRL_messageData_Status));
-	Radio_Trf_Printf("Staack : %d", sizeof(UDP_AUTOCTRL_messageData_Staack));
-	
 	
 	while (true) {
 		
