@@ -197,6 +197,8 @@ typedef struct
 	u8								PackNumber;
 } UDP_AUTOCTRL_message_Status_option;
 
+#define UDP_AUTOCTRL_Packet_statusData_initializer	{0x00000000, 0, 0, 0, 0, 0, 0, 0x00}
+
 /* AUTOCTRL Data heart */
 typedef __packed struct
 {
@@ -272,6 +274,8 @@ typedef struct
 	u8								Temperature;
 	u8								PackNumber;
 } UDP_AUTOCTRL_message_Heart_option;
+
+#define UDP_AUTOCTRL_Packet_heartData_initializer		{0x00000000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0x00}
 
 int UDPAUTOCTRLSerialize_connect(unsigned char* buf, int buflen, UDP_AUTOCTRL_message_Connect_option* options);
 int UDPAUTOCTRLDeserialize_connack(unsigned char* buf, int buflen, UDP_AUTOCTRL_message_Connect_option* options);

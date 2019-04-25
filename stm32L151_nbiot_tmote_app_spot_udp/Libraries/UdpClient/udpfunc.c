@@ -30,43 +30,6 @@ static unsigned int UDP_AUTOControl_GetNextPackNumber(UDP_ClientsTypeDef* pClien
 	return pClient->MsgId;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /**********************************************************************************************************
  @Function			UDP_StatusTypeDef UDP_AUTOControl_ReadPacket(UDP_ClientsTypeDef* pClient, int *msgTypes)
  @Description			UDP_AUTOControl_ReadPacket	: AutoControl获取数据包数据与消息类型
@@ -233,7 +196,7 @@ exit:
 
 /**********************************************************************************************************
  @Function			UDP_StatusTypeDef UDP_AUTOControl_Connect(UDP_ClientsTypeDef* pClient, UDP_AUTOCTRL_message_Connect_option* options)
- @Description			UDP_AUTOControl_Connect	: AutoControl发送注册信息器
+ @Description			UDP_AUTOControl_Connect	: AutoControl发送注册信息服务器
  @Input				pClient				: UDP客户端实例
 					options				: AutoControl连接选项
  @Return				UDP_StatusTypeDef		: UDP处理状态
@@ -286,60 +249,114 @@ exit:
 	return UDPStatus;
 }
 
+/**********************************************************************************************************
+ @Function			UDP_StatusTypeDef UDP_AUTOControl_Status(UDP_ClientsTypeDef* pClient, UDP_AUTOCTRL_message_Status_option* options)
+ @Description			UDP_AUTOControl_Status	: AutoControl发送状态信息服务器
+ @Input				pClient				: UDP客户端实例
+					options				: AutoControl状态选项
+ @Return				UDP_StatusTypeDef		: UDP处理状态
+**********************************************************************************************************/
+UDP_StatusTypeDef UDP_AUTOControl_Status(UDP_ClientsTypeDef* pClient, UDP_AUTOCTRL_message_Status_option* options)
+{
+	UDP_StatusTypeDef UDPStatus = UDP_OK;
+	UDP_AUTOCTRL_message_Status_option Default_options = UDP_AUTOCTRL_Packet_statusData_initializer;
+	Stm32_CalculagraphTypeDef Connect_timer_s;
+	int len = 0;
+	
+	/* set default options if none were supplied */
+	if (options == NULL) {
+		options = &Default_options;
+	}
+	
+	/* Configuration Calculagraph for Connect Timer */
+	Stm32_Calculagraph_CountdownSec(&Connect_timer_s, pClient->Command_Timeout_Sec);
+	
+	options->PackNumber = UDP_AUTOControl_GetNextPackNumber(pClient);
+	
+	/* Serialize Status Command Buffer */
+	if ((len = UDPAUTOCTRLSerialize_status(pClient->Sendbuf, pClient->Sendbuf_size, options)) <= 0) {
+		UDPStatus = UDP_ERROR;
+		goto exit;
+	}
+	
+	/* Send Status Command Buffer to AutoControl Server */
+	if ((UDPStatus = pClient->SocketStack->Write(pClient->SocketStack, (char *)pClient->Sendbuf, len)) != UDP_OK) {
+		UDPStatus = UDP_ERROR;
+		goto exit;
+	}
+	
+	/* This will be a blocking call, wait for the AUTOCTRL_STAACK */
+	if ((UDPStatus = UDP_AUTOControl_WaitforRecvAck(pClient, AUTOCTRL_STAACK, &Connect_timer_s)) == UDP_OK) {
+		if (UDPAUTOCTRLDeserialize_staack(pClient->Recvbuf, pClient->Recvlen, options) != 0) {
+			UDPStatus = UDP_OK;
+		}
+		else {
+			UDPStatus = UDP_ERROR;
+			goto exit;
+		}
+	}
+	else {
+		UDPStatus = UDP_ERROR;
+		goto exit;
+	}
+	
+exit:
+	return UDPStatus;
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+/**********************************************************************************************************
+ @Function			UDP_StatusTypeDef UDP_AUTOControl_Heart(UDP_ClientsTypeDef* pClient, UDP_AUTOCTRL_message_Heart_option* options)
+ @Description			UDP_AUTOControl_Heart	: AutoControl发送心跳信息服务器
+ @Input				pClient				: UDP客户端实例
+					options				: AutoControl心跳选项
+ @Return				UDP_StatusTypeDef		: UDP处理状态
+**********************************************************************************************************/
+UDP_StatusTypeDef UDP_AUTOControl_Heart(UDP_ClientsTypeDef* pClient, UDP_AUTOCTRL_message_Heart_option* options)
+{
+	UDP_StatusTypeDef UDPStatus = UDP_OK;
+	UDP_AUTOCTRL_message_Heart_option Default_options = UDP_AUTOCTRL_Packet_heartData_initializer;
+	Stm32_CalculagraphTypeDef Connect_timer_s;
+	int len = 0;
+	
+	/* set default options if none were supplied */
+	if (options == NULL) {
+		options = &Default_options;
+	}
+	
+	/* Configuration Calculagraph for Connect Timer */
+	Stm32_Calculagraph_CountdownSec(&Connect_timer_s, pClient->Command_Timeout_Sec);
+	
+	options->PackNumber = UDP_AUTOControl_GetNextPackNumber(pClient);
+	
+	/* Serialize Connect Command Buffer */
+	if ((len = UDPAUTOCTRLSerialize_heart(pClient->Sendbuf, pClient->Sendbuf_size, options)) <= 0) {
+		UDPStatus = UDP_ERROR;
+		goto exit;
+	}
+	
+	/* Send Connect Command Buffer to AutoControl Server */
+	if ((UDPStatus = pClient->SocketStack->Write(pClient->SocketStack, (char *)pClient->Sendbuf, len)) != UDP_OK) {
+		UDPStatus = UDP_ERROR;
+		goto exit;
+	}
+	
+	/* This will be a blocking call, wait for the AUTOCTRL_HEACK */
+	if ((UDPStatus = UDP_AUTOControl_WaitforRecvAck(pClient, AUTOCTRL_HEACK, &Connect_timer_s)) == UDP_OK) {
+		if (UDPAUTOCTRLDeserialize_heack(pClient->Recvbuf, pClient->Recvlen, options) != 0) {
+			UDPStatus = UDP_OK;
+		}
+		else {
+			UDPStatus = UDP_ERROR;
+			goto exit;
+		}
+	}
+	else {
+		UDPStatus = UDP_ERROR;
+		goto exit;
+	}
+	
+exit:
+	return UDPStatus;
+}
 
 /********************************************** END OF FLEE **********************************************/
