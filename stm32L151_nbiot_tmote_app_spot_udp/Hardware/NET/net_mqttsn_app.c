@@ -165,6 +165,10 @@ void NET_MQTTSN_APP_PollExecution(MQTTSN_ClientsTypeDef* pClient)
 		pClient->SocketStack->NBIotStack->DictateRunCtl.dictateEvent = HARDWARE_REBOOT;
 		break;
 	
+	case UDP_PROCESS_STACK:
+		pClient->SocketStack->NBIotStack->DictateRunCtl.dictateEvent = HARDWARE_REBOOT;
+		break;
+	
 	case LISTEN_RUN_CTL:
 		NET_MQTTSN_Listen_PollExecution(pClient);
 		break;
@@ -1747,6 +1751,8 @@ void NET_MQTTSN_Event_Sleep(MQTTSN_ClientsTypeDef* pClient)
 {
 	MQTTSNPacket_connectData options = MQTTSNPacket_connectData_initializer;
 	
+	static unsigned int productChange = 0;
+	
 	MQTTSN_DictateEvent_SetTime(pClient, 60);
 	
 	/* Whether the query has data needs to be sent */
@@ -1815,7 +1821,14 @@ void NET_MQTTSN_Event_Sleep(MQTTSN_ClientsTypeDef* pClient)
 		MQTTSN_DictateEvent_SuccessExecute(pClient, MQTTSN_PROCESS_STACK, MQTTSN_SUBSTATE_AWAKE, MQTTSN_SUBSTATE_SLEEP, true);
 	}
 	else {
-		MQTTSN_DictateEvent_SuccessExecute(pClient, LISTEN_RUN_CTL, MQTTSN_SUBSTATE_SLEEP, MQTTSN_SUBSTATE_SLEEP, true);
+		productChange++;
+		if (productChange % 2) {
+			MQTTSN_DictateEvent_SuccessExecute(pClient, LISTEN_RUN_CTL, MQTTSN_SUBSTATE_SLEEP, MQTTSN_SUBSTATE_SLEEP, true);
+		}
+		else {
+			pClient->NetNbiotStack->PollExecution = NET_POLL_EXECUTION_UDP;
+			pClient->SocketStack->NBIotStack->DictateRunCtl.dictateEvent = UDP_PROCESS_STACK;
+		}
 	}
 }
 

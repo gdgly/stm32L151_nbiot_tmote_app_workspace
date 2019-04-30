@@ -141,6 +141,10 @@ void NET_COAP_APP_PollExecution(NBIOT_ClientsTypeDef* pClient)
 		pClient->DictateRunCtl.dictateEvent = HARDWARE_REBOOT;
 		break;
 	
+	case UDP_PROCESS_STACK:
+		pClient->DictateRunCtl.dictateEvent = HARDWARE_REBOOT;
+		break;
+	
 	case LISTEN_RUN_CTL:
 		NET_COAP_Listen_PollExecution(pClient);
 		break;

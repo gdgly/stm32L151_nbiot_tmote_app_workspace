@@ -3309,7 +3309,7 @@ unsigned char TCFG_Utility_Get_RadioGatewayNearby(void)
 **********************************************************************************************************/
 unsigned char TCFG_Utility_Get_Major_Softnumber(void)
 {
-	return SOFTWAREMAJOR + NETPROTOCAL + NETCARRIERTYPE;
+	return SOFTWAREMAJOR + NETPROTOCAL + NETCARRIERTYPE + NETNEWPROTOCAL;
 }
 
 /**********************************************************************************************************

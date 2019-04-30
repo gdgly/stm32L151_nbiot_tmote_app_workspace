@@ -32,7 +32,7 @@ unsigned char UDP_DataStack[UDP_DATASTACK_SIZE];
 **********************************************************************************************************/
 void UDP_WaitforCallback(UDP_ClientsTypeDef* pClient)
 {
-	
+	MainMajorCycleMqttSN();
 }
 
 /**********************************************************************************************************
@@ -57,43 +57,19 @@ void UDP_Client_Init(UDP_ClientsTypeDef* pClient, UDP_SocketNetTypeDef* NetSock,
 	pClient->Command_Timeout_Sec							= UDP_COMMAND_TIMEOUT_SEC;
 	pClient->Command_Failure_Cnt							= UDP_COMMAND_FAILURE_CNT;
 	
-	
+	pClient->UDPRunFailFlag								= 0;
 	
 	pClient->DictateRunCtl.dictateEnable					= false;
 	pClient->DictateRunCtl.dictateTimeoutSec				= 0;
-	
-	
-	
-	
-	
+	pClient->DictateRunCtl.dictateCreatUDPSocketFailureCnt		= 0;
+	pClient->DictateRunCtl.dictateConnectServerFailureCnt		= 0;
+	pClient->DictateRunCtl.dictateSendDataFailureCnt			= 0;
+	pClient->DictateRunCtl.dictateSleepFailureCnt			= 0;
+	pClient->DictateRunCtl.dictateHeartFailureCnt			= 0;
 	
 	pClient->ProcessState								= UDP_PROCESS_CREAT_UDP_SOCKET;
 	pClient->SocketStack								= NetSock;
 	pClient->NetNbiotStack								= NetNbiotStack;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /********************************************** END OF FLEE **********************************************/

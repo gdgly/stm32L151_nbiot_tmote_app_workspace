@@ -130,6 +130,10 @@ void NET_ONENET_APP_PollExecution(ONENET_ClientsTypeDef* pClient)
 		NET_ONENET_APP_ProcessExecution(pClient);
 		break;
 	
+	case UDP_PROCESS_STACK:
+		pClient->LWM2MStack->NBIotStack->DictateRunCtl.dictateEvent = HARDWARE_REBOOT;
+		break;
+	
 	case LISTEN_RUN_CTL:
 		pClient->LWM2MStack->NBIotStack->DictateRunCtl.dictateEvent = HARDWARE_REBOOT;
 		break;

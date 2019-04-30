@@ -20,6 +20,7 @@
 #include "net_mqttsn_app.h"
 #include "net_mqttsn_pcp_app.h"
 #include "net_onenet_app.h"
+#include "net_udp_app.h"
 #include "stm32l1xx_config.h"
 #include "platform_config.h"
 #include "platform_map.h"
@@ -64,6 +65,11 @@ void NET_NBIOT_FIFOMessage_Initialization(void)
 	NET_MqttSN_PCP_FifoSendMessageInit();
 	/* MQTTSN PCP接收数据FIFO初始化 */
 	NET_MqttSN_PCP_FifoRecvMessageInit();
+	
+	/* UDP发送数据FIFO初始化 */
+	NET_UDP_FifoSendMessageInit();
+	/* UDP接收数据FIFO初始化 */
+	NET_UDP_FifoRecvMessageInit();
 	
 #elif (NETPROTOCAL == NETONENET)
 	
@@ -124,6 +130,11 @@ void NET_NBIOT_Initialization(void)
 	MqttPCP_Transport_Init(&MqttSNPCPMqttNetHandler, &MqttSNClientHandler);
 	/* MQTTSN PCP客户端初始化 */
 	MqttPCP_Client_Init(&MqttSNPCPClientHandler, &MqttSNPCPMqttNetHandler, &NetNbiotClientHandler);
+	
+	/* UDP数据传输接口初始化 */
+	UDP_Transport_Init(&UDPSocketNetHandler, &NbiotClientHandler, UDP_SERVER_LOCAL_PORT, UDP_SERVER_HOST_IP, UDP_SERVER_TELE_PORT);
+	/* UDP客户端初始化 */
+	UDP_Client_Init(&UDPClientHandler, &UDPSocketNetHandler, &NetNbiotClientHandler);
 	
 #elif (NETPROTOCAL == NETONENET)
 	
@@ -670,6 +681,19 @@ void NET_NBIOT_DataProcessing(NET_NBIOT_ClientsTypeDef* pClient)
 	}
 	/* MQTTSN LONG STATUS DATA ENQUEUE */
 	else if (NETMqttSNNeedSendCode.StatusExtend) {
+		UDP_AUTOCTRL_message_Status_option options = UDP_AUTOCTRL_Packet_statusData_initializer;
+		options.MacSN									= TCFG_EEPROM_Get_MAC_SN();
+		options.SpotStatus								= SpotStatusData.spot_status == 0 ? 0x00 : \
+													  SpotStatusData.spot_status == 2 ? 0x00 : \
+													  SpotStatusData.spot_status == 1 ? 0x01 : \
+													  SpotStatusData.spot_status == 3 ? 0x01 : 0x00;
+		options.SpotCounts								= SpotStatusData.spot_count;
+		options.VbatStatus								= TCFG_Utility_Get_Device_Batt_ShortVal() > 300 ? 0x00 : \
+													  TCFG_Utility_Get_Device_Batt_ShortVal() < 270 ? 0x02 : 0x01;
+		options.Algorithm								= 0x00;
+		options.Heartbeat								= 4 * 60;
+		options.unixTime								= SpotStatusData.unixTime;
+		NET_UDP_Message_SendDataEnqueue((unsigned char *)&options, sizeof(options));
 #if NBMQTTSN_SENDCODE_STATUS_EXTEND
 		Inspect_Message_SpotStatusDequeue(&SpotStatusData);
 		NET_NBIOT_MqttSNLongStructureInit();
@@ -935,6 +959,10 @@ void NET_NBIOT_TaskProcessing(NET_NBIOT_ClientsTypeDef* pClient)
 	case NET_POLL_EXECUTION_ONENET:
 		pClient->PollExecution = NET_POLL_EXECUTION_COAP;
 		break;
+	
+	case NET_POLL_EXECUTION_UDP:
+		pClient->PollExecution = NET_POLL_EXECUTION_COAP;
+		break;
 	}
 	
 #elif NETPROTOCAL == NETMQTTSN
@@ -975,6 +1003,10 @@ void NET_NBIOT_TaskProcessing(NET_NBIOT_ClientsTypeDef* pClient)
 		pClient->PollExecution = NET_POLL_EXECUTION_DNS;
 #endif
 		break;
+	
+	case NET_POLL_EXECUTION_UDP:
+		NET_UDP_APP_PollExecution(&UDPClientHandler);
+		break;
 	}
 	
 #elif NETPROTOCAL == NETONENET
@@ -999,6 +1031,10 @@ void NET_NBIOT_TaskProcessing(NET_NBIOT_ClientsTypeDef* pClient)
 	
 	case NET_POLL_EXECUTION_ONENET:
 		NET_ONENET_APP_PollExecution(&OneNETClientHandler);
+		break;
+	
+	case NET_POLL_EXECUTION_UDP:
+		pClient->PollExecution = NET_POLL_EXECUTION_ONENET;
 		break;
 	}
 	

@@ -128,6 +128,10 @@ void NET_DNS_APP_PollExecution(DNS_ClientsTypeDef* pClient)
 		pClient->SocketStack->NBIotStack->DictateRunCtl.dictateEvent = HARDWARE_REBOOT;
 		break;
 	
+	case UDP_PROCESS_STACK:
+		pClient->SocketStack->NBIotStack->DictateRunCtl.dictateEvent = HARDWARE_REBOOT;
+		break;
+	
 	case LISTEN_RUN_CTL:
 		pClient->SocketStack->NBIotStack->DictateRunCtl.dictateEvent = HARDWARE_REBOOT;
 		break;

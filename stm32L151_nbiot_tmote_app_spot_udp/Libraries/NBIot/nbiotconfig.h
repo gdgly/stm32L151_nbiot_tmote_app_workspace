@@ -365,7 +365,8 @@ typedef enum
 	MQTTSN_PROCESS_STACK				= 0x16,											//MQTTSN执行栈
 	DNS_PROCESS_STACK					= 0x17,											//DNS执行栈
 	ONENET_PROCESS_STACK				= 0x18,											//ONENET执行栈
-	LISTEN_RUN_CTL						= 0x19											//监听运行控制器
+	UDP_PROCESS_STACK					= 0x19,											//UDP执行栈
+	LISTEN_RUN_CTL						= 0x1A											//监听运行控制器
 }NBIOT_DictateEventTypeDef;
 
 /* NBIOT Listen Event */

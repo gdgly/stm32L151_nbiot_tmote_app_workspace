@@ -2,6 +2,11 @@
 > ##### Copyright (C) 2019 Movebroad Version:20.142 Design by Movebroad
 > ##### movebroad Kangkang ps: 版本号以下为此版本修改、增加、去除等内容记录！
 
+* 2019-04-30 :
+	* 奥肯特协议基本完成。
+	* 协议标识主版本号前加2。
+	* 更换处理器为stm32L151cx。
+	* EEPROM基地址需从新定义。
 * 2019-04-18 :
 	* dns解析的数据缓存256缩减为80。
 * 2019-04-17 :

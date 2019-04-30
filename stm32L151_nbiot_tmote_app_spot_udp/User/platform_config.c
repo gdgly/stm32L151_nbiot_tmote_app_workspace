@@ -80,6 +80,8 @@ MQTTSN_SocketNetTypeDef			MqttSNSocketNetHandler;						//MqttSN Net Handler
 MQTTSN_ClientsTypeDef			MqttSNClientHandler;						//MqttSN Clinet Handler
 MqttSNPCP_MqttNetTransportTypeDef	MqttSNPCPMqttNetHandler;						//MqttSN PCP Net Handler
 MqttSNPCP_ClientsTypeDef			MqttSNPCPClientHandler;						//MqttSN PCP Clinet Handler
+UDP_SocketNetTypeDef			UDPSocketNetHandler;						//UDP Net Handler
+UDP_ClientsTypeDef				UDPClientHandler;							//UDP Clinet Handler
 #endif
 
 #if NETPROTOCAL == NETONENET

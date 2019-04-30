@@ -8,6 +8,7 @@
 #include "net_mqttsn_app.h"
 #include "net_mqttsn_pcp_app.h"
 #include "net_onenet_app.h"
+#include "net_udp_app.h"
 
 //#define	MVB_SUBSN						0x81011000						//设备号
 //#define	MVB_BRAND						"mvb"							//厂牌
@@ -42,6 +43,10 @@
 #define	NETONENET						2								//ONENET
 #define	NETPROTOCAL					NETMQTTSN							//网络模式
 
+#define	NETONLYMQTTSN					0								//Only MQTTSN
+#define	NETMQTTSNUDP					200								//UDP  MQTTSN
+#define	NETNEWPROTOCAL					NETMQTTSNUDP						//增加网络模式
+
 #define	NETCARRIERCHINATELECOM			00								//中国电信
 #define	NETCARRIERCHINAMOBILE			10								//中国移动
 #define	NETCARRIERCHINAUNICOM			20								//中国联通
@@ -72,7 +77,7 @@
 
 #define	NETFIFO_UDPSENDPARKNUM_MAX		10								//NetUDP发送缓存最大包数
 #define	NETFIFO_UDPRECVPARKNUM_MAX		5								//NetUDP接收缓存最大包数
-#define	NETFIFO_UDPSENDPARKSIZE_MAX		256								//NetUDP发送缓存大小
+#define	NETFIFO_UDPSENDPARKSIZE_MAX		512								//NetUDP发送缓存大小
 #define	NETFIFO_UDPRECVPARKSIZE_MAX		256								//NetUDP接收缓存大小
 
 #define	NETFIFO_ONENETSENDPARKNUM_MAX		30								//NetOneNET发送缓存最大包数
@@ -112,7 +117,7 @@
 
 #define	INSPECT_MODEL_DISABLE			0
 #define	INSPECT_MODEL_ENABLE			1
-#define	INSPECT_MODEL_TYPE				INSPECT_MODEL_DISABLE				//车辆检测
+#define	INSPECT_MODEL_TYPE				INSPECT_MODEL_ENABLE				//车辆检测
 
 #define	RADIO_CMD_ECHO_DISABLE			0
 #define	RADIO_CMD_ECHO_ENABLE			1
@@ -543,9 +548,9 @@
 #define	MQTTSN_SERVER_LOCAL_PORT			4000
 #define	MQTTSN_SERVER_TELE_PORT			1884
 
-#define	UDP_SERVER_HOST_IP				"47.96.175.6"						//UDP服务器默认配置
+#define	UDP_SERVER_HOST_IP				"120.76.100.206"					//UDP服务器默认配置
 #define	UDP_SERVER_LOCAL_PORT			3000
-#define	UDP_SERVER_TELE_PORT			1234
+#define	UDP_SERVER_TELE_PORT			8090
 
 #define	COAPCDPADDR_CHINA_TELECOM_FORMAL	"117.60.157.137"					//电信生产 : "117.60.157.137"		ip753c9d89:5683
 #define	COAPCDPADDR_CHINA_TELECOM_TEST	"180.101.147.115"					//电信测试 : "180.101.147.115"	ipb4659373:5683
@@ -734,6 +739,8 @@ extern MQTTSN_SocketNetTypeDef			MqttSNSocketNetHandler;				//MqttSN Net Handler
 extern MQTTSN_ClientsTypeDef				MqttSNClientHandler;				//MqttSN Clinet Handler
 extern MqttSNPCP_MqttNetTransportTypeDef	MqttSNPCPMqttNetHandler;				//MqttSN PCP Net Handler
 extern MqttSNPCP_ClientsTypeDef			MqttSNPCPClientHandler;				//MqttSN PCP Clinet Handler
+extern UDP_SocketNetTypeDef				UDPSocketNetHandler;				//UDP Net Handler
+extern UDP_ClientsTypeDef				UDPClientHandler;					//UDP Clinet Handler
 #endif
 
 #if NETPROTOCAL == NETONENET

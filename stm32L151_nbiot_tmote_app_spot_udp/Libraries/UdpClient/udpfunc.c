@@ -50,6 +50,7 @@ UDP_StatusTypeDef UDP_AUTOControl_ReadPacket(UDP_ClientsTypeDef* pClient, int *m
 	/* 1. read the header four byte. This has the packet length in it */
 	UDPStatus = pClient->SocketStack->Read(pClient->SocketStack, (char *)pClient->Recvbuf, 4, &Rlength, &Rleftlength);
 	if ((UDPStatus != UDP_OK) || (Rlength != 4)) {
+		UDPStatus = UDP_ERROR;
 		goto exit;
 	}
 	
@@ -69,7 +70,7 @@ UDP_StatusTypeDef UDP_AUTOControl_ReadPacket(UDP_ClientsTypeDef* pClient, int *m
 	
 	pClient->Recvlen = len + Rlength;
 	
-	*msgTypes = pClient->Recvbuf[10];
+	*msgTypes = pClient->Recvbuf[11];
 	
 exit:
 	return UDPStatus;

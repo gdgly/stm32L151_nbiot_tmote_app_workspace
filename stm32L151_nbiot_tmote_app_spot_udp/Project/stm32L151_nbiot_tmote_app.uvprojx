@@ -14,26 +14,26 @@
       <uAC6>0</uAC6>
       <TargetOption>
         <TargetCommonOption>
-          <Device>STM32L151CBxxA</Device>
+          <Device>STM32L151CC</Device>
           <Vendor>STMicroelectronics</Vendor>
           <PackID>Keil.STM32L1xx_DFP.1.2.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
-          <Cpu>IRAM(0x20000000,0x00008000) IROM(0x08000000,0x00020000) CPUTYPE("Cortex-M3") CLOCK(12000000) ELITTLE</Cpu>
+          <Cpu>IRAM(0x20000000,0x00008000) IROM(0x08000000,0x00040000) CPUTYPE("Cortex-M3") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
           <StartupFile></StartupFile>
-          <FlashDriverDll>UL2CM3(-S0 -C0 -P0 -FD20000000 -FC1000 -FN1 -FF0STM32L1xx_128 -FS08000000 -FL020000 -FP0($$Device:STM32L151CBxxA$Flash\STM32L1xx_128.FLM))</FlashDriverDll>
-          <DeviceId>7488</DeviceId>
-          <RegisterFile>$$Device:STM32L151CBxxA$Device\Include\stm32l1xx.h</RegisterFile>
+          <FlashDriverDll>UL2CM3(-S0 -C0 -P0 -FD20000000 -FC1000 -FN1 -FF0STM32L1xx_256 -FS08000000 -FL040000 -FP0($$Device:STM32L151CC$Flash\STM32L1xx_256.FLM))</FlashDriverDll>
+          <DeviceId>7357</DeviceId>
+          <RegisterFile>$$Device:STM32L151CC$Device\Include\stm32l1xx.h</RegisterFile>
           <MemoryEnv></MemoryEnv>
           <Cmp></Cmp>
           <Asm></Asm>
           <Linker></Linker>
           <OHString></OHString>
           <InfinionOptionDll></InfinionOptionDll>
-          <SLE66CMisc>-DSTM32L1XX_MD</SLE66CMisc>
+          <SLE66CMisc></SLE66CMisc>
           <SLE66AMisc></SLE66AMisc>
           <SLE66LinkerMisc></SLE66LinkerMisc>
-          <SFDFile>$$Device:STM32L151CBxxA$SVD\STM32L15xxxA.svd</SFDFile>
+          <SFDFile>$$Device:STM32L151CC$SVD\STM32L1xx.svd</SFDFile>
           <bCustSvd>0</bCustSvd>
           <UseEnv>0</UseEnv>
           <BinPath></BinPath>
@@ -134,7 +134,7 @@
             <RunIndependent>0</RunIndependent>
             <UpdateFlashBeforeDebugging>0</UpdateFlashBeforeDebugging>
             <Capability>1</Capability>
-            <DriverSelection>4099</DriverSelection>
+            <DriverSelection>4100</DriverSelection>
           </Flash1>
           <bUseTDR>0</bUseTDR>
           <Flash2>Segger\JL2CM3.dll</Flash2>
@@ -250,7 +250,7 @@
               <IROM>
                 <Type>1</Type>
                 <StartAddress>0x8000000</StartAddress>
-                <Size>0x20000</Size>
+                <Size>0x40000</Size>
               </IROM>
               <XRAM>
                 <Type>0</Type>
@@ -275,7 +275,7 @@
               <OCR_RVCT4>
                 <Type>1</Type>
                 <StartAddress>0x8003800</StartAddress>
-                <Size>0x1c800</Size>
+                <Size>0x3c800</Size>
               </OCR_RVCT4>
               <OCR_RVCT5>
                 <Type>1</Type>
@@ -336,7 +336,7 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define>USE_HAL_DRIVER,STM32L151xBA</Define>
+              <Define>USE_HAL_DRIVER,STM32L151xC</Define>
               <Undefine></Undefine>
               <IncludePath>..\Core;..\HALLibraries\Inc;..\HALLibraries\Src;..\User;..\System\Sys;..\System\Delay;..\System\Usart;..\Libraries\Radar;..\Libraries\Inspect;..\Libraries\NBIot;..\Libraries\MQTTSNPacket\src;..\Libraries\MQTTSNPacket\mqttsn;..\Libraries\Radio;..\Libraries\Radio\radio_inc;..\Libraries\Radio\radio_src;..\Libraries\Radio\si446x_inc;..\Libraries\Radio\si446x_src;..\Libraries\Xtea;..\Libraries\RollingOver;..\Libraries\DnsClient;..\Libraries\UdpClient;..\Libraries\PCPUpgrade;..\Libraries\MQTTPCPUpgrade;..\Libraries\OneNET;..\Libraries\FifoMessage;..\Libraries\Sock;..\Hardware\RTC;..\Hardware\EEPROM;..\Hardware\IWDG;..\Hardware\IIC;..\Hardware\QMC5883L;..\Hardware\SWITCH;..\Hardware\VBAT;..\Hardware\VPTAT;..\Hardware\BEEP;..\Hardware\NET;..\Hardware\TEMPERATURE;..\Hardware\SPIFLASH</IncludePath>
             </VariousControls>
@@ -383,9 +383,9 @@
           <GroupName>Core</GroupName>
           <Files>
             <File>
-              <FileName>startup_stm32l151xba.s</FileName>
+              <FileName>startup_stm32l151xc.s</FileName>
               <FileType>2</FileType>
-              <FilePath>..\Core\startup_stm32l151xba.s</FilePath>
+              <FilePath>..\Core\startup_stm32l151xc.s</FilePath>
             </File>
             <File>
               <FileName>cmsis_armcc.h</FileName>

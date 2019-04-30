@@ -14,18 +14,17 @@
 #define UDP_BUFFER_SIZE					256
 #define UDP_DATASTACK_SIZE				256
 
-
-
-
-
-
 typedef struct UDP_SocketNetTypeDef		UDP_SocketNetTypeDef;
 typedef struct UDP_ClientsTypeDef			UDP_ClientsTypeDef;
 
 /* UDP Is ProcessState */
 typedef enum
 {
-	UDP_PROCESS_CREAT_UDP_SOCKET			= 0x00
+	UDP_PROCESS_CREAT_UDP_SOCKET			= 0x00,
+	UDP_PROCESS_CONNECT_SERVER			= 0x01,
+	UDP_PROCESS_SEND_DATA				= 0x02,
+	UDP_PROCESS_SLEEP					= 0x03,
+	UDP_PROCESS_HEART					= 0x04
 }UDP_ProcessStateTypeDef;
 
 /* UDP Status */
@@ -38,20 +37,6 @@ typedef enum
 	UDP_CMD_TIMEOUT					= 0x04,
 	UDP_MESSAGE_HANDLERS_FULL			= 0x05
 }UDP_StatusTypeDef;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /* UDP Socket */
 struct UDP_SocketNetTypeDef
@@ -82,36 +67,29 @@ struct UDP_ClientsTypeDef
 	unsigned short						Command_Timeout_Sec;
 	unsigned short						Command_Failure_Cnt;
 	
-	
+	unsigned char						UDPRunFailFlag;
 	
 	struct UDPDictateRuningCtlTypeDef
 	{
 		bool							dictateEnable;
 		unsigned int					dictateTimeoutSec;
-		
-		
+		unsigned char					dictateCreatUDPSocketFailureCnt;
+		unsigned char					dictateConnectServerFailureCnt;
+		unsigned char					dictateSendDataFailureCnt;
+		unsigned char					dictateSleepFailureCnt;
+		unsigned char					dictateHeartFailureCnt;
 		Stm32_CalculagraphTypeDef		dictateRunTime;
 	}DictateRunCtl;
-	
-	
-	
 	
 	UDP_ProcessStateTypeDef				ProcessState;
 	UDP_SocketNetTypeDef*				SocketStack;
 	NET_NBIOT_ClientsTypeDef*			NetNbiotStack;
+	
+	Stm32_CalculagraphTypeDef			HeartTimer;
 };
 
 /* Application Programming Interface */
 void UDP_WaitforCallback(UDP_ClientsTypeDef* pClient);																//UDP数据等待接收回调函数
 void UDP_Client_Init(UDP_ClientsTypeDef* pClient, UDP_SocketNetTypeDef* NetSock, NET_NBIOT_ClientsTypeDef* NetNbiotStack);		//UDP客户端初始化
-
-
-
-
-
-
-
-
-
 
 #endif /* __UDP_CONFIG_H */
