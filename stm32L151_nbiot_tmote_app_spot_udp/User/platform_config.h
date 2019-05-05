@@ -13,7 +13,7 @@
 //#define	MVB_SUBSN						0x81011000						//设备号
 //#define	MVB_BRAND						"mvb"							//厂牌
 
-#define	CPUVERSION					"STM32L151xBA"						//处理器型号
+#define	CPUVERSION					"STM32L151xC"						//处理器型号
 
 #define	MVB_STATICMAGNETIC_MODEL			51
 #define	MVB_FLOWMAGNETIC_MODEL			52
