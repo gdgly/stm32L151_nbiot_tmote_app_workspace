@@ -2,6 +2,8 @@
 > ##### Copyright (C) 2019 Movebroad Version:20.142 Design by Movebroad
 > ##### movebroad Kangkang ps: 版本号以下为此版本修改、增加、去除等内容记录！
 
+* 2019-05-05 :
+	* 修复奥肯特UDP发送状态数据一个小bug。
 * 2019-04-30 :
 	* 奥肯特协议基本完成。
 	* 协议标识主版本号前加2。

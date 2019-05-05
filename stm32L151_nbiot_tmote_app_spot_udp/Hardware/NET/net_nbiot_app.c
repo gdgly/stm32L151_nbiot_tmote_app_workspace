@@ -681,6 +681,7 @@ void NET_NBIOT_DataProcessing(NET_NBIOT_ClientsTypeDef* pClient)
 	}
 	/* MQTTSN LONG STATUS DATA ENQUEUE */
 	else if (NETMqttSNNeedSendCode.StatusExtend) {
+		Inspect_Message_SpotStatusDequeue(&SpotStatusData);
 		UDP_AUTOCTRL_message_Status_option options = UDP_AUTOCTRL_Packet_statusData_initializer;
 		options.MacSN									= TCFG_EEPROM_Get_MAC_SN();
 		options.SpotStatus								= SpotStatusData.spot_status == 0 ? 0x00 : \
@@ -692,10 +693,9 @@ void NET_NBIOT_DataProcessing(NET_NBIOT_ClientsTypeDef* pClient)
 													  TCFG_Utility_Get_Device_Batt_ShortVal() < 270 ? 0x02 : 0x01;
 		options.Algorithm								= 0x00;
 		options.Heartbeat								= 4 * 60;
-		options.unixTime								= SpotStatusData.unixTime;
+		options.unixTime								= SpotStatusData.unixTime + 8 * 60 * 60;
 		NET_UDP_Message_SendDataEnqueue((unsigned char *)&options, sizeof(options));
 #if NBMQTTSN_SENDCODE_STATUS_EXTEND
-		Inspect_Message_SpotStatusDequeue(&SpotStatusData);
 		NET_NBIOT_MqttSNLongStructureInit();
 		MqttSNLongStructure.MsgPacket.Type					= MQTTSN_MSGTYPE_TYPE_LONG_STATUS;
 		MqttSNLongStructure.DateTime						= SpotStatusData.unixTime;
