@@ -218,6 +218,9 @@
 
 #define TCFG_RADAR_SAMPLEINTERVAL_OFFSET	TCFG_RADAR_HIGHPASS_OFFSET + TCFG_RADAR_HIGHPASS_LENGTH	//0x08080E4F
 #define TCFG_RADAR_SAMPLEINTERVAL_LENGTH	1												//RadarSampleInterval	Radar采样频率
+
+#define TCFG_UDP_SERVER_OFFSET			TCFG_RADAR_SAMPLEINTERVAL_OFFSET + TCFG_RADAR_SAMPLEINTERVAL_LENGTH
+#define TCFG_UDP_SERVER_LENGTH			6												//Server UDP			UDP服务器地址
 /************************************************************** End **************************************************************/
 
 enum TCFG_SENSITIVITY																	//传感器灵敏度
@@ -300,6 +303,9 @@ typedef struct
 	unsigned char						NBMqttSNServerIP[16];								//MqttSN服务器IP地址
 	unsigned char						NBMqttSNServerPort[6];								//MqttSN服务器IP端口
 	NBIOT_ServerAddr					NBMqttSNServer;									//MqttSN服务器地址
+	unsigned char						NBUDPServerIP[16];									//UDP服务器IP地址
+	unsigned char						NBUDPServerPort[6];									//UDP服务器IP端口
+	NBIOT_ServerAddr					NBUDPServer;										//UDP服务器地址
 }TCFG_SystemDataTypeDef;
 
 extern TCFG_SystemDataTypeDef				TCFG_SystemData;
@@ -490,6 +496,14 @@ unsigned short	TCFG_EEPROM_GetMqttSNPort(void);												//读取MqttSNPort
 
 char*		TCFG_EEPROM_Get_MqttSNIP_String(void);											//读取MqttSNIP字符串
 char*		TCFG_EEPROM_Get_MqttSNPort_String(void);										//读取MqttSNPort字符串
+
+void			TCFG_EEPROM_SetUDPIP(unsigned int val);											//保存UDPIP
+unsigned int	TCFG_EEPROM_GetUDPIP(void);													//读取UDPIP
+void			TCFG_EEPROM_SetUDPPort(unsigned short val);										//保存UDPPort
+unsigned short	TCFG_EEPROM_GetUDPPort(void);													//读取UDPPort
+
+char*		TCFG_EEPROM_Get_UDPIP_String(void);											//读取UDPIP字符串
+char*		TCFG_EEPROM_Get_UDPPort_String(void);											//读取UDPPort字符串
 
 void			TCFG_Utility_Add_Device_BootCount(void);										//Device重启次数累加
 unsigned short TCFG_Utility_Get_Device_BootCount(void);										//Device重启次数获取

@@ -72,6 +72,26 @@ static void TCFG_EEPROM_Write_MqttSNServerAddr(void)
 #endif
 
 /**********************************************************************************************************
+ @Function			static void TCFG_EEPROM_Write_UDPServerAddr(void)
+ @Description			TCFG_EEPROM_Write_UDPServerAddr				: 写入UDP Server Addr
+ @Input				void
+ @Return				void
+**********************************************************************************************************/
+static void TCFG_EEPROM_Write_UDPServerAddr(void)
+{
+	int serverip[4];
+	
+	sscanf(UDP_SERVER_HOST_IP, "%d.%d.%d.%d", &serverip[3], &serverip[2], &serverip[1], &serverip[0]);
+	TCFG_SystemData.NBUDPServer.ip.ip8[3] = serverip[3];
+	TCFG_SystemData.NBUDPServer.ip.ip8[2] = serverip[2];
+	TCFG_SystemData.NBUDPServer.ip.ip8[1] = serverip[1];
+	TCFG_SystemData.NBUDPServer.ip.ip8[0] = serverip[0];
+	TCFG_SystemData.NBUDPServer.port = UDP_SERVER_TELE_PORT;
+	TCFG_EEPROM_SetUDPIP(TCFG_SystemData.NBUDPServer.ip.ip32);
+	TCFG_EEPROM_SetUDPPort(TCFG_SystemData.NBUDPServer.port);
+}
+
+/**********************************************************************************************************
  @Function			void TCFG_EEPROM_SystemInfo_Init(void)
  @Description			TCFG_EEPROM_SystemInfo_Init					: 系统信息初始化
  @Input				void
@@ -255,6 +275,9 @@ void TCFG_EEPROM_WriteConfigData(void)
 #if NETPROTOCAL == NETMQTTSN
 	TCFG_EEPROM_Write_MqttSNServerAddr();
 #endif
+	
+	/* UDP服务器地址 */
+	TCFG_EEPROM_Write_UDPServerAddr();
 }
 
 /**********************************************************************************************************
@@ -436,6 +459,13 @@ void TCFG_EEPROM_ReadConfigData(void)
 		TCFG_EEPROM_Write_MqttSNServerAddr();
 	}
 #endif
+	
+	/* UDP服务器地址 */
+	TCFG_SystemData.NBUDPServer.ip.ip32 = TCFG_EEPROM_GetUDPIP();
+	TCFG_SystemData.NBUDPServer.port = TCFG_EEPROM_GetUDPPort();
+	if ((TCFG_SystemData.NBUDPServer.ip.ip32 == 0) && (TCFG_SystemData.NBUDPServer.port == 0)) {
+		TCFG_EEPROM_Write_UDPServerAddr();
+	}
 }
 
 /**********************************************************************************************************
@@ -2136,6 +2166,84 @@ char* TCFG_EEPROM_Get_MqttSNPort_String(void)
 	sprintf((char *)TCFG_SystemData.NBMqttSNServerPort, "%d", TCFG_SystemData.NBMqttSNServer.port);
 	
 	return (char *)TCFG_SystemData.NBMqttSNServerPort;
+}
+
+/**********************************************************************************************************
+ @Function			void TCFG_EEPROM_SetUDPIP(unsigned int val)
+ @Description			TCFG_EEPROM_SetUDPIP						: 保存UDPIP
+ @Input				val
+ @Return				void
+**********************************************************************************************************/
+void TCFG_EEPROM_SetUDPIP(unsigned int val)
+{
+	FLASH_EEPROM_WriteWord(TCFG_UDP_SERVER_OFFSET, val);
+}
+
+/**********************************************************************************************************
+ @Function			unsigned int TCFG_EEPROM_GetUDPIP(void)
+ @Description			TCFG_EEPROM_GetUDPIP						: 读取UDPIP
+ @Input				void
+ @Return				val
+**********************************************************************************************************/
+unsigned int TCFG_EEPROM_GetUDPIP(void)
+{
+	return FLASH_EEPROM_ReadWord(TCFG_UDP_SERVER_OFFSET);
+}
+
+/**********************************************************************************************************
+ @Function			void TCFG_EEPROM_SetUDPPort(unsigned short val)
+ @Description			TCFG_EEPROM_SetUDPPort						: 保存UDPPort
+ @Input				val
+ @Return				void
+**********************************************************************************************************/
+void TCFG_EEPROM_SetUDPPort(unsigned short val)
+{
+	FLASH_EEPROM_WriteHalfWord(TCFG_UDP_SERVER_OFFSET + 4, val);
+}
+
+/**********************************************************************************************************
+ @Function			unsigned short TCFG_EEPROM_GetUDPPort(void)
+ @Description			TCFG_EEPROM_GetUDPPort						: 读取UDPPort
+ @Input				void
+ @Return				val
+**********************************************************************************************************/
+unsigned short TCFG_EEPROM_GetUDPPort(void)
+{
+	return FLASH_EEPROM_ReadHalfWord(TCFG_UDP_SERVER_OFFSET + 4);
+}
+
+/**********************************************************************************************************
+ @Function			char* TCFG_EEPROM_Get_UDPIP_String(void)
+ @Description			TCFG_EEPROM_Get_UDPIP_String					: 读取UDPIP字符串
+ @Input				void
+ @Return				UDPIP_string
+**********************************************************************************************************/
+char* TCFG_EEPROM_Get_UDPIP_String(void)
+{
+	TCFG_SystemData.NBUDPServer.ip.ip32 = TCFG_EEPROM_GetUDPIP();
+	
+	memset((void*)&TCFG_SystemData.NBUDPServerIP, 0, sizeof(TCFG_SystemData.NBUDPServerIP));
+	sprintf((char *)TCFG_SystemData.NBUDPServerIP, "%d.%d.%d.%d", 
+	TCFG_SystemData.NBUDPServer.ip.ip8[3], TCFG_SystemData.NBUDPServer.ip.ip8[2], 
+	TCFG_SystemData.NBUDPServer.ip.ip8[1], TCFG_SystemData.NBUDPServer.ip.ip8[0]);
+	
+	return (char *)TCFG_SystemData.NBUDPServerIP;
+}
+
+/**********************************************************************************************************
+ @Function			char* TCFG_EEPROM_Get_UDPPort_String(void)
+ @Description			TCFG_EEPROM_Get_UDPPort_String				: 读取UDPPort字符串
+ @Input				void
+ @Return				UDPPort_string
+**********************************************************************************************************/
+char* TCFG_EEPROM_Get_UDPPort_String(void)
+{
+	TCFG_SystemData.NBUDPServer.port = TCFG_EEPROM_GetUDPPort();
+	
+	memset((void*)&TCFG_SystemData.NBUDPServerPort, 0, sizeof(TCFG_SystemData.NBUDPServerPort));
+	sprintf((char *)TCFG_SystemData.NBUDPServerPort, "%d", TCFG_SystemData.NBUDPServer.port);
+	
+	return (char *)TCFG_SystemData.NBUDPServerPort;
 }
 
 /**********************************************************************************************************

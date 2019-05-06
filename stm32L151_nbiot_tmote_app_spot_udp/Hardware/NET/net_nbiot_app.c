@@ -132,7 +132,7 @@ void NET_NBIOT_Initialization(void)
 	MqttPCP_Client_Init(&MqttSNPCPClientHandler, &MqttSNPCPMqttNetHandler, &NetNbiotClientHandler);
 	
 	/* UDP数据传输接口初始化 */
-	UDP_Transport_Init(&UDPSocketNetHandler, &NbiotClientHandler, UDP_SERVER_LOCAL_PORT, UDP_SERVER_HOST_IP, UDP_SERVER_TELE_PORT);
+	UDP_Transport_Init(&UDPSocketNetHandler, &NbiotClientHandler, UDP_SERVER_LOCAL_PORT, TCFG_EEPROM_Get_UDPIP_String(), TCFG_EEPROM_GetUDPPort());
 	/* UDP客户端初始化 */
 	UDP_Client_Init(&UDPClientHandler, &UDPSocketNetHandler, &NetNbiotClientHandler);
 	

@@ -328,6 +328,26 @@ char Radio_Rf_Operate_Recvmsg(uint8_t *inmsg, uint8_t len)
 				#endif
 				}
 			#endif
+				/* UDPIP */
+			#if RADIO_DOWNLOAD_CMD_UDPIP
+				else if (strstr(((tmote_general_cmd_s*)CFG_P_FRAME_PAYLOAD(inmsg))->buf, "up")) {
+					sscanf(((tmote_general_cmd_s*)CFG_P_FRAME_PAYLOAD(inmsg))->buf, "up%08x:%hu", &uval32, &uval16);
+					TCFG_EEPROM_SetUDPIP(uval32);
+					TCFG_EEPROM_SetUDPPort(uval16);
+					TCFG_SystemData.NBUDPServer.ip.ip32 = TCFG_EEPROM_GetUDPIP();
+					TCFG_SystemData.NBUDPServer.port = TCFG_EEPROM_GetUDPPort();
+					#if NBMQTTSN_SENDCODE_DYNAMIC_INFO
+					NETMqttSNNeedSendCode.InfoDynamic = 1;
+					#endif
+					NET_NBIOT_Initialization();
+				#if RADIO_CMD_ECHO_TYPE
+					Radio_Trf_Printf("UDP IP %d.%d.%d.%d:%d", 
+					TCFG_SystemData.NBUDPServer.ip.ip8[3], TCFG_SystemData.NBUDPServer.ip.ip8[2], 
+					TCFG_SystemData.NBUDPServer.ip.ip8[1], TCFG_SystemData.NBUDPServer.ip.ip8[0], 
+					TCFG_SystemData.NBUDPServer.port);
+				#endif
+				}
+			#endif
 				/* Active */
 			#if RADIO_DOWNLOAD_CMD_ACTIVE
 				else if (strstr(((tmote_general_cmd_s*)CFG_P_FRAME_PAYLOAD(inmsg))->buf, "active")) {
