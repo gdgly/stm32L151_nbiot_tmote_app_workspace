@@ -2,6 +2,9 @@
 > ##### Copyright (C) 2019 Movebroad Version:231.142 Design by Movebroad
 > ##### movebroad Kangkang ps: 版本号以下为此版本修改、增加、去除等内容记录！
 
+* 2019-05-07 :
+	* 增加配置udp服务器地址的小无线命令upf1f1f1f1:1999。
+	* 优化udp处理，mqttsn数据发送与udp数据发送可同时进行，提高效率。
 * 2019-05-05 :
 	* 修复奥肯特UDP发送状态数据一个小bug。
 * 2019-04-30 :
