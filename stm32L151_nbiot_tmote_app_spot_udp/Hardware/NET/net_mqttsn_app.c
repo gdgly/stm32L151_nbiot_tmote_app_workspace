@@ -1426,6 +1426,8 @@ void NET_MQTTSN_Event_Disconnect(MQTTSN_ClientsTypeDef* pClient)
 **********************************************************************************************************/
 void NET_MQTTSN_Event_Active(MQTTSN_ClientsTypeDef* pClient)
 {
+	static unsigned int activeproductChange = 0;
+	
 	MQTTSN_DictateEvent_SetTime(pClient, 90);
 	
 	/* Subscribing Topic */
@@ -1735,9 +1737,16 @@ void NET_MQTTSN_Event_Active(MQTTSN_ClientsTypeDef* pClient)
 	else {
 		/* Keep Active */
 		MQTTSN_RecvAck(pClient);
-		pClient->SocketStack->NBIotStack->DictateRunCtl.dictateEvent = MQTTSN_PROCESS_STACK;
-		pClient->SubState = MQTTSN_SUBSTATE_ACTIVE;
-		pClient->NetNbiotStack->PollExecution = NET_POLL_EXECUTION_PCP;
+		activeproductChange++;
+		if (activeproductChange % 2) {
+			pClient->SocketStack->NBIotStack->DictateRunCtl.dictateEvent = MQTTSN_PROCESS_STACK;
+			pClient->SubState = MQTTSN_SUBSTATE_ACTIVE;
+			pClient->NetNbiotStack->PollExecution = NET_POLL_EXECUTION_PCP;
+		}
+		else {
+			pClient->NetNbiotStack->PollExecution = NET_POLL_EXECUTION_UDP;
+			pClient->SocketStack->NBIotStack->DictateRunCtl.dictateEvent = UDP_PROCESS_STACK;
+		}
 	}
 }
 
@@ -1751,7 +1760,7 @@ void NET_MQTTSN_Event_Sleep(MQTTSN_ClientsTypeDef* pClient)
 {
 	MQTTSNPacket_connectData options = MQTTSNPacket_connectData_initializer;
 	
-	static unsigned int productChange = 0;
+	static unsigned int sleepproductChange = 0;
 	
 	MQTTSN_DictateEvent_SetTime(pClient, 60);
 	
@@ -1821,8 +1830,8 @@ void NET_MQTTSN_Event_Sleep(MQTTSN_ClientsTypeDef* pClient)
 		MQTTSN_DictateEvent_SuccessExecute(pClient, MQTTSN_PROCESS_STACK, MQTTSN_SUBSTATE_AWAKE, MQTTSN_SUBSTATE_SLEEP, true);
 	}
 	else {
-		productChange++;
-		if (productChange % 2) {
+		sleepproductChange++;
+		if (sleepproductChange % 2) {
 			MQTTSN_DictateEvent_SuccessExecute(pClient, LISTEN_RUN_CTL, MQTTSN_SUBSTATE_SLEEP, MQTTSN_SUBSTATE_SLEEP, true);
 		}
 		else {
