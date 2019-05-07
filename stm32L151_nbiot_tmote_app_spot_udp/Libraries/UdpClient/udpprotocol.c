@@ -14,6 +14,9 @@
   */
 
 #include "udpprotocol.h"
+#include "stm32l1xx_config.h"
+#include "platform_config.h"
+#include "platform_map.h"
 #include "hal_rtc.h"
 #include "sock.h"
 #include "string.h"
@@ -53,11 +56,11 @@ int UDPAUTOCTRLSerialize_connect(unsigned char* buf, int buflen, UDP_AUTOCTRL_me
 	
 	connect->ConnectData.SerCode = htonl(AUTOCTRL_CONNECT_SER);
 	
-	connect->ConnectData.VerInfo[0] = 0x22;
-	connect->ConnectData.VerInfo[1] = 0x22;
-	connect->ConnectData.VerInfo[2] = 0x22;
-	connect->ConnectData.VerInfo[3] = 0x22;
-	connect->ConnectData.VerInfo[4] = 0x22;
+	connect->ConnectData.VerInfo[0] = 0x00;
+	connect->ConnectData.VerInfo[1] = 0x00;
+	connect->ConnectData.VerInfo[2] = 0x00;
+	connect->ConnectData.VerInfo[3] = TCFG_Utility_Get_Major_Softnumber();
+	connect->ConnectData.VerInfo[4] = TCFG_Utility_Get_Sub_Softnumber();
 	
 	for (int i = sizeof(connect->ConnectData.IMEI) - 1; i >= 0; i--) {
 		u32 utmp = 0;
