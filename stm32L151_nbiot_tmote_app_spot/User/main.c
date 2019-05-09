@@ -30,6 +30,7 @@
 #include "hal_temperature.h"
 #include "hal_qmc5883l.h"
 #include "hal_spiflash.h"
+#include "hal_testbench.h"
 #include "net_nbiot_app.h"
 #include "net_coap_app.h"
 #include "net_pcp_app.h"
@@ -99,6 +100,13 @@ int main(void)
 	TCFG_EEPROM_Set_MAC_SN(MVB_SUBSN);														//写入MACSN
 	TCFG_EEPROM_SetVender(MVB_BRAND);														//写入Verder
 	TCFG_EEPROM_WriteConfigData();														//写入系统配置信息
+#endif
+	
+#if TESTBENCH_TYPE
+	if (TestBench_FLASH_CheckSubSN() == true) {												//测试架写入SN到FLASH
+		TestBench_FLASH_WriteSubSN();														//写入MACSN
+		TestBench_StateCtrl_ALL_ENBALE();													//启动测试架测试总开关
+	}
 #endif
 	
 	if (TCFG_EEPROM_CheckNewSNorBrand() == true) {											//检测新设备号或厂牌
