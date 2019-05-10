@@ -2,6 +2,9 @@
 > ##### Copyright (C) 2019 Movebroad Version:20.141 Design by Movebroad
 > ##### movebroad Kangkang ps: 版本号以下为此版本修改、增加、去除等内容记录！
 
+* 2019-5-10 :
+	* 版本号修改为142。
+	* 增加测试架自检测试代码，可选开启。
 * 2019-04-01 :
 	* 版本号修改为141。
 	* radar_vcc 判断阈值由28修改为27。
