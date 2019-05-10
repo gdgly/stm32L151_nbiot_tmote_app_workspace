@@ -6,6 +6,7 @@
 typedef __packed struct
 {
 	u16				StartCode;
+	u32				DeviceSN;
 	int16_t			mag_X;
 	int16_t			mag_Y;
 	int16_t			mag_Z;
@@ -22,7 +23,7 @@ typedef __packed struct
 
 typedef struct
 {
-	u8				TestState;										// [0] --> All, [1] --> RF4438, [2] --> Magnetism, [3] --> radarval, [4] --> NBIoTval
+	u8				TestState;										// [0] --> All, [1] --> RF4438, [2] --> Magnetism, [3] --> radarval, [4] --> NBIoTval, [7] --> Compel
 	u8				SendTimes;
 	TESTBenchDataBuf	Data;
 }TESTBenchClientTypeDef;
@@ -52,6 +53,7 @@ void TestBench_StateCtrl_NBIoTval_ENBALE(void);
 void TestBench_StateCtrl_NBIoTval_DISABLE(void);
 void TestBench_Tack_NBIoTval(const char* imei, const char* iccid);
 
+void TestBench_Report_Compel(void);
 void TestBench_Report_DeviceData(void);
 
 #endif /* __HAL_TEST_BENCH_H */

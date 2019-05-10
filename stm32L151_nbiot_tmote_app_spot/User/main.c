@@ -523,7 +523,7 @@ void MainHandleRoutine(void)
 #if TESTBENCH_TYPE
 		if (TestBench_StateCtrl_ALL_STATE() != false) {
 			/* RF4438 */
-			if (TRF_OK == Radio_Rf_get_Status()) {
+			if ((TRF_OK == Radio_Rf_get_Status()) && (gateway_nearby > 10)) {
 				TestBench_Tack_RF4438(0x4438);
 			}
 			/* Magnetism */
@@ -592,7 +592,11 @@ void MainHandleRoutine(void)
 	if ((Stm32_GetSecondTick() / 60) != SystemRunningTime.minutes) {
 		SystemRunningTime.minutes = Stm32_GetSecondTick() / 60;
 		
-		
+#if TESTBENCH_TYPE
+		if (TestBench_StateCtrl_ALL_STATE() != false) {
+			TestBench_Report_Compel();
+		}
+#endif
 	}
 	/* Every FifteenMinutes Running */
 	if ((Stm32_GetSecondTick() / 900) != SystemRunningTime.fifteenMinutes) {

@@ -23,6 +23,7 @@ TESTBenchClientTypeDef TestBenchClient = {
 	.SendTimes		= 0x03,
 	.Data			= {
 		.StartCode	= 0xFAFA,
+		.DeviceSN		= 0x00000000,
 		.mag_X		= 0x0000,
 		.mag_Y		= 0x0000,
 		.mag_Z		= 0x0000,
@@ -264,6 +265,19 @@ void TestBench_Tack_NBIoTval(const char* imei, const char* iccid)
 }
 
 /**********************************************************************************************************
+ @Function			void TestBench_Report_Compel(void)
+ @Description			TestBench_Report_Compel
+ @Input				void
+ @Return				void
+**********************************************************************************************************/
+void TestBench_Report_Compel(void)
+{
+	if (TestBench_StateCtrl_ALL_STATE() != false) {
+		TestBenchClient.TestState |=  (1<<7);
+	}
+}
+
+/**********************************************************************************************************
  @Function			void TestBench_Report_DeviceData(void)
  @Description			TestBench_Report_DeviceData
  @Input				void
@@ -276,6 +290,7 @@ void TestBench_Report_DeviceData(void)
 	if (TestBenchClient.TestState >= 0x1F) {
 		if (TestBenchClient.SendTimes > 0) {
 			/* Need Send */
+			TestBenchClient.Data.DeviceSN = TCFG_EEPROM_Get_MAC_SN();
 			TestBenchClient.Data.CheckNum = TestBenchClient.Data.StartCode >> 8;
 			for (int i = 0; i < sizeof(TestBenchClient.Data) - 4; i++) {
 				TestBenchClient.Data.CheckNum = TestBenchClient.Data.CheckNum ^ *(pcheckval + i + 1);
@@ -291,6 +306,7 @@ void TestBench_Report_DeviceData(void)
 		}
 	}
 }
+
 
 
 
