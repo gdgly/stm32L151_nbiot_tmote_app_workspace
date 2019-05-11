@@ -3,6 +3,10 @@
 
 #include "sys.h"
 
+#define	TESTBENCH_ERASER_FLASHSN_DISABLE	0
+#define	TESTBENCH_ERASER_FLASHSN_ENABLE	1
+#define	TESTBENCH_ERASER_FLASHSN_TYPE		TESTBENCH_ERASER_FLASHSN_ENABLE
+
 typedef __packed struct
 {
 	u16				StartCode;

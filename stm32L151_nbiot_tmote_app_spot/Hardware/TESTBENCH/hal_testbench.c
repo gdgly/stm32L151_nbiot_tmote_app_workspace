@@ -286,6 +286,10 @@ void TestBench_Report_Compel(void)
 void TestBench_Report_DeviceData(void)
 {
 	u8* pcheckval = (u8*)&TestBenchClient.Data;
+#if TESTBENCH_ERASER_FLASHSN_TYPE
+	FLASH_EraseInitTypeDef EraseInitStruct;
+	uint32_t PAGEError = 0;
+#endif
 	
 	if (TestBenchClient.TestState >= 0x1F) {
 		if (TestBenchClient.SendTimes > 0) {
@@ -301,22 +305,18 @@ void TestBench_Report_DeviceData(void)
 		else {
 			/* Send Over */
 			TestBench_StateCtrl_ALL_DISABLE();
-			
-			
+#if TESTBENCH_ERASER_FLASHSN_TYPE
+			HAL_FLASH_Unlock();
+			__HAL_FLASH_CLEAR_FLAG(FLASH_FLAG_BSY | FLASH_FLAG_EOP | FLASH_FLAG_PGAERR | FLASH_FLAG_WRPERR);
+			EraseInitStruct.TypeErase	= FLASH_TYPEERASE_PAGES;
+			EraseInitStruct.PageAddress	= FLASH_END - PAGESIZE;
+			EraseInitStruct.NbPages		= 1;
+			HAL_FLASHEx_Erase(&EraseInitStruct, &PAGEError);
+			HAL_FLASH_Lock();
+#endif
 		}
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
 
 
 
