@@ -2034,6 +2034,34 @@ MQTTSN_StatusTypeDef messageHandlerFunction(MQTTSN_ClientsTypeDef* pClient, MQTT
 					}
 				}
 			#endif
+				/*UDP Server*/
+			#if MQTTSN_DOWNLOAD_CMD_UDPIP
+				else if (strstr((char *)messageHandler->message->payload + recvBufOffset + TCLOD_DATA_OFFSET, "UDP") != NULL) {
+					u16 udpip[4];
+					u16 udpport;
+					sscanf((char *)messageHandler->message->payload + recvBufOffset + TCLOD_DATA_OFFSET, \
+						"{(UDP):{(IP):(%hu.%hu.%hu.%hu),(Port):%hu,(Magic):%hu}}", &udpip[3], &udpip[2], &udpip[1], &udpip[0], &udpport, &recvMagicNum);
+					if (recvMagicNum == TCLOD_MAGIC_NUM) {
+						TCFG_SystemData.NBUDPServer.ip.ip8[3] = udpip[3];
+						TCFG_SystemData.NBUDPServer.ip.ip8[2] = udpip[2];
+						TCFG_SystemData.NBUDPServer.ip.ip8[1] = udpip[1];
+						TCFG_SystemData.NBUDPServer.ip.ip8[0] = udpip[0];
+						TCFG_SystemData.NBUDPServer.port = udpport;
+						TCFG_EEPROM_SetUDPIP(TCFG_SystemData.NBUDPServer.ip.ip32);
+						TCFG_EEPROM_SetUDPPort(TCFG_SystemData.NBUDPServer.port);
+						#if NBMQTTSN_SENDCODE_DYNAMIC_INFO
+						NETMqttSNNeedSendCode.InfoDynamic = 1;
+						#endif
+						NETMqttSNNeedSendCode.InfoResponseErrcode = ret;
+						NETMqttSNNeedSendCode.InfoResponse = 1;
+						NET_NBIOT_Initialization();
+						return MQTTSN_OK;
+					}
+					else {
+						ret = NETIP_UNKNOWNERROR;
+					}
+				}
+			#endif
 				/* Active */
 			#if MQTTSN_DOWNLOAD_CMD_ACTIVE
 				else if (strstr((char *)messageHandler->message->payload + recvBufOffset + TCLOD_DATA_OFFSET, "Active") != NULL) {
