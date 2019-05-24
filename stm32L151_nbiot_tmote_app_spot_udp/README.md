@@ -1,7 +1,10 @@
 # stm32L151_nbiot_tmote_app_spot_udp
-> ##### Copyright (C) 2019 Movebroad Version:231.142 Design by Movebroad
+> ##### Copyright (C) 2019 Movebroad Version:231.143 Design by Movebroad
 > ##### movebroad Kangkang ps: 版本号以下为此版本修改、增加、去除等内容记录！
 
+* 2019-05-24 :
+	* 版本号修改为143。
+	* 增加NBIOT清除小区频点,DNS,MQTTSN,COAP,同时增加。
 * 2019-05-16 :
 	* 增加配置udp服务器地址通过mqttsn下行命令。
 	* 增加wokrinfo字段UDP，显示UDP服务器地址。

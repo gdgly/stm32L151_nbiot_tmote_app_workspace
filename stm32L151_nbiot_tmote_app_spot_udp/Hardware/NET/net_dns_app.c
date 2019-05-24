@@ -80,6 +80,10 @@ void NET_DNS_APP_PollExecution(DNS_ClientsTypeDef* pClient)
 		NET_DNS_NBIOT_Event_FullFunctionality(pClient);
 		break;
 	
+	case CLEAR_STORED_EARFCN:
+		NET_DNS_NBIOT_Event_ClearStoredEARFCN(pClient);
+		break;
+	
 	case CDP_SERVER_CHECK:
 		pClient->SocketStack->NBIotStack->DictateRunCtl.dictateEvent = HARDWARE_REBOOT;
 		break;
@@ -264,6 +268,10 @@ static unsigned char* DNS_NBIOT_GetDictateFailureCnt(DNS_ClientsTypeDef* pClient
 	
 	case FULL_FUNCTIONALITY:
 		dictateFailureCnt = &pClient->SocketStack->NBIotStack->DictateRunCtl.dictateFullFunctionalityFailureCnt;
+		break;
+	
+	case CLEAR_STORED_EARFCN:
+		dictateFailureCnt = &pClient->SocketStack->NBIotStack->DictateRunCtl.dictateClearStoredEARFCNFailureCnt;
 		break;
 	
 	case NBAND_MODE_CHECK:
@@ -902,7 +910,14 @@ void NET_DNS_NBIOT_Event_FullFunctionality(DNS_ClientsTypeDef* pClient)
 	
 	if ((NBStatus = NBIOT_Neul_NBxx_CheckReadMinOrFullFunc(pClient->SocketStack->NBIotStack)) == NBIOT_OK) {
 		/* Dictate execute is Success */
-		DNS_NBIOT_DictateEvent_SuccessExecute(pClient, NBAND_MODE_CHECK, FULL_FUNCTIONALITY);
+		if (pClient->SocketStack->NBIotStack->ClearStoredEARFCN != NBIOT_CLEAR_STORED_EARFCN_FALSE) {
+			/* 需清除频点 */
+			DNS_NBIOT_DictateEvent_SuccessExecute(pClient, MINIMUM_FUNCTIONALITY, FULL_FUNCTIONALITY);
+		}
+		else {
+			/* 无需清除频点 */
+			DNS_NBIOT_DictateEvent_SuccessExecute(pClient, NBAND_MODE_CHECK, FULL_FUNCTIONALITY);
+		}
 		
 #ifdef DNS_DEBUG_LOG_RF_PRINT
 		DNS_DEBUG_LOG_PRINTF("NB FullFunc Ok");
@@ -925,7 +940,14 @@ void NET_DNS_NBIOT_Event_FullFunctionality(DNS_ClientsTypeDef* pClient)
 	if (pClient->SocketStack->NBIotStack->Parameter.functionality != FullFunc) {
 		if ((NBStatus = NBIOT_Neul_NBxx_SetMinOrFullFunc(pClient->SocketStack->NBIotStack, FullFunc)) == NBIOT_OK) {
 			/* Dictate execute is Success */
-			DNS_NBIOT_DictateEvent_SuccessExecute(pClient, NBAND_MODE_CHECK, FULL_FUNCTIONALITY);
+			if (pClient->SocketStack->NBIotStack->ClearStoredEARFCN != NBIOT_CLEAR_STORED_EARFCN_FALSE) {
+				/* 需清除频点 */
+				DNS_NBIOT_DictateEvent_SuccessExecute(pClient, MINIMUM_FUNCTIONALITY, FULL_FUNCTIONALITY);
+			}
+			else {
+				/* 无需清除频点 */
+				DNS_NBIOT_DictateEvent_SuccessExecute(pClient, NBAND_MODE_CHECK, FULL_FUNCTIONALITY);
+			}
 			
 #ifdef DNS_DEBUG_LOG_RF_PRINT
 			DNS_DEBUG_LOG_PRINTF("NB FullFunc Set Ok");
@@ -961,7 +983,14 @@ void NET_DNS_NBIOT_Event_MinimumFunctionality(DNS_ClientsTypeDef* pClient)
 	
 	if ((NBStatus = NBIOT_Neul_NBxx_CheckReadMinOrFullFunc(pClient->SocketStack->NBIotStack)) == NBIOT_OK) {
 		/* Dictate execute is Success */
-		DNS_NBIOT_DictateEvent_SuccessExecute(pClient, NBAND_MODE_CONFIG, MINIMUM_FUNCTIONALITY);
+		if (pClient->SocketStack->NBIotStack->ClearStoredEARFCN != NBIOT_CLEAR_STORED_EARFCN_FALSE) {
+			/* 需清除频点 */
+			DNS_NBIOT_DictateEvent_SuccessExecute(pClient, CLEAR_STORED_EARFCN, MINIMUM_FUNCTIONALITY);
+		}
+		else {
+			/* 无需清除频点 */
+			DNS_NBIOT_DictateEvent_SuccessExecute(pClient, NBAND_MODE_CONFIG, MINIMUM_FUNCTIONALITY);
+		}
 		
 #ifdef DNS_DEBUG_LOG_RF_PRINT
 		DNS_DEBUG_LOG_PRINTF("NB MinFunc Ok");
@@ -984,7 +1013,14 @@ void NET_DNS_NBIOT_Event_MinimumFunctionality(DNS_ClientsTypeDef* pClient)
 	if (pClient->SocketStack->NBIotStack->Parameter.functionality != MinFunc) {
 		if ((NBStatus = NBIOT_Neul_NBxx_SetMinOrFullFunc(pClient->SocketStack->NBIotStack, MinFunc)) == NBIOT_OK) {
 			/* Dictate execute is Success */
-			DNS_NBIOT_DictateEvent_SuccessExecute(pClient, NBAND_MODE_CONFIG, MINIMUM_FUNCTIONALITY);
+			if (pClient->SocketStack->NBIotStack->ClearStoredEARFCN != NBIOT_CLEAR_STORED_EARFCN_FALSE) {
+				/* 需清除频点 */
+				DNS_NBIOT_DictateEvent_SuccessExecute(pClient, CLEAR_STORED_EARFCN, MINIMUM_FUNCTIONALITY);
+			}
+			else {
+				/* 无需清除频点 */
+				DNS_NBIOT_DictateEvent_SuccessExecute(pClient, NBAND_MODE_CONFIG, MINIMUM_FUNCTIONALITY);
+			}
 			
 #ifdef DNS_DEBUG_LOG_RF_PRINT
 			DNS_DEBUG_LOG_PRINTF("NB MinFunc Set Ok");
@@ -1003,6 +1039,43 @@ void NET_DNS_NBIOT_Event_MinimumFunctionality(DNS_ClientsTypeDef* pClient)
 #endif
 			return;
 		}
+	}
+}
+
+/**********************************************************************************************************
+ @Function			void NET_DNS_NBIOT_Event_ClearStoredEARFCN(DNS_ClientsTypeDef* pClient)
+ @Description			NET_DNS_NBIOT_Event_ClearStoredEARFCN		: 清除小区频点
+ @Input				pClient								: DNS客户端实例
+ @Return				void
+**********************************************************************************************************/
+void NET_DNS_NBIOT_Event_ClearStoredEARFCN(DNS_ClientsTypeDef* pClient)
+{
+	NBIOT_StatusTypeDef NBStatus = NBStatus;
+	
+	DNS_NBIOT_DictateEvent_SetTime(pClient, 30);
+	
+	if ((NBStatus = NBIOT_Neul_NBxx_ClearStoredEarfcn(pClient->SocketStack->NBIotStack)) == NBIOT_OK) {
+		/* Dictate execute is Success */
+		pClient->SocketStack->NBIotStack->ClearStoredEARFCN = NBIOT_CLEAR_STORED_EARFCN_FALSE;
+		
+		DNS_NBIOT_DictateEvent_SuccessExecute(pClient, FULL_FUNCTIONALITY, CLEAR_STORED_EARFCN);
+		
+#ifdef DNS_DEBUG_LOG_RF_PRINT
+		DNS_DEBUG_LOG_PRINTF("NB Clear Stored EARFCN OK");
+#endif
+	}
+	else {
+		/* Dictate execute is Fail */
+		DNS_NBIOT_DictateEvent_FailExecute(pClient, HARDWARE_REBOOT, STOP_MODE, CLEAR_STORED_EARFCN);
+		
+#ifdef DNS_DEBUG_LOG_RF_PRINT
+	#if NBIOT_PRINT_ERROR_CODE_TYPE
+		DNS_DEBUG_LOG_PRINTF("NB Clear Stored EARFCN Fail Ecde %d", NBStatus);
+	#else
+		DNS_DEBUG_LOG_PRINTF("NB Clear Stored EARFCN Fail");
+	#endif
+#endif
+		return;
 	}
 }
 

@@ -109,6 +109,12 @@ void NET_MQTTSN_APP_PollExecution(MQTTSN_ClientsTypeDef* pClient)
 #endif
 		break;
 	
+	case CLEAR_STORED_EARFCN:
+#if MQTTSN_DNS_SERVER_TYPE == MQTTSN_DNS_SERVER_DISABLE
+		NET_MQTTSN_NBIOT_Event_ClearStoredEARFCN(pClient);
+#endif
+		break;
+	
 	case CDP_SERVER_CHECK:
 #if MQTTSN_DNS_SERVER_TYPE == MQTTSN_DNS_SERVER_DISABLE
 		pClient->SocketStack->NBIotStack->DictateRunCtl.dictateEvent = HARDWARE_REBOOT;
@@ -322,6 +328,10 @@ static unsigned char* MQTTSN_NBIOT_GetDictateFailureCnt(MQTTSN_ClientsTypeDef* p
 	
 	case FULL_FUNCTIONALITY:
 		dictateFailureCnt = &pClient->SocketStack->NBIotStack->DictateRunCtl.dictateFullFunctionalityFailureCnt;
+		break;
+	
+	case CLEAR_STORED_EARFCN:
+		dictateFailureCnt = &pClient->SocketStack->NBIotStack->DictateRunCtl.dictateClearStoredEARFCNFailureCnt;
 		break;
 	
 	case NBAND_MODE_CHECK:
@@ -586,6 +596,8 @@ void NET_MQTTSN_NBIOT_Event_StopMode(MQTTSN_ClientsTypeDef* pClient)
 		pClient->SocketStack->NBIotStack->DictateRunCtl.dictateRunTime = dictateRunTime;
 		/* NBIOT Module Poweroff */
 		NBIOT_Neul_NBxx_HardwarePoweroff(pClient->SocketStack->NBIotStack);
+		/* Clear Stored EARFCN */
+		pClient->SocketStack->NBIotStack->ClearStoredEARFCN = NBIOT_CLEAR_STORED_EARFCN_TRUE;
 		/* Init Message Index */
 #if MQTTSN_MSG_VERSION_STREAM_TYPE == MQTTSN_MSG_VERSION_JSON_STREAM
 		MqttSNStatusBasicIndex = NET_MqttSN_Message_StatusBasicRear();
@@ -947,7 +959,14 @@ void NET_MQTTSN_NBIOT_Event_FullFunctionality(MQTTSN_ClientsTypeDef* pClient)
 	
 	if ((NBStatus = NBIOT_Neul_NBxx_CheckReadMinOrFullFunc(pClient->SocketStack->NBIotStack)) == NBIOT_OK) {
 		/* Dictate execute is Success */
-		MQTTSN_NBIOT_DictateEvent_SuccessExecute(pClient, NBAND_MODE_CHECK, FULL_FUNCTIONALITY);
+		if (pClient->SocketStack->NBIotStack->ClearStoredEARFCN != NBIOT_CLEAR_STORED_EARFCN_FALSE) {
+			/* 需清除频点 */
+			MQTTSN_NBIOT_DictateEvent_SuccessExecute(pClient, MINIMUM_FUNCTIONALITY, FULL_FUNCTIONALITY);
+		}
+		else {
+			/* 无需清除频点 */
+			MQTTSN_NBIOT_DictateEvent_SuccessExecute(pClient, NBAND_MODE_CHECK, FULL_FUNCTIONALITY);
+		}
 		
 #ifdef MQTTSN_DEBUG_LOG_RF_PRINT_BEFORE
 		MQTTSN_DEBUG_LOG_PRINTF_BEFORE("NB FullFunc Check Ok");
@@ -970,7 +989,14 @@ void NET_MQTTSN_NBIOT_Event_FullFunctionality(MQTTSN_ClientsTypeDef* pClient)
 	if (pClient->SocketStack->NBIotStack->Parameter.functionality != FullFunc) {
 		if ((NBStatus = NBIOT_Neul_NBxx_SetMinOrFullFunc(pClient->SocketStack->NBIotStack, FullFunc)) == NBIOT_OK) {
 			/* Dictate execute is Success */
-			MQTTSN_NBIOT_DictateEvent_SuccessExecute(pClient, NBAND_MODE_CHECK, FULL_FUNCTIONALITY);
+			if (pClient->SocketStack->NBIotStack->ClearStoredEARFCN != NBIOT_CLEAR_STORED_EARFCN_FALSE) {
+				/* 需清除频点 */
+				MQTTSN_NBIOT_DictateEvent_SuccessExecute(pClient, MINIMUM_FUNCTIONALITY, FULL_FUNCTIONALITY);
+			}
+			else {
+				/* 无需清除频点 */
+				MQTTSN_NBIOT_DictateEvent_SuccessExecute(pClient, NBAND_MODE_CHECK, FULL_FUNCTIONALITY);
+			}
 			
 #ifdef MQTTSN_DEBUG_LOG_RF_PRINT_BEFORE
 			MQTTSN_DEBUG_LOG_PRINTF_BEFORE("NB FullFunc Set Ok");
@@ -1006,7 +1032,14 @@ void NET_MQTTSN_NBIOT_Event_MinimumFunctionality(MQTTSN_ClientsTypeDef* pClient)
 	
 	if ((NBStatus = NBIOT_Neul_NBxx_CheckReadMinOrFullFunc(pClient->SocketStack->NBIotStack)) == NBIOT_OK) {
 		/* Dictate execute is Success */
-		MQTTSN_NBIOT_DictateEvent_SuccessExecute(pClient, NBAND_MODE_CONFIG, MINIMUM_FUNCTIONALITY);
+		if (pClient->SocketStack->NBIotStack->ClearStoredEARFCN != NBIOT_CLEAR_STORED_EARFCN_FALSE) {
+			/* 需清除频点 */
+			MQTTSN_NBIOT_DictateEvent_SuccessExecute(pClient, CLEAR_STORED_EARFCN, MINIMUM_FUNCTIONALITY);
+		}
+		else {
+			/* 无需清除频点 */
+			MQTTSN_NBIOT_DictateEvent_SuccessExecute(pClient, NBAND_MODE_CONFIG, MINIMUM_FUNCTIONALITY);
+		}
 		
 #ifdef MQTTSN_DEBUG_LOG_RF_PRINT_BEFORE
 		MQTTSN_DEBUG_LOG_PRINTF_BEFORE("NB MinFunc Check Ok");
@@ -1029,7 +1062,14 @@ void NET_MQTTSN_NBIOT_Event_MinimumFunctionality(MQTTSN_ClientsTypeDef* pClient)
 	if (pClient->SocketStack->NBIotStack->Parameter.functionality != MinFunc) {
 		if ((NBStatus = NBIOT_Neul_NBxx_SetMinOrFullFunc(pClient->SocketStack->NBIotStack, MinFunc)) == NBIOT_OK) {
 			/* Dictate execute is Success */
-			MQTTSN_NBIOT_DictateEvent_SuccessExecute(pClient, NBAND_MODE_CONFIG, MINIMUM_FUNCTIONALITY);
+			if (pClient->SocketStack->NBIotStack->ClearStoredEARFCN != NBIOT_CLEAR_STORED_EARFCN_FALSE) {
+				/* 需清除频点 */
+				MQTTSN_NBIOT_DictateEvent_SuccessExecute(pClient, CLEAR_STORED_EARFCN, MINIMUM_FUNCTIONALITY);
+			}
+			else {
+				/* 无需清除频点 */
+				MQTTSN_NBIOT_DictateEvent_SuccessExecute(pClient, NBAND_MODE_CONFIG, MINIMUM_FUNCTIONALITY);
+			}
 			
 #ifdef MQTTSN_DEBUG_LOG_RF_PRINT_BEFORE
 			MQTTSN_DEBUG_LOG_PRINTF_BEFORE("NB MinFunc Set Ok");
@@ -1048,6 +1088,43 @@ void NET_MQTTSN_NBIOT_Event_MinimumFunctionality(MQTTSN_ClientsTypeDef* pClient)
 #endif
 			return;
 		}
+	}
+}
+
+/**********************************************************************************************************
+ @Function			void NET_MQTTSN_NBIOT_Event_ClearStoredEARFCN(MQTTSN_ClientsTypeDef* pClient)
+ @Description			NET_MQTTSN_NBIOT_Event_ClearStoredEARFCN	: 清除小区频点
+ @Input				pClient								: MqttSN客户端实例
+ @Return				void
+**********************************************************************************************************/
+void NET_MQTTSN_NBIOT_Event_ClearStoredEARFCN(MQTTSN_ClientsTypeDef* pClient)
+{
+	NBIOT_StatusTypeDef NBStatus = NBStatus;
+	
+	MQTTSN_NBIOT_DictateEvent_SetTime(pClient, 30);
+	
+	if ((NBStatus = NBIOT_Neul_NBxx_ClearStoredEarfcn(pClient->SocketStack->NBIotStack)) == NBIOT_OK) {
+		/* Dictate execute is Success */
+		pClient->SocketStack->NBIotStack->ClearStoredEARFCN = NBIOT_CLEAR_STORED_EARFCN_FALSE;
+		
+		MQTTSN_NBIOT_DictateEvent_SuccessExecute(pClient, FULL_FUNCTIONALITY, CLEAR_STORED_EARFCN);
+		
+#ifdef MQTTSN_DEBUG_LOG_RF_PRINT_BEFORE
+		MQTTSN_DEBUG_LOG_PRINTF_BEFORE("NB Clear Stored EARFCN OK");
+#endif
+	}
+	else {
+		/* Dictate execute is Fail */
+		MQTTSN_NBIOT_DictateEvent_FailExecute(pClient, HARDWARE_REBOOT, STOP_MODE, CLEAR_STORED_EARFCN);
+		
+#ifdef MQTTSN_DEBUG_LOG_RF_PRINT_BEFORE
+	#if NBIOT_PRINT_ERROR_CODE_TYPE
+		MQTTSN_DEBUG_LOG_PRINTF_BEFORE("NB Clear Stored EARFCN Fail Ecde %d", NBStatus);
+	#else
+		MQTTSN_DEBUG_LOG_PRINTF_BEFORE("NB Clear Stored EARFCN Fail");
+	#endif
+#endif
+		return;
 	}
 }
 
