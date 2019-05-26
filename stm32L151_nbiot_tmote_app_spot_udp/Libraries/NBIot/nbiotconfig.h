@@ -30,6 +30,7 @@
 #define NBIOT_COMMAND_CIMI_MSEC			600
 #define NBIOT_COMMAND_CGPADDR_MSEC			600
 #define NBIOT_COMMAND_CGDCONT_MSEC			600
+#define NBIOT_COMMAND_CGCONTRDP_MSEC		600
 #define NBIOT_COMMAND_CCLK_MSEC			600
 #define NBIOT_COMMAND_NPSMR_MSEC			1800
 #define NBIOT_COMMAND_CSCON_MSEC			600
@@ -415,6 +416,7 @@ struct NBIOT_ParameterTypeDef
 	char								cgpaddr[20];										//核心网地址
 	char								cgdcontPDPType[10];									//核心网类型
 	char								cgdcontAPN[15];									//核心网名称
+	char								cgcontrdpAPN[50];									//核心网名称
 	bool								bandsupport;										//band支持
 	int								rssi;											//信号质量
 	

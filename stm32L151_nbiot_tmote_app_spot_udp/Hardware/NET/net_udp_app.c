@@ -86,6 +86,10 @@ void NET_UDP_APP_PollExecution(UDP_ClientsTypeDef* pClient)
 		NET_UDP_NBIOT_Event_FullFunctionality(pClient);
 		break;
 	
+	case CLEAR_STORED_EARFCN:
+		NET_UDP_NBIOT_Event_ClearStoredEARFCN(pClient);
+		break;
+	
 	case CDP_SERVER_CHECK:
 		pClient->SocketStack->NBIotStack->DictateRunCtl.dictateEvent = HARDWARE_REBOOT;
 		break;
@@ -452,6 +456,8 @@ void NET_UDP_NBIOT_Event_StopMode(UDP_ClientsTypeDef* pClient)
 		pClient->SocketStack->NBIotStack->DictateRunCtl.dictateRunTime = dictateRunTime;
 		/* NBIOT Module Poweroff */
 		NBIOT_Neul_NBxx_HardwarePoweroff(pClient->SocketStack->NBIotStack);
+		/* Clear Stored EARFCN */
+		pClient->SocketStack->NBIotStack->ClearStoredEARFCN = NBIOT_CLEAR_STORED_EARFCN_TRUE;
 		/* Init Message Index */
 		UDPByteStreamIndex = NET_UDP_Message_SendDataRear();
 	}
@@ -777,7 +783,14 @@ void NET_UDP_NBIOT_Event_FullFunctionality(UDP_ClientsTypeDef* pClient)
 	
 	if ((NBStatus = NBIOT_Neul_NBxx_CheckReadMinOrFullFunc(pClient->SocketStack->NBIotStack)) == NBIOT_OK) {
 		/* Dictate execute is Success */
-		UDP_NBIOT_DictateEvent_SuccessExecute(pClient, NBAND_MODE_CHECK, FULL_FUNCTIONALITY);
+		if (pClient->SocketStack->NBIotStack->ClearStoredEARFCN != NBIOT_CLEAR_STORED_EARFCN_FALSE) {
+			/* 需清除频点 */
+			UDP_NBIOT_DictateEvent_SuccessExecute(pClient, MINIMUM_FUNCTIONALITY, FULL_FUNCTIONALITY);
+		}
+		else {
+			/* 无需清除频点 */
+			UDP_NBIOT_DictateEvent_SuccessExecute(pClient, NBAND_MODE_CHECK, FULL_FUNCTIONALITY);
+		}
 		
 #ifdef UDP_DEBUG_LOG_RF_PRINT
 		UDP_DEBUG_LOG_PRINTF("NB FullFunc Ok");
@@ -800,7 +813,14 @@ void NET_UDP_NBIOT_Event_FullFunctionality(UDP_ClientsTypeDef* pClient)
 	if (pClient->SocketStack->NBIotStack->Parameter.functionality != FullFunc) {
 		if ((NBStatus = NBIOT_Neul_NBxx_SetMinOrFullFunc(pClient->SocketStack->NBIotStack, FullFunc)) == NBIOT_OK) {
 			/* Dictate execute is Success */
-			UDP_NBIOT_DictateEvent_SuccessExecute(pClient, NBAND_MODE_CHECK, FULL_FUNCTIONALITY);
+			if (pClient->SocketStack->NBIotStack->ClearStoredEARFCN != NBIOT_CLEAR_STORED_EARFCN_FALSE) {
+				/* 需清除频点 */
+				UDP_NBIOT_DictateEvent_SuccessExecute(pClient, MINIMUM_FUNCTIONALITY, FULL_FUNCTIONALITY);
+			}
+			else {
+				/* 无需清除频点 */
+				UDP_NBIOT_DictateEvent_SuccessExecute(pClient, NBAND_MODE_CHECK, FULL_FUNCTIONALITY);
+			}
 			
 #ifdef UDP_DEBUG_LOG_RF_PRINT
 			UDP_DEBUG_LOG_PRINTF("NB FullFunc Set Ok");
@@ -836,7 +856,14 @@ void NET_UDP_NBIOT_Event_MinimumFunctionality(UDP_ClientsTypeDef* pClient)
 	
 	if ((NBStatus = NBIOT_Neul_NBxx_CheckReadMinOrFullFunc(pClient->SocketStack->NBIotStack)) == NBIOT_OK) {
 		/* Dictate execute is Success */
-		UDP_NBIOT_DictateEvent_SuccessExecute(pClient, NBAND_MODE_CONFIG, MINIMUM_FUNCTIONALITY);
+		if (pClient->SocketStack->NBIotStack->ClearStoredEARFCN != NBIOT_CLEAR_STORED_EARFCN_FALSE) {
+			/* 需清除频点 */
+			UDP_NBIOT_DictateEvent_SuccessExecute(pClient, CLEAR_STORED_EARFCN, MINIMUM_FUNCTIONALITY);
+		}
+		else {
+			/* 无需清除频点 */
+			UDP_NBIOT_DictateEvent_SuccessExecute(pClient, NBAND_MODE_CONFIG, MINIMUM_FUNCTIONALITY);
+		}
 		
 #ifdef UDP_DEBUG_LOG_RF_PRINT
 		UDP_DEBUG_LOG_PRINTF("NB MinFunc Ok");
@@ -859,7 +886,14 @@ void NET_UDP_NBIOT_Event_MinimumFunctionality(UDP_ClientsTypeDef* pClient)
 	if (pClient->SocketStack->NBIotStack->Parameter.functionality != MinFunc) {
 		if ((NBStatus = NBIOT_Neul_NBxx_SetMinOrFullFunc(pClient->SocketStack->NBIotStack, MinFunc)) == NBIOT_OK) {
 			/* Dictate execute is Success */
-			UDP_NBIOT_DictateEvent_SuccessExecute(pClient, NBAND_MODE_CONFIG, MINIMUM_FUNCTIONALITY);
+			if (pClient->SocketStack->NBIotStack->ClearStoredEARFCN != NBIOT_CLEAR_STORED_EARFCN_FALSE) {
+				/* 需清除频点 */
+				UDP_NBIOT_DictateEvent_SuccessExecute(pClient, CLEAR_STORED_EARFCN, MINIMUM_FUNCTIONALITY);
+			}
+			else {
+				/* 无需清除频点 */
+				UDP_NBIOT_DictateEvent_SuccessExecute(pClient, NBAND_MODE_CONFIG, MINIMUM_FUNCTIONALITY);
+			}
 			
 #ifdef UDP_DEBUG_LOG_RF_PRINT
 			UDP_DEBUG_LOG_PRINTF("NB MinFunc Set Ok");
@@ -878,6 +912,43 @@ void NET_UDP_NBIOT_Event_MinimumFunctionality(UDP_ClientsTypeDef* pClient)
 #endif
 			return;
 		}
+	}
+}
+
+/**********************************************************************************************************
+ @Function			void NET_UDP_NBIOT_Event_ClearStoredEARFCN(UDP_ClientsTypeDef* pClient)
+ @Description			NET_UDP_NBIOT_Event_ClearStoredEARFCN		: 清除小区频点
+ @Input				pClient								: UDP客户端实例
+ @Return				void
+**********************************************************************************************************/
+void NET_UDP_NBIOT_Event_ClearStoredEARFCN(UDP_ClientsTypeDef* pClient)
+{
+	NBIOT_StatusTypeDef NBStatus = NBStatus;
+	
+	UDP_NBIOT_DictateEvent_SetTime(pClient, 30);
+	
+	if ((NBStatus = NBIOT_Neul_NBxx_ClearStoredEarfcn(pClient->SocketStack->NBIotStack)) == NBIOT_OK) {
+		/* Dictate execute is Success */
+		pClient->SocketStack->NBIotStack->ClearStoredEARFCN = NBIOT_CLEAR_STORED_EARFCN_FALSE;
+		
+		UDP_NBIOT_DictateEvent_SuccessExecute(pClient, FULL_FUNCTIONALITY, CLEAR_STORED_EARFCN);
+		
+#ifdef UDP_DEBUG_LOG_RF_PRINT
+		UDP_DEBUG_LOG_PRINTF("NB Clear Stored EARFCN OK");
+#endif
+	}
+	else {
+		/* Dictate execute is Fail */
+		UDP_NBIOT_DictateEvent_FailExecute(pClient, HARDWARE_REBOOT, STOP_MODE, CLEAR_STORED_EARFCN);
+		
+#ifdef UDP_DEBUG_LOG_RF_PRINT
+	#if NBIOT_PRINT_ERROR_CODE_TYPE
+		UDP_DEBUG_LOG_PRINTF("NB Clear Stored EARFCN Fail Ecde %d", NBStatus);
+	#else
+		UDP_DEBUG_LOG_PRINTF("NB Clear Stored EARFCN Fail");
+	#endif
+#endif
+		return;
 	}
 }
 
@@ -1142,6 +1213,7 @@ void NET_UDP_NBIOT_Event_ParameterCheckOut(UDP_ClientsTypeDef* pClient)
 	    ((NBStatus = NBIOT_Neul_NBxx_CheckReadIMSI(pClient->SocketStack->NBIotStack)) == NBIOT_OK) && 
 	    ((NBStatus = NBIOT_Neul_NBxx_CheckReadCGPADDR(pClient->SocketStack->NBIotStack)) == NBIOT_OK) && 
 	    ((NBStatus = NBIOT_Neul_NBxx_CheckReadCGDCONT(pClient->SocketStack->NBIotStack)) == NBIOT_OK) && 
+	    ((NBStatus = NBIOT_Neul_NBxx_CheckReadPDPContext(pClient->SocketStack->NBIotStack)) == NBIOT_OK) && 
 	    ((NBStatus = NBIOT_Neul_NBxx_CheckReadRSSI(pClient->SocketStack->NBIotStack)) == NBIOT_OK) && 
 	    ((NBStatus = NBIOT_Neul_NBxx_CheckReadStatisticsRADIO(pClient->SocketStack->NBIotStack)) == NBIOT_OK) && 
 	    ((NBStatus = NBIOT_Neul_NBxx_CheckReadAreaCode(pClient->SocketStack->NBIotStack)) == NBIOT_OK) && 

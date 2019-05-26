@@ -4,7 +4,10 @@
 
 * 2019-05-24 :
 	* 版本号修改为143。
-	* 增加NBIOT清除小区频点,DNS,MQTTSN,COAP,同时增加。
+	* 增加NBIOT清除小区频点,DNS,MQTTSN,COAP,UDP,ONENET同时增加。
+	* 设备上电或硬件重启不清除小区频点，当多次入网不成功时开启清频(3次)。
+	* WorkInfo上报运营商卡APN信息。
+	* WorkInfo去除上报BeepOff信息。
 * 2019-05-16 :
 	* 增加配置udp服务器地址通过mqttsn下行命令。
 	* 增加wokrinfo字段UDP，显示UDP服务器地址。

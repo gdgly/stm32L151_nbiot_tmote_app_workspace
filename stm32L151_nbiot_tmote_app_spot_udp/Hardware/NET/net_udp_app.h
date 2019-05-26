@@ -24,6 +24,7 @@ void NET_UDP_NBIOT_Event_ParameterConfig(UDP_ClientsTypeDef* pClient);			//参�
 void NET_UDP_NBIOT_Event_SimICCIDCheck(UDP_ClientsTypeDef* pClient);				//Sim卡检测
 void NET_UDP_NBIOT_Event_FullFunctionality(UDP_ClientsTypeDef* pClient);			//完整功能
 void NET_UDP_NBIOT_Event_MinimumFunctionality(UDP_ClientsTypeDef* pClient);		//最小功能
+void NET_UDP_NBIOT_Event_ClearStoredEARFCN(UDP_ClientsTypeDef* pClient);			//清除小区频点
 void NET_UDP_NBIOT_Event_NbandModeCheck(UDP_ClientsTypeDef* pClient);				//NBAND模式查询
 void NET_UDP_NBIOT_Event_NbandModeConfig(UDP_ClientsTypeDef* pClient);			//NBAND模式配置
 void NET_UDP_NBIOT_Event_AttachCheck(UDP_ClientsTypeDef* pClient);				//注网检查
