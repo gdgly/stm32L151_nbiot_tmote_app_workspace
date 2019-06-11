@@ -134,7 +134,9 @@ typedef __packed struct
 	u8								SpotStatus;
 	u8								VbatStatus;
 	u8								SpotID[7];
-	u8								Magnetic[12];
+	u32								MagneticX;
+	u32								MagneticY;
+	u32								MagneticZ;
 	u8								Algorithm;
 	u8								Heartbeat;
 	u8								Timer[6];
@@ -191,13 +193,16 @@ typedef struct
 	u8								SpotStatus;
 	u32								SpotCounts;
 	u8								VbatStatus;
+	u32								MagneticX;
+	u32								MagneticY;
+	u32								MagneticZ;
 	u8								Algorithm;
 	u8								Heartbeat;
 	u32								unixTime;
 	u8								PackNumber;
 } UDP_AUTOCTRL_message_Status_option;
 
-#define UDP_AUTOCTRL_Packet_statusData_initializer	{0x00000000, 0, 0, 0, 0, 0, 0, 0x00}
+#define UDP_AUTOCTRL_Packet_statusData_initializer	{0x00000000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0x00}
 
 /* AUTOCTRL Data heart */
 typedef __packed struct
@@ -206,13 +211,15 @@ typedef __packed struct
 	u32								SerCode;
 	u16								Debuff;
 	u8								SpotID[7];
-	u8								Magnetic[12];
+	u32								MagneticX;
+	u32								MagneticY;
+	u32								MagneticZ;
 	u8								Algorithm;
 	u8								Heartbeat;
 	u8								SpotStatus;
 	u8								VbatStatus;
 	u8								SleepTime;
-	u8								RSSI;
+	char								RSSI;
 	u8								SNR;
 	u8								Temperature;
 	u8								Reserved[8];
@@ -268,14 +275,17 @@ typedef struct
 	u8								Heartbeat;
 	u8								SpotStatus;
 	u8								VbatStatus;
+	u32								MagneticX;
+	u32								MagneticY;
+	u32								MagneticZ;
 	u8								SleepTime;
-	u8								RSSI;
+	char								RSSI;
 	u8								SNR;
 	u8								Temperature;
 	u8								PackNumber;
 } UDP_AUTOCTRL_message_Heart_option;
 
-#define UDP_AUTOCTRL_Packet_heartData_initializer		{0x00000000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0x00}
+#define UDP_AUTOCTRL_Packet_heartData_initializer		{0x00000000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0x00}
 
 int UDPAUTOCTRLSerialize_connect(unsigned char* buf, int buflen, UDP_AUTOCTRL_message_Connect_option* options);
 int UDPAUTOCTRLDeserialize_connack(unsigned char* buf, int buflen, UDP_AUTOCTRL_message_Connect_option* options);

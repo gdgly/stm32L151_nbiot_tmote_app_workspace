@@ -691,8 +691,11 @@ void NET_NBIOT_DataProcessing(NET_NBIOT_ClientsTypeDef* pClient)
 		options.SpotCounts								= SpotStatusData.spot_count;
 		options.VbatStatus								= TCFG_Utility_Get_Device_Batt_ShortVal() > 300 ? 0x00 : \
 													  TCFG_Utility_Get_Device_Batt_ShortVal() < 270 ? 0x02 : 0x01;
+		options.MagneticX								= SpotStatusData.qmc5883lData.X_Now;
+		options.MagneticY								= SpotStatusData.qmc5883lData.Y_Now;
+		options.MagneticZ								= SpotStatusData.qmc5883lData.Z_Now;
 		options.Algorithm								= 0x00;
-		options.Heartbeat								= 4 * 60;
+		options.Heartbeat								= TCFG_EEPROM_GetNbiotHeart() * 60;
 		options.unixTime								= SpotStatusData.unixTime + 8 * 60 * 60;
 		NET_UDP_Message_SendDataEnqueue((unsigned char *)&options, sizeof(options));
 #if NBMQTTSN_SENDCODE_STATUS_EXTEND

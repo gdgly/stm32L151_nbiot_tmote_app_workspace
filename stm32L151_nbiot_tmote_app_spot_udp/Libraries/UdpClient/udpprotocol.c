@@ -197,6 +197,10 @@ int UDPAUTOCTRLSerialize_status(unsigned char* buf, int buflen, UDP_AUTOCTRL_mes
 	status->StatusData.SpotStatus = options->SpotStatus;
 	status->StatusData.VbatStatus = options->VbatStatus;
 	
+	status->StatusData.MagneticX  = options->MagneticX;
+	status->StatusData.MagneticY  = options->MagneticY;
+	status->StatusData.MagneticZ  = options->MagneticZ;
+	
 	status->StatusData.Heartbeat  = options->Heartbeat;
 	status->StatusData.Algorithm  = options->Algorithm;
 	
@@ -329,6 +333,9 @@ int UDPAUTOCTRLSerialize_heart(unsigned char* buf, int buflen, UDP_AUTOCTRL_mess
 	heart->HeartData.SerCode = htonl(AUTOCTRL_HEART_SER);
 	
 	heart->HeartData.Debuff      = options->Debuff;
+	heart->HeartData.MagneticX   = options->MagneticX;
+	heart->HeartData.MagneticY   = options->MagneticY;
+	heart->HeartData.MagneticZ   = options->MagneticZ;
 	heart->HeartData.Algorithm   = options->Algorithm;
 	heart->HeartData.Heartbeat   = options->Heartbeat;
 	heart->HeartData.SpotStatus  = options->SpotStatus;

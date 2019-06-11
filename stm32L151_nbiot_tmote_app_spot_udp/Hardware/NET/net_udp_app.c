@@ -1399,8 +1399,11 @@ void NET_UDP_Event_Heart(UDP_ClientsTypeDef* pClient)
 						  SpotStatusData.spot_status == 3 ? 0x01 : 0x00;
 	options.VbatStatus		= TCFG_Utility_Get_Device_Batt_ShortVal() > 300 ? 0x00 : \
 						  TCFG_Utility_Get_Device_Batt_ShortVal() < 270 ? 0x02 : 0x01;
+	options.MagneticX		= SpotStatusData.qmc5883lData.X_Now;
+	options.MagneticY		= SpotStatusData.qmc5883lData.Y_Now;
+	options.MagneticZ		= SpotStatusData.qmc5883lData.Z_Now;
 	options.SleepTime		= 0x00;
-	options.RSSI			= 0x00;
+	options.RSSI			= (char)TCFG_Utility_Get_Nbiot_Rssi_IntVal();
 	options.SNR			= TCFG_Utility_Get_Nbiot_RadioSNR() >  -5 ? 0x00 : \
 						  TCFG_Utility_Get_Nbiot_RadioSNR() < -50 ? 0x02 : 0x01;
 	options.Temperature		= TCFG_Utility_Get_Device_Temperature();
