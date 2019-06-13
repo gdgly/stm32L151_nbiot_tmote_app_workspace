@@ -1317,6 +1317,8 @@ void NET_UDP_Event_SendData(UDP_ClientsTypeDef* pClient)
 	UDP_AUTOCTRL_message_Status_option options = UDP_AUTOCTRL_Packet_statusData_initializer;
 	unsigned short len = 0;
 	
+	Stm32_CalculagraphTypeDef dictateRunTime;
+	
 	UDP_DictateEvent_SetTime(pClient, 60);
 	
 	/* Data packets need to be sent*/
@@ -1333,6 +1335,9 @@ void NET_UDP_Event_SendData(UDP_ClientsTypeDef* pClient)
 			/* Dictate execute is Success */
 			UDP_DictateEvent_SuccessExecute(pClient, UDP_PROCESS_STACK, UDP_PROCESS_SEND_DATA, UDP_PROCESS_SEND_DATA, true);
 			NET_UDP_Message_SendDataOffSet();
+#if UDP_MSGID_STATUS_TYPE
+			UDP_AUTOControl_GetNextStatusNumber(pClient);
+#endif
 #ifdef UDP_DEBUG_LOG_RF_PRINT
 			UDP_DEBUG_LOG_PRINTF("UDP Send Payload Ok");
 #endif
@@ -1340,7 +1345,10 @@ void NET_UDP_Event_SendData(UDP_ClientsTypeDef* pClient)
 	}
 	/* No packets need to be sent */
 	else {
-		UDP_DictateEvent_SuccessExecute(pClient, UDP_PROCESS_STACK, UDP_PROCESS_HEART, UDP_PROCESS_SEND_DATA, true);
+		UDP_DictateEvent_SuccessExecute(pClient, UDP_PROCESS_STACK, UDP_PROCESS_SLEEP, UDP_PROCESS_SEND_DATA, true);
+		/* Set Heart Duration */
+		Stm32_Calculagraph_CountdownSec(&dictateRunTime, 10 * 60);
+		pClient->HeartTimer = dictateRunTime;
 	}
 }
 

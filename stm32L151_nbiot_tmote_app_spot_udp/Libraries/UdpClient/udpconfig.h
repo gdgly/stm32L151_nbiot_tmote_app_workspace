@@ -63,7 +63,8 @@ struct UDP_ClientsTypeDef
 	short							Recvlen;
 	unsigned char*						DataProcessStack;
 	size_t							DataProcessStack_size;
-	unsigned int						MsgId;
+	unsigned short						MsgIdNormal;
+	unsigned short						MsgIdStatus;
 	unsigned short						Command_Timeout_Sec;
 	unsigned short						Command_Failure_Cnt;
 	

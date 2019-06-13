@@ -26,8 +26,31 @@
 **********************************************************************************************************/
 static unsigned int UDP_AUTOControl_GetNextPackNumber(UDP_ClientsTypeDef* pClient)
 {
-	pClient->MsgId = (pClient->MsgId == UDP_MAX_MSG_ID) ? 1 : pClient->MsgId + 1;
-	return pClient->MsgId;
+	pClient->MsgIdNormal = (pClient->MsgIdNormal == UDP_MAX_MSG_ID) ? 1 : pClient->MsgIdNormal + 1;
+	return pClient->MsgIdNormal;
+}
+
+/**********************************************************************************************************
+ @Function			unsigned int UDP_AUTOControl_GetNextStatusNumber(UDP_ClientsTypeDef* pClient)
+ @Description			UDP_AUTOControl_GetNextStatusNumber	: 获取下一个消息ID
+ @Input				pClient							: UDP客户端实例
+ @Return				PackNumber						: 消息ID
+**********************************************************************************************************/
+unsigned int UDP_AUTOControl_GetNextStatusNumber(UDP_ClientsTypeDef* pClient)
+{
+	pClient->MsgIdStatus = (pClient->MsgIdStatus == UDP_MAX_MSG_ID) ? 1 : pClient->MsgIdStatus + 1;
+	return pClient->MsgIdStatus;
+}
+
+/**********************************************************************************************************
+ @Function			unsigned int UDP_AUTOControl_GetNowsStatusNumber(UDP_ClientsTypeDef* pClient)
+ @Description			UDP_AUTOControl_GetNowsStatusNumber	: 获取下一个消息ID
+ @Input				pClient							: UDP客户端实例
+ @Return				PackNumber						: 消息ID
+**********************************************************************************************************/
+unsigned int UDP_AUTOControl_GetNowsStatusNumber(UDP_ClientsTypeDef* pClient)
+{
+	return pClient->MsgIdStatus;
 }
 
 /**********************************************************************************************************
@@ -272,7 +295,11 @@ UDP_StatusTypeDef UDP_AUTOControl_Status(UDP_ClientsTypeDef* pClient, UDP_AUTOCT
 	/* Configuration Calculagraph for Connect Timer */
 	Stm32_Calculagraph_CountdownSec(&Connect_timer_s, pClient->Command_Timeout_Sec);
 	
+#if UDP_MSGID_STATUS_TYPE
+	options->PackNumber = UDP_AUTOControl_GetNowsStatusNumber(pClient);
+#else
 	options->PackNumber = UDP_AUTOControl_GetNextPackNumber(pClient);
+#endif
 	
 	/* Serialize Status Command Buffer */
 	if ((len = UDPAUTOCTRLSerialize_status(pClient->Sendbuf, pClient->Sendbuf_size, options)) <= 0) {
