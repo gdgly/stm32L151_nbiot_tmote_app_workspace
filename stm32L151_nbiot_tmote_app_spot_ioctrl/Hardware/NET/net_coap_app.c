@@ -18,6 +18,7 @@
 #include "platform_map.h"
 #include "hal_rtc.h"
 #include "hal_beep.h"
+#include "hal_ioctrl.h"
 #include "radar_api.h"
 #include "hal_qmc5883l.h"
 #include "string.h"
@@ -2294,6 +2295,38 @@ void NET_COAP_NBIOT_Event_ExecutDownlinkData(NBIOT_ClientsTypeDef* pClient)
 								Control_KEY1_ON();
 								Delay_MS(500);
 								Control_KEY1_OFF();
+							}
+						}
+						else {
+							ret = NETIP_UNKNOWNERROR;
+						}
+					}
+					else if (strstr((char *)pClient->Recvbuf + recvBufOffset + TCLOD_DATA_OFFSET, "IOControl") != NULL) {
+						u16 ioctrl, iotime;
+						sscanf((char *)pClient->Recvbuf + recvBufOffset + TCLOD_DATA_OFFSET, \
+							"{(IOControl):{(Action):%hu,(Seconds):%hu,(Magic):%hu}}", &ioctrl, &iotime, &recvMagicNum);
+						if (recvMagicNum == TCLOD_MAGIC_NUM) {
+							switch (ioctrl) {
+								case 0x00:
+									IOControl_IO1_LOW();
+									IOControl_IO2_LOW();
+									break;
+								case 0x01:
+									IOControl_IO1_Activate(&IOControlIO1Time, iotime);
+									IOControl_IO2_LOW();
+									break;
+								case 0x02:
+									IOControl_IO1_LOW();
+									IOControl_IO2_Activate(&IOControlIO2Time, iotime);
+									break;
+								case 0x03:
+									IOControl_IO1_Activate(&IOControlIO1Time, iotime);
+									IOControl_IO2_Activate(&IOControlIO2Time, iotime);
+									break;
+								default:
+									IOControl_IO1_LOW();
+									IOControl_IO2_LOW();
+									break;
 							}
 						}
 						else {

@@ -31,6 +31,7 @@
 #include "hal_qmc5883l.h"
 #include "hal_spiflash.h"
 #include "hal_testbench.h"
+#include "hal_ioctrl.h"
 #include "net_nbiot_app.h"
 #include "net_coap_app.h"
 #include "net_pcp_app.h"
@@ -94,8 +95,10 @@ int main(void)
 	ModulePowerReset_Init();																//模块电源复位
 	PowerCtrlIO_Init();																	//电源控制IO初始化
 	
-	Control_KEY1_OFF();
-	Control_KEY2_OFF();
+#if IOCTRL_MODEL_TYPE
+	IOControl_IO1_LOW();
+	IOControl_IO2_LOW();
+#endif
 	
 	Radar_Init();																		//雷达初始化
 	
@@ -169,9 +172,14 @@ int main(void)
 		IWDG_Feed();
 		
 #if LOWPOWERMODE == LOWPOWERENABLE
-		LowPowerBeforeSleepInit();
-		LowPowerEnterStop();
-		LowPowerAfterSleepInit();
+		if (IOControl_IO1_State() || IOControl_IO2_State()) {
+			Delay_MS(1000);
+		}
+		else {
+			LowPowerBeforeSleepInit();
+			LowPowerEnterStop();
+			LowPowerAfterSleepInit();
+		}
 #elif LOWPOWERMODE == LOWPOWERDISABLE
 		Delay_MS(1000);
 #endif
@@ -211,7 +219,9 @@ void MainMajorCycleMqttSN(void)
 	Radio_Trf_App_Task();
 	
 	/* 车辆检测 */
+#if INSPECT_MODEL_TYPE
 	Inspect_Spot_ExistenceDetect();
+#endif
 	
 	/* 检测是否需要初始化传感器背景 */
 	RollingOverInitSensorBackground();
@@ -226,9 +236,14 @@ void MainMajorCycleMqttSN(void)
 	IWDG_Feed();
 	
 #if LOWPOWERMODE == LOWPOWERENABLE
-	LowPowerBeforeSleepInit();
-	LowPowerEnterStop();
-	LowPowerAfterSleepInit();
+	if (IOControl_IO1_State() || IOControl_IO2_State()) {
+		Delay_MS(1000);
+	}
+	else {
+		LowPowerBeforeSleepInit();
+		LowPowerEnterStop();
+		LowPowerAfterSleepInit();
+	}
 #elif LOWPOWERMODE == LOWPOWERDISABLE
 	Delay_MS(1000);
 #endif
@@ -313,14 +328,18 @@ void MainRollingEnteringUpWork(void)
 void MainRollingUpwardsActived(void)
 {
 	/* 车辆检测 */
+#if INSPECT_MODEL_TYPE
 	Inspect_Spot_ExistenceDetect();
+#endif
 	
 	/* 日常处理 */
 	MainHandleRoutine();
 	
 	if (!((NETCoapNeedSendCode.WorkInfoWait > 0) || (NETMqttSNNeedSendCode.InfoWorkWait > 0) || (NETOneNETNeedSendCode.WorkInfoWait > 0))) {
 #if PRODUCTTEST_READ_TYPE
+#if (IOCTRL_MODEL_TYPE == 0)
 		if (ProductTest_Read()) {
+#endif
 		#if NBIOT_SNEDCOUNTDAY_LIMIT_TYPE
 			if (TCFG_Utility_Get_NBIot_SentCountDay() == TCFG_EEPROM_GetNBIotSentCountLimit()) {
 			#if NETPROTOCAL == NETCOAP
@@ -345,6 +364,7 @@ void MainRollingUpwardsActived(void)
 			/* NBIOT APP Task */
 			NET_NBIOT_App_Task();
 		#endif
+#if (IOCTRL_MODEL_TYPE == 0)
 		}
 		else {
 			/* NBIOT Power OFF */
@@ -362,6 +382,7 @@ void MainRollingUpwardsActived(void)
 				Radio_Trf_Printf("imei:%s", TCFG_Utility_Get_Nbiot_Imei_String());
 			}
 		}
+#endif
 #else
 	#if NBIOT_SNEDCOUNTDAY_LIMIT_TYPE
 		if (TCFG_Utility_Get_NBIot_SentCountDay() == TCFG_EEPROM_GetNBIotSentCountLimit()) {
@@ -464,9 +485,12 @@ void MainRollingEnteredDownSleepKeepActived(void)
 	
 	if (!((NETCoapNeedSendCode.WorkInfoWait > 0) || (NETMqttSNNeedSendCode.InfoWorkWait > 0) || (NETOneNETNeedSendCode.WorkInfoWait > 0))) {
 #if PRODUCTTEST_READ_TYPE
+#if (IOCTRL_MODEL_TYPE == 0)
 		if (ProductTest_Read()) {
+#endif
 			/* NBIOT APP Task */
 			NET_NBIOT_App_Task();
+#if (IOCTRL_MODEL_TYPE == 0)
 		}
 		else {
 			/* NBIOT Power OFF */
@@ -475,6 +499,7 @@ void MainRollingEnteredDownSleepKeepActived(void)
 				NBIOTPOWER(OFF);
 			}
 		}
+#endif
 #else
 		/* NBIOT APP Task */
 		NET_NBIOT_App_Task();
@@ -529,6 +554,10 @@ void MainHandleRoutine(void)
 	if (Stm32_GetSecondTick() != SystemRunningTime.seconds) {
 		SystemRunningTime.seconds = Stm32_GetSecondTick();
 		
+#if IOCTRL_MODEL_TYPE
+		IOControl_IO1_Check(&IOControlIO1Time);
+		IOControl_IO2_Check(&IOControlIO2Time);
+#endif
 	}
 	/* Every Ten Secound Running */
 	if ((Stm32_GetSecondTick() / 10) != SystemRunningTime.tenseconds) {
