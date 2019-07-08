@@ -148,9 +148,6 @@ void IOControl_IO1_Check(Stm32_CalculagraphTypeDef* timer)
 		
 		IOControlIO1State = false;
 	}
-	else {
-		IOControl_IO1_HIGH();
-	}
 }
 
 /**********************************************************************************************************
@@ -167,9 +164,6 @@ void IOControl_IO2_Check(Stm32_CalculagraphTypeDef* timer)
 		IOControl_IO2_LOW();
 		
 		IOControlIO2State = false;
-	}
-	else {
-		IOControl_IO2_HIGH();
 	}
 }
 
