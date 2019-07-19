@@ -117,7 +117,6 @@ int NET_ONENET_Message_Operate_Creat_Json_Basic_Info(char* outBuffer)
 				"\"Imei\":\"%s\","
 				"\"Nbvender\":\"%s\","
 				"\"Nbmode\":\"%s\","
-				"\"Nbcgd\":\"%s,%s\","
 				"\"Boot\":\"%d.%d.%d\","
 				"\"Ver\":\"%s\","
 				"\"Rmold\":\"%d\""
@@ -133,7 +132,6 @@ int NET_ONENET_Message_Operate_Creat_Json_Basic_Info(char* outBuffer)
 		TCFG_Utility_Get_Nbiot_Imei_String(),
 		TCFG_Utility_Get_Nbiot_Manufacturer(),
 		TCFG_Utility_Get_Nbiot_Manufacturermode(),
-		TCFG_Utility_Get_Nbiot_PDPType(), TCFG_Utility_Get_Nbiot_APN(),
 		TCFG_Utility_Get_SoftResetFlag(), TCFG_Utility_Get_Device_BootCount(), TCFG_EEPROM_GetDeviceRbtMode(),
 		TCFG_Utility_Get_Nbiot_ModelVersion(),
 		Radar_GetModel()
@@ -156,21 +154,15 @@ int NET_ONENET_Message_Operate_Creat_Json_Dynamic_Info(char* outBuffer)
 			"\"SN\":\"%08x\","
 			"\"TMoteInfo\":"
 			"{"
-				"\"Runtime\":%d,"
+				"\"RT\":%d,"
 				"\"Batt\":%d,"
-				"\"Rlib\":\"%d\","
+				"\"RAlib\":[%d,%d],"
 				"\"Rcnt\":%d,"
 				"\"Temp\":%d,"
-				"\"Algo\":%d,"
 				"\"Qmcrbt\":%d,"
-				"\"Nbboot\":%d,"
-				"\"Nbsent\":%d,"
-				"\"Nbrecv\":%d,"
-				"\"Nblimit\":%d,"
+				"\"Nbrun\":[%d,%d,%d,%d,%d],"
 				"\"Indelay\":%d,"
-				"\"Nbheart\":%d,"
-				"\"Cgain\":%d,"
-				"\"Rgain\":%d,"
+				"\"Gain\":[%d,%d],"
 				"\"Smode\":%d,"
 				"\"Sinter\":%d,"
 				"\"hpass\":%d,"
@@ -182,21 +174,16 @@ int NET_ONENET_Message_Operate_Creat_Json_Dynamic_Info(char* outBuffer)
 		"}",
 		
 		TCFG_EEPROM_Get_MAC_SN(),
-		TCFG_Utility_Get_Run_Time(),
+		TCFG_Utility_Get_Run_Time() / 60 / 60,
 		TCFG_Utility_Get_Device_Batt_ShortVal(),
 		TCFG_Utility_Get_RadarLibNum(),
+		TCFG_Utility_Get_AlgoLibNum(),
 		TCFG_GetRadarCount(),
 		TCFG_Utility_Get_Device_Temperature(),
-		TCFG_Utility_Get_AlgoLibNum(),
 		TCFG_Utility_Get_ReInitModuleCount(),
-		TCFG_Utility_Get_Nbiot_BootCount(),
-		TCFG_Utility_Get_Nbiot_SentCount(),
-		TCFG_Utility_Get_Nbiot_RecvCount(),
-		TCFG_Utility_Get_NBIot_SentCountLimit(),
+		TCFG_Utility_Get_Nbiot_BootCount(), TCFG_Utility_Get_Nbiot_SentCount(), TCFG_Utility_Get_Nbiot_RecvCount(), TCFG_Utility_Get_NBIot_SentCountLimit(), TCFG_EEPROM_GetNbiotHeart(),
 		TCFG_EEPROM_GetCarInDelay(),
-		TCFG_EEPROM_GetNbiotHeart(),
-		TCFG_Utility_Get_GainCover(),
-		TCFG_EEPROM_GetRadarGain(),
+		TCFG_Utility_Get_GainCover(), TCFG_EEPROM_GetRadarGain(),
 		TCFG_EEPROM_GetSenseMode(),
 		Radar_Get_SampleInterval(),
 		tradar_get_highpass(),

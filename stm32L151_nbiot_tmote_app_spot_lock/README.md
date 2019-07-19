@@ -1,7 +1,18 @@
 # stm32L151_nbiot_tmote_app_spot
-> ##### Copyright (C) 2019 Movebroad Version:20.145 Design by Movebroad
+> ##### Copyright (C) 2019 Movebroad Version:20.146 Design by Movebroad
 > ##### movebroad Kangkang ps: 版本号以下为此版本修改、增加、去除等内容记录！
 
+* 2019-07-18 :
+	* 去除“cgdcontPDPType”，“cgdcontAPN”参数的获取，这两个参数是旧版本模组中获取APN指令，目前模组已不再使用。
+* 2019-07-18 :
+	* 版本号修改为146。
+* 2019-07-09 :
+	* 发布V145固件。
+	* TMoteInfo包进行字段聚合: Rlib Algo Nbboot Nbsent Nbheart Cgain Rgain。
+	* TMoteInfo包新字段: Nbrun: (Nbboot Nbsent Nbrecv Nblimit Nbheart)。
+	* TMoteInfo包新字段: Gain : (Cgain Rgain)。
+	* TMoteInfo包新字段: RAlib: (Rlib Algo)。
+	* TMoteInfo包上报HardwareVersion中去掉多余-NB。
 * 2019-06-21 :
 	* 版本号修改为145。
 	* 单次5分钟内未注网成功也清除频点。
