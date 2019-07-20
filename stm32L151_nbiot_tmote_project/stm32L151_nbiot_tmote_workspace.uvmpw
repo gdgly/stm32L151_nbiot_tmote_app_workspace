@@ -9,6 +9,11 @@
 
   <project>
     <PathAndName>..\stm32L151_nbiot_tmote_app_boot\Project\stm32L151_nbiot_tmote_boot.uvprojx</PathAndName>
+    <NodeIsActive>1</NodeIsActive>
+  </project>
+
+  <project>
+    <PathAndName>..\stm32L151_nbiot_tmote_app_boot_udp\Project\stm32L151_nbiot_tmote_boot.uvprojx</PathAndName>
   </project>
 
   <project>
@@ -18,7 +23,22 @@
   <project>
     <PathAndName>..\stm32L151_nbiot_tmote_app_spot\Project\stm32L151_nbiot_tmote_app.uvprojx</PathAndName>
     <NodeIsActive>1</NodeIsActive>
-    <NodeIsExpanded>1</NodeIsExpanded>
+  </project>
+
+  <project>
+    <PathAndName>..\stm32L151_nbiot_tmote_app_spot_ioctrl\Project\stm32L151_nbiot_tmote_app.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>..\stm32L151_nbiot_tmote_app_spot_lock\Project\stm32L151_nbiot_tmote_app.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>..\stm32L151_nbiot_tmote_app_spot_skynet\Project\stm32L151_nbiot_tmote_app.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>..\stm32L151_nbiot_tmote_app_spot_udp\Project\stm32L151_nbiot_tmote_app.uvprojx</PathAndName>
   </project>
 
 </ProjectWorkspace>

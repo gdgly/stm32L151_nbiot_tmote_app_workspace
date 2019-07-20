@@ -5,13 +5,17 @@
 
   <Header>### uVision Project, (C) Keil Software</Header>
 
+  <PrjGuiSettings>
+    <LastAddFilePath></LastAddFilePath>
+  </PrjGuiSettings>
+
   <ViewPool/>
 
   <SECTreeCtrl>
     <View>
       <WinId>38003</WinId>
       <ViewName>Registers</ViewName>
-      <TableColWidths>143 144</TableColWidths>
+      <TableColWidths>254 32</TableColWidths>
     </View>
     <View>
       <WinId>346</WinId>
@@ -36,7 +40,7 @@
       <WinId>1506</WinId>
       <ViewName>Symbols</ViewName>
       <UserString></UserString>
-      <TableColWidths>80 80 80</TableColWidths>
+      <TableColWidths>143 143 143</TableColWidths>
     </View>
     <View>
       <WinId>1936</WinId>
@@ -97,10 +101,10 @@
         <yPos>-1</yPos>
       </MaxPosition>
       <NormalPosition>
-        <Top>83</Top>
-        <Left>307</Left>
-        <Right>1707</Right>
-        <Bottom>925</Bottom>
+        <Top>48</Top>
+        <Left>81</Left>
+        <Right>2172</Right>
+        <Bottom>1322</Bottom>
       </NormalPosition>
     </WindowPosition>
     <MDIClientArea>
