@@ -19,19 +19,8 @@ UDP_StatusTypeDef UDP_AUTOControl_Status(UDP_ClientsTypeDef* pClient, UDP_AUTOCT
 
 UDP_StatusTypeDef UDP_AUTOControl_Heart(UDP_ClientsTypeDef* pClient, UDP_AUTOCTRL_message_Heart_option* options);
 
-
-
-
-
-
 UDP_StatusTypeDef UDP_SkyNet_Connect(UDP_ClientsTypeDef* pClient, UDP_SKYNET_message_Connect_option* options);
 
 UDP_StatusTypeDef UDP_SkyNet_Status(UDP_ClientsTypeDef* pClient, UDP_SKYNET_message_Status_option* options);
-
-
-
-
-
-
 
 #endif /* __UDP_FUNC_H */

@@ -17,19 +17,23 @@
 
 #define DNS_ANALYSIS_DISABLE				0
 #define DNS_ANALYSIS_ENABLE				1
-#define DNS_ANALYSIS_DATA				1
+#define DNS_ANALYSIS_DATA				2
 
 #define DNS_ANALYSIS_HOSTNAME1			"mqtt.movebroad.cn"
 #define DNS_ANALYSIS_HOSTIP1				"47.98.140.145"
 #define DNS_ANALYSIS_TYPE1				DNS_ANALYSIS_ENABLE
 
-#define DNS_ANALYSIS_HOSTNAME2			"movebroad.cn"
-#define DNS_ANALYSIS_HOSTIP2				"106.14.142.169"
-#define DNS_ANALYSIS_TYPE2				DNS_ANALYSIS_DISABLE
+#define DNS_ANALYSIS_HOSTNAME2			"router.cu-sc.com"
+#define DNS_ANALYSIS_HOSTIP2				"123.125.218.33"
+#define DNS_ANALYSIS_TYPE2				DNS_ANALYSIS_ENABLE
 
 #define DNS_ANALYSIS_HOSTNAME3			"devilkidcry.top"
 #define DNS_ANALYSIS_HOSTIP3				"47.96.175.6"
 #define DNS_ANALYSIS_TYPE3				DNS_ANALYSIS_DISABLE
+
+#define DNS_ANALYSIS_HOSTNAME4			"movebroad.cn"
+#define DNS_ANALYSIS_HOSTIP4				"106.14.142.169"
+#define DNS_ANALYSIS_TYPE4				DNS_ANALYSIS_DISABLE
 
 typedef struct DNS_SocketNetTypeDef		DNS_SocketNetTypeDef;
 typedef struct DNS_ClientsTypeDef			DNS_ClientsTypeDef;

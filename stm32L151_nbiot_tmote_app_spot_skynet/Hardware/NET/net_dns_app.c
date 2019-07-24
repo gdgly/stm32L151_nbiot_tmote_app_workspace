@@ -529,6 +529,9 @@ void NET_DNS_NBIOT_Event_StopMode(DNS_ClientsTypeDef* pClient)
 #ifdef DNS_DEBUG_LOG_RF_PRINT
 	DNS_DEBUG_LOG_PRINTF("DNS use lastAnalysis");
 	DNS_DEBUG_LOG_PRINTF("%s:%s", MQTTSN_SERVER_HOST_NAME, DNS_GetHostIP(pClient, (unsigned char*)MQTTSN_SERVER_HOST_NAME));
+#if NETNEWPROTOCAL == NETMQTTSNSKY
+	DNS_DEBUG_LOG_PRINTF("%s:%s", UDP_SERVER_HOST_NAME,    DNS_GetHostIP(pClient, (unsigned char*)UDP_SERVER_HOST_NAME));
+#endif
 #endif
 }
 #else
@@ -1438,6 +1441,9 @@ void NET_DNS_Event_CreatUDPSocket(DNS_ClientsTypeDef* pClient)
 #ifdef DNS_DEBUG_LOG_RF_PRINT
 		DNS_DEBUG_LOG_PRINTF("DNS has been Analysis");
 		DNS_DEBUG_LOG_PRINTF("%s:%s", MQTTSN_SERVER_HOST_NAME, DNS_GetHostIP(pClient, (unsigned char*)MQTTSN_SERVER_HOST_NAME));
+#if NETNEWPROTOCAL == NETMQTTSNSKY
+		DNS_DEBUG_LOG_PRINTF("%s:%s", UDP_SERVER_HOST_NAME,    DNS_GetHostIP(pClient, (unsigned char*)UDP_SERVER_HOST_NAME));
+#endif
 #endif
 		return;
 	}
@@ -1639,6 +1645,9 @@ void NET_DNS_Event_OverDnsAnalysis(DNS_ClientsTypeDef* pClient)
 	
 #if NETPROTOCAL == NETMQTTSN
 	MQTTSN_Transport_Init(&MqttSNSocketNetHandler, &NbiotClientHandler, MQTTSN_SERVER_LOCAL_PORT, (char*)DNS_GetHostIP(pClient, (unsigned char*)MQTTSN_SERVER_HOST_NAME), MQTTSN_SERVER_TELE_PORT);
+#if NETNEWPROTOCAL == NETMQTTSNSKY
+	UDP_Transport_Init(&UDPSocketNetHandler, &NbiotClientHandler, UDP_SERVER_LOCAL_PORT, (char*)DNS_GetHostIP(pClient, (unsigned char*)UDP_SERVER_HOST_NAME), UDP_SERVER_TELE_PORT);
+#endif
 #endif
 	
 #if MQTTSN_DNS_USE_EEPROM_TYPE

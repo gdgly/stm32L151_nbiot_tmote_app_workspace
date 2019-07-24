@@ -58,6 +58,10 @@ void DNS_Client_Init(DNS_ClientsTypeDef* pClient, DNS_SocketNetTypeDef* NetSock,
 	pClient->AnalysisData[2].hostnameAddr					= (unsigned char*)DNS_ANALYSIS_HOSTNAME3;
 	pClient->AnalysisData[2].hostIPAddr					= (unsigned char*)DNS_ANALYSIS_HOSTIP3;
 #endif
+#if DNS_ANALYSIS_TYPE4 == DNS_ANALYSIS_ENABLE
+	pClient->AnalysisData[3].hostnameAddr					= (unsigned char*)DNS_ANALYSIS_HOSTNAME4;
+	pClient->AnalysisData[3].hostIPAddr					= (unsigned char*)DNS_ANALYSIS_HOSTIP4;
+#endif
 	for (unsigned char i = 0; i < DNS_ANALYSIS_DATA; i++) {
 		sprintf((char *)pClient->AnalysisData[i].hostname, "%s", pClient->AnalysisData[i].hostnameAddr);
 		sprintf((char *)pClient->AnalysisData[i].hostIP, "%s", pClient->AnalysisData[i].hostIPAddr);

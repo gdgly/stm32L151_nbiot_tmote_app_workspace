@@ -464,30 +464,6 @@ typedef struct
 
 #define UDP_SKYNET_Packet_statusData_initializer		{NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0x00}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 int UDPAUTOCTRLSerialize_connect(unsigned char* buf, int buflen, UDP_AUTOCTRL_message_Connect_option* options);
 int UDPAUTOCTRLDeserialize_connack(unsigned char* buf, int buflen, UDP_AUTOCTRL_message_Connect_option* options);
 
@@ -502,21 +478,5 @@ int UDPSKYNETDeserialize_connack(unsigned char* buf, int buflen, UDP_SKYNET_mess
 
 int UDPSKYNETSerialize_status(unsigned char* buf, int buflen, UDP_SKYNET_message_Status_option* options);
 int UDPSKYNETDeserialize_staack(unsigned char* buf, int buflen, UDP_SKYNET_message_Status_option* options);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #endif /* __UDP_PROTOCOL_H */
