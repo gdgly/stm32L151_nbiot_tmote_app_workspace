@@ -1281,6 +1281,7 @@ void NET_UDP_Event_CreatUDPSocket(UDP_ClientsTypeDef* pClient)
 **********************************************************************************************************/
 void NET_UDP_Event_ConnectServer(UDP_ClientsTypeDef* pClient)
 {
+#if NETNEWPROTOCAL == NETMQTTSNUDP
 	UDP_AUTOCTRL_message_Connect_option options = UDP_AUTOCTRL_Packet_connectData_initializer;
 	
 	UDP_DictateEvent_SetTime(pClient, 60);
@@ -1303,6 +1304,34 @@ void NET_UDP_Event_ConnectServer(UDP_ClientsTypeDef* pClient)
 		UDP_DEBUG_LOG_PRINTF("UDP Cont Ok");
 #endif
 	}
+#endif
+
+#if NETNEWPROTOCAL == NETMQTTSNSKY
+	UDP_SKYNET_message_Connect_option options = UDP_SKYNET_Packet_connectData_initializer;
+	
+	UDP_DictateEvent_SetTime(pClient, 60);
+	
+	/* Connecting SkyNet Server */
+	options.ManufacturerCode		= SKYNET_CONNECT_MANUFACTURER;
+	options.HardwareVer			= SKYNET_CONNECT_HARDWAREVER;
+	options.SoftwareVer			= SKYNET_CONNECT_SOFTWAREVER;
+	options.IMEI				= TCFG_Utility_Get_Nbiot_Imei_String();
+	options.ICCID				= TCFG_Utility_Get_Nbiot_Iccid_String();
+	if (UDP_SkyNet_Connect(pClient, &options) != UDP_OK) {
+		/* Dictate execute is Fail */
+		UDP_DictateEvent_FailExecute(pClient, HARDWARE_REBOOT, UDP_PROCESS_CREAT_UDP_SOCKET, UDP_PROCESS_CONNECT_SERVER);
+#ifdef UDP_DEBUG_LOG_RF_PRINT
+		UDP_DEBUG_LOG_PRINTF("UDP Cont Fail");
+#endif
+	}
+	else {
+		/* Dictate execute is Success */
+		UDP_DictateEvent_SuccessExecute(pClient, UDP_PROCESS_STACK, UDP_PROCESS_SEND_DATA, UDP_PROCESS_CONNECT_SERVER, true);
+#ifdef UDP_DEBUG_LOG_RF_PRINT
+		UDP_DEBUG_LOG_PRINTF("UDP Cont Ok");
+#endif
+	}
+#endif
 }
 
 /**********************************************************************************************************
@@ -1313,6 +1342,7 @@ void NET_UDP_Event_ConnectServer(UDP_ClientsTypeDef* pClient)
 **********************************************************************************************************/
 void NET_UDP_Event_SendData(UDP_ClientsTypeDef* pClient)
 {
+#if NETNEWPROTOCAL == NETMQTTSNUDP
 	UDP_AUTOCTRL_message_Status_option options = UDP_AUTOCTRL_Packet_statusData_initializer;
 	unsigned short len = 0;
 	
@@ -1349,6 +1379,43 @@ void NET_UDP_Event_SendData(UDP_ClientsTypeDef* pClient)
 		Stm32_Calculagraph_CountdownSec(&dictateRunTime, 10 * 60);
 		pClient->HeartTimer = dictateRunTime;
 	}
+#endif
+
+#if NETNEWPROTOCAL == NETMQTTSNSKY
+	UDP_SKYNET_message_Status_option options = UDP_SKYNET_Packet_statusData_initializer;
+	unsigned short len = 0;
+	
+	UDP_DictateEvent_SetTime(pClient, 60);
+	
+	/* Data packets need to be sent*/
+	if (NET_UDP_Message_SendDataDequeue((unsigned char *)&options, &len) == true) {
+		/* Sending Data SkyNet Server */
+		options.ManufacturerCode	= SKYNET_STATUS_MANUFACTURER;
+		options.HardwareVer		= SKYNET_STATUS_HARDWAREVER;
+		options.SoftwareVer		= SKYNET_STATUS_SOFTWAREVER;
+		options.IMEI			= TCFG_Utility_Get_Nbiot_Imei_String();
+		options.ICCID			= TCFG_Utility_Get_Nbiot_Iccid_String();
+		if (UDP_SkyNet_Status(pClient, &options) != UDP_OK) {
+			/* Dictate execute is Fail */
+			UDP_DictateEvent_FailExecute(pClient, HARDWARE_REBOOT, UDP_PROCESS_CREAT_UDP_SOCKET, UDP_PROCESS_SEND_DATA);
+#ifdef UDP_DEBUG_LOG_RF_PRINT
+			UDP_DEBUG_LOG_PRINTF("UDP Send Payload Fail");
+#endif
+		}
+		else {
+			/* Dictate execute is Success */
+			UDP_DictateEvent_SuccessExecute(pClient, UDP_PROCESS_STACK, UDP_PROCESS_SEND_DATA, UDP_PROCESS_SEND_DATA, true);
+			NET_UDP_Message_SendDataOffSet();
+#ifdef UDP_DEBUG_LOG_RF_PRINT
+			UDP_DEBUG_LOG_PRINTF("UDP Send Payload Ok");
+#endif
+		}
+	}
+	/* No packets need to be sent */
+	else {
+		UDP_DictateEvent_SuccessExecute(pClient, UDP_PROCESS_STACK, UDP_PROCESS_SLEEP, UDP_PROCESS_SEND_DATA, true);
+	}
+#endif
 }
 
 /**********************************************************************************************************
@@ -1359,6 +1426,7 @@ void NET_UDP_Event_SendData(UDP_ClientsTypeDef* pClient)
 **********************************************************************************************************/
 void NET_UDP_Event_Sleep(UDP_ClientsTypeDef* pClient)
 {
+#if NETNEWPROTOCAL == NETMQTTSNUDP
 	UDP_AUTOCTRL_message_Status_option options = UDP_AUTOCTRL_Packet_statusData_initializer;
 	unsigned short len = 0;
 	
@@ -1375,6 +1443,18 @@ void NET_UDP_Event_Sleep(UDP_ClientsTypeDef* pClient)
 	else {
 		UDP_DictateEvent_SuccessExecute(pClient, UDP_PROCESS_STACK, UDP_PROCESS_SLEEP, UDP_PROCESS_SLEEP, true);
 	}
+#endif
+
+#if NETNEWPROTOCAL == NETMQTTSNSKY
+	UDP_SKYNET_message_Status_option options = UDP_SKYNET_Packet_statusData_initializer;
+	unsigned short len = 0;
+	
+	if (NET_UDP_Message_SendDataDequeue((unsigned char *)&options, &len) == true) {
+		/* Data packets need to be sent*/
+		UDP_DictateEvent_SuccessExecute(pClient, UDP_PROCESS_STACK, UDP_PROCESS_SEND_DATA, UDP_PROCESS_SLEEP, true);
+		return;
+	}
+#endif
 }
 
 /**********************************************************************************************************

@@ -103,7 +103,7 @@ int UDPAUTOCTRLSerialize_connect(unsigned char* buf, int buflen, UDP_AUTOCTRL_me
  @Description			UDPAUTOCTRLDeserialize_connack: Deserializes the supplied (wire) buffer into connack data - return code
  @Input				buf						: buf the raw buffer data, of the correct length determined by the remaining length field
 					len						: len the length in bytes of the data in the supplied buffer
-					options					: options the options to be used to build the connect packet
+					options					: options the options to be used to build the connack packet
  @Return				1 is success, 0 is failure, 2 is registed
 **********************************************************************************************************/
 int UDPAUTOCTRLDeserialize_connack(unsigned char* buf, int buflen, UDP_AUTOCTRL_message_Connect_option* options)
@@ -165,7 +165,7 @@ exit:
  @Description			UDPAUTOCTRLSerialize_status	: Serializes the status options into the buffer.
  @Input				buf						: buf the buffer into which the packet will be serialized
 					len						: len the length in bytes of the supplied buffer
-					options					: options the options to be used to build the connect packet
+					options					: options the options to be used to build the status packet
  @Return				serialized length, or error if 0
 **********************************************************************************************************/
 int UDPAUTOCTRLSerialize_status(unsigned char* buf, int buflen, UDP_AUTOCTRL_message_Status_option* options)
@@ -241,7 +241,7 @@ int UDPAUTOCTRLSerialize_status(unsigned char* buf, int buflen, UDP_AUTOCTRL_mes
  @Description			UDPAUTOCTRLDeserialize_staack : Deserializes the supplied (wire) buffer into staack data - return code
  @Input				buf						: buf the raw buffer data, of the correct length determined by the remaining length field
 					len						: len the length in bytes of the data in the supplied buffer
-					options					: options the options to be used to build the status packet
+					options					: options the options to be used to build the staack packet
  @Return				1 is success, 0 is failure
 **********************************************************************************************************/
 int UDPAUTOCTRLDeserialize_staack(unsigned char* buf, int buflen, UDP_AUTOCTRL_message_Status_option* options)
@@ -303,7 +303,7 @@ exit:
  @Description			UDPAUTOCTRLSerialize_heart	: Serializes the heart options into the buffer.
  @Input				buf						: buf the buffer into which the packet will be serialized
 					len						: len the length in bytes of the supplied buffer
-					options					: options the options to be used to build the connect packet
+					options					: options the options to be used to build the heart packet
  @Return				serialized length, or error if 0
 **********************************************************************************************************/
 int UDPAUTOCTRLSerialize_heart(unsigned char* buf, int buflen, UDP_AUTOCTRL_message_Heart_option* options)
@@ -369,7 +369,7 @@ int UDPAUTOCTRLSerialize_heart(unsigned char* buf, int buflen, UDP_AUTOCTRL_mess
  @Description			UDPAUTOCTRLDeserialize_heack  : Deserializes the supplied (wire) buffer into heack data - return code
  @Input				buf						: buf the raw buffer data, of the correct length determined by the remaining length field
 					len						: len the length in bytes of the data in the supplied buffer
-					options					: options the options to be used to build the status packet
+					options					: options the options to be used to build the heack packet
  @Return				1 is success, 0 is failure
 **********************************************************************************************************/
 int UDPAUTOCTRLDeserialize_heack(unsigned char* buf, int buflen, UDP_AUTOCTRL_message_Heart_option* options)
@@ -425,5 +425,322 @@ int UDPAUTOCTRLDeserialize_heack(unsigned char* buf, int buflen, UDP_AUTOCTRL_me
 exit:
 	return rc;
 }
+
+/**********************************************************************************************************
+ @Function			int UDPSKYNETSerialize_connect(unsigned char* buf, int buflen, UDP_SKYNET_message_Connect_option* options)
+ @Description			UDPSKYNETSerialize_connect	: Serializes the connect options into the buffer.
+ @Input				buf						: buf the buffer into which the packet will be serialized
+					len						: len the length in bytes of the supplied buffer
+					options					: options the options to be used to build the connect packet
+ @Return				serialized length, or error if 0
+**********************************************************************************************************/
+int UDPSKYNETSerialize_connect(unsigned char* buf, int buflen, UDP_SKYNET_message_Connect_option* options)
+{
+	UDP_SKYNET_messageData_Connect* connect = (UDP_SKYNET_messageData_Connect*)buf;
+	
+	if (sizeof(UDP_SKYNET_messageData_Connect) > buflen) return 0;
+	
+	memset((void*)buf, 0x00, buflen);
+	
+	connect->messageHead.StartCode = SKYNET_MESSAGEHEAD_START;
+	connect->messageHead.CmdType   = SKYNET_CONNECT_CMD;
+	connect->messageHead.DataLen   = htons(sizeof(SKYNET_Connect_Data));
+	
+	for (int i = 0; i < sizeof(connect->ConnectData.ManufacturerCode); i++) {
+		u32 utmp = 0;
+		sscanf((const char*)(options->ManufacturerCode + i * 2), "%02X", &utmp);
+		connect->ConnectData.ManufacturerCode[i] = utmp;
+	}
+	
+	for (int i = 0; i < sizeof(connect->ConnectData.HardwareVer); i++) {
+		u32 utmp = 0;
+		sscanf((const char*)(options->HardwareVer + i * 2), "%02X", &utmp);
+		connect->ConnectData.HardwareVer[i] = utmp;
+	}
+	
+	for (int i = 0; i < sizeof(connect->ConnectData.SoftwareVer); i++) {
+		u32 utmp = 0;
+		sscanf((const char*)(options->SoftwareVer + i * 2), "%02X", &utmp);
+		connect->ConnectData.SoftwareVer[i] = utmp;
+	}
+	
+	for (int i = 0; i < sizeof(connect->ConnectData.ICCID); i++) {
+		u32 utmp = 0;
+		sscanf((const char*)(options->ICCID + i * 2), "%02X", &utmp);
+		connect->ConnectData.ICCID[i] = utmp;
+	}
+	
+	for (int i = sizeof(connect->ConnectData.IMEI) - 1; i >= 0; i--) {
+		u32 utmp = 0;
+		if (i != 0) {
+			sscanf((const char*)(options->IMEI + i * 2 - 1), "%02X", &utmp);
+		}
+		else {
+			sscanf((const char*)(options->IMEI), "%01X", &utmp);
+		}
+		connect->ConnectData.IMEI[i] = utmp;
+	}
+	
+	connect->ConnectData.PackNumber = options->PackNumber;
+	
+	connect->messageTail.SumCheck   = 0;
+	for (int i = 0; i < (sizeof(SKYNET_Connect_Data) + sizeof(connect->messageHead.DataLen) + sizeof(connect->messageHead.CmdType)); i++) {
+		u8* ConnectDataVal = (u8*)&connect->messageHead.CmdType;
+		connect->messageTail.SumCheck += *(ConnectDataVal + i);
+	}
+	
+	connect->messageTail.TailCode   = SKYNET_MESSAGETALL_END;
+	
+	return sizeof(UDP_SKYNET_messageData_Connect);
+}
+
+/**********************************************************************************************************
+ @Function			int UDPSKYNETDeserialize_connack(unsigned char* buf, int buflen, UDP_SKYNET_message_Connect_option* options)
+ @Description			UDPSKYNETDeserialize_connack	: Deserializes the supplied (wire) buffer into connack data - return code
+ @Input				buf						: buf the raw buffer data, of the correct length determined by the remaining length field
+					len						: len the length in bytes of the data in the supplied buffer
+					options					: options the options to be used to build the connack packet
+ @Return				1 is success, 0 is failure, 2 is registed
+**********************************************************************************************************/
+int UDPSKYNETDeserialize_connack(unsigned char* buf, int buflen, UDP_SKYNET_message_Connect_option* options)
+{
+	UDP_SKYNET_messageData_Connack* connack = (UDP_SKYNET_messageData_Connack*)buf;
+	unsigned char checkCode;
+	int rc = 1;
+	
+	if (buflen != sizeof(UDP_SKYNET_messageData_Connack)) {
+		rc = 0;
+		goto exit;
+	}
+	
+	if ((connack->messageHead.StartCode != SKYNET_MESSAGEHEAD_START) || (connack->messageTail.TailCode != SKYNET_MESSAGETALL_END)) {
+		rc = 0;
+		goto exit;
+	}
+	
+	checkCode = 0;
+	for (int i = 0; i < (sizeof(SKYNET_Connack_Data) + sizeof(connack->messageHead.DataLen) + sizeof(connack->messageHead.CmdType)); i++) {
+		u8* ConnectDataVal = (u8*)&connack->messageHead.CmdType;
+		checkCode += *(ConnectDataVal + i);
+	}
+	
+	if (checkCode != connack->messageTail.SumCheck) {
+		rc = 0;
+		goto exit;
+	}
+	
+	if (connack->ConnackData.PackNumber != options->PackNumber) {
+		rc = 0;
+		goto exit;
+	}
+	
+	rc = connack->ConnackData.ResultCode;
+	
+exit:
+	return rc;
+}
+
+/**********************************************************************************************************
+ @Function			int UDPSKYNETSerialize_status(unsigned char* buf, int buflen, UDP_SKYNET_message_Status_option* options)
+ @Description			UDPSKYNETSerialize_status	: Serializes the status options into the buffer.
+ @Input				buf						: buf the buffer into which the packet will be serialized
+					len						: len the length in bytes of the supplied buffer
+					options					: options the options to be used to build the status packet
+ @Return				serialized length, or error if 0
+**********************************************************************************************************/
+int UDPSKYNETSerialize_status(unsigned char* buf, int buflen, UDP_SKYNET_message_Status_option* options)
+{
+	UDP_SKYNET_messageData_Status* status = (UDP_SKYNET_messageData_Status*)buf;
+	u8 msgType = SKYNET_STATUS_CMD;
+	
+	if (sizeof(UDP_SKYNET_messageData_Status) > buflen) return 0;
+	
+	memset((void*)buf, 0x00, buflen);
+	
+	if ((options->SpotStatus == 0) || (options->SpotStatus == 1)) {
+		msgType = SKYNET_STATUS_CMD;
+	}
+	else {
+		msgType = SKYNET_HEART_CMD;
+	}
+	
+	status->messageHead.StartCode  = SKYNET_MESSAGEHEAD_START;
+	status->messageHead.CmdType    = msgType;
+	status->messageHead.DataLen    = htons(sizeof(SKYNET_Status_Data));
+	
+	for (int i = 0; i < sizeof(status->StatusData.ManufacturerCode); i++) {
+		u32 utmp = 0;
+		sscanf((const char*)(options->ManufacturerCode + i * 2), "%02X", &utmp);
+		status->StatusData.ManufacturerCode[i] = utmp;
+	}
+	
+	for (int i = 0; i < sizeof(status->StatusData.HardwareVer); i++) {
+		u32 utmp = 0;
+		sscanf((const char*)(options->HardwareVer + i * 2), "%02X", &utmp);
+		status->StatusData.HardwareVer[i] = utmp;
+	}
+	
+	for (int i = 0; i < sizeof(status->StatusData.SoftwareVer); i++) {
+		u32 utmp = 0;
+		sscanf((const char*)(options->SoftwareVer + i * 2), "%02X", &utmp);
+		status->StatusData.SoftwareVer[i] = utmp;
+	}
+	
+	for (int i = 0; i < sizeof(status->StatusData.ICCID); i++) {
+		u32 utmp = 0;
+		sscanf((const char*)(options->ICCID + i * 2), "%02X", &utmp);
+		status->StatusData.ICCID[i] = utmp;
+	}
+	
+	for (int i = sizeof(status->StatusData.IMEI) - 1; i >= 0; i--) {
+		u32 utmp = 0;
+		if (i != 0) {
+			sscanf((const char*)(options->IMEI + i * 2 - 1), "%02X", &utmp);
+		}
+		else {
+			sscanf((const char*)(options->IMEI), "%01X", &utmp);
+		}
+		status->StatusData.IMEI[i] = utmp;
+	}
+	
+	status->StatusData.Rssi           = options->Rssi;
+	status->StatusData.Batt           = options->Batt;
+	status->StatusData.Temperature    = options->Temperature;
+	status->StatusData.MagneticX      = htons(options->MagneticX);
+	status->StatusData.MagneticY      = htons(options->MagneticY);
+	status->StatusData.MagneticZ      = htons(options->MagneticZ);
+	status->StatusData.MagneticBackX  = htons(options->MagneticBackX);
+	status->StatusData.MagneticBackY  = htons(options->MagneticBackY);
+	status->StatusData.MagneticBackZ  = htons(options->MagneticBackZ);
+	status->StatusData.MonitorMode    = options->MonitorMode;
+	status->StatusData.Sensitivity    = options->Sensitivity;
+	status->StatusData.HeartTimer     = htons(options->HeartTimer);
+	
+	status->StatusData.SpotStatus     = options->SpotStatus == 0 ? 0x00 : options->SpotStatus == 2 ? 0x00 : options->SpotStatus == 1 ? 0x01 : options->SpotStatus == 3 ? 0x01 : 0x00;
+	
+	struct tm Timer = RTC_ConvUnixToCalendar(options->unixTime);
+	u8 tempTimer[15] = {0};
+	sprintf((char*)tempTimer, "%04d%02d%02d%02d%02d%02d", (Timer.tm_year + 2000), Timer.tm_mon, Timer.tm_mday, Timer.tm_hour, Timer.tm_min, Timer.tm_sec);
+	for (int i = 0; i < sizeof(status->StatusData.SpotTimer); i++) {
+		u32 utmp = 0;
+		sscanf((const char*)(tempTimer + i * 2), "%02X", &utmp);
+		status->StatusData.SpotTimer[i] = utmp;
+	}
+	
+	status->StatusData.SpotCounts     = htons(options->SpotCounts);
+	
+	status->StatusData.PackNumber     = options->PackNumber;
+	
+	status->messageTail.SumCheck      = 0;
+	for (int i = 0; i < (sizeof(SKYNET_Status_Data) + sizeof(status->messageHead.DataLen) + sizeof(status->messageHead.CmdType)); i++) {
+		u8* ConnectDataVal = (u8*)&status->messageHead.CmdType;
+		status->messageTail.SumCheck += *(ConnectDataVal + i);
+	}
+	
+	status->messageTail.TailCode      = SKYNET_MESSAGETALL_END;
+	
+	return sizeof(UDP_SKYNET_messageData_Status);
+}
+
+/**********************************************************************************************************
+ @Function			int UDPSKYNETDeserialize_staack(unsigned char* buf, int buflen, UDP_SKYNET_message_Status_option* options)
+ @Description			UDPSKYNETDeserialize_staack	: Deserializes the supplied (wire) buffer into connack data - return code
+ @Input				buf						: buf the raw buffer data, of the correct length determined by the remaining length field
+					len						: len the length in bytes of the data in the supplied buffer
+					options					: options the options to be used to build the staack packet
+ @Return				1 is success, 0 is failure
+**********************************************************************************************************/
+int UDPSKYNETDeserialize_staack(unsigned char* buf, int buflen, UDP_SKYNET_message_Status_option* options)
+{
+	UDP_SKYNET_messageData_Staack* staack = (UDP_SKYNET_messageData_Staack*)buf;
+	unsigned char checkCode;
+	int rc = 1;
+	
+	if (buflen != sizeof(UDP_SKYNET_messageData_Staack)) {
+		rc = 0;
+		goto exit;
+	}
+	
+	if ((staack->messageHead.StartCode != SKYNET_MESSAGEHEAD_START) || (staack->messageTail.TailCode != SKYNET_MESSAGETALL_END)) {
+		rc = 0;
+		goto exit;
+	}
+	
+	checkCode = 0;
+	for (int i = 0; i < (sizeof(SKYNET_Staack_Data) + sizeof(staack->messageHead.DataLen) + sizeof(staack->messageHead.CmdType)); i++) {
+		u8* ConnectDataVal = (u8*)&staack->messageHead.CmdType;
+		checkCode += *(ConnectDataVal + i);
+	}
+	
+	if (checkCode != staack->messageTail.SumCheck) {
+		rc = 0;
+		goto exit;
+	}
+	
+	if (staack->StaackData.PackNumber != options->PackNumber) {
+		rc = 0;
+		goto exit;
+	}
+	
+	rc = staack->StaackData.ResultCode;
+	
+exit:
+	return rc;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /********************************************** END OF FLEE **********************************************/

@@ -1,7 +1,9 @@
-# stm32L151_nbiot_tmote_app_spot_udp
+# stm32L151_nbiot_tmote_app_spot_skynet
 > ##### Copyright (C) 2019 Movebroad Version:231.146 Design by Movebroad
 > ##### movebroad Kangkang ps: 版本号以下为此版本修改、增加、去除等内容记录！
 
+* 2019-07-24 :
+	* 增加联通智网协议。
 * 2019-07-20 :
 	* 增加基站时间获取检查，当基站时间与设备时间偏差20min以上，将重启模组重新获取，第二次获取时间将写入，设备刚上电不用检查基站时间，当运行一天以上才检查。
 * 2019-07-18 :

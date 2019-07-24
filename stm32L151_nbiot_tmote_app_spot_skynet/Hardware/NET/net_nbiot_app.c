@@ -682,6 +682,7 @@ void NET_NBIOT_DataProcessing(NET_NBIOT_ClientsTypeDef* pClient)
 	/* MQTTSN LONG STATUS DATA ENQUEUE */
 	else if (NETMqttSNNeedSendCode.StatusExtend) {
 		Inspect_Message_SpotStatusDequeue(&SpotStatusData);
+#if NETNEWPROTOCAL == NETMQTTSNUDP
 		UDP_AUTOCTRL_message_Status_option options = UDP_AUTOCTRL_Packet_statusData_initializer;
 		options.MacSN									= TCFG_EEPROM_Get_MAC_SN();
 		options.SpotStatus								= SpotStatusData.spot_status == 0 ? 0x00 : \
@@ -697,6 +698,25 @@ void NET_NBIOT_DataProcessing(NET_NBIOT_ClientsTypeDef* pClient)
 		options.Algorithm								= 0x00;
 		options.Heartbeat								= TCFG_EEPROM_GetNbiotHeart() * 60;
 		options.unixTime								= SpotStatusData.unixTime + 8 * 60 * 60;
+#endif
+#if NETNEWPROTOCAL == NETMQTTSNSKY
+		UDP_SKYNET_message_Status_option options = UDP_SKYNET_Packet_statusData_initializer;
+		options.Rssi									= (u8)(TCFG_Utility_Get_Nbiot_Rssi_IntVal());
+		options.Batt									= (u8)(((0xFFFF - SpotStatusData.spot_count) * 100) / 0xFFFF);
+		options.Temperature								= (char)(TCFG_Utility_Get_Device_Temperature());
+		options.MagneticX								= SpotStatusData.qmc5883lData.X_Now;
+		options.MagneticY								= SpotStatusData.qmc5883lData.Y_Now;
+		options.MagneticZ								= SpotStatusData.qmc5883lData.Z_Now;
+		options.MagneticBackX							= Qmc5883lData.X_Back;
+		options.MagneticBackY							= Qmc5883lData.Y_Back;
+		options.MagneticBackZ							= Qmc5883lData.Z_Back;
+		options.MonitorMode								= SKYNET_MONITOR_TYPE;
+		options.Sensitivity								= TCFG_EEPROM_GetSavedSensitivity() > SENSE_MIDDLE ? 0x01 : TCFG_EEPROM_GetSavedSensitivity() < SENSE_MIDDLE ? 0x03 : 0x02;
+		options.HeartTimer								= TCFG_EEPROM_GetNbiotHeart() * 60;
+		options.SpotStatus								= SpotStatusData.spot_status;
+		options.SpotCounts								= SpotStatusData.spot_count;
+		options.unixTime								= SpotStatusData.unixTime + 8 * 60 * 60;
+#endif
 		NET_UDP_Message_SendDataEnqueue((unsigned char *)&options, sizeof(options));
 #if NBMQTTSN_SENDCODE_STATUS_EXTEND
 		NET_NBIOT_MqttSNLongStructureInit();
