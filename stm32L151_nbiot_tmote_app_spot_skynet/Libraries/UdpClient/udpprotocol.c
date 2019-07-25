@@ -446,6 +446,21 @@ int UDPSKYNETSerialize_connect(unsigned char* buf, int buflen, UDP_SKYNET_messag
 	connect->messageHead.CmdType   = SKYNET_CONNECT_CMD;
 	connect->messageHead.DataLen   = htons(sizeof(SKYNET_Connect_Data));
 	
+	for (int i = 0; i < sizeof(connect->ConnectData.MacSN); i++) {
+		connect->ConnectData.MacSN[i] = '0';
+	}
+	
+	unsigned char usn[9];
+	sprintf((char*)usn, "%08X", options->MacSN);
+	connect->ConnectData.MacSN[sizeof(connect->ConnectData.MacSN) - 8] = usn[0];
+	connect->ConnectData.MacSN[sizeof(connect->ConnectData.MacSN) - 7] = usn[1];
+	connect->ConnectData.MacSN[sizeof(connect->ConnectData.MacSN) - 6] = usn[2];
+	connect->ConnectData.MacSN[sizeof(connect->ConnectData.MacSN) - 5] = usn[3];
+	connect->ConnectData.MacSN[sizeof(connect->ConnectData.MacSN) - 4] = usn[4];
+	connect->ConnectData.MacSN[sizeof(connect->ConnectData.MacSN) - 3] = usn[5];
+	connect->ConnectData.MacSN[sizeof(connect->ConnectData.MacSN) - 2] = usn[6];
+	connect->ConnectData.MacSN[sizeof(connect->ConnectData.MacSN) - 1] = usn[7];
+	
 	for (int i = 0; i < sizeof(connect->ConnectData.ManufacturerCode); i++) {
 		u32 utmp = 0;
 		sscanf((const char*)(options->ManufacturerCode + i * 2), "%02X", &utmp);
@@ -567,6 +582,21 @@ int UDPSKYNETSerialize_status(unsigned char* buf, int buflen, UDP_SKYNET_message
 	status->messageHead.StartCode  = SKYNET_MESSAGEHEAD_START;
 	status->messageHead.CmdType    = msgType;
 	status->messageHead.DataLen    = htons(sizeof(SKYNET_Status_Data));
+	
+	for (int i = 0; i < sizeof(status->StatusData.MacSN); i++) {
+		status->StatusData.MacSN[i] = '0';
+	}
+	
+	unsigned char usn[9];
+	sprintf((char*)usn, "%08X", options->MacSN);
+	status->StatusData.MacSN[sizeof(status->StatusData.MacSN) - 8] = usn[0];
+	status->StatusData.MacSN[sizeof(status->StatusData.MacSN) - 7] = usn[1];
+	status->StatusData.MacSN[sizeof(status->StatusData.MacSN) - 6] = usn[2];
+	status->StatusData.MacSN[sizeof(status->StatusData.MacSN) - 5] = usn[3];
+	status->StatusData.MacSN[sizeof(status->StatusData.MacSN) - 4] = usn[4];
+	status->StatusData.MacSN[sizeof(status->StatusData.MacSN) - 3] = usn[5];
+	status->StatusData.MacSN[sizeof(status->StatusData.MacSN) - 2] = usn[6];
+	status->StatusData.MacSN[sizeof(status->StatusData.MacSN) - 1] = usn[7];
 	
 	for (int i = 0; i < sizeof(status->StatusData.ManufacturerCode); i++) {
 		u32 utmp = 0;

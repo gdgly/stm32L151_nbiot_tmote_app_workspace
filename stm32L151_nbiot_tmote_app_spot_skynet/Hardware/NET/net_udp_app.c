@@ -1312,6 +1312,7 @@ void NET_UDP_Event_ConnectServer(UDP_ClientsTypeDef* pClient)
 	UDP_DictateEvent_SetTime(pClient, 60);
 	
 	/* Connecting SkyNet Server */
+	options.MacSN				= TCFG_EEPROM_Get_MAC_SN();
 	options.ManufacturerCode		= SKYNET_CONNECT_MANUFACTURER;
 	options.HardwareVer			= SKYNET_CONNECT_HARDWAREVER;
 	options.SoftwareVer			= SKYNET_CONNECT_SOFTWAREVER;
@@ -1390,6 +1391,7 @@ void NET_UDP_Event_SendData(UDP_ClientsTypeDef* pClient)
 	/* Data packets need to be sent*/
 	if (NET_UDP_Message_SendDataDequeue((unsigned char *)&options, &len) == true) {
 		/* Sending Data SkyNet Server */
+		options.MacSN			= TCFG_EEPROM_Get_MAC_SN();
 		options.ManufacturerCode	= SKYNET_STATUS_MANUFACTURER;
 		options.HardwareVer		= SKYNET_STATUS_HARDWAREVER;
 		options.SoftwareVer		= SKYNET_STATUS_SOFTWAREVER;

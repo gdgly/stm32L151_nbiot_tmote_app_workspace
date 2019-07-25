@@ -341,6 +341,7 @@ typedef __packed struct
 {
 	u8								ManufacturerCode[11];
 	u8								IMEI[8];
+	u8								MacSN[20];
 	u8								HardwareVer[10];
 	u8								SoftwareVer[10];
 	u8								ICCID[10];
@@ -375,6 +376,7 @@ typedef __packed struct
 /* SKYNET message connect options */
 typedef struct
 {
+	u32								MacSN;
 	char*							ManufacturerCode;
 	char*							IMEI;
 	char*							ICCID;
@@ -383,13 +385,14 @@ typedef struct
 	u8								PackNumber;
 } UDP_SKYNET_message_Connect_option;
 
-#define UDP_SKYNET_Packet_connectData_initializer		{NULL, NULL, NULL, NULL, NULL, 0x00}
+#define UDP_SKYNET_Packet_connectData_initializer		{0x00000000, NULL, NULL, NULL, NULL, NULL, 0x00}
 
 /* SKYNET Data status */
 typedef __packed struct
 {
 	u8								ManufacturerCode[11];
 	u8								IMEI[8];
+	u8								MacSN[20];
 	u8								HardwareVer[10];
 	u8								SoftwareVer[10];
 	u8								ICCID[10];
@@ -439,6 +442,7 @@ typedef __packed struct
 /* SKYNET message status options */
 typedef struct
 {
+	u32								MacSN;
 	char*							ManufacturerCode;
 	char*							IMEI;
 	char*							ICCID;
@@ -462,7 +466,7 @@ typedef struct
 	u8								PackNumber;
 } UDP_SKYNET_message_Status_option;
 
-#define UDP_SKYNET_Packet_statusData_initializer		{NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0x00}
+#define UDP_SKYNET_Packet_statusData_initializer		{0x00000000, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0x00}
 
 int UDPAUTOCTRLSerialize_connect(unsigned char* buf, int buflen, UDP_AUTOCTRL_message_Connect_option* options);
 int UDPAUTOCTRLDeserialize_connack(unsigned char* buf, int buflen, UDP_AUTOCTRL_message_Connect_option* options);
