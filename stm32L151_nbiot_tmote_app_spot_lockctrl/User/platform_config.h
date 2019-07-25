@@ -18,7 +18,7 @@
 #define	MVB_FLOWMAGNETIC_MODEL			52
 #define	MVB_SPOT_LOCKER_MODEL			53
 #define	MVB_BARRIER_MODEL				54
-#define	MVB_MODEL_TYPE					MVB_STATICMAGNETIC_MODEL				//设备类型
+#define	MVB_MODEL_TYPE					MVB_SPOT_LOCKER_MODEL				//设备类型
 
 #define	SYSTEMCLOCKMSI					4194000
 #define	SYSTEMCLOCKHSI					32000000
@@ -184,7 +184,7 @@
 #define	BEEP_OFF_US					230								//无源蜂鸣器关时间
 
 #define	SOFTWAREMAJOR					20								//主固件版本
-#define	SOFTWARESUB					146								//从固件版本
+#define	SOFTWARESUB					147								//从固件版本
 #define	HARDWAREMAJOR_V1				2								//主硬件版本
 #define	HARDWAREMAJOR_V2				12								//主硬件版本
 
