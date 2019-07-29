@@ -3,10 +3,10 @@
 
 #include "sys.h"
 
-#define BEEP_GPIOx						GPIOB
-#define BEEP_PIN						GPIO_PIN_8
-#define BEEP_RCC_GPIO_CLK_ENABLE()			__HAL_RCC_GPIOB_CLK_ENABLE()
-#define BEEP_RCC_GPIO_CLK_DISABLE()		__HAL_RCC_GPIOB_CLK_DISABLE()
+#define BEEP_GPIOx						GPIOC
+#define BEEP_PIN						GPIO_PIN_13
+#define BEEP_RCC_GPIO_CLK_ENABLE()			__HAL_RCC_GPIOC_CLK_ENABLE()
+#define BEEP_RCC_GPIO_CLK_DISABLE()		__HAL_RCC_GPIOC_CLK_DISABLE()
 
 #define BEEP(a)						BEEP_Ctrl(a);
 

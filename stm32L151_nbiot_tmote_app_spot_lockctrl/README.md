@@ -2,8 +2,19 @@
 > ##### Copyright (C) 2019 Movebroad Version:20.147 Design by Movebroad
 > ##### movebroad Kangkang ps: 版本号以下为此版本修改、增加、去除等内容记录！
 
+* 2019-07-26 :
+	* 车位锁修改。
+	* 电池电压计算由x2改为x3.3(硬件修改分压电阻)。
+	* 雷达VPTAT引脚电压读取，改为默认低电平，去掉VPATA引脚。
 * 2019-07-25 :
 	* 车位锁修改。
+	* 引脚变更--
+	* 蜂鸣器 PB8 ---> PC13。
+	* NBIOT电源控制PA0 ---> PH0。
+	* 电压检查控制 PA12 去掉。
+	* 函数去除--
+	* QMC5883L_measure_qmc_coef()去掉(无相应硬件)。
+	* QmcWarmupPower()去掉(无相应硬件)。
 * 2019-07-25 :
 	* 版本号修改为147。
 * 2019-07-24 :

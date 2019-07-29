@@ -474,6 +474,7 @@ static void MQTTSN_DictateEvent_FailExecute(MQTTSN_ClientsTypeDef* pClient, NBIO
 #if MQTTSN_DNS_SERVER_TYPE == MQTTSN_DNS_SERVER_ENABLE
 		pClient->NetNbiotStack->PollExecution = NET_POLL_EXECUTION_DNS;
 #endif
+		pClient->SubState = MQTTSN_SUBSTATE_INIT;
 		*dictateFailureCnt += 1;
 		if (*dictateFailureCnt > 3) {
 			*dictateFailureCnt = 0;

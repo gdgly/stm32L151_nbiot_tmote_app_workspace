@@ -17,7 +17,6 @@
 #include "usart.h"
 #include "hal_rtc.h"
 #include "hal_vbat.h"
-#include "hal_vptat.h"
 #include "hal_temperature.h"
 #include "radar_adc.h"
 #include "radar_dac.h"
@@ -136,20 +135,6 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef* hadc)
 		HAL_GPIO_Init(VBAT_ADC_GPIOx, &GPIO_Initure);
 	}
 	
-	if (hadc == &VPTAT_ADC_Handler) {										//VPTAT电压ADC
-		/* Enable ADC */
-		VPTAT_ADC_RCC_ADC1_CLK_ENABLE();
-		
-		/* Enable GPIO */
-		VPTAT_ADC_RCC_GPIO_CLK_ENABLE();
-		
-		/* ADC Pin Configuration */
-		GPIO_Initure.Pin = VPTAT_ADC_PIN;
-		GPIO_Initure.Mode = GPIO_MODE_ANALOG;
-		GPIO_Initure.Pull = GPIO_NOPULL;
-		HAL_GPIO_Init(VPTAT_ADC_GPIOx, &GPIO_Initure);
-	}
-	
 	if (hadc == &TEMPERATURE_ADC_Handler) {									//内部温度传感器ADC
 		/* Enable ADC */
 		TEMPERATURE_ADC_RCC_ADC1_CLK_ENABLE();
@@ -182,17 +167,6 @@ void HAL_ADC_MspDeInit(ADC_HandleTypeDef* hadc)
 		
 		/* Deinitialize ADC GPIO */
 		HAL_GPIO_DeInit(VBAT_ADC_GPIOx, VBAT_ADC_PIN);
-		
-		/* Deinitialize ADC DMA */
-		HAL_DMA_DeInit(hadc->DMA_Handle);
-	}
-	
-	if (hadc == &VPTAT_ADC_Handler) {										//VPTAT电压ADC
-		/* Disable ADC */
-		VPTAT_ADC_RCC_ADC1_CLK_DISABLE();
-		
-		/* Deinitialize ADC GPIO */
-		HAL_GPIO_DeInit(VPTAT_ADC_GPIOx, VPTAT_ADC_PIN);
 		
 		/* Deinitialize ADC DMA */
 		HAL_DMA_DeInit(hadc->DMA_Handle);

@@ -391,6 +391,7 @@ static void UDP_DictateEvent_FailExecute(UDP_ClientsTypeDef* pClient, NBIOT_Dict
 		pClient->SocketStack->NBIotStack->DictateRunCtl.dictateEvent = dictateTimeOut;
 		pClient->ProcessState = dictateSubTimeOut;
 		pClient->NetNbiotStack->PollExecution = NET_POLL_EXECUTION_DNS;
+		pClient->ProcessState = UDP_PROCESS_CREAT_UDP_SOCKET;
 		*dictateFailureCnt += 1;
 		if (*dictateFailureCnt > 3) {
 			*dictateFailureCnt = 0;

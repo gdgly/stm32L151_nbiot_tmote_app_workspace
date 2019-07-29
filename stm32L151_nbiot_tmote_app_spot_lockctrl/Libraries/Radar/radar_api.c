@@ -24,7 +24,6 @@
 #include "stm32l1xx_config.h"
 #include "hal_eeprom.h"
 #include "hal_beep.h"
-#include "hal_vptat.h"
 #include "hal_temperature.h"
 #include "radio_rf_app.h"
 #include "delay.h"
@@ -517,7 +516,7 @@ void Radar_GetSample_Time(void)
 **********************************************************************************************************/
 u16 talgo_get_radartunebase_vptat(void)
 {
-	val_vptat = VPTAT_ADC_Read(100);
+	val_vptat = 0;
 	return 0;
 }
 

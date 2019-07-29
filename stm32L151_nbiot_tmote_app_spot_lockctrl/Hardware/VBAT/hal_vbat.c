@@ -73,14 +73,7 @@ u16 VBAT_ADC_Read(u32 timeout)
 	u32 pwr_vol = 0;
 	GPIO_InitTypeDef GPIO_Initure;
 	
-	VBAT_POWER_RCC_GPIO_CLK_ENABLE();
 	VBAT_ADC_RCC_GPIO_CLK_ENABLE();
-	
-	GPIO_Initure.Pin = VBAT_POWER_PIN;
-	GPIO_Initure.Mode = GPIO_MODE_OUTPUT_PP;
-	GPIO_Initure.Pull = GPIO_NOPULL;
-	GPIO_Initure.Speed = GPIO_SPEED_HIGH;
-	HAL_GPIO_Init(VBAT_POWER_GPIOx, &GPIO_Initure);
 	
 	GPIO_Initure.Pin = VBAT_ADC_PIN;
 	GPIO_Initure.Mode = GPIO_MODE_ANALOG;
@@ -88,9 +81,6 @@ u16 VBAT_ADC_Read(u32 timeout)
 	HAL_GPIO_Init(VBAT_ADC_GPIOx, &GPIO_Initure);
 	
 	VBAT_ADC_Init();													//电压ADC初始化
-	
-	VBATPOWER(ON);														//开启VBAT电源电压
-	Delay_MS(5);
 	
 	HAL_ADC_Start(&VBAT_ADC_Handler);
 	
@@ -100,16 +90,7 @@ u16 VBAT_ADC_Read(u32 timeout)
 	
 	HAL_ADC_Stop(&VBAT_ADC_Handler);
 	
-	VBATPOWER(OFF);													//关闭VBAT电源电压
-	
-	VBAT_POWER_RCC_GPIO_CLK_ENABLE();
 	VBAT_ADC_RCC_GPIO_CLK_ENABLE();
-	
-	GPIO_Initure.Pin = VBAT_POWER_PIN;
-	GPIO_Initure.Mode = GPIO_MODE_OUTPUT_OD;
-	GPIO_Initure.Pull = GPIO_PULLUP;
-	HAL_GPIO_Init(VBAT_POWER_GPIOx, &GPIO_Initure);
-	HAL_GPIO_WritePin(VBAT_POWER_GPIOx, VBAT_POWER_PIN, GPIO_PIN_SET);
 	
 	GPIO_Initure.Pin = VBAT_ADC_PIN;
 	GPIO_Initure.Mode = GPIO_MODE_OUTPUT_OD;
@@ -119,7 +100,7 @@ u16 VBAT_ADC_Read(u32 timeout)
 	
 	HAL_ADC_DeInit(&VBAT_ADC_Handler);
 	
-	return pwr_vol * 200 * 2.8 / 4096.0;
+	return pwr_vol * 330 * 2.8 / 4096.0;
 }
 
 /********************************************** END OF FLEE **********************************************/

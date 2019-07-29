@@ -26,7 +26,6 @@
 #include "hal_beep.h"
 #include "hal_switch.h"
 #include "hal_vbat.h"
-#include "hal_vptat.h"
 #include "hal_temperature.h"
 #include "hal_qmc5883l.h"
 #include "hal_spiflash.h"
@@ -63,7 +62,6 @@ void DeBugMain(void);
 int main(void)
 {
 	HAL_Init();																		//HAL库初始化
-	QmcWarmupPower(OFF);																//关闭QMC加热
 	
 #ifndef SYSTEMCLOCK
 	#error No Define SYSTEMCLOCK!
