@@ -1,7 +1,48 @@
 # stm32L151_nbiot_tmote_app_spot
-> ##### Copyright (C) 2019 Movebroad Version:20.142 Design by Movebroad
+> ##### Copyright (C) 2019 Movebroad Version:20.147 Design by Movebroad
 > ##### movebroad Kangkang ps: 版本号以下为此版本修改、增加、去除等内容记录！
 
+* 2019-07-30 :
+	* DynamicInfo中Rvcc字段移动到BasicInfo中。
+* 2019-07-25 :
+	* 版本号修改为147。
+* 2019-07-24 :
+	* 发布146固件。
+* 2019-07-20 :
+	* 增加基站时间获取检查，当基站时间与设备时间偏差20min以上，将重启模组重新获取，第二次获取时间将写入，设备刚上电不用检查基站时间，当运行一天以上才检查。
+* 2019-07-18 :
+	* 去除“cgdcontPDPType”，“cgdcontAPN”参数的获取，这两个参数是旧版本模组中获取APN指令，目前模组已不再使用。
+* 2019-07-18 :
+	* 版本号修改为146。
+* 2019-07-09 :
+	* 发布V145固件。
+	* TMoteInfo包进行字段聚合: Rlib Algo Nbboot Nbsent Nbheart Cgain Rgain。
+	* TMoteInfo包新字段: Nbrun: (Nbboot Nbsent Nbrecv Nblimit Nbheart)。
+	* TMoteInfo包新字段: Gain : (Cgain Rgain)。
+	* TMoteInfo包新字段: RAlib: (Rlib Algo)。
+	* TMoteInfo包上报HardwareVersion中去掉多余-NB。
+* 2019-06-21 :
+	* 版本号修改为145。
+	* 单次5分钟内未注网成功也清除频点。
+* 2019-06-20 :
+	* 发布V144固件。
+* 2019-06-18 :
+	* 检测算法库更新至: 版本35: 最多记录5个历史磁场背景,每个磁场背景间隔24小时以上,以应对无车判定为有车的情况。
+* 2019-06-14 :
+	* EEPROM中SN号为空检查FLASH最后4字节，不为空将SN写入EEPROM。
+* 2019-06-10 :
+	* 版本号修改为144。
+	* 单band入网时间为180秒，多band入网时间为500秒。
+* 2019-05-25 :
+	* 版本号修改为143。
+	* WorkInfo上报运营商卡APN信息。
+	* WorkInfo去除上报BeepOff信息。
+	* workinfo小无线输出APN信息。
+	* 增加NBIOT清除小区频点COAP,ONENET,MQTTSN同时增加。
+	* 设备上电或硬件重启不清除小区频点，当多次入网不成功时开启清频(3次)。
+* 2019-05-15 :
+	* 测试架相关代码暂未开启。
+	* 增加固件检查NBIOT模组频段是否在支持范围，当按下测试点，如未读取到IMEI或频段不匹配将警告。
 * 2019-05-11 :
 	* 选项配置是否在自检结束后擦除flash最后4字节数据。
 * 2019-05-10 :

@@ -1,7 +1,13 @@
 # stm32L151_nbiot_tmote_app_spot_skynet
-> ##### Copyright (C) 2019 Movebroad Version:231.146 Design by Movebroad
+> ##### Copyright (C) 2019 Movebroad Version:231.147 Design by Movebroad
 > ##### movebroad Kangkang ps: 版本号以下为此版本修改、增加、去除等内容记录！
 
+* 2019-07-30 :
+	* 智网协议，DNS解析出数据写到EEPROM中。
+* 2019-07-30 :
+	* DynamicInfo中Rvcc字段移动到BasicInfo中。
+* 2019-07-25 :
+	* 版本号修改为147。
 * 2019-07-24 :
 	* 增加联通智网协议。
 	* 联通智网协议采用域名解析方式。

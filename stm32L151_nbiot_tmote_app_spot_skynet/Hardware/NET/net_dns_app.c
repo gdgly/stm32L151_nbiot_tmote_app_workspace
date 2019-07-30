@@ -520,6 +520,13 @@ void NET_DNS_NBIOT_Event_StopMode(DNS_ClientsTypeDef* pClient)
 	TCFG_SystemData.NBMqttSNServer.ip.ip8[3], TCFG_SystemData.NBMqttSNServer.ip.ip8[2], 
 	TCFG_SystemData.NBMqttSNServer.ip.ip8[1], TCFG_SystemData.NBMqttSNServer.ip.ip8[0]);
 	
+	TCFG_SystemData.NBUDPServer.ip.ip32 = TCFG_EEPROM_GetUDPIP();
+	TCFG_SystemData.NBUDPServer.port = TCFG_EEPROM_GetUDPPort();
+	memset((void*)pClient->AnalysisData[1].hostIP, 0, sizeof(pClient->AnalysisData[1].hostIP));
+	sprintf((char *)pClient->AnalysisData[1].hostIP, "%d.%d.%d.%d", 
+	TCFG_SystemData.NBUDPServer.ip.ip8[3], TCFG_SystemData.NBUDPServer.ip.ip8[2], 
+	TCFG_SystemData.NBUDPServer.ip.ip8[1], TCFG_SystemData.NBUDPServer.ip.ip8[0]);
+	
 	/* Go To Over Dns Analysis */
 	pClient->SocketStack->NBIotStack->DictateRunCtl.dictateEnable = false;
 	pClient->SocketStack->NBIotStack->DictateRunCtl.dictateEvent = HARDWARE_REBOOT;
@@ -1656,8 +1663,21 @@ void NET_DNS_Event_OverDnsAnalysis(DNS_ClientsTypeDef* pClient)
 	serveraddr.ip.ip8[2] = serverip[2];
 	serveraddr.ip.ip8[1] = serverip[1];
 	serveraddr.ip.ip8[0] = serverip[0];
+	serveraddr.port = MQTTSN_SERVER_TELE_PORT;
 	if (serveraddr.ip.ip32 != TCFG_EEPROM_GetMqttSNIP()) {
 		TCFG_EEPROM_SetMqttSNIP(serveraddr.ip.ip32);
+		TCFG_EEPROM_SetMqttSNPort(serveraddr.port);
+	}
+	
+	sscanf((char *)DNS_GetHostIP(pClient, (unsigned char*)UDP_SERVER_HOST_NAME), "%d.%d.%d.%d", &serverip[3], &serverip[2], &serverip[1], &serverip[0]);
+	serveraddr.ip.ip8[3] = serverip[3];
+	serveraddr.ip.ip8[2] = serverip[2];
+	serveraddr.ip.ip8[1] = serverip[1];
+	serveraddr.ip.ip8[0] = serverip[0];
+	serveraddr.port = UDP_SERVER_TELE_PORT;
+	if (serveraddr.ip.ip32 != TCFG_EEPROM_GetUDPIP()) {
+		TCFG_EEPROM_SetUDPIP(serveraddr.ip.ip32);
+		TCFG_EEPROM_SetUDPPort(serveraddr.port);
 	}
 #endif
 	
