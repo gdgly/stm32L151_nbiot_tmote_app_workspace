@@ -2,6 +2,8 @@
 > ##### Copyright (C) 2018 Movebroad Version:20.136 Design by Movebroad
 > ##### movebroad Kangkang ps: 版本号以下为此版本修改、增加、去除等内容记录！
 
+* 2019-08-01 :
+	* 修复因处理器或硬件差异性导致SPIFLASH在备份固件时间不同导致备份时间超时看门狗重启设备。
 * 2018-12-28 :
 	* Workinfo包中增加RadioRv字段,1:附近有配置器且收到配置器下发数据,0:附近无配置器或没收到配置器下发数据。
 	* 优化各个Message的内存占用,采用不限定包长Fifo存储。
