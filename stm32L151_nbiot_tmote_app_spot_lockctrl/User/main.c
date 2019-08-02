@@ -314,50 +314,6 @@ void MainRollingUpwardsActived(void)
 	MainHandleRoutine();
 	
 	if (!((NETCoapNeedSendCode.WorkInfoWait > 0) || (NETMqttSNNeedSendCode.InfoWorkWait > 0) || (NETOneNETNeedSendCode.WorkInfoWait > 0))) {
-#if PRODUCTTEST_READ_TYPE
-		if (ProductTest_Read()) {
-		#if NBIOT_SNEDCOUNTDAY_LIMIT_TYPE
-			if (TCFG_Utility_Get_NBIot_SentCountDay() == TCFG_EEPROM_GetNBIotSentCountLimit()) {
-			#if NETPROTOCAL == NETCOAP
-				NETCoapNeedSendCode.DynamicInfo = 1;
-			#elif NETPROTOCAL == NETMQTTSN
-				NETMqttSNNeedSendCode.InfoDynamic = 1;
-			#elif NETPROTOCAL == NETONENET
-				NETOneNETNeedSendCode.DynamicInfo = 1;
-			#endif
-			}
-			if (TCFG_Utility_Get_NBIot_SentCountDay() > TCFG_EEPROM_GetNBIotSentCountLimit() + 1) {
-				if (NBIOTPOWER_IO_READ()) {
-					NET_NBIOT_Initialization();
-					NBIOTPOWER(OFF);
-				}
-			}
-			else {
-				/* NBIOT APP Task */
-				NET_NBIOT_App_Task();
-			}
-		#else
-			/* NBIOT APP Task */
-			NET_NBIOT_App_Task();
-		#endif
-		}
-		else {
-			/* NBIOT Power OFF */
-			if (NBIOTPOWER_IO_READ()) {
-				NBIOT_Neul_NBxx_CheckReadIMEI(&NbiotClientHandler);
-				NBIOT_Neul_NBxx_TestSupportedBands(&NbiotClientHandler, NBIOT_MODULE_BAND_SUPPORT);
-				NET_NBIOT_Initialization();
-				NBIOTPOWER(OFF);
-			}
-			if (NbiotClientHandler.Parameter.bandsupport != true) {
-				Radio_Trf_Printf("imei:null or band:no support");
-				BEEP_CtrlRepeat_Extend(3, 50, 25);
-			}
-			else {
-				Radio_Trf_Printf("imei:%s", TCFG_Utility_Get_Nbiot_Imei_String());
-			}
-		}
-#else
 	#if NBIOT_SNEDCOUNTDAY_LIMIT_TYPE
 		if (TCFG_Utility_Get_NBIot_SentCountDay() == TCFG_EEPROM_GetNBIotSentCountLimit()) {
 		#if NETPROTOCAL == NETCOAP
@@ -382,7 +338,6 @@ void MainRollingUpwardsActived(void)
 		/* NBIOT APP Task */
 		NET_NBIOT_App_Task();
 	#endif
-#endif
 	}
 	
 	/* 小无线处理 */
@@ -458,22 +413,8 @@ void MainRollingEnteredDownSleepKeepActived(void)
 	MainHandleRoutine();
 	
 	if (!((NETCoapNeedSendCode.WorkInfoWait > 0) || (NETMqttSNNeedSendCode.InfoWorkWait > 0) || (NETOneNETNeedSendCode.WorkInfoWait > 0))) {
-#if PRODUCTTEST_READ_TYPE
-		if (ProductTest_Read()) {
-			/* NBIOT APP Task */
-			NET_NBIOT_App_Task();
-		}
-		else {
-			/* NBIOT Power OFF */
-			if (NBIOTPOWER_IO_READ()) {
-				NET_NBIOT_Initialization();
-				NBIOTPOWER(OFF);
-			}
-		}
-#else
 		/* NBIOT APP Task */
 		NET_NBIOT_App_Task();
-#endif
 	}
 }
 
