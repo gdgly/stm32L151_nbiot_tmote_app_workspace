@@ -2,6 +2,9 @@
 > ##### Copyright (C) 2019 Movebroad Version:20.147 Design by Movebroad
 > ##### movebroad Kangkang ps: 版本号以下为此版本修改、增加、去除等内容记录！
 
+* 2019-08-03 :
+	* 车位锁修改。
+	* 红外对管驱动文件创建。
 * 2019-08-02 :
 	* 车位锁修改。
 	* 测试点PB5相关测试点代码去除(无相应硬件)。
