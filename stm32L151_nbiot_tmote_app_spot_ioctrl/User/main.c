@@ -122,6 +122,8 @@ int main(void)
 	}
 	TCFG_EEPROM_SystemInfo_Init();														//系统运行信息初始化
 	
+	TCFG_EEPROM_SetBootCount(0);
+	
 #if USART1_TYPE
 	Uart1_Init(9700);																	//串口1初始化
 #endif

@@ -2,6 +2,8 @@
 > ##### Copyright (C) 2019 Movebroad Version:20.147 Design by Movebroad
 > ##### movebroad Kangkang ps: 版本号以下为此版本修改、增加、去除等内容记录！
 
+* 2019-08-06 :
+	* 启动时bootcnt清0。
 * 2019-08-01 :
 	* 修复因处理器或硬件差异性导致SPIFLASH在备份固件时间不同导致备份时间超时看门狗重启设备。
 * 2019-07-30 :
