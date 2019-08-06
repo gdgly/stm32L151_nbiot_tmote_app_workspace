@@ -1,0 +1,15 @@
+#ifndef __HAL_BUZZER_H
+#define   __HAL_BUZZER_H
+
+#include "sys.h"
+
+#define BUZZER_GPIOx					GPIOA
+#define BUZZER_PIN						GPIO_PIN_12
+#define BUZZER_RCC_GPIO_CLK_ENABLE()		__HAL_RCC_GPIOA_CLK_ENABLE()
+#define BUZZER_RCC_GPIO_CLK_DISABLE()		__HAL_RCC_GPIOA_CLK_DISABLE()
+
+#define BUZZER(n)						(n?HAL_GPIO_WritePin(BUZZER_GPIOx, BUZZER_PIN, GPIO_PIN_SET):HAL_GPIO_WritePin(BUZZER_GPIOx, BUZZER_PIN, GPIO_PIN_RESET))
+
+void BUZZERCtrlIO(u8 enable);
+
+#endif /* __HAL_BUZZER_H */

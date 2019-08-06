@@ -30,6 +30,9 @@
 #include "hal_qmc5883l.h"
 #include "hal_spiflash.h"
 #include "hal_testbench.h"
+#include "hal_infraredtube.h"
+#include "hal_buzzer.h"
+#include "hal_motor.h"
 #include "net_nbiot_app.h"
 #include "net_coap_app.h"
 #include "net_pcp_app.h"
@@ -46,7 +49,7 @@
 #include "inspectmessageoperate.h"
 
 /****************************************** Select DEBUG *************************************************/
-//#define	DEVICE_DEBUG																	//定义开启设备调试
+#define	DEVICE_DEBUG																	//定义开启设备调试
 /********************************************* DEBUG *****************************************************/
 #ifdef	DEVICE_DEBUG
 void DeBugMain(void);

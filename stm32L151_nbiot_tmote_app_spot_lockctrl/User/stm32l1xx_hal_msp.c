@@ -17,6 +17,7 @@
 #include "usart.h"
 #include "hal_rtc.h"
 #include "hal_vbat.h"
+#include "hal_motor.h"
 #include "hal_temperature.h"
 #include "radar_adc.h"
 #include "radar_dac.h"
@@ -135,6 +136,20 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef* hadc)
 		HAL_GPIO_Init(VBAT_ADC_GPIOx, &GPIO_Initure);
 	}
 	
+	if (hadc == &MOTOR_SNS_Handler) {										//电机电压ADC
+		/* Enable ADC */
+		MOTOR_SNS_RCC_ADC1_CLK_ENABLE();
+		
+		/* Enable GPIO */
+		MOTOR_SNS_RCC_GPIO_CLK_ENABLE();
+		
+		/* ADC Pin Configuration */
+		GPIO_Initure.Pin = MOTOR_SNS_PIN;
+		GPIO_Initure.Mode = GPIO_MODE_ANALOG;
+		GPIO_Initure.Pull = GPIO_NOPULL;
+		HAL_GPIO_Init(MOTOR_SNS_GPIOx, &GPIO_Initure);
+	}
+	
 	if (hadc == &TEMPERATURE_ADC_Handler) {									//内部温度传感器ADC
 		/* Enable ADC */
 		TEMPERATURE_ADC_RCC_ADC1_CLK_ENABLE();
@@ -167,6 +182,17 @@ void HAL_ADC_MspDeInit(ADC_HandleTypeDef* hadc)
 		
 		/* Deinitialize ADC GPIO */
 		HAL_GPIO_DeInit(VBAT_ADC_GPIOx, VBAT_ADC_PIN);
+		
+		/* Deinitialize ADC DMA */
+		HAL_DMA_DeInit(hadc->DMA_Handle);
+	}
+	
+	if (hadc == &MOTOR_SNS_Handler) {										//电机电压ADC
+		/* Disable ADC */
+		MOTOR_SNS_RCC_ADC1_CLK_DISABLE();
+		
+		/* Deinitialize ADC GPIO */
+		HAL_GPIO_DeInit(MOTOR_SNS_GPIOx, MOTOR_SNS_PIN);
 		
 		/* Deinitialize ADC DMA */
 		HAL_DMA_DeInit(hadc->DMA_Handle);
