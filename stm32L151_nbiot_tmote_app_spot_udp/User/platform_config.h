@@ -172,6 +172,8 @@
 
 #define	PRODUCTTEST_OVER_TIME			300								//测试点超时时间
 
+#define	PRODUCTTEST_OVER_BOOTCNT			30								//测试点超过启动次数
+
 #define	TESTBENCH_DISABLE				0
 #define	TESTBENCH_ENABLE				1
 #define	TESTBENCH_TYPE					TESTBENCH_ENABLE					//测试架测试
@@ -202,7 +204,7 @@
 #define	BEEP_OFF_US					230								//无源蜂鸣器关时间
 
 #define	SOFTWAREMAJOR					20								//主固件版本
-#define	SOFTWARESUB					146								//从固件版本
+#define	SOFTWARESUB					147								//从固件版本
 #define	HARDWAREMAJOR_V1				2								//主硬件版本
 #define	HARDWAREMAJOR_V2				12								//主硬件版本
 
