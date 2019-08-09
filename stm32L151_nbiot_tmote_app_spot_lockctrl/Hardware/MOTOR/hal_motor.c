@@ -15,6 +15,14 @@
   */
 
 #include "hal_motor.h"
+#include "hal_infraredtube.h"
+#include "hal_buzzer.h"
+#include "hal_beep.h"
+#include "hal_iwdg.h"
+#include "delay.h"
+#include "usart.h"
+#include "radio_hal_rf.h"
+#include "radio_rf_app.h"
 #include "platform_config.h"
 #include "platform_map.h"
 
@@ -165,6 +173,129 @@ void MOTOR_FI_OUT(u8 val)
 	
 	MOTOR_FI(val);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/**********************************************************************************************************
+ @Function			void MOTOR_SPOTLOCK_Initialization(MOTOR_SpotLockCtrlTypeDef ctrl)
+ @Description			MOTOR_SPOTLOCK_Initialization
+ @Input				SPOTLOCK_CTRL_FALL or SPOTLOCK_CTRL_RISE
+ @Return				void
+**********************************************************************************************************/
+void MOTOR_SPOTLOCK_Initialization(MOTOR_SpotLockCtrlTypeDef ctrl)
+{
+	INFRARED_TUBE_TRANSMIT_ENABLE();
+	
+	if (ctrl == SPOTLOCK_CTRL_RISE) {
+		if (INFRARED_TUBE_RECEIVE_STATE() == INFRARED_TUBE_RISE) {
+			MOTOR_FALL();
+			while (!(INFRARED_TUBE_RECEIVE_STATE() == INFRARED_TUBE_FALL)) {};
+			MOTOR_OPEN();
+		}
+		
+		if (!(INFRARED_TUBE_RECEIVE_STATE() == INFRARED_TUBE_RISE)) {
+			MOTOR_RISE();
+			while (!(INFRARED_TUBE_RECEIVE_STATE() == INFRARED_TUBE_RISE)) {};
+			MOTOR_OPEN();
+		}
+		
+		BEEP_CtrlRepeat_Extend(2, 50, 25);
+	}
+	
+	if (ctrl == SPOTLOCK_CTRL_FALL) {
+		if (!(INFRARED_TUBE_RECEIVE_STATE() == INFRARED_TUBE_FALL)) {
+			MOTOR_FALL();
+			while (!(INFRARED_TUBE_RECEIVE_STATE() == INFRARED_TUBE_PROCESS)) {};
+			while (!(INFRARED_TUBE_RECEIVE_STATE() == INFRARED_TUBE_FALL)) {};
+			MOTOR_OPEN();
+		}
+		
+		BEEP_CtrlRepeat_Extend(1, 50, 25);
+	}
+	
+	INFRARED_TUBE_TRANSMIT_DISABLE();
+}
+
+/**********************************************************************************************************
+ @Function			void MOTOR_SPOTLOCK_Control(MOTOR_SpotLockCtrlTypeDef ctrl)
+ @Description			MOTOR_SPOTLOCK_Control
+ @Input				SPOTLOCK_CTRL_FALL or SPOTLOCK_CTRL_RISE
+ @Return				void
+**********************************************************************************************************/
+void MOTOR_SPOTLOCK_Control(MOTOR_SpotLockCtrlTypeDef ctrl)
+{
+	INFRARED_TUBE_TRANSMIT_ENABLE();
+	
+	if (ctrl == SPOTLOCK_CTRL_RISE) {
+		if (!(INFRARED_TUBE_RECEIVE_STATE() == INFRARED_TUBE_RISE)) {
+			MOTOR_RISE();
+			while (!(INFRARED_TUBE_RECEIVE_STATE() == INFRARED_TUBE_PROCESS)) {};
+			while (!(INFRARED_TUBE_RECEIVE_STATE() == INFRARED_TUBE_RISE)) {};
+			MOTOR_OPEN();
+		}
+		
+		BEEP_CtrlRepeat_Extend(2, 50, 25);
+	}
+	
+	if (ctrl == SPOTLOCK_CTRL_FALL) {
+		if (!(INFRARED_TUBE_RECEIVE_STATE() == INFRARED_TUBE_FALL)) {
+			MOTOR_FALL();
+			while (!(INFRARED_TUBE_RECEIVE_STATE() == INFRARED_TUBE_PROCESS)) {};
+			while (!(INFRARED_TUBE_RECEIVE_STATE() == INFRARED_TUBE_FALL)) {};
+			MOTOR_OPEN();
+		}
+		BEEP_CtrlRepeat_Extend(1, 50, 25);
+	}
+	
+	INFRARED_TUBE_TRANSMIT_DISABLE();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

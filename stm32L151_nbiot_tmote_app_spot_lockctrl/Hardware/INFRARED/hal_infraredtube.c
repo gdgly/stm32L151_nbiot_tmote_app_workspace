@@ -37,6 +37,9 @@ void InfraredTube_OPT_K3_OUT(u8 enable)
 	HAL_GPIO_Init(OPT_K3_GPIOx, &GPIO_Initure);
 	
 	OPT_K3_OUT(enable);
+	
+	InfraredTube_OPT_K1_IN();
+	InfraredTube_OPT_K2_IN();
 }
 
 /**********************************************************************************************************
@@ -81,7 +84,45 @@ u8 InfraredTube_OPT_K2_IN(void)
 	return OPT_K2_IN();
 }
 
+/**********************************************************************************************************
+ @Function			INFRARED_Tube_StatusTypeDef InfraredTube_SpotLock_Read(void)
+ @Description			InfraredTube_SpotLock_Read					: 车位锁状态读取
+ @Input				void
+ @Return				INFRARED_Tube_StatusTypeDef
+**********************************************************************************************************/
+INFRARED_Tube_StatusTypeDef InfraredTube_SpotLock_Read(void)
+{
+	u8 OPTK1 = OPT_K1_IN();
+	u8 OPTK2 = OPT_K2_IN();
+	
+	if (OPTK1 == 0) {
+		if (OPTK2 == 0) return INFRARED_TUBE_ERROR;			/* K1: 0, K2: 0 */
+		else return INFRARED_TUBE_PROCESS;					/* K1: 0, K2: 1 */
+	}
+	else {
+		if (OPTK2 == 0) return INFRARED_TUBE_RISE;			/* K1: 1, K2: 0 */
+		else return INFRARED_TUBE_FALL;					/* K1: 1, K2: 1 */
+	}
+}
 
+/**********************************************************************************************************
+ @Function			INFRARED_Tube_StatusTypeDef InfraredTube_SpotLock_State(void)
+ @Description			InfraredTube_SpotLock_State					: 车位锁状态读取
+ @Input				void
+ @Return				INFRARED_Tube_StatusTypeDef
+**********************************************************************************************************/
+INFRARED_Tube_StatusTypeDef InfraredTube_SpotLock_State(void)
+{
+	INFRARED_Tube_StatusTypeDef SpotLockState;
+	
+	INFRARED_TUBE_TRANSMIT_ENABLE();
+	
+	SpotLockState = InfraredTube_SpotLock_Read();
+	
+	INFRARED_TUBE_TRANSMIT_DISABLE();
+	
+	return SpotLockState;
+}
 
 
 
