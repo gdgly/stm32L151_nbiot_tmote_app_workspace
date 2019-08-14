@@ -49,7 +49,7 @@
 #include "inspectmessageoperate.h"
 
 /****************************************** Select DEBUG *************************************************/
-#define	DEVICE_DEBUG																	//定义开启设备调试
+//#define	DEVICE_DEBUG																	//定义开启设备调试
 /********************************************* DEBUG *****************************************************/
 #ifdef	DEVICE_DEBUG
 void DeBugMain(void);
@@ -538,11 +538,6 @@ void MainHandleRoutine(void)
 		if (RTC_Time_GetCurrentHour() == 7) {
 			if (Inspect_Message_SpotStatusisEmpty() != false) {
 				NET_NBIOT_Initialization();
-			}
-			
-			if (TCFG_EEPROM_GetNbiotHeart() > NBIOT_HEART_DATA_HOURS) {
-				TCFG_SystemData.NBIotHeart = NBIOT_HEART_DATA_HOURS;
-				TCFG_EEPROM_SetNbiotHeart(TCFG_SystemData.NBIotHeart);
 			}
 			
 			if ((TCFG_EEPROM_GetNBIotSentCountDay() != 0) || (TCFG_SystemData.NBIotSentCountDay != 0)) {
