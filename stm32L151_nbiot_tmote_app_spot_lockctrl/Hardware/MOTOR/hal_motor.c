@@ -201,6 +201,7 @@ void MOTOR_FI_OUT(u8 val)
 
 
 
+
 /**********************************************************************************************************
  @Function			void MOTOR_SPOTLOCK_Initialization(MOTOR_SpotLockCtrlTypeDef ctrl)
  @Description			MOTOR_SPOTLOCK_Initialization
@@ -209,36 +210,85 @@ void MOTOR_FI_OUT(u8 val)
 **********************************************************************************************************/
 void MOTOR_SPOTLOCK_Initialization(MOTOR_SpotLockCtrlTypeDef ctrl)
 {
+	Stm32_CalculagraphTypeDef motorTimer;
+	Stm32_CalculagraphTypeDef motorErrTimer;
+	
+	Stm32_Calculagraph_CountdownMS(&motorErrTimer, MOTOR_ERROR_DELAY_MS);
+	
+	IWDG_Feed();
+	
 	INFRARED_TUBE_TRANSMIT_ENABLE();
 	
-	if (ctrl == SPOTLOCK_CTRL_RISE) {
-		if (INFRARED_TUBE_RECEIVE_STATE() == INFRARED_TUBE_RISE) {
-			MOTOR_FALL();
-			while (!(INFRARED_TUBE_RECEIVE_STATE() == INFRARED_TUBE_FALL)) {};
-			MOTOR_OPEN();
+	while (true) {
+		if ((ctrl != SPOTLOCK_CTRL_RISE) && (ctrl != SPOTLOCK_CTRL_FALL)) break;
+		
+		if (ctrl == SPOTLOCK_CTRL_RISE) {
+			if (INFRARED_TUBE_RECEIVE_STATE() == INFRARED_TUBE_RISE) {
+				MOTOR_FALL();
+				while ((INFRARED_TUBE_RECEIVE_STATE() == INFRARED_TUBE_RISE)) {
+					if ((Stm32_Calculagraph_IsExpiredMS(&motorTimer) == true) && (MOTOR_SNS_Read(MOTOR_SNS_READ_VOLTAGE_DELAY_MS) > MOTOR_SNS_THRESHOLD_VOLTAGE)) goto error;
+					if (Stm32_Calculagraph_IsExpiredMS(&motorErrTimer) == true) goto error;
+				}
+				MOTOR_LOCK();
+			}
+			
+			if (INFRARED_TUBE_RECEIVE_STATE() == INFRARED_TUBE_FALL) {
+				Stm32_Calculagraph_CountdownMS(&motorTimer, MOTOR_SNS_THRESHOLD_DELAY_MS);
+				MOTOR_RISE();
+				while ((INFRARED_TUBE_RECEIVE_STATE() == INFRARED_TUBE_FALL)) {
+					if ((Stm32_Calculagraph_IsExpiredMS(&motorTimer) == true) && (MOTOR_SNS_Read(MOTOR_SNS_READ_VOLTAGE_DELAY_MS) > MOTOR_SNS_THRESHOLD_VOLTAGE)) {
+						ctrl = SPOTLOCK_CTRL_FALL;
+						goto exit;
+					}
+					if (Stm32_Calculagraph_IsExpiredMS(&motorErrTimer) == true) goto error;
+				}
+				MOTOR_LOCK();
+			}
+			
+			if (INFRARED_TUBE_RECEIVE_STATE() == INFRARED_TUBE_PROCESS) {
+				Stm32_Calculagraph_CountdownMS(&motorTimer, MOTOR_SNS_THRESHOLD_DELAY_MS);
+				MOTOR_RISE();
+				while ((INFRARED_TUBE_RECEIVE_STATE() == INFRARED_TUBE_PROCESS)) {
+					if ((Stm32_Calculagraph_IsExpiredMS(&motorTimer) == true) && (MOTOR_SNS_Read(MOTOR_SNS_READ_VOLTAGE_DELAY_MS) > MOTOR_SNS_THRESHOLD_VOLTAGE)) {
+						ctrl = SPOTLOCK_CTRL_FALL;
+						goto exit;
+					}
+					if (Stm32_Calculagraph_IsExpiredMS(&motorErrTimer) == true) goto error;
+				}
+				MOTOR_LOCK();
+			}
+			
+			BEEP_CtrlRepeat_Extend(3, 50, 15);
+			break;
 		}
 		
-		if (!(INFRARED_TUBE_RECEIVE_STATE() == INFRARED_TUBE_RISE)) {
-			MOTOR_RISE();
-			while (!(INFRARED_TUBE_RECEIVE_STATE() == INFRARED_TUBE_RISE)) {};
-			MOTOR_OPEN();
+		if (ctrl == SPOTLOCK_CTRL_FALL) {
+			if (!(INFRARED_TUBE_RECEIVE_STATE() == INFRARED_TUBE_FALL)) {
+				Stm32_Calculagraph_CountdownMS(&motorTimer, MOTOR_SNS_THRESHOLD_DELAY_MS);
+				MOTOR_FALL();
+				while (!(INFRARED_TUBE_RECEIVE_STATE() == INFRARED_TUBE_FALL)) {
+					if ((Stm32_Calculagraph_IsExpiredMS(&motorTimer) == true) && (MOTOR_SNS_Read(MOTOR_SNS_READ_VOLTAGE_DELAY_MS) > MOTOR_SNS_THRESHOLD_VOLTAGE)) {
+						ctrl = SPOTLOCK_CTRL_RISE;
+						goto exit;
+					}
+					if (Stm32_Calculagraph_IsExpiredMS(&motorErrTimer) == true) goto error;
+				}
+				MOTOR_LOCK();
+			}
+			
+			BEEP_CtrlRepeat_Extend(1, 50, 25);
+			break;
 		}
-		
-		BEEP_CtrlRepeat_Extend(2, 50, 25);
+exit:
+		continue;
 	}
 	
-	if (ctrl == SPOTLOCK_CTRL_FALL) {
-		if (!(INFRARED_TUBE_RECEIVE_STATE() == INFRARED_TUBE_FALL)) {
-			MOTOR_FALL();
-			while (!(INFRARED_TUBE_RECEIVE_STATE() == INFRARED_TUBE_PROCESS)) {};
-			while (!(INFRARED_TUBE_RECEIVE_STATE() == INFRARED_TUBE_FALL)) {};
-			MOTOR_OPEN();
-		}
-		
-		BEEP_CtrlRepeat_Extend(1, 50, 25);
-	}
-	
+error:
 	INFRARED_TUBE_TRANSMIT_DISABLE();
+	
+	IWDG_Feed();
+	
+	MOTOR_OPEN();
 }
 
 /**********************************************************************************************************
@@ -249,33 +299,169 @@ void MOTOR_SPOTLOCK_Initialization(MOTOR_SpotLockCtrlTypeDef ctrl)
 **********************************************************************************************************/
 void MOTOR_SPOTLOCK_Control(MOTOR_SpotLockCtrlTypeDef ctrl)
 {
+	Stm32_CalculagraphTypeDef motorTimer;
+	Stm32_CalculagraphTypeDef motorErrTimer;
+	
+	Stm32_Calculagraph_CountdownMS(&motorErrTimer, MOTOR_ERROR_DELAY_MS);
+	
+	IWDG_Feed();
+	
+	INFRARED_TUBE_TRANSMIT_ENABLE();
+	
+	while (true) {
+		if ((ctrl != SPOTLOCK_CTRL_RISE) && (ctrl != SPOTLOCK_CTRL_FALL)) break;
+		
+		if (ctrl == SPOTLOCK_CTRL_RISE) {
+			if (INFRARED_TUBE_RECEIVE_STATE() == INFRARED_TUBE_RISE) {
+				MOTOR_FALL();
+				while ((INFRARED_TUBE_RECEIVE_STATE() == INFRARED_TUBE_RISE)) {
+					if ((Stm32_Calculagraph_IsExpiredMS(&motorTimer) == true) && (MOTOR_SNS_Read(MOTOR_SNS_READ_VOLTAGE_DELAY_MS) > MOTOR_SNS_THRESHOLD_VOLTAGE)) goto error;
+					if (Stm32_Calculagraph_IsExpiredMS(&motorErrTimer) == true) goto error;
+				}
+				MOTOR_LOCK();
+			}
+			
+			if (INFRARED_TUBE_RECEIVE_STATE() == INFRARED_TUBE_FALL) {
+				Stm32_Calculagraph_CountdownMS(&motorTimer, MOTOR_SNS_THRESHOLD_DELAY_MS);
+				MOTOR_RISE();
+				while ((INFRARED_TUBE_RECEIVE_STATE() == INFRARED_TUBE_FALL)) {
+					if ((Stm32_Calculagraph_IsExpiredMS(&motorTimer) == true) && (MOTOR_SNS_Read(MOTOR_SNS_READ_VOLTAGE_DELAY_MS) > MOTOR_SNS_THRESHOLD_VOLTAGE)) {
+						ctrl = SPOTLOCK_CTRL_FALL;
+						goto exit;
+					}
+					if (Stm32_Calculagraph_IsExpiredMS(&motorErrTimer) == true) goto error;
+				}
+				MOTOR_LOCK();
+			}
+			
+			if (INFRARED_TUBE_RECEIVE_STATE() == INFRARED_TUBE_PROCESS) {
+				Stm32_Calculagraph_CountdownMS(&motorTimer, MOTOR_SNS_THRESHOLD_DELAY_MS);
+				MOTOR_RISE();
+				while ((INFRARED_TUBE_RECEIVE_STATE() == INFRARED_TUBE_PROCESS)) {
+					if ((Stm32_Calculagraph_IsExpiredMS(&motorTimer) == true) && (MOTOR_SNS_Read(MOTOR_SNS_READ_VOLTAGE_DELAY_MS) > MOTOR_SNS_THRESHOLD_VOLTAGE)) {
+						ctrl = SPOTLOCK_CTRL_FALL;
+						goto exit;
+					}
+					if (Stm32_Calculagraph_IsExpiredMS(&motorErrTimer) == true) goto error;
+				}
+				MOTOR_LOCK();
+			}
+			
+			BEEP_CtrlRepeat_Extend(3, 50, 15);
+			break;
+		}
+		
+		if (ctrl == SPOTLOCK_CTRL_FALL) {
+			if (!(INFRARED_TUBE_RECEIVE_STATE() == INFRARED_TUBE_FALL)) {
+				Stm32_Calculagraph_CountdownMS(&motorTimer, MOTOR_SNS_THRESHOLD_DELAY_MS);
+				MOTOR_FALL();
+				while (!(INFRARED_TUBE_RECEIVE_STATE() == INFRARED_TUBE_FALL)) {
+					if ((Stm32_Calculagraph_IsExpiredMS(&motorTimer) == true) && (MOTOR_SNS_Read(MOTOR_SNS_READ_VOLTAGE_DELAY_MS) > MOTOR_SNS_THRESHOLD_VOLTAGE)) {
+						ctrl = SPOTLOCK_CTRL_RISE;
+						goto exit;
+					}
+					if (Stm32_Calculagraph_IsExpiredMS(&motorErrTimer) == true) goto error;
+				}
+				MOTOR_LOCK();
+			}
+			
+			BEEP_CtrlRepeat_Extend(1, 50, 25);
+			break;
+		}
+exit:
+		continue;
+	}
+	
+error:
+	INFRARED_TUBE_TRANSMIT_DISABLE();
+	
+	IWDG_Feed();
+	
+	MOTOR_OPEN();
+}
+
+/**********************************************************************************************************
+ @Function			void MOTOR_SPOTLOCK_Keep(MOTOR_SpotLockCtrlTypeDef ctrl)
+ @Description			MOTOR_SPOTLOCK_Keep
+ @Input				SPOTLOCK_CTRL_FALL or SPOTLOCK_CTRL_RISE
+ @Return				void
+**********************************************************************************************************/
+void MOTOR_SPOTLOCK_Keep(MOTOR_SpotLockCtrlTypeDef ctrl)
+{
+	bool BeepON = false;
+	
+	Stm32_CalculagraphTypeDef motorTimer;
+	Stm32_CalculagraphTypeDef motorErrTimer;
+	
+	Stm32_Calculagraph_CountdownMS(&motorErrTimer, MOTOR_ERROR_DELAY_MS);
+	
+	IWDG_Feed();
+	
 	INFRARED_TUBE_TRANSMIT_ENABLE();
 	
 	if (ctrl == SPOTLOCK_CTRL_RISE) {
-		if (!(INFRARED_TUBE_RECEIVE_STATE() == INFRARED_TUBE_RISE)) {
-			MOTOR_RISE();
-			while (!(INFRARED_TUBE_RECEIVE_STATE() == INFRARED_TUBE_PROCESS)) {};
-			while (!(INFRARED_TUBE_RECEIVE_STATE() == INFRARED_TUBE_RISE)) {};
-			MOTOR_OPEN();
+		if (INFRARED_TUBE_RECEIVE_STATE() == INFRARED_TUBE_RISE) {
+			Stm32_Calculagraph_CountdownMS(&motorTimer, MOTOR_SNS_THRESHOLD_DELAY_MS);
+			MOTOR_FALL();
+			while ((INFRARED_TUBE_RECEIVE_STATE() == INFRARED_TUBE_RISE)) {
+				if (Stm32_Calculagraph_IsExpiredMS(&motorErrTimer) == true) goto error;
+				if ((Stm32_Calculagraph_IsExpiredMS(&motorTimer) == true) && (MOTOR_SNS_Read(MOTOR_SNS_READ_VOLTAGE_DELAY_MS) > MOTOR_SNS_THRESHOLD_VOLTAGE)) goto error;
+			}
+			MOTOR_LOCK();
+			
+			BeepON = true;
 		}
 		
-		BEEP_CtrlRepeat_Extend(2, 50, 25);
+		if (INFRARED_TUBE_RECEIVE_STATE() == INFRARED_TUBE_FALL) {
+			Stm32_Calculagraph_CountdownMS(&motorTimer, MOTOR_SNS_THRESHOLD_DELAY_MS);
+			MOTOR_RISE();
+			while ((INFRARED_TUBE_RECEIVE_STATE() == INFRARED_TUBE_FALL)) {
+				if (Stm32_Calculagraph_IsExpiredMS(&motorErrTimer) == true) goto error;
+				if ((Stm32_Calculagraph_IsExpiredMS(&motorTimer) == true) && (MOTOR_SNS_Read(MOTOR_SNS_READ_VOLTAGE_DELAY_MS) > MOTOR_SNS_THRESHOLD_VOLTAGE)) goto error;
+			}
+			MOTOR_LOCK();
+			
+			BeepON = true;
+		}
+		
+		if (INFRARED_TUBE_RECEIVE_STATE() == INFRARED_TUBE_PROCESS) {
+			Stm32_Calculagraph_CountdownMS(&motorTimer, MOTOR_SNS_THRESHOLD_DELAY_MS);
+			MOTOR_RISE();
+			while ((INFRARED_TUBE_RECEIVE_STATE() == INFRARED_TUBE_PROCESS)) {
+				if (Stm32_Calculagraph_IsExpiredMS(&motorErrTimer) == true) goto error;
+				if ((Stm32_Calculagraph_IsExpiredMS(&motorTimer) == true) && (MOTOR_SNS_Read(MOTOR_SNS_READ_VOLTAGE_DELAY_MS) > MOTOR_SNS_THRESHOLD_VOLTAGE)) goto error;
+			}
+			MOTOR_LOCK();
+			
+			BeepON = true;
+		}
+		
+		if (BeepON) BEEP_CtrlRepeat_Extend(3, 50, 15);
 	}
 	
 	if (ctrl == SPOTLOCK_CTRL_FALL) {
 		if (!(INFRARED_TUBE_RECEIVE_STATE() == INFRARED_TUBE_FALL)) {
+			Stm32_Calculagraph_CountdownMS(&motorTimer, MOTOR_SNS_THRESHOLD_DELAY_MS);
 			MOTOR_FALL();
-			while (!(INFRARED_TUBE_RECEIVE_STATE() == INFRARED_TUBE_PROCESS)) {};
-			while (!(INFRARED_TUBE_RECEIVE_STATE() == INFRARED_TUBE_FALL)) {};
-			MOTOR_OPEN();
+			while (!(INFRARED_TUBE_RECEIVE_STATE() == INFRARED_TUBE_FALL)) {
+				if (Stm32_Calculagraph_IsExpiredMS(&motorErrTimer) == true) goto error;
+				if ((Stm32_Calculagraph_IsExpiredMS(&motorTimer) == true) && (MOTOR_SNS_Read(MOTOR_SNS_READ_VOLTAGE_DELAY_MS) > MOTOR_SNS_THRESHOLD_VOLTAGE)) goto error;
+			}
+			MOTOR_LOCK();
+			
+			BeepON = true;
 		}
-		BEEP_CtrlRepeat_Extend(1, 50, 25);
+		
+		if (BeepON) BEEP_CtrlRepeat_Extend(1, 50, 25);
 	}
 	
+error:
 	INFRARED_TUBE_TRANSMIT_DISABLE();
+	
+	IWDG_Feed();
+	
+	MOTOR_OPEN();
 }
-
-
 
 
 
