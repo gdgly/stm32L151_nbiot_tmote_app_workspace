@@ -28,7 +28,8 @@ void SPOT_Lock_Client_Init(SpotLock_ClientsTypeDef* pClient)
 	pClient->SpotLockState									= SPOTLOCK_CTRL_FALL;
 	pClient->SpotLockControl									= SPOTLOCK_CTRL_FALL;
 	
-	
+	pClient->ControlRISEEnable								= false;
+	pClient->ControlFALLEnable								= false;
 	
 	
 	
@@ -43,25 +44,35 @@ void SPOT_Lock_Client_Init(SpotLock_ClientsTypeDef* pClient)
 }
 
 /**********************************************************************************************************
- @Function			void SPOT_Lock_Client_ControlRISE(SpotLock_ClientsTypeDef* pClient)
+ @Function			void SPOT_Lock_Client_ControlRISE(SpotLock_ClientsTypeDef* pClient, u32 timerSec)
  @Description			SPOT_Lock_Client_ControlRISE				: SpotLock客户端控制升锁
  @Input				pClient								: SpotLock客户端实例
+					timerSec								: SpotLock滞后升锁时间
  @Return				void
 **********************************************************************************************************/
-void SPOT_Lock_Client_ControlRISE(SpotLock_ClientsTypeDef* pClient)
+void SPOT_Lock_Client_ControlRISE(SpotLock_ClientsTypeDef* pClient, u32 timerSec)
 {
 	pClient->SpotLockControl									= SPOTLOCK_CTRL_RISE;
+	
+	pClient->ControlRISEEnable								= true;
+	
+	Stm32_Calculagraph_CountdownSec(&pClient->ControlRISEAfterS, timerSec);
 }
 
 /**********************************************************************************************************
- @Function			void SPOT_Lock_Client_ControlFALL(SpotLock_ClientsTypeDef* pClient)
+ @Function			void SPOT_Lock_Client_ControlFALL(SpotLock_ClientsTypeDef* pClient, u32 timerSec)
  @Description			SPOT_Lock_Client_ControlFALL				: SpotLock客户端控制降锁
  @Input				pClient								: SpotLock客户端实例
+					timerSec								: SpotLock保持降锁时间
  @Return				void
 **********************************************************************************************************/
-void SPOT_Lock_Client_ControlFALL(SpotLock_ClientsTypeDef* pClient)
+void SPOT_Lock_Client_ControlFALL(SpotLock_ClientsTypeDef* pClient, u32 timerSec)
 {
 	pClient->SpotLockControl									= SPOTLOCK_CTRL_FALL;
+	
+	pClient->ControlFALLEnable								= true;
+	
+	Stm32_Calculagraph_CountdownSec(&pClient->ControlFALLDelayS, timerSec);
 }
 
 

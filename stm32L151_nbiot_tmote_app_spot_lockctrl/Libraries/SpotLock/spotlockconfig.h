@@ -24,24 +24,21 @@ typedef enum
 
 
 
-
-
 /* SpotLock Clients */
 struct SpotLock_ClientsTypeDef
 {
 	MOTOR_SpotLockCtrlTypeDef			SpotLockState;
 	MOTOR_SpotLockCtrlTypeDef			SpotLockControl;
 	
+	bool								ControlRISEEnable;
+	bool								ControlFALLEnable;
+	Stm32_CalculagraphTypeDef			ControlRISEAfterS;
+	Stm32_CalculagraphTypeDef			ControlFALLDelayS;
 	
 	
 	
 	
 };
-
-
-
-
-
 
 
 
@@ -53,8 +50,8 @@ extern SpotLock_ClientsTypeDef			SpotLockClientHandler;
 
 void SPOT_Lock_Client_Init(SpotLock_ClientsTypeDef* pClient);
 
-void SPOT_Lock_Client_ControlRISE(SpotLock_ClientsTypeDef* pClient);
-void SPOT_Lock_Client_ControlFALL(SpotLock_ClientsTypeDef* pClient);
+void SPOT_Lock_Client_ControlRISE(SpotLock_ClientsTypeDef* pClient, u32 timerSec);
+void SPOT_Lock_Client_ControlFALL(SpotLock_ClientsTypeDef* pClient, u32 timerSec);
 
 
 

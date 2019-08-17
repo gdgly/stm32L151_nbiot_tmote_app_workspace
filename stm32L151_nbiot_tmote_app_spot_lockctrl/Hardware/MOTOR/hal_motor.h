@@ -34,6 +34,12 @@
 #define MOTOR_CTRL_TYPE2					1
 #define MOTOR_CTRL_TYPE					MOTOR_CTRL_TYPE1
 
+#define MOTOR_CTRL_KEEP_MODE1				0
+#define MOTOR_CTRL_KEEP_MODE2				1
+#define MOTOR_CTRL_KEEP_MODE				MOTOR_CTRL_KEEP_MODE1
+
+#define MOTOR_CTRL_KEEP_ERR				5
+
 #if MOTOR_CTRL_TYPE
 #define MOTOR_RISE()					{MOTOR_FI_OUT(OFF); MOTOR_BI_OUT(ON); }																							//升锁
 #define MOTOR_FALL()					{MOTOR_BI_OUT(OFF); MOTOR_FI_OUT(ON); }																							//降锁

@@ -22,6 +22,8 @@
 #include "hal_qmc5883l.h"
 #include "string.h"
 #include "radio_rf_app.h"
+#include "spotlockconfig.h"
+#include "spotlockapp.h"
 
 /**********************************************************************************************************
  @Function			void NET_COAP_APP_PollExecution(NBIOT_ClientsTypeDef* pClient)
@@ -2150,6 +2152,26 @@ void NET_COAP_NBIOT_Event_ExecutDownlinkData(NBIOT_ClientsTypeDef* pClient)
 						if (recvMagicNum == TCLOD_MAGIC_NUM) {
 							TCFG_EEPROM_SetNbiotHeart(TCFG_EEPROM_ChangeNbiotHeart(nbheartval));
 							TCFG_SystemData.NBIotHeart = TCFG_EEPROM_GetNbiotHeart();
+						}
+						else {
+							ret = NETIP_UNKNOWNERROR;
+						}
+					}
+				#endif
+					/* SpotLock */
+				#if NBCOAP_DOWNLOAD_CMD_SPOTLOCK
+					else if (strstr((char *)pClient->Recvbuf + recvBufOffset + TCLOD_DATA_OFFSET, "LockControl") != NULL) {
+						u16 Action;
+						u16 Seconds;
+						sscanf((char *)pClient->Recvbuf + recvBufOffset + TCLOD_DATA_OFFSET, \
+							"{(LockControl):{(Action):%hu,(Seconds):%hu,(Magic):%hu}}", &Action, &Seconds, &recvMagicNum);
+						if (recvMagicNum == TCLOD_MAGIC_NUM) {
+							if (Action != 0) {
+								SPOT_Lock_App_RISE(Seconds);
+							}
+							else {
+								SPOT_Lock_App_FALL(Seconds);
+							}
 						}
 						else {
 							ret = NETIP_UNKNOWNERROR;

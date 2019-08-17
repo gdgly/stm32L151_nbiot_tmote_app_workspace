@@ -391,6 +391,7 @@
 #define	RADIO_DOWNLOAD_CMD_INTERVAL		1								//RADIO下行指令RadarSampleInterval
 #define	RADIO_DOWNLOAD_CMD_HIGHPASS		1								//RADIO下行指令RadarHighPass
 #define	RADIO_DOWNLOAD_CMD_RFDPRINTLV		1								//RADIO下行指令RFDprintLv
+#define	RADIO_DOWNLOAD_CMD_SPOTLOCK		1								//RADIO下行指令SpotLock
 #define	RADIO_DOWNLOAD_CMD_RESTORE		1								//RADIO下行指令Restore
 #endif
 #if NETPROTOCAL == NETMQTTSN
@@ -416,6 +417,7 @@
 #define	RADIO_DOWNLOAD_CMD_INTERVAL		1								//RADIO下行指令RadarSampleInterval
 #define	RADIO_DOWNLOAD_CMD_HIGHPASS		1								//RADIO下行指令RadarHighPass
 #define	RADIO_DOWNLOAD_CMD_RFDPRINTLV		1								//RADIO下行指令RFDprintLv
+#define	RADIO_DOWNLOAD_CMD_SPOTLOCK		1								//RADIO下行指令SpotLock
 #define	RADIO_DOWNLOAD_CMD_RESTORE		0								//RADIO下行指令Restore
 #endif
 #if NETPROTOCAL == NETONENET
@@ -441,6 +443,7 @@
 #define	RADIO_DOWNLOAD_CMD_INTERVAL		1								//RADIO下行指令RadarSampleInterval
 #define	RADIO_DOWNLOAD_CMD_HIGHPASS		1								//RADIO下行指令RadarHighPass
 #define	RADIO_DOWNLOAD_CMD_RFDPRINTLV		1								//RADIO下行指令RFDprintLv
+#define	RADIO_DOWNLOAD_CMD_SPOTLOCK		1								//RADIO下行指令SpotLock
 #define	RADIO_DOWNLOAD_CMD_RESTORE		1								//RADIO下行指令Restore
 #endif
 
@@ -454,6 +457,7 @@
 #define	NBCOAP_DOWNLOAD_CMD_ACTIVE		1								//NBCOAP下行指令Active
 #define	NBCOAP_DOWNLOAD_CMD_MAGMOD		1								//NBCOAP下行指令MagMod
 #define	NBCOAP_DOWNLOAD_CMD_NBHEART		1								//NBCOAP下行指令NbHeart
+#define	NBCOAP_DOWNLOAD_CMD_SPOTLOCK		1								//NBCOAP下行指令SpotLock
 #define	NBCOAP_DOWNLOAD_CMD_INITRADAR		1								//NBCOAP下行指令InitRadar
 #define	NBCOAP_DOWNLOAD_CMD_INITMAG		1								//NBCOAP下行指令InitMag
 #define	NBCOAP_DOWNLOAD_CMD_DISRANGE		1								//NBCOAP下行指令DisRange
