@@ -56,6 +56,8 @@ void SPOT_Lock_App_Task(void)
 			
 			SpotLockClientHandler.SpotLockState	= MOTOR_SPOTLOCK_STATE();
 			SpotLockClientHandler.SpotLockControl	= MOTOR_SPOTLOCK_STATE();
+			
+			SPOT_Lock_Client_SetStateFlag(&SpotLockClientHandler, (SpotLockClientHandler.SpotLockState == SPOTLOCK_CTRL_RISE) ? SPOT_LOCK_RISE : SPOT_LOCK_FALL);
 		}
 		
 		if (SpotLockClientHandler.SpotLockControl == SPOTLOCK_CTRL_FALL) {
@@ -64,6 +66,8 @@ void SPOT_Lock_App_Task(void)
 			
 			SpotLockClientHandler.SpotLockState	= MOTOR_SPOTLOCK_STATE();
 			SpotLockClientHandler.SpotLockControl	= MOTOR_SPOTLOCK_STATE();
+			
+			SPOT_Lock_Client_SetStateFlag(&SpotLockClientHandler, (SpotLockClientHandler.SpotLockState == SPOTLOCK_CTRL_RISE) ? SPOT_LOCK_RISE : SPOT_LOCK_FALL);
 		}
 	}
 	

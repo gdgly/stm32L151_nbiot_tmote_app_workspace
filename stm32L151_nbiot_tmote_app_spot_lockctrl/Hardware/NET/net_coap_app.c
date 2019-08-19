@@ -2167,10 +2167,10 @@ void NET_COAP_NBIOT_Event_ExecutDownlinkData(NBIOT_ClientsTypeDef* pClient)
 							"{(LockControl):{(Action):%hu,(Seconds):%hu,(Magic):%hu}}", &Action, &Seconds, &recvMagicNum);
 						if (recvMagicNum == TCLOD_MAGIC_NUM) {
 							if (Action != 0) {
-								SPOT_Lock_App_RISE(Seconds);
+								SPOT_Lock_App_FALL(Seconds);
 							}
 							else {
-								SPOT_Lock_App_FALL(Seconds);
+								SPOT_Lock_App_RISE(Seconds);
 							}
 						}
 						else {

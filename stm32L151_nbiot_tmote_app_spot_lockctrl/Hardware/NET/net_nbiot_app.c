@@ -27,6 +27,8 @@
 #include "hal_rtc.h"
 #include "radar_api.h"
 #include "string.h"
+#include "spotlockconfig.h"
+#include "spotlockapp.h"
 
 NETCoapNeedSendCodeTypeDef	NETCoapNeedSendCode = NETCoapNeedSendCode_initializer;
 NETMqttSNNeedSendCodeTypeDef	NETMqttSNNeedSendCode = NETMqttSNNeedSendCode_initializer;
@@ -410,7 +412,7 @@ void NET_NBIOT_DataProcessing(NET_NBIOT_ClientsTypeDef* pClient)
 		NET_NBIOT_CoapShortStructureInit();
 		CoapShortStructure.MsgPacket.Type					= COAP_MSGTYPE_TYPE_SHORT_STATUS;
 		CoapShortStructure.DateTime						= SpotStatusData.unixTime;
-		CoapShortStructure.SpotStatus						= SpotStatusData.spot_status;
+		CoapShortStructure.SpotStatus						= ((MOTOR_SPOTLOCK_STATE() == SPOTLOCK_CTRL_FALL) ? (SpotStatusData.spot_status | (1 << 2)) : (SpotStatusData.spot_status & ~(1 << 2)));
 		CoapShortStructure.SpotCount						= SpotStatusData.spot_count;
 		NET_Coap_Message_SendDataEnqueue((unsigned char *)&CoapShortStructure, sizeof(CoapShortStructure));
 		NETCoapNeedSendCode.ShortStatus = 0;
@@ -425,7 +427,7 @@ void NET_NBIOT_DataProcessing(NET_NBIOT_ClientsTypeDef* pClient)
 		NET_NBIOT_CoapLongStructureInit();
 		CoapLongStructure.MsgPacket.Type					= COAP_MSGTYPE_TYPE_LONG_STATUS;
 		CoapLongStructure.DateTime						= SpotStatusData.unixTime;
-		CoapLongStructure.SpotStatus						= SpotStatusData.spot_status;
+		CoapLongStructure.SpotStatus						= ((MOTOR_SPOTLOCK_STATE() == SPOTLOCK_CTRL_FALL) ? (SpotStatusData.spot_status | (1 << 2)) : (SpotStatusData.spot_status & ~(1 << 2)));
 		CoapLongStructure.SpotCount						= SpotStatusData.spot_count;
 		CoapLongStructure.MagneticX						= SpotStatusData.qmc5883lData.X_Now;
 		CoapLongStructure.MagneticY						= SpotStatusData.qmc5883lData.Y_Now;
@@ -541,7 +543,7 @@ void NET_NBIOT_DataProcessing(NET_NBIOT_ClientsTypeDef* pClient)
 #if NBMQTTSN_SENDCODE_STATUS_BASIC
 		Inspect_Message_SpotStatusDequeue(&SpotStatusData);
 		MqttSNStatusBasicStructure.DeviceSN				= TCFG_EEPROM_Get_MAC_SN();
-		MqttSNStatusBasicStructure.Status					= SpotStatusData.spot_status;
+		MqttSNStatusBasicStructure.Status					= ((MOTOR_SPOTLOCK_STATE() == SPOTLOCK_CTRL_FALL) ? (SpotStatusData.spot_status | (1 << 2)) : (SpotStatusData.spot_status & ~(1 << 2)));
 		MqttSNStatusBasicStructure.Count					= SpotStatusData.spot_count;
 		MqttSNStatusBasicStructure.DateTime				= SpotStatusData.unixTime;
 		NET_MqttSN_Message_StatusBasicEnqueue(MqttSNStatusBasicStructure);
@@ -558,7 +560,7 @@ void NET_NBIOT_DataProcessing(NET_NBIOT_ClientsTypeDef* pClient)
 #if NBMQTTSN_SENDCODE_STATUS_EXTEND
 		Inspect_Message_SpotStatusDequeue(&SpotStatusData);
 		MqttSNStatusExtendStructure.DeviceSN				= TCFG_EEPROM_Get_MAC_SN();
-		MqttSNStatusExtendStructure.Status					= SpotStatusData.spot_status;
+		MqttSNStatusExtendStructure.Status					= ((MOTOR_SPOTLOCK_STATE() == SPOTLOCK_CTRL_FALL) ? (SpotStatusData.spot_status | (1 << 2)) : (SpotStatusData.spot_status & ~(1 << 2)));
 		MqttSNStatusExtendStructure.Count					= SpotStatusData.spot_count;
 		MqttSNStatusExtendStructure.DateTime				= SpotStatusData.unixTime;
 		MqttSNStatusExtendStructure.MagX					= SpotStatusData.qmc5883lData.X_Now;
@@ -661,7 +663,7 @@ void NET_NBIOT_DataProcessing(NET_NBIOT_ClientsTypeDef* pClient)
 		NET_NBIOT_MqttSNShortStructureInit();
 		MqttSNShortStructure.MsgPacket.Type				= MQTTSN_MSGTYPE_TYPE_SHORT_STATUS;
 		MqttSNShortStructure.DateTime						= SpotStatusData.unixTime;
-		MqttSNShortStructure.SpotStatus					= SpotStatusData.spot_status;
+		MqttSNShortStructure.SpotStatus					= ((MOTOR_SPOTLOCK_STATE() == SPOTLOCK_CTRL_FALL) ? (SpotStatusData.spot_status | (1 << 2)) : (SpotStatusData.spot_status & ~(1 << 2)));
 		MqttSNShortStructure.SpotCount					= SpotStatusData.spot_count;
 		NET_MqttSN_Message_SendDataEnqueue((unsigned char *)&MqttSNShortStructure, sizeof(MqttSNShortStructure));
 		NETMqttSNNeedSendCode.StatusBasic = 0;
@@ -676,7 +678,7 @@ void NET_NBIOT_DataProcessing(NET_NBIOT_ClientsTypeDef* pClient)
 		NET_NBIOT_MqttSNLongStructureInit();
 		MqttSNLongStructure.MsgPacket.Type					= MQTTSN_MSGTYPE_TYPE_LONG_STATUS;
 		MqttSNLongStructure.DateTime						= SpotStatusData.unixTime;
-		MqttSNLongStructure.SpotStatus					= SpotStatusData.spot_status;
+		MqttSNLongStructure.SpotStatus					= ((MOTOR_SPOTLOCK_STATE() == SPOTLOCK_CTRL_FALL) ? (SpotStatusData.spot_status | (1 << 2)) : (SpotStatusData.spot_status & ~(1 << 2)));
 		MqttSNLongStructure.SpotCount						= SpotStatusData.spot_count;
 		MqttSNLongStructure.MagneticX						= SpotStatusData.qmc5883lData.X_Now;
 		MqttSNLongStructure.MagneticY						= SpotStatusData.qmc5883lData.Y_Now;
@@ -791,7 +793,7 @@ void NET_NBIOT_DataProcessing(NET_NBIOT_ClientsTypeDef* pClient)
 		NET_NBIOT_OneNETShortStructureInit();
 		OneNETShortStructure.MsgPacket.Type				= ONENET_MSGTYPE_TYPE_SHORT_STATUS;
 		OneNETShortStructure.DateTime						= SpotStatusData.unixTime;
-		OneNETShortStructure.SpotStatus					= SpotStatusData.spot_status;
+		OneNETShortStructure.SpotStatus					= ((MOTOR_SPOTLOCK_STATE() == SPOTLOCK_CTRL_FALL) ? (SpotStatusData.spot_status | (1 << 2)) : (SpotStatusData.spot_status & ~(1 << 2)));
 		OneNETShortStructure.SpotCount					= SpotStatusData.spot_count;
 		NET_OneNET_Message_SendDataEnqueue((unsigned char *)&OneNETShortStructure, sizeof(OneNETShortStructure));
 		NETOneNETNeedSendCode.ShortStatus = 0;
@@ -806,7 +808,7 @@ void NET_NBIOT_DataProcessing(NET_NBIOT_ClientsTypeDef* pClient)
 		NET_NBIOT_OneNETLongStructureInit();
 		OneNETLongStructure.MsgPacket.Type					= ONENET_MSGTYPE_TYPE_LONG_STATUS;
 		OneNETLongStructure.DateTime						= SpotStatusData.unixTime;
-		OneNETLongStructure.SpotStatus					= SpotStatusData.spot_status;
+		OneNETLongStructure.SpotStatus					= ((MOTOR_SPOTLOCK_STATE() == SPOTLOCK_CTRL_FALL) ? (SpotStatusData.spot_status | (1 << 2)) : (SpotStatusData.spot_status & ~(1 << 2)));
 		OneNETLongStructure.SpotCount						= SpotStatusData.spot_count;
 		OneNETLongStructure.MagneticX						= SpotStatusData.qmc5883lData.X_Now;
 		OneNETLongStructure.MagneticY						= SpotStatusData.qmc5883lData.Y_Now;

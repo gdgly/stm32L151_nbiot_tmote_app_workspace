@@ -590,10 +590,10 @@ char Radio_Rf_Operate_Recvmsg(uint8_t *inmsg, uint8_t len)
 				else if (strstr(((tmote_general_cmd_s*)CFG_P_FRAME_PAYLOAD(inmsg))->buf, "spotlock")) {
 					sscanf(((tmote_general_cmd_s*)CFG_P_FRAME_PAYLOAD(inmsg))->buf, "spotlock:%hu", &uval16);
 					if (uval16 == 0) {
-						SPOT_Lock_App_FALL(0);
+						SPOT_Lock_App_RISE(0);
 					}
 					else if (uval16 == 1) {
-						SPOT_Lock_App_RISE(0);
+						SPOT_Lock_App_FALL(0);
 					}
 					else {
 						SPOT_Lock_App_FALL(uval16);

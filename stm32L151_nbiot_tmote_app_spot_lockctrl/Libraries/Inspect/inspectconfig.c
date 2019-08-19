@@ -24,6 +24,8 @@
 #include "hal_temperature.h"
 #include "radar_api.h"
 #include "radio_rf_app.h"
+#include "spotlockconfig.h"
+#include "spotlockapp.h"
 
 SpotStatusTypedef				SpotStatusDataBackUp;
 
@@ -191,6 +193,39 @@ void Inspect_Spot_ExistenceDetect(void)
 			SpotStatusData.timeCounter					= Stm32_GetSecondTick();
 			
 			Inspect_Message_SpotStatusEnqueue(SpotStatusData);
+		}
+		time2send_spot = Stm32_GetSecondTick();
+	}
+	
+	/* 车位锁状态改变包 */
+	if (SPOT_Lock_Client_GetStateFlag(&SpotLockClientHandler) != SPOT_LOCK_NONE) {
+		Inspect_Message_SpotStatusDequeueEx(&SpotStatusData);
+		if (SpotStatusData.timeCounter != 0) {
+			SpotStatusData.spot_count = 1;
+			
+			SpotStatusData.qmc5883lData.X_Now				= Qmc5883lData.X_Now;
+			SpotStatusData.qmc5883lData.Y_Now				= Qmc5883lData.Y_Now;
+			SpotStatusData.qmc5883lData.Z_Now				= Qmc5883lData.Z_Now;
+			SpotStatusData.qmc5883lData.X_Back				= Qmc5883lData.X_Back;
+			SpotStatusData.qmc5883lData.Y_Back				= Qmc5883lData.Y_Back;
+			SpotStatusData.qmc5883lData.Z_Back				= Qmc5883lData.Z_Back;
+			
+			SpotStatusData.qmc5883lDiff.BackVal_Diff		= Qmc5883lDiff.BackVal_Diff;
+			SpotStatusData.qmc5883lDiff.GraduaVal_Diff		= Qmc5883lDiff.GraduaVal_Diff;
+			
+			SpotStatusData.radarData.NotargetNum			= sRadarData.NotargetNum;
+			SpotStatusData.radarData.DismagNum				= sRadarData.DismagNum;
+			SpotStatusData.radarData.CoverNum				= sRadarData.CoverNum;
+			SpotStatusData.radarData.DisVal				= sRadarData.DisVal;
+			SpotStatusData.radarData.MagVal				= sRadarData.MagVal;
+			SpotStatusData.radarData.Diff					= sRadarData.Diff;
+			SpotStatusData.radarData.Diff_v2				= sRadarData.Diff_v2;
+			SpotStatusData.radarData.timedomain_square_dif	= sRadarData.timedomain_square_dif;
+			
+			SpotStatusData.timeCounter					= Stm32_GetSecondTick();
+			
+			Inspect_Message_SpotStatusEnqueue(SpotStatusData);
+			SPOT_Lock_Client_SetStateFlag(&SpotLockClientHandler, SPOT_LOCK_NONE);
 		}
 		time2send_spot = Stm32_GetSecondTick();
 	}

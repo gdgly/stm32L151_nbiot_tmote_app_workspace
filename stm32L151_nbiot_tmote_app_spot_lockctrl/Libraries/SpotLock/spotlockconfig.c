@@ -31,7 +31,7 @@ void SPOT_Lock_Client_Init(SpotLock_ClientsTypeDef* pClient)
 	pClient->ControlRISEEnable								= false;
 	pClient->ControlFALLEnable								= false;
 	
-	
+	pClient->SpotLockStateFlag								= SPOT_LOCK_NONE;
 	
 	
 	
@@ -75,10 +75,30 @@ void SPOT_Lock_Client_ControlFALL(SpotLock_ClientsTypeDef* pClient, u32 timerSec
 	Stm32_Calculagraph_CountdownSec(&pClient->ControlFALLDelayS, timerSec);
 }
 
+/**********************************************************************************************************
+ @Function			SpotLock_StateFlagTypeDef SPOT_Lock_Client_SetStateFlag(SpotLock_ClientsTypeDef* pClient, SpotLock_StateFlagTypeDef LockState)
+ @Description			SPOT_Lock_Client_SetStateFlag				: SpotLock设置锁状态
+ @Input				pClient								: SpotLock客户端实例
+					LockState								: SpotLock状态
+ @Return				void
+**********************************************************************************************************/
+SpotLock_StateFlagTypeDef SPOT_Lock_Client_SetStateFlag(SpotLock_ClientsTypeDef* pClient, SpotLock_StateFlagTypeDef LockState)
+{
+	pClient->SpotLockStateFlag								= LockState;
+	
+	return pClient->SpotLockStateFlag;
+}
 
-
-
-
+/**********************************************************************************************************
+ @Function			SpotLock_StateFlagTypeDef SPOT_Lock_Client_GetStateFlag(SpotLock_ClientsTypeDef* pClient)
+ @Description			SPOT_Lock_Client_GetStateFlag				: SpotLock获取锁状态
+ @Input				pClient								: SpotLock客户端实例
+ @Return				LockState								: SpotLock状态
+**********************************************************************************************************/
+SpotLock_StateFlagTypeDef SPOT_Lock_Client_GetStateFlag(SpotLock_ClientsTypeDef* pClient)
+{
+	return pClient->SpotLockStateFlag;
+}
 
 
 

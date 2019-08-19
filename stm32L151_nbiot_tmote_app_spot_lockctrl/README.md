@@ -1,7 +1,14 @@
 # stm32L151_nbiot_tmote_app_spot
-> ##### Copyright (C) 2019 Movebroad Version:20.147 Design by Movebroad
+> ##### Copyright (C) 2019 Movebroad Version:20.148 Design by Movebroad
 > ##### movebroad Kangkang ps: 版本号以下为此版本修改、增加、去除等内容记录！
 
+* 2019-08-19 :
+	* 车位锁修改。
+	* Radio命令下发: spotlock:val，val=0，升锁，val=1，降锁，val>1，降锁且保持val秒。
+	* 远程命令下发: 命令值1控制升降锁，命令值2控制延时多久升锁和保持多久降锁。
+	* 状态包中状态值第3为标识锁态，1为降锁态，0为升锁态。
+* 2019-08-19 :
+	* 版本号修改为148。
 * 2019-08-17 :
 	* 车位锁修改。
 	* 初步Demo完成，增加Radio，NBIot CoAP，命令下发。

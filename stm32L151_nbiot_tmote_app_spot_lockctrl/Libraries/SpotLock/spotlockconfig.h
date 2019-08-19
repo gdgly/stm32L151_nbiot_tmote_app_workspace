@@ -8,7 +8,6 @@
 
 
 
-
 typedef struct SpotLock_ClientsTypeDef		SpotLock_ClientsTypeDef;
 
 
@@ -20,6 +19,14 @@ typedef enum
 	SPOT_LOCK_OK						= 0x00,
 	SPOT_LOCK_ERROR					= 0x01
 }SpotLock_StatusTypeDef;
+
+/* SpotLock State Flag */
+typedef enum
+{
+	SPOT_LOCK_NONE						= 0x00,
+	SPOT_LOCK_RISE						= 0x01,
+	SPOT_LOCK_FALL						= 0x02
+}SpotLock_StateFlagTypeDef;
 
 
 
@@ -35,7 +42,7 @@ struct SpotLock_ClientsTypeDef
 	Stm32_CalculagraphTypeDef			ControlRISEAfterS;
 	Stm32_CalculagraphTypeDef			ControlFALLDelayS;
 	
-	
+	SpotLock_StateFlagTypeDef			SpotLockStateFlag;
 	
 	
 };
@@ -52,6 +59,12 @@ void SPOT_Lock_Client_Init(SpotLock_ClientsTypeDef* pClient);
 
 void SPOT_Lock_Client_ControlRISE(SpotLock_ClientsTypeDef* pClient, u32 timerSec);
 void SPOT_Lock_Client_ControlFALL(SpotLock_ClientsTypeDef* pClient, u32 timerSec);
+
+SpotLock_StateFlagTypeDef SPOT_Lock_Client_SetStateFlag(SpotLock_ClientsTypeDef* pClient, SpotLock_StateFlagTypeDef LockState);
+SpotLock_StateFlagTypeDef SPOT_Lock_Client_GetStateFlag(SpotLock_ClientsTypeDef* pClient);
+
+
+
 
 
 
