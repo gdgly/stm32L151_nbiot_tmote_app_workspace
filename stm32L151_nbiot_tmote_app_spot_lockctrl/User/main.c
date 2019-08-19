@@ -154,6 +154,7 @@ int main(void)
 	IWDG_Feed();																		//喂狗
 	
 	SPOT_Lock_Initialization();															//SpotLock初始化
+	IWDG_Feed();
 	
 	Radio_Trf_Printf(" Device Reboot:%d Cause:%d Radar:%d Nor:%s", TCFG_SystemData.DeviceBootCount, SoftResetFlag, radar_vcc, GD25Q_SPIFLASH_Get_Status()?"None":"Ok");
 	Radio_Trf_Printf(" Copyright (C) 2019 Movebroad Version:%d.%d", TCFG_Utility_Get_Major_Softnumber(), TCFG_Utility_Get_Sub_Softnumber());
@@ -676,11 +677,11 @@ void DeBugMain(void)
 	NBIOT_Neul_NBxx_HardwareReboot(&NbiotClientHandler, 8000);
 #endif
 	
-	
+	INFRARED_TUBE_TRANSMIT_ENABLE();
 	
 	while (true) {
 		
-		
+		Radio_Trf_Printf("Infr : %d", INFRARED_TUBE_RECEIVE_STATE());
 		
 #if DEBUGLOWPOWERMODE == DEBUGLOWPOWERENABLE
 		LowPowerBeforeSleepInit();

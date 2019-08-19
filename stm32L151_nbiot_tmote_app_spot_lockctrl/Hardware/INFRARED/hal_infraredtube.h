@@ -45,14 +45,4 @@ u8 InfraredTube_OPT_K2_IN(void);											//红外对管接收管输入
 INFRARED_Tube_StatusTypeDef InfraredTube_SpotLock_Read(void);					//车位锁状态读取
 INFRARED_Tube_StatusTypeDef InfraredTube_SpotLock_State(void);					//车位锁状态读取
 
-
-
-
-
-
-
-
-
-
-
 #endif /* __HAL_INFRARED_TUBE_H */

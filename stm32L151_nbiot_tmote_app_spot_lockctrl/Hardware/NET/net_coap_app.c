@@ -1936,6 +1936,31 @@ void NET_COAP_NBIOT_Event_RecvDataRANormal(NBIOT_ClientsTypeDef* pClient)
 }
 
 /**********************************************************************************************************
+ @Function			void NET_COAP_NBIOT_Event_RecvDataNormal(NBIOT_ClientsTypeDef* pClient)
+ @Description			NET_COAP_NBIOT_Event_RecvDataNormal	: 接收数据
+ @Input				pClient							: NBIOT客户端实例
+ @Return				void
+**********************************************************************************************************/
+void NET_COAP_NBIOT_Event_RecvDataNormal(NBIOT_ClientsTypeDef* pClient)
+{
+	NBIOT_Neul_NBxx_QueryReadMessageCOAPPayload(pClient);
+	
+	/* 检查是否有下行数据 */
+	if (pClient->Parameter.coapReadMessage.buffered != 0) {
+		/* Has Data Need Receive */
+		for (int index = 0; index < pClient->Parameter.coapReadMessage.buffered; index++) {
+			/* 读取负载数据 */
+			if (NBIOT_Neul_NBxx_ReadCOAPPayload(pClient) == NBIOT_OK) {
+				NET_Coap_Message_RecvDataEnqueue(pClient->Recvbuf, pClient->Recvlen);
+#ifdef COAP_DEBUG_LOG_RF_PRINT
+				COAP_DEBUG_LOG_PRINTF("CoAP Recv Data Ok");
+#endif
+			}
+		}
+	}
+}
+
+/**********************************************************************************************************
  @Function			void NET_COAP_NBIOT_Event_ExecutDownlinkData(NBIOT_ClientsTypeDef* pClient)
  @Description			NET_COAP_NBIOT_Event_ExecutDownlinkData	: 下行数据处理
  @Input				pClient							: NBIOT客户端实例
@@ -1947,6 +1972,8 @@ void NET_COAP_NBIOT_Event_ExecutDownlinkData(NBIOT_ClientsTypeDef* pClient)
 	u16 recvBufOffset = 0;
 	u16 recvMagicNum = 0;
 	u8 ret = NETIP_OK;
+	
+	NET_COAP_NBIOT_Event_RecvDataNormal(pClient);
 	
 	if (NET_Coap_Message_RecvDataDequeue(pClient->Recvbuf, (unsigned short*)&pClient->Recvlen) == true) {
 		pClient->Recvbuf[pClient->Recvlen] = '\0';

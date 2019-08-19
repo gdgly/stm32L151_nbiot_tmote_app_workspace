@@ -124,37 +124,4 @@ INFRARED_Tube_StatusTypeDef InfraredTube_SpotLock_State(void)
 	return SpotLockState;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /********************************************** END OF FLEE **********************************************/
