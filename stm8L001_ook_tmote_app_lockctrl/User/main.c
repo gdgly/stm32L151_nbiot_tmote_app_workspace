@@ -18,28 +18,6 @@
 #include "delay.h"
 #include "usart.h"
 
-void delay_us(void)
-{
-     asm("nop");
-     asm("nop");
-     asm("nop");
-     asm("nop");
-}
-
-void delay_ms(u32 nCount)
-{
-     while (nCount--) {
-          for (unsigned int i = 900; i > 0; i--) delay_us();
-     }
-}
-
-
-
-
-
-
-
-
 
 
 
@@ -48,7 +26,7 @@ void delay_ms(u32 nCount)
  @Function			void main(void)
  @Description			Main
  @Input				void
- @Return				int
+ @Return				void
 **********************************************************************************************************/
 void main(void)
 {
@@ -62,8 +40,7 @@ void main(void)
           
           GPIO_ToggleBits(GPIOB, GPIO_Pin_5);
           
-          delay_ms(1000);
-          
+          Delay_MS_Normal(1000);
      }
 }
 

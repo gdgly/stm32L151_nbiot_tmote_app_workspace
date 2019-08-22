@@ -282,8 +282,8 @@ F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L
 -D__EDG_ANSIC=1
 -D__EDG_CPP11_IL_EXTENSIONS_SUPPORTED=1
 -DSTM8L05X_LD_VL=1
--D_DLIB_CONFIG_FILE_HEADER_NAME="F:\IAR Systems\Embedded Workbench 8.3\stm8\LIB\dlstm8smf.h"
--D_DLIB_CONFIG_FILE_STRING="F:\\IAR Systems\\Embedded Workbench 8.3\\stm8\\LIB\\dlstm8smf.h"
+-D_DLIB_CONFIG_FILE_HEADER_NAME="F:\IAR Systems\Embedded Workbench 8.3\stm8\LIB\dlstm8smn.h"
+-D_DLIB_CONFIG_FILE_STRING="F:\\IAR Systems\\Embedded Workbench 8.3\\stm8\\LIB\\dlstm8smn.h"
 -D__VERSION__="IAR C/C++ Compiler V3.11.1.207 for STM8"
 -D__CODE_MEMORY_LIST1__()=__CODE_MEM_HELPER1__(__code, 0 )
 -D__CODE_MEMORY_LIST2__(_P1)=__CODE_MEM_HELPER2__(__code, 0 ,  _P1 )

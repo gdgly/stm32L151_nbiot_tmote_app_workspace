@@ -3,6 +3,11 @@
 
 #include "sys.h"
 
+void Delay_US_Normal(void);
+void Delay_MS_Normal(u16 nCount);
+
+
+
 
 
 

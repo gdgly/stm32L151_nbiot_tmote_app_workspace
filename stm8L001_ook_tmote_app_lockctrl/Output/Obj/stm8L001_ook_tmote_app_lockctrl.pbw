@@ -86166,6 +86166,48 @@
     "scope": null
   },
   {
+    "ID": "c:@F@Delay_US_Normal",
+    "What": "Function",
+    "defdec": "Def",
+    "display": "void Delay_US_Normal(void)",
+    "location": {
+      "column": "6",
+      "line": "24",
+      "path": "F:\\Movebroad\\stm32L151_nbiot\\workspace\\stm32L151_nbiot_tmote_app_workspace\\stm8L001_ook_tmote_app_lockctrl\\System\\Delay\\delay.c"
+    },
+    "name": "Delay_US_Normal",
+    "origin": "project_file",
+    "scope": null
+  },
+  {
+    "ID": "c:@F@Delay_MS_Normal",
+    "What": "Function",
+    "defdec": "Def",
+    "display": "void Delay_MS_Normal(u16)",
+    "location": {
+      "column": "6",
+      "line": "38",
+      "path": "F:\\Movebroad\\stm32L151_nbiot\\workspace\\stm32L151_nbiot_tmote_app_workspace\\stm8L001_ook_tmote_app_lockctrl\\System\\Delay\\delay.c"
+    },
+    "name": "Delay_MS_Normal",
+    "origin": "project_file",
+    "scope": null
+  },
+  {
+    "ID": "c:delay.c@1448@F@Delay_MS_Normal@i",
+    "What": "Variable",
+    "defdec": "Def",
+    "display": "i",
+    "location": {
+      "column": "20",
+      "line": "41",
+      "path": "F:\\Movebroad\\stm32L151_nbiot\\workspace\\stm32L151_nbiot_tmote_app_workspace\\stm8L001_ook_tmote_app_lockctrl\\System\\Delay\\delay.c"
+    },
+    "name": "i",
+    "origin": "project_file",
+    "scope": null
+  },
+  {
     "ID": "c:sys.h@27@macro@__SYS_H",
     "What": "MacroDef",
     "defdec": "Def",
@@ -86284,66 +86326,10 @@
     "display": "void Stm8_LSIClock_Init(CLK_SYSCLKDiv_TypeDef)",
     "location": {
       "column": "6",
-      "line": "41",
+      "line": "45",
       "path": "F:\\Movebroad\\stm32L151_nbiot\\workspace\\stm32L151_nbiot_tmote_app_workspace\\stm8L001_ook_tmote_app_lockctrl\\System\\Sys\\sys.c"
     },
     "name": "Stm8_LSIClock_Init",
-    "origin": "project_file",
-    "scope": null
-  },
-  {
-    "ID": "c:@F@delay_us",
-    "What": "Function",
-    "defdec": "Def",
-    "display": "void delay_us(void)",
-    "location": {
-      "column": "6",
-      "line": "21",
-      "path": "F:\\Movebroad\\stm32L151_nbiot\\workspace\\stm32L151_nbiot_tmote_app_workspace\\stm8L001_ook_tmote_app_lockctrl\\User\\main.c"
-    },
-    "name": "delay_us",
-    "origin": "project_file",
-    "scope": null
-  },
-  {
-    "ID": "c:@F@delay_ms",
-    "What": "Function",
-    "defdec": "Def",
-    "display": "void delay_ms(u32)",
-    "location": {
-      "column": "6",
-      "line": "29",
-      "path": "F:\\Movebroad\\stm32L151_nbiot\\workspace\\stm32L151_nbiot_tmote_app_workspace\\stm8L001_ook_tmote_app_lockctrl\\User\\main.c"
-    },
-    "name": "delay_ms",
-    "origin": "project_file",
-    "scope": null
-  },
-  {
-    "ID": "c:main.c@749@F@delay_ms@i",
-    "What": "Variable",
-    "defdec": "Def",
-    "display": "i",
-    "location": {
-      "column": "29",
-      "line": "32",
-      "path": "F:\\Movebroad\\stm32L151_nbiot\\workspace\\stm32L151_nbiot_tmote_app_workspace\\stm8L001_ook_tmote_app_lockctrl\\User\\main.c"
-    },
-    "name": "i",
-    "origin": "project_file",
-    "scope": null
-  },
-  {
-    "ID": "c:@F@main",
-    "What": "Function",
-    "defdec": "Def",
-    "display": "void main(void)",
-    "location": {
-      "column": "6",
-      "line": "53",
-      "path": "F:\\Movebroad\\stm32L151_nbiot\\workspace\\stm32L151_nbiot_tmote_app_workspace\\stm8L001_ook_tmote_app_lockctrl\\User\\main.c"
-    },
-    "name": "main",
     "origin": "project_file",
     "scope": null
   },
@@ -86362,6 +86348,62 @@
     "scope": null
   },
   {
+    "ID": "c:@F@Delay_US_Normal",
+    "What": "Function",
+    "defdec": "Dec",
+    "display": "void Delay_US_Normal(void)",
+    "location": {
+      "column": "6",
+      "line": "6",
+      "path": "F:\\Movebroad\\stm32L151_nbiot\\workspace\\stm32L151_nbiot_tmote_app_workspace\\stm8L001_ook_tmote_app_lockctrl\\System\\Delay\\delay.h"
+    },
+    "name": "Delay_US_Normal",
+    "origin": "user_include",
+    "scope": null
+  },
+  {
+    "ID": "c:@F@Delay_US_Normal",
+    "What": "Function",
+    "defdec": "Dec",
+    "display": "void Delay_US_Normal(void)",
+    "location": {
+      "column": "6",
+      "line": "6",
+      "path": "F:\\Movebroad\\stm32L151_nbiot\\workspace\\stm32L151_nbiot_tmote_app_workspace\\stm8L001_ook_tmote_app_lockctrl\\System\\Delay\\delay.h"
+    },
+    "name": "Delay_US_Normal",
+    "origin": "user_include",
+    "scope": null
+  },
+  {
+    "ID": "c:@F@Delay_MS_Normal",
+    "What": "Function",
+    "defdec": "Dec",
+    "display": "void Delay_MS_Normal(u16)",
+    "location": {
+      "column": "6",
+      "line": "7",
+      "path": "F:\\Movebroad\\stm32L151_nbiot\\workspace\\stm32L151_nbiot_tmote_app_workspace\\stm8L001_ook_tmote_app_lockctrl\\System\\Delay\\delay.h"
+    },
+    "name": "Delay_MS_Normal",
+    "origin": "user_include",
+    "scope": null
+  },
+  {
+    "ID": "c:@F@Delay_MS_Normal",
+    "What": "Function",
+    "defdec": "Dec",
+    "display": "void Delay_MS_Normal(u16)",
+    "location": {
+      "column": "6",
+      "line": "7",
+      "path": "F:\\Movebroad\\stm32L151_nbiot\\workspace\\stm32L151_nbiot_tmote_app_workspace\\stm8L001_ook_tmote_app_lockctrl\\System\\Delay\\delay.h"
+    },
+    "name": "Delay_MS_Normal",
+    "origin": "user_include",
+    "scope": null
+  },
+  {
     "ID": "c:usart.h@29@macro@__USART_H",
     "What": "MacroDef",
     "defdec": "Def",
@@ -86373,6 +86415,20 @@
     },
     "name": "__USART_H",
     "origin": "user_include",
+    "scope": null
+  },
+  {
+    "ID": "c:@F@main",
+    "What": "Function",
+    "defdec": "Def",
+    "display": "void main(void)",
+    "location": {
+      "column": "6",
+      "line": "31",
+      "path": "F:\\Movebroad\\stm32L151_nbiot\\workspace\\stm32L151_nbiot_tmote_app_workspace\\stm8L001_ook_tmote_app_lockctrl\\User\\main.c"
+    },
+    "name": "main",
+    "origin": "project_file",
     "scope": null
   },
   {
