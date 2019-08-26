@@ -1,15 +1,15 @@
 ///////////////////////////////////////////////////////////////////////////////
 //
-// IAR C/C++ Compiler V3.11.1.207 for STM8                22/Aug/2019  15:05:18
+// IAR C/C++ Compiler V3.11.1.207 for STM8                26/Aug/2019  11:12:55
 // Copyright 2010-2019 IAR Systems AB.
 // PC-locked license - IAR Embedded Workbench for STMicroelectronics STM8
 //
 //    Source file  =  
 //        F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\Libraries\src\stm8l15x_clk.c
 //    Command line =  
-//        -f C:\Users\kyjapple\AppData\Local\Temp\EWC34F.tmp
+//        -f C:\Users\kyjapple\AppData\Local\Temp\EW5FF8.tmp
 //        (F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\Libraries\src\stm8l15x_clk.c
-//        -e -Ol --no_cse --no_unroll --no_inline --no_code_motion --no_tbaa
+//        -e -On --no_cse --no_unroll --no_inline --no_code_motion --no_tbaa
 //        --no_cross_call --debug --code_model small --data_model medium -o
 //        F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\Output\Obj
 //        --dlib_config "F:\IAR Systems\Embedded Workbench
@@ -33,6 +33,10 @@
 //        F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\System\Sys\
 //        -I
 //        F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\System\Usart\
+//        -I
+//        F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\Hardware\TIMER\
+//        -I
+//        F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\Hardware\OOK\
 //        --vregs 16)
 //    Locale       =  Chinese (Simplified)_CHN.936
 //    List file    =  
@@ -44,12 +48,13 @@
         EXTERN ?b1
         EXTERN ?b2
         EXTERN ?b3
-        EXTERN ?b4
-        EXTERN ?b5
-        EXTERN ?b6
-        EXTERN ?epilogue_l2
+        EXTERN ?epilogue_l2_l3
         EXTERN ?mov_l0_l2
+        EXTERN ?mov_l0_l3
+        EXTERN ?mov_l2_l0
+        EXTERN ?mov_l3_l0
         EXTERN ?push_l2
+        EXTERN ?push_l3
         EXTERN ?sll16_x_x_a
         EXTERN ?udiv32_l0_l0_l1
         EXTERN ?w0
@@ -58,6 +63,8 @@
         EXTERN ?w3
         EXTERN ?w4
         EXTERN ?w5
+        EXTERN ?w6
+        EXTERN ?w7
 
         PUBLIC CLK_AdjustHSICalibrationValue
         PUBLIC CLK_BEEPClockConfig
@@ -119,9 +126,10 @@ CLK_HSICmd:
         TNZ       A
         JREQ      L:??CLK_HSICmd_0
         BSET      L:0x50c2, #0x0
-        RET
+        JRA       L:??CLK_HSICmd_1
 ??CLK_HSICmd_0:
         BRES      L:0x50c2, #0x0
+??CLK_HSICmd_1:
         RET
 
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
@@ -138,9 +146,10 @@ CLK_LSICmd:
         TNZ       A
         JREQ      L:??CLK_LSICmd_0
         BSET      L:0x50c2, #0x2
-        RET
+        JRA       L:??CLK_LSICmd_1
 ??CLK_LSICmd_0:
         BRES      L:0x50c2, #0x2
+??CLK_LSICmd_1:
         RET
 
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
@@ -177,9 +186,10 @@ CLK_ClockSecuritySytemDeglitchCmd:
         TNZ       A
         JREQ      L:??CLK_ClockSecuritySytemDeglitchCmd_0
         BSET      L:0x50ca, #0x4
-        RET
+        JRA       L:??CLK_ClockSecuritySytemDeglitchCmd_1
 ??CLK_ClockSecuritySytemDeglitchCmd_0:
         BRES      L:0x50ca, #0x4
+??CLK_ClockSecuritySytemDeglitchCmd_1:
         RET
 
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
@@ -207,63 +217,76 @@ CLK_GetSYSCLKSource:
         CODE
 CLK_GetClockFreq:
         CALL      L:?push_l2
-        CLRW      X
-        LDW       S:?w1, X
-        LDW       S:?w0, X
+        CALL      L:?push_l3
+        SUB       SP, #0x3
         CLRW      X
         LDW       S:?w5, X
         LDW       S:?w4, X
+        CLRW      X
+        LDW       S:?w7, X
+        LDW       S:?w6, X
         LD        A, #0x1
-        CLR       S:?b5
-        CLR       S:?b4
-        MOV       S:?b6, L:0x50c7
-        LD        A, S:?b6
+        LD        (0x1,SP), A
+        CLR       (0x3,SP)
+        CLR       (0x2,SP)
+        LD        A, L:0x50c7
+        LD        (0x1,SP), A
+        LD        A, (0x1,SP)
         CP        A, #0x1
         JRNE      L:??CLK_GetClockFreq_0
         LDW       X, #0x2400
-        LDW       S:?w5, X
+        LDW       S:?w1, X
         LDW       X, #0xf4
-        LDW       S:?w4, X
+        LDW       S:?w0, X
+        CALL      L:?mov_l3_l0
         JRA       L:??CLK_GetClockFreq_1
 ??CLK_GetClockFreq_0:
+        LD        A, (0x1,SP)
         CP        A, #0x2
         JRNE      L:??CLK_GetClockFreq_2
         LDW       X, #0x9470
-        LDW       S:?w5, X
+        LDW       S:?w1, X
         CLRW      X
-        LDW       S:?w4, X
+        LDW       S:?w0, X
+        CALL      L:?mov_l3_l0
         JRA       L:??CLK_GetClockFreq_1
 ??CLK_GetClockFreq_2:
+        LD        A, (0x1,SP)
         CP        A, #0x4
         JRNE      L:??CLK_GetClockFreq_3
         LDW       X, #0x2400
-        LDW       S:?w5, X
+        LDW       S:?w1, X
         LDW       X, #0xf4
-        LDW       S:?w4, X
+        LDW       S:?w0, X
+        CALL      L:?mov_l3_l0
         JRA       L:??CLK_GetClockFreq_1
 ??CLK_GetClockFreq_3:
         LDW       X, #0x8000
         LDW       S:?w1, X
         SLLW      X
         LDW       S:?w0, X
+        CALL      L:?mov_l2_l0
 ??CLK_GetClockFreq_1:
         LD        A, L:0x50c0
         AND       A, #0x7
-        LD        S:?b5, A
+        LD        (0x3,SP), A
+        LD        A, (0x3,SP)
         CLRW      X
-        LD        A, S:?b5
         LD        XL, A
         LD        A, (L:SYSDivFactor,X)
-        LD        S:?b4, A
+        LD        (0x2,SP), A
+        LD        A, (0x2,SP)
         CLRW      X
-        LD        A, S:?b4
         LD        XL, A
         LDW       S:?w3, X
         CLRW      X
         LDW       S:?w2, X
-        CALL      L:?mov_l0_l2
+        CALL      L:?mov_l0_l3
         CALL      L:?udiv32_l0_l0_l1
-        JP        L:?epilogue_l2
+        CALL      L:?mov_l2_l0
+        CALL      L:?mov_l0_l2
+        ADD       SP, #0x3
+        JP        L:?epilogue_l2_l3
 
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
         CODE
@@ -277,9 +300,10 @@ CLK_SYSCLKSourceSwitchCmd:
         TNZ       A
         JREQ      L:??CLK_SYSCLKSourceSwitchCmd_0
         BSET      L:0x50c9, #0x1
-        RET
+        JRA       L:??CLK_SYSCLKSourceSwitchCmd_1
 ??CLK_SYSCLKSourceSwitchCmd_0:
         BRES      L:0x50c9, #0x1
+??CLK_SYSCLKSourceSwitchCmd_1:
         RET
 
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
@@ -317,7 +341,7 @@ CLK_PeripheralClockConfig:
         LD        A, XL
         OR        A, L:0x50c3
         LD        L:0x50c3, A
-        RET
+        JRA       L:??CLK_PeripheralClockConfig_2
 ??CLK_PeripheralClockConfig_1:
         LD        A, S:?b2
         AND       A, #0xf
@@ -328,13 +352,13 @@ CLK_PeripheralClockConfig:
         CPL       A
         AND       A, L:0x50c3
         LD        L:0x50c3, A
-        RET
+        JRA       L:??CLK_PeripheralClockConfig_2
 ??CLK_PeripheralClockConfig_0:
         LD        A, S:?b1
         CP        A, #0x10
-        JRNE      L:??CLK_PeripheralClockConfig_2
+        JRNE      L:??CLK_PeripheralClockConfig_3
         TNZ       S:?b0
-        JREQ      L:??CLK_PeripheralClockConfig_3
+        JREQ      L:??CLK_PeripheralClockConfig_4
         LD        A, S:?b2
         AND       A, #0xf
         CLRW      X
@@ -343,8 +367,8 @@ CLK_PeripheralClockConfig:
         LD        A, XL
         OR        A, L:0x50c4
         LD        L:0x50c4, A
-        RET
-??CLK_PeripheralClockConfig_3:
+        JRA       L:??CLK_PeripheralClockConfig_2
+??CLK_PeripheralClockConfig_4:
         LD        A, S:?b2
         AND       A, #0xf
         CLRW      X
@@ -354,10 +378,10 @@ CLK_PeripheralClockConfig:
         CPL       A
         AND       A, L:0x50c4
         LD        L:0x50c4, A
-        RET
-??CLK_PeripheralClockConfig_2:
+        JRA       L:??CLK_PeripheralClockConfig_2
+??CLK_PeripheralClockConfig_3:
         TNZ       S:?b0
-        JREQ      L:??CLK_PeripheralClockConfig_4
+        JREQ      L:??CLK_PeripheralClockConfig_5
         LD        A, S:?b2
         AND       A, #0xf
         CLRW      X
@@ -366,8 +390,8 @@ CLK_PeripheralClockConfig:
         LD        A, XL
         OR        A, L:0x50d0
         LD        L:0x50d0, A
-        RET
-??CLK_PeripheralClockConfig_4:
+        JRA       L:??CLK_PeripheralClockConfig_2
+??CLK_PeripheralClockConfig_5:
         LD        A, S:?b2
         AND       A, #0xf
         CLRW      X
@@ -377,6 +401,7 @@ CLK_PeripheralClockConfig:
         CPL       A
         AND       A, L:0x50d0
         LD        L:0x50d0, A
+??CLK_PeripheralClockConfig_2:
         RET
 
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
@@ -400,12 +425,13 @@ CLK_HaltConfig:
         LD        A, L:0x50c2
         OR        A, S:?b1
         LD        L:0x50c2, A
-        RET
+        JRA       L:??CLK_HaltConfig_1
 ??CLK_HaltConfig_0:
-        CPL       S:?b1
         LD        A, S:?b1
+        CPL       A
         AND       A, L:0x50c2
         LD        L:0x50c2, A
+??CLK_HaltConfig_1:
         RET
 
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
@@ -414,9 +440,10 @@ CLK_MainRegulatorCmd:
         TNZ       A
         JREQ      L:??CLK_MainRegulatorCmd_0
         BRES      L:0x50cf, #0x1
-        RET
+        JRA       L:??CLK_MainRegulatorCmd_1
 ??CLK_MainRegulatorCmd_0:
         BSET      L:0x50cf, #0x1
+??CLK_MainRegulatorCmd_1:
         RET
 
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
@@ -427,27 +454,28 @@ CLK_ITConfig:
         CP        A, #0x1c
         JRNE      L:??CLK_ITConfig_1
         BSET      L:0x50c9, #0x2
-        RET
+        JRA       L:??CLK_ITConfig_2
 ??CLK_ITConfig_1:
         CP        A, #0x2c
-        JRNE      L:??CLK_ITConfig_2
+        JRNE      L:??CLK_ITConfig_3
         BSET      L:0x5190, #0x2
-        RET
-??CLK_ITConfig_2:
+        JRA       L:??CLK_ITConfig_2
+??CLK_ITConfig_3:
         BSET      L:0x50ca, #0x2
-        RET
+        JRA       L:??CLK_ITConfig_2
 ??CLK_ITConfig_0:
         CP        A, #0x1c
-        JRNE      L:??CLK_ITConfig_3
-        BRES      L:0x50c9, #0x2
-        RET
-??CLK_ITConfig_3:
-        CP        A, #0x2c
         JRNE      L:??CLK_ITConfig_4
-        BRES      L:0x5190, #0x2
-        RET
+        BRES      L:0x50c9, #0x2
+        JRA       L:??CLK_ITConfig_2
 ??CLK_ITConfig_4:
+        CP        A, #0x2c
+        JRNE      L:??CLK_ITConfig_5
+        BRES      L:0x5190, #0x2
+        JRA       L:??CLK_ITConfig_2
+??CLK_ITConfig_5:
         BRES      L:0x50ca, #0x2
+??CLK_ITConfig_2:
         RET
 
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
@@ -465,52 +493,61 @@ CLK_GetFlagStatus:
         LD        S:?b1, A
         TNZ       S:?b3
         JRNE      L:??CLK_GetFlagStatus_0
-        MOV       S:?b3, L:0x50c1
+        LD        A, L:0x50c1
+        LD        S:?b3, A
         JRA       L:??CLK_GetFlagStatus_1
 ??CLK_GetFlagStatus_0:
         LD        A, S:?b3
         CP        A, #0x10
         JRNE      L:??CLK_GetFlagStatus_2
-        MOV       S:?b3, L:0x50c2
+        LD        A, L:0x50c2
+        LD        S:?b3, A
         JRA       L:??CLK_GetFlagStatus_1
 ??CLK_GetFlagStatus_2:
         LD        A, S:?b3
         CP        A, #0x20
         JRNE      L:??CLK_GetFlagStatus_3
-        MOV       S:?b3, L:0x50c5
+        LD        A, L:0x50c5
+        LD        S:?b3, A
         JRA       L:??CLK_GetFlagStatus_1
 ??CLK_GetFlagStatus_3:
         LD        A, S:?b3
         CP        A, #0x30
         JRNE      L:??CLK_GetFlagStatus_4
-        MOV       S:?b3, L:0x50c6
+        LD        A, L:0x50c6
+        LD        S:?b3, A
         JRA       L:??CLK_GetFlagStatus_1
 ??CLK_GetFlagStatus_4:
         LD        A, S:?b3
         CP        A, #0x40
         JRNE      L:??CLK_GetFlagStatus_5
-        MOV       S:?b3, L:0x50c9
+        LD        A, L:0x50c9
+        LD        S:?b3, A
         JRA       L:??CLK_GetFlagStatus_1
 ??CLK_GetFlagStatus_5:
         LD        A, S:?b3
         CP        A, #0x50
         JRNE      L:??CLK_GetFlagStatus_6
-        MOV       S:?b3, L:0x50ca
+        LD        A, L:0x50ca
+        LD        S:?b3, A
         JRA       L:??CLK_GetFlagStatus_1
 ??CLK_GetFlagStatus_6:
         LD        A, S:?b3
         CP        A, #0x70
         JRNE      L:??CLK_GetFlagStatus_7
-        MOV       S:?b3, L:0x50cf
+        LD        A, L:0x50cf
+        LD        S:?b3, A
         JRA       L:??CLK_GetFlagStatus_1
 ??CLK_GetFlagStatus_7:
         LD        A, S:?b3
         CP        A, #0x80
         JRNE      L:??CLK_GetFlagStatus_8
-        MOV       S:?b3, L:0x5190
+        LD        A, L:0x5190
+        LD        S:?b3, A
         JRA       L:??CLK_GetFlagStatus_1
 ??CLK_GetFlagStatus_8:
-        MOV       S:?b3, L:0x50cb
+        LD        A, L:0x50cb
+        LD        S:?b3, A
 ??CLK_GetFlagStatus_1:
         CLRW      X
         INCW      X
@@ -520,7 +557,8 @@ CLK_GetFlagStatus:
         AND       A, S:?b3
         CP        A, #0x0
         JREQ      L:??CLK_GetFlagStatus_9
-        MOV       S:?b0, #0x1
+        LD        A, #0x1
+        LD        S:?b0, A
         JRA       L:??CLK_GetFlagStatus_10
 ??CLK_GetFlagStatus_9:
         CLR       S:?b0
@@ -546,7 +584,8 @@ CLK_GetITStatus:
         AND       A, S:?b1
         CP        A, #0xc
         JRNE      L:??CLK_GetITStatus_1
-        MOV       S:?b0, #0x1
+        LD        A, #0x1
+        LD        S:?b0, A
         JRA       L:??CLK_GetITStatus_2
 ??CLK_GetITStatus_1:
         CLR       S:?b0
@@ -559,7 +598,8 @@ CLK_GetITStatus:
         AND       A, S:?b1
         CP        A, #0xc
         JRNE      L:??CLK_GetITStatus_4
-        MOV       S:?b0, #0x1
+        LD        A, #0x1
+        LD        S:?b0, A
         JRA       L:??CLK_GetITStatus_2
 ??CLK_GetITStatus_4:
         CLR       S:?b0
@@ -569,7 +609,8 @@ CLK_GetITStatus:
         AND       A, S:?b1
         CP        A, #0xc
         JRNE      L:??CLK_GetITStatus_5
-        MOV       S:?b0, #0x1
+        LD        A, #0x1
+        LD        S:?b0, A
         JRA       L:??CLK_GetITStatus_2
 ??CLK_GetITStatus_5:
         CLR       S:?b0
@@ -580,13 +621,16 @@ CLK_GetITStatus:
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
         CODE
 CLK_ClearITPendingBit:
+        LD        S:?b0, A
+        LD        A, S:?b0
         AND       A, #0xf0
         CP        A, #0x20
         JRNE      L:??CLK_ClearITPendingBit_0
         BRES      L:0x5190, #0x3
-        RET
+        JRA       L:??CLK_ClearITPendingBit_1
 ??CLK_ClearITPendingBit_0:
         BRES      L:0x50c9, #0x3
+??CLK_ClearITPendingBit_1:
         RET
 
         SECTION VREGS:DATA:REORDER:NOROOT(0)
@@ -594,9 +638,9 @@ CLK_ClearITPendingBit:
         END
 // 
 //   5 bytes in section .near.rodata
-// 805 bytes in section .near_func.text
+// 856 bytes in section .near_func.text
 // 
-// 805 bytes of CODE  memory
+// 856 bytes of CODE  memory
 //   5 bytes of CONST memory
 //
 //Errors: none

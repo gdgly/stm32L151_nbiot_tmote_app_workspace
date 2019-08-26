@@ -1,15 +1,15 @@
 ///////////////////////////////////////////////////////////////////////////////
 //
-// IAR C/C++ Compiler V3.11.1.207 for STM8                22/Aug/2019  17:29:17
+// IAR C/C++ Compiler V3.11.1.207 for STM8                26/Aug/2019  11:12:54
 // Copyright 2010-2019 IAR Systems AB.
 // PC-locked license - IAR Embedded Workbench for STMicroelectronics STM8
 //
 //    Source file  =  
 //        F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\User\main.c
 //    Command line =  
-//        -f C:\Users\kyjapple\AppData\Local\Temp\EW9428.tmp
+//        -f C:\Users\kyjapple\AppData\Local\Temp\EW5C7A.tmp
 //        (F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\User\main.c
-//        -e -Ol --no_cse --no_unroll --no_inline --no_code_motion --no_tbaa
+//        -e -On --no_cse --no_unroll --no_inline --no_code_motion --no_tbaa
 //        --no_cross_call --debug --code_model small --data_model medium -o
 //        F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\Output\Obj
 //        --dlib_config "F:\IAR Systems\Embedded Workbench
@@ -33,6 +33,10 @@
 //        F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\System\Sys\
 //        -I
 //        F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\System\Usart\
+//        -I
+//        F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\Hardware\TIMER\
+//        -I
+//        F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\Hardware\OOK\
 //        --vregs 16)
 //    Locale       =  Chinese (Simplified)_CHN.936
 //    List file    =  
@@ -40,12 +44,11 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-        EXTERN ?b0
         EXTERN Delay_MS_Normal
-        EXTERN GPIO_Init
         EXTERN GPIO_SetBits
         EXTERN GPIO_ToggleBits
         EXTERN Stm8_HSIClock_Init
+        EXTERN Stm8_OOK_Init
 
         PUBLIC main
 
@@ -55,16 +58,13 @@
 main:
         CLR       A
         CALL      L:Stm8_HSIClock_Init
-        MOV       S:?b0, #0xf0
-        LD        A, #0x20
-        LDW       X, #0x5005
-        CALL      L:GPIO_Init
-        LD        A, #0x20
-        LDW       X, #0x5005
+        CALL      L:Stm8_OOK_Init
+        LD        A, #0x4
+        LDW       X, #0x5000
         CALL      L:GPIO_SetBits
 ??main_0:
-        LD        A, #0x20
-        LDW       X, #0x5005
+        LD        A, #0x4
+        LDW       X, #0x5000
         CALL      L:GPIO_ToggleBits
         LDW       X, #0x3e8
         CALL      L:Delay_MS_Normal
@@ -74,9 +74,9 @@ main:
 
         END
 // 
-// 40 bytes in section .near_func.text
+// 31 bytes in section .near_func.text
 // 
-// 40 bytes of CODE memory
+// 31 bytes of CODE memory
 //
 //Errors: none
 //Warnings: none

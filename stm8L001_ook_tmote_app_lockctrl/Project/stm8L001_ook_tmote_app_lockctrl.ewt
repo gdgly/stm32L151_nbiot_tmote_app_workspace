@@ -2158,6 +2158,24 @@
     </group>
     <group>
         <name>Hardware</name>
+        <group>
+            <name>OOK</name>
+            <file>
+                <name>$PROJ_DIR$\..\Hardware\OOK\hal_ook.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\Hardware\OOK\hal_ook.h</name>
+            </file>
+        </group>
+        <group>
+            <name>TIMER</name>
+            <file>
+                <name>$PROJ_DIR$\..\Hardware\TIMER\hal_timer.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\Hardware\TIMER\hal_timer.h</name>
+            </file>
+        </group>
     </group>
     <group>
         <name>Libraries</name>

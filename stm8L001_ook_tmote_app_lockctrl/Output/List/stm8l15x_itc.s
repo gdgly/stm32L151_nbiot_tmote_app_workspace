@@ -1,15 +1,15 @@
 ///////////////////////////////////////////////////////////////////////////////
 //
-// IAR C/C++ Compiler V3.11.1.207 for STM8                22/Aug/2019  15:05:20
+// IAR C/C++ Compiler V3.11.1.207 for STM8                26/Aug/2019  11:12:59
 // Copyright 2010-2019 IAR Systems AB.
 // PC-locked license - IAR Embedded Workbench for STMicroelectronics STM8
 //
 //    Source file  =  
 //        F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\Libraries\src\stm8l15x_itc.c
 //    Command line =  
-//        -f C:\Users\kyjapple\AppData\Local\Temp\EWCB29.tmp
+//        -f C:\Users\kyjapple\AppData\Local\Temp\EW7148.tmp
 //        (F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\Libraries\src\stm8l15x_itc.c
-//        -e -Ol --no_cse --no_unroll --no_inline --no_code_motion --no_tbaa
+//        -e -On --no_cse --no_unroll --no_inline --no_code_motion --no_tbaa
 //        --no_cross_call --debug --code_model small --data_model medium -o
 //        F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\Output\Obj
 //        --dlib_config "F:\IAR Systems\Embedded Workbench
@@ -33,6 +33,10 @@
 //        F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\System\Sys\
 //        -I
 //        F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\System\Usart\
+//        -I
+//        F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\Hardware\TIMER\
+//        -I
+//        F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\Hardware\OOK\
 //        --vregs 16)
 //    Locale       =  Chinese (Simplified)_CHN.936
 //    List file    =  
@@ -85,10 +89,10 @@ ITC_GetSoftIntStatus:
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
         CODE
 ITC_GetSoftwarePriority:
-        LD        S:?b0, A
+        LD        S:?b2, A
         CLR       S:?b1
-        CLR       S:?b2
-        LD        A, S:?b0
+        CLR       S:?b3
+        LD        A, S:?b2
         AND       A, #0x3
         LDW       X, #0x2
         MUL       X, A
@@ -96,8 +100,8 @@ ITC_GetSoftwarePriority:
         LDW       X, #0x3
         CALL      L:?sll16_x_x_a
         LD        A, XL
-        LD        S:?b2, A
-        LD        A, S:?b0
+        LD        S:?b3, A
+        LD        A, S:?b2
         DEC       A
         JREQ      L:??ITC_GetSoftwarePriority_0
         DEC       A
@@ -153,45 +157,47 @@ ITC_GetSoftwarePriority:
         JRA       L:??ITC_GetSoftwarePriority_8
 ??ITC_GetSoftwarePriority_0:
         LD        A, L:0x7f70
-        AND       A, S:?b2
+        AND       A, S:?b3
         LD        S:?b1, A
-        JRA       L:??ITC_GetSoftwarePriority_8
+        JRA       L:??ITC_GetSoftwarePriority_9
 ??ITC_GetSoftwarePriority_1:
         LD        A, L:0x7f71
-        AND       A, S:?b2
+        AND       A, S:?b3
         LD        S:?b1, A
-        JRA       L:??ITC_GetSoftwarePriority_8
+        JRA       L:??ITC_GetSoftwarePriority_9
 ??ITC_GetSoftwarePriority_2:
         LD        A, L:0x7f72
-        AND       A, S:?b2
+        AND       A, S:?b3
         LD        S:?b1, A
-        JRA       L:??ITC_GetSoftwarePriority_8
+        JRA       L:??ITC_GetSoftwarePriority_9
 ??ITC_GetSoftwarePriority_3:
         LD        A, L:0x7f73
-        AND       A, S:?b2
+        AND       A, S:?b3
         LD        S:?b1, A
-        JRA       L:??ITC_GetSoftwarePriority_8
+        JRA       L:??ITC_GetSoftwarePriority_9
 ??ITC_GetSoftwarePriority_4:
         LD        A, L:0x7f74
-        AND       A, S:?b2
+        AND       A, S:?b3
         LD        S:?b1, A
-        JRA       L:??ITC_GetSoftwarePriority_8
+        JRA       L:??ITC_GetSoftwarePriority_9
 ??ITC_GetSoftwarePriority_5:
         LD        A, L:0x7f75
-        AND       A, S:?b2
+        AND       A, S:?b3
         LD        S:?b1, A
-        JRA       L:??ITC_GetSoftwarePriority_8
+        JRA       L:??ITC_GetSoftwarePriority_9
 ??ITC_GetSoftwarePriority_6:
         LD        A, L:0x7f76
-        AND       A, S:?b2
+        AND       A, S:?b3
         LD        S:?b1, A
-        JRA       L:??ITC_GetSoftwarePriority_8
+        JRA       L:??ITC_GetSoftwarePriority_9
 ??ITC_GetSoftwarePriority_7:
         LD        A, L:0x7f77
-        AND       A, S:?b2
+        AND       A, S:?b3
         LD        S:?b1, A
+        JRA       L:??ITC_GetSoftwarePriority_9
 ??ITC_GetSoftwarePriority_8:
-        LD        A, S:?b0
+??ITC_GetSoftwarePriority_9:
+        LD        A, S:?b2
         AND       A, #0x3
         LDW       X, #0x2
         MUL       X, A
@@ -278,16 +284,22 @@ ITC_SetSoftwarePriority:
         DEC       A
         JREQ      L:??ITC_SetSoftwarePriority_5
         SUB       A, #0x3
-        JREQ      L:??ITC_SetSoftwarePriority_6
+        JRNE      ??lb_0
+        JP        L:??ITC_SetSoftwarePriority_6
+??lb_0:
         DEC       A
         JREQ      L:??ITC_SetSoftwarePriority_6
         DEC       A
         JREQ      L:??ITC_SetSoftwarePriority_6
         DEC       A
-        JREQ      L:??ITC_SetSoftwarePriority_7
+        JRNE      ??lb_1
+        JP        L:??ITC_SetSoftwarePriority_7
+??lb_1:
         DEC       A
-        JREQ      L:??ITC_SetSoftwarePriority_7
-        RET
+        JRNE      ??lb_2
+        JP        L:??ITC_SetSoftwarePriority_7
+??lb_2:
+        JP        L:??ITC_SetSoftwarePriority_8
 ??ITC_SetSoftwarePriority_0:
         LD        A, L:0x7f70
         AND       A, S:?b3
@@ -295,7 +307,7 @@ ITC_SetSoftwarePriority:
         LD        A, L:0x7f70
         OR        A, S:?b4
         LD        L:0x7f70, A
-        RET
+        JRA       L:??ITC_SetSoftwarePriority_9
 ??ITC_SetSoftwarePriority_1:
         LD        A, L:0x7f71
         AND       A, S:?b3
@@ -303,7 +315,7 @@ ITC_SetSoftwarePriority:
         LD        A, L:0x7f71
         OR        A, S:?b4
         LD        L:0x7f71, A
-        RET
+        JRA       L:??ITC_SetSoftwarePriority_9
 ??ITC_SetSoftwarePriority_2:
         LD        A, L:0x7f72
         AND       A, S:?b3
@@ -311,7 +323,7 @@ ITC_SetSoftwarePriority:
         LD        A, L:0x7f72
         OR        A, S:?b4
         LD        L:0x7f72, A
-        RET
+        JRA       L:??ITC_SetSoftwarePriority_9
 ??ITC_SetSoftwarePriority_3:
         LD        A, L:0x7f73
         AND       A, S:?b3
@@ -319,7 +331,7 @@ ITC_SetSoftwarePriority:
         LD        A, L:0x7f73
         OR        A, S:?b4
         LD        L:0x7f73, A
-        RET
+        JRA       L:??ITC_SetSoftwarePriority_9
 ??ITC_SetSoftwarePriority_4:
         LD        A, L:0x7f74
         AND       A, S:?b3
@@ -327,7 +339,7 @@ ITC_SetSoftwarePriority:
         LD        A, L:0x7f74
         OR        A, S:?b4
         LD        L:0x7f74, A
-        RET
+        JRA       L:??ITC_SetSoftwarePriority_9
 ??ITC_SetSoftwarePriority_5:
         LD        A, L:0x7f75
         AND       A, S:?b3
@@ -335,7 +347,7 @@ ITC_SetSoftwarePriority:
         LD        A, L:0x7f75
         OR        A, S:?b4
         LD        L:0x7f75, A
-        RET
+        JRA       L:??ITC_SetSoftwarePriority_9
 ??ITC_SetSoftwarePriority_6:
         LD        A, L:0x7f76
         AND       A, S:?b3
@@ -343,7 +355,7 @@ ITC_SetSoftwarePriority:
         LD        A, L:0x7f76
         OR        A, S:?b4
         LD        L:0x7f76, A
-        RET
+        JRA       L:??ITC_SetSoftwarePriority_9
 ??ITC_SetSoftwarePriority_7:
         LD        A, L:0x7f77
         AND       A, S:?b3
@@ -351,15 +363,18 @@ ITC_SetSoftwarePriority:
         LD        A, L:0x7f77
         OR        A, S:?b4
         LD        L:0x7f77, A
+        JRA       L:??ITC_SetSoftwarePriority_9
+??ITC_SetSoftwarePriority_8:
+??ITC_SetSoftwarePriority_9:
         RET
 
         SECTION VREGS:DATA:REORDER:NOROOT(0)
 
         END
 // 
-// 510 bytes in section .near_func.text
+// 532 bytes in section .near_func.text
 // 
-// 510 bytes of CODE memory
+// 532 bytes of CODE memory
 //
 //Errors: none
 //Warnings: 1

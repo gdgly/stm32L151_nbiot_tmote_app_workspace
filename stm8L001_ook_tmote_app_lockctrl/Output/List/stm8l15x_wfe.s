@@ -1,15 +1,15 @@
 ///////////////////////////////////////////////////////////////////////////////
 //
-// IAR C/C++ Compiler V3.11.1.207 for STM8                22/Aug/2019  15:05:24
+// IAR C/C++ Compiler V3.11.1.207 for STM8                26/Aug/2019  11:13:02
 // Copyright 2010-2019 IAR Systems AB.
 // PC-locked license - IAR Embedded Workbench for STMicroelectronics STM8
 //
 //    Source file  =  
 //        F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\Libraries\src\stm8l15x_wfe.c
 //    Command line =  
-//        -f C:\Users\kyjapple\AppData\Local\Temp\EWD8E3.tmp
+//        -f C:\Users\kyjapple\AppData\Local\Temp\EW7C14.tmp
 //        (F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\Libraries\src\stm8l15x_wfe.c
-//        -e -Ol --no_cse --no_unroll --no_inline --no_code_motion --no_tbaa
+//        -e -On --no_cse --no_unroll --no_inline --no_code_motion --no_tbaa
 //        --no_cross_call --debug --code_model small --data_model medium -o
 //        F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\Output\Obj
 //        --dlib_config "F:\IAR Systems\Embedded Workbench
@@ -33,6 +33,10 @@
 //        F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\System\Sys\
 //        -I
 //        F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\System\Usart\
+//        -I
+//        F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\Hardware\TIMER\
+//        -I
+//        F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\Hardware\OOK\
 //        --vregs 16)
 //    Locale       =  Chinese (Simplified)_CHN.936
 //    List file    =  
@@ -45,6 +49,7 @@
         EXTERN ?b0
         EXTERN ?b1
         EXTERN ?b3
+        EXTERN ?b4
         EXTERN ?switch16vlt_0x_x_0y
         EXTERN ?w1
 
@@ -65,12 +70,11 @@ WFE_DeInit:
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
         CODE
 WFE_WakeUpSourceEventCmd:
-        CLR       S:?b0
-        RLWA      X, A
         LD        S:?b1, A
-        RRWA      X, A
-        MOV       S:?b0, S:?b1
-        TNZ       A
+        CLR       S:?b0
+        LD        A, XH
+        LD        S:?b0, A
+        TNZ       S:?b1
         JREQ      L:??WFE_WakeUpSourceEventCmd_0
         LD        A, S:?b0
         DEC       A
@@ -81,68 +85,73 @@ WFE_WakeUpSourceEventCmd:
         JREQ      L:??WFE_WakeUpSourceEventCmd_3
         DEC       A
         JREQ      L:??WFE_WakeUpSourceEventCmd_4
-        RET
+        JRA       L:??WFE_WakeUpSourceEventCmd_5
 ??WFE_WakeUpSourceEventCmd_1:
         LD        A, XL
         OR        A, L:0x50a6
         LD        L:0x50a6, A
-        RET
+        JRA       L:??WFE_WakeUpSourceEventCmd_6
 ??WFE_WakeUpSourceEventCmd_2:
         LD        A, XL
         OR        A, L:0x50a7
         LD        L:0x50a7, A
-        RET
+        JRA       L:??WFE_WakeUpSourceEventCmd_6
 ??WFE_WakeUpSourceEventCmd_3:
         LD        A, XL
         OR        A, L:0x50a8
         LD        L:0x50a8, A
-        RET
+        JRA       L:??WFE_WakeUpSourceEventCmd_6
 ??WFE_WakeUpSourceEventCmd_4:
         LD        A, XL
         OR        A, L:0x50a9
         LD        L:0x50a9, A
-        RET
+        JRA       L:??WFE_WakeUpSourceEventCmd_6
+??WFE_WakeUpSourceEventCmd_5:
+        JRA       L:??WFE_WakeUpSourceEventCmd_6
 ??WFE_WakeUpSourceEventCmd_0:
         LD        A, S:?b0
-        DEC       A
-        JREQ      L:??WFE_WakeUpSourceEventCmd_5
-        DEC       A
-        JREQ      L:??WFE_WakeUpSourceEventCmd_6
         DEC       A
         JREQ      L:??WFE_WakeUpSourceEventCmd_7
         DEC       A
         JREQ      L:??WFE_WakeUpSourceEventCmd_8
-        RET
-??WFE_WakeUpSourceEventCmd_5:
+        DEC       A
+        JREQ      L:??WFE_WakeUpSourceEventCmd_9
+        DEC       A
+        JREQ      L:??WFE_WakeUpSourceEventCmd_10
+        JRA       L:??WFE_WakeUpSourceEventCmd_11
+??WFE_WakeUpSourceEventCmd_7:
         LD        A, XL
         CPL       A
         AND       A, L:0x50a6
         LD        L:0x50a6, A
-        RET
-??WFE_WakeUpSourceEventCmd_6:
+        JRA       L:??WFE_WakeUpSourceEventCmd_6
+??WFE_WakeUpSourceEventCmd_8:
         LD        A, XL
         CPL       A
         AND       A, L:0x50a7
         LD        L:0x50a7, A
-        RET
-??WFE_WakeUpSourceEventCmd_7:
+        JRA       L:??WFE_WakeUpSourceEventCmd_6
+??WFE_WakeUpSourceEventCmd_9:
         LD        A, XL
         CPL       A
         AND       A, L:0x50a8
         LD        L:0x50a8, A
-        RET
-??WFE_WakeUpSourceEventCmd_8:
+        JRA       L:??WFE_WakeUpSourceEventCmd_6
+??WFE_WakeUpSourceEventCmd_10:
         LD        A, XL
         CPL       A
         AND       A, L:0x50a9
         LD        L:0x50a9, A
+        JRA       L:??WFE_WakeUpSourceEventCmd_6
+??WFE_WakeUpSourceEventCmd_11:
+??WFE_WakeUpSourceEventCmd_6:
         RET
 
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
         CODE
 WFE_GetWakeUpSourceEventStatus:
         LDW       S:?w1, X
-        CLR       A
+        CLR       S:?b4
         LDW       X, S:?w1
         LDW       Y, #??switch_table_0
         CALL      L:?switch16vlt_0x_x_0y
@@ -153,40 +162,51 @@ WFE_GetWakeUpSourceEventStatus:
         CP        A, #0x0
         JREQ      L:??WFE_GetWakeUpSourceEventStatus_1
         LD        A, #0x1
-        RET
+        LD        S:?b4, A
+        JRA       L:??WFE_GetWakeUpSourceEventStatus_2
 ??WFE_GetWakeUpSourceEventStatus_1:
-        CLR       A
-        RET
+        CLR       S:?b4
 ??WFE_GetWakeUpSourceEventStatus_2:
+        JRA       L:??WFE_GetWakeUpSourceEventStatus_3
+??WFE_GetWakeUpSourceEventStatus_4:
         LD        A, S:?b3
         AND       A, L:0x50a7
         CP        A, #0x0
-        JREQ      L:??WFE_GetWakeUpSourceEventStatus_3
+        JREQ      L:??WFE_GetWakeUpSourceEventStatus_5
         LD        A, #0x1
-        RET
-??WFE_GetWakeUpSourceEventStatus_3:
-        CLR       A
-        RET
-??WFE_GetWakeUpSourceEventStatus_4:
+        LD        S:?b4, A
+        JRA       L:??WFE_GetWakeUpSourceEventStatus_6
+??WFE_GetWakeUpSourceEventStatus_5:
+        CLR       S:?b4
+??WFE_GetWakeUpSourceEventStatus_6:
+        JRA       L:??WFE_GetWakeUpSourceEventStatus_3
+??WFE_GetWakeUpSourceEventStatus_7:
         LD        A, S:?b3
         AND       A, L:0x50a8
         CP        A, #0x0
-        JREQ      L:??WFE_GetWakeUpSourceEventStatus_5
+        JREQ      L:??WFE_GetWakeUpSourceEventStatus_8
         LD        A, #0x1
-        RET
-??WFE_GetWakeUpSourceEventStatus_5:
-        CLR       A
-        RET
-??WFE_GetWakeUpSourceEventStatus_6:
+        LD        S:?b4, A
+        JRA       L:??WFE_GetWakeUpSourceEventStatus_9
+??WFE_GetWakeUpSourceEventStatus_8:
+        CLR       S:?b4
+??WFE_GetWakeUpSourceEventStatus_9:
+        JRA       L:??WFE_GetWakeUpSourceEventStatus_3
+??WFE_GetWakeUpSourceEventStatus_10:
         LD        A, S:?b3
         AND       A, L:0x50a9
         CP        A, #0x0
-        JREQ      L:??WFE_GetWakeUpSourceEventStatus_7
+        JREQ      L:??WFE_GetWakeUpSourceEventStatus_11
         LD        A, #0x1
-        RET
-??WFE_GetWakeUpSourceEventStatus_7:
-        CLR       A
-??WFE_GetWakeUpSourceEventStatus_8:
+        LD        S:?b4, A
+        JRA       L:??WFE_GetWakeUpSourceEventStatus_12
+??WFE_GetWakeUpSourceEventStatus_11:
+        CLR       S:?b4
+??WFE_GetWakeUpSourceEventStatus_12:
+        JRA       L:??WFE_GetWakeUpSourceEventStatus_3
+??WFE_GetWakeUpSourceEventStatus_13:
+??WFE_GetWakeUpSourceEventStatus_3:
+        LD        A, S:?b4
         RET
 
         SECTION VREGS:DATA:REORDER:NOROOT(0)
@@ -211,59 +231,59 @@ WFE_GetWakeUpSourceEventStatus:
         DC16      0x180
         DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_0)
         DC16      0x201
-        DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_2)
+        DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_4)
         DC16      0x202
-        DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_2)
+        DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_4)
         DC16      0x204
-        DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_2)
+        DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_4)
         DC16      0x208
-        DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_2)
+        DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_4)
         DC16      0x210
-        DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_2)
+        DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_4)
         DC16      0x220
-        DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_2)
+        DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_4)
         DC16      0x240
-        DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_2)
+        DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_4)
         DC16      0x280
-        DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_2)
+        DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_4)
         DC16      0x301
-        DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_4)
+        DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_7)
         DC16      0x302
-        DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_4)
+        DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_7)
         DC16      0x304
-        DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_4)
+        DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_7)
         DC16      0x308
-        DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_4)
+        DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_7)
         DC16      0x310
-        DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_4)
+        DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_7)
         DC16      0x320
-        DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_4)
+        DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_7)
         DC16      0x340
-        DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_4)
+        DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_7)
         DC16      0x380
-        DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_4)
+        DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_7)
         DC16      0x401
-        DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_6)
+        DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_10)
         DC16      0x402
-        DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_6)
+        DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_10)
         DC16      0x404
-        DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_6)
+        DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_10)
         DC16      0x408
-        DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_6)
+        DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_10)
         DC16      0x410
-        DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_6)
+        DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_10)
         DC16      0x420
-        DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_6)
+        DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_10)
         DC16      0x440
-        DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_6)
+        DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_10)
         DC16      0x0
-        DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_8)
+        DC16      LWRD(??WFE_GetWakeUpSourceEventStatus_13)
 
         END
 // 
-// 324 bytes in section .near_func.text
+// 360 bytes in section .near_func.text
 // 
-// 324 bytes of CODE memory
+// 360 bytes of CODE memory
 //
 //Errors: none
 //Warnings: none

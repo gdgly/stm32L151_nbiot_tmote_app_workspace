@@ -1,15 +1,15 @@
 ///////////////////////////////////////////////////////////////////////////////
 //
-// IAR C/C++ Compiler V3.11.1.207 for STM8                22/Aug/2019  15:05:22
+// IAR C/C++ Compiler V3.11.1.207 for STM8                26/Aug/2019  11:13:00
 // Copyright 2010-2019 IAR Systems AB.
 // PC-locked license - IAR Embedded Workbench for STMicroelectronics STM8
 //
 //    Source file  =  
 //        F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\Libraries\src\stm8l15x_syscfg.c
 //    Command line =  
-//        -f C:\Users\kyjapple\AppData\Local\Temp\EWD254.tmp
+//        -f C:\Users\kyjapple\AppData\Local\Temp\EW76AE.tmp
 //        (F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\Libraries\src\stm8l15x_syscfg.c
-//        -e -Ol --no_cse --no_unroll --no_inline --no_code_motion --no_tbaa
+//        -e -On --no_cse --no_unroll --no_inline --no_code_motion --no_tbaa
 //        --no_cross_call --debug --code_model small --data_model medium -o
 //        F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\Output\Obj
 //        --dlib_config "F:\IAR Systems\Embedded Workbench
@@ -33,6 +33,10 @@
 //        F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\System\Sys\
 //        -I
 //        F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\System\Usart\
+//        -I
+//        F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\Hardware\TIMER\
+//        -I
+//        F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\Hardware\OOK\
 //        --vregs 16)
 //    Locale       =  Chinese (Simplified)_CHN.936
 //    List file    =  
@@ -73,14 +77,17 @@ SYSCFG_RIDeInit:
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
         CODE
 SYSCFG_RITIMInputCaptureConfig:
+        LD        S:?b1, A
+        LD        A, S:?b1
         CP        A, #0x2
         JRNE      L:??SYSCFG_RITIMInputCaptureConfig_0
         LD        A, S:?b0
         LD        L:0x5431, A
-        RET
+        JRA       L:??SYSCFG_RITIMInputCaptureConfig_1
 ??SYSCFG_RITIMInputCaptureConfig_0:
         LD        A, S:?b0
         LD        L:0x5432, A
+??SYSCFG_RITIMInputCaptureConfig_1:
         RET
 
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
@@ -106,7 +113,7 @@ SYSCFG_RIAnalogSwitchConfig:
         LD        A, XL
         OR        A, L:0x543d
         LD        L:0x543d, A
-        RET
+        JRA       L:??SYSCFG_RIAnalogSwitchConfig_2
 ??SYSCFG_RIAnalogSwitchConfig_1:
         CLRW      X
         INCW      X
@@ -115,11 +122,11 @@ SYSCFG_RIAnalogSwitchConfig:
         LD        A, XL
         OR        A, L:0x543e
         LD        L:0x543e, A
-        RET
+        JRA       L:??SYSCFG_RIAnalogSwitchConfig_2
 ??SYSCFG_RIAnalogSwitchConfig_0:
         LD        A, S:?b3
         CP        A, #0x10
-        JRNE      L:??SYSCFG_RIAnalogSwitchConfig_2
+        JRNE      L:??SYSCFG_RIAnalogSwitchConfig_3
         CLRW      X
         INCW      X
         LD        A, S:?b1
@@ -128,8 +135,8 @@ SYSCFG_RIAnalogSwitchConfig:
         CPL       A
         AND       A, L:0x543d
         LD        L:0x543d, A
-        RET
-??SYSCFG_RIAnalogSwitchConfig_2:
+        JRA       L:??SYSCFG_RIAnalogSwitchConfig_2
+??SYSCFG_RIAnalogSwitchConfig_3:
         CLRW      X
         INCW      X
         LD        A, S:?b1
@@ -138,6 +145,7 @@ SYSCFG_RIAnalogSwitchConfig:
         CPL       A
         AND       A, L:0x543e
         LD        L:0x543e, A
+??SYSCFG_RIAnalogSwitchConfig_2:
         RET
 
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
@@ -150,6 +158,8 @@ SYSCFG_RIIOSwitchConfig:
         LD        S:?b1, A
         LD        A, S:?b2
         AND       A, #0xf0
+        LD        S:?b3, A
+        LD        A, S:?b3
         CP        A, #0x10
         JRNE      L:??SYSCFG_RIIOSwitchConfig_0
         TNZ       S:?b0
@@ -161,7 +171,7 @@ SYSCFG_RIIOSwitchConfig:
         LD        A, XL
         OR        A, L:0x5439
         LD        L:0x5439, A
-        RET
+        JP        L:??SYSCFG_RIIOSwitchConfig_2
 ??SYSCFG_RIIOSwitchConfig_1:
         CLRW      X
         INCW      X
@@ -171,12 +181,13 @@ SYSCFG_RIIOSwitchConfig:
         CPL       A
         AND       A, L:0x5439
         LD        L:0x5439, A
-        RET
+        JRA       L:??SYSCFG_RIIOSwitchConfig_2
 ??SYSCFG_RIIOSwitchConfig_0:
+        LD        A, S:?b3
         CP        A, #0x20
-        JRNE      L:??SYSCFG_RIIOSwitchConfig_2
+        JRNE      L:??SYSCFG_RIIOSwitchConfig_3
         TNZ       S:?b0
-        JREQ      L:??SYSCFG_RIIOSwitchConfig_3
+        JREQ      L:??SYSCFG_RIIOSwitchConfig_4
         CLRW      X
         INCW      X
         LD        A, S:?b1
@@ -184,8 +195,8 @@ SYSCFG_RIIOSwitchConfig:
         LD        A, XL
         OR        A, L:0x543a
         LD        L:0x543a, A
-        RET
-??SYSCFG_RIIOSwitchConfig_3:
+        JRA       L:??SYSCFG_RIIOSwitchConfig_2
+??SYSCFG_RIIOSwitchConfig_4:
         CLRW      X
         INCW      X
         LD        A, S:?b1
@@ -194,12 +205,13 @@ SYSCFG_RIIOSwitchConfig:
         CPL       A
         AND       A, L:0x543a
         LD        L:0x543a, A
-        RET
-??SYSCFG_RIIOSwitchConfig_2:
+        JRA       L:??SYSCFG_RIIOSwitchConfig_2
+??SYSCFG_RIIOSwitchConfig_3:
+        LD        A, S:?b3
         CP        A, #0x30
-        JRNE      L:??SYSCFG_RIIOSwitchConfig_4
+        JRNE      L:??SYSCFG_RIIOSwitchConfig_5
         TNZ       S:?b0
-        JREQ      L:??SYSCFG_RIIOSwitchConfig_5
+        JREQ      L:??SYSCFG_RIIOSwitchConfig_6
         CLRW      X
         INCW      X
         LD        A, S:?b1
@@ -207,8 +219,8 @@ SYSCFG_RIIOSwitchConfig:
         LD        A, XL
         OR        A, L:0x543b
         LD        L:0x543b, A
-        RET
-??SYSCFG_RIIOSwitchConfig_5:
+        JRA       L:??SYSCFG_RIIOSwitchConfig_2
+??SYSCFG_RIIOSwitchConfig_6:
         CLRW      X
         INCW      X
         LD        A, S:?b1
@@ -217,10 +229,10 @@ SYSCFG_RIIOSwitchConfig:
         CPL       A
         AND       A, L:0x543b
         LD        L:0x543b, A
-        RET
-??SYSCFG_RIIOSwitchConfig_4:
+        JRA       L:??SYSCFG_RIIOSwitchConfig_2
+??SYSCFG_RIIOSwitchConfig_5:
         TNZ       S:?b0
-        JREQ      L:??SYSCFG_RIIOSwitchConfig_6
+        JREQ      L:??SYSCFG_RIIOSwitchConfig_7
         CLRW      X
         INCW      X
         LD        A, S:?b1
@@ -228,8 +240,8 @@ SYSCFG_RIIOSwitchConfig:
         LD        A, XL
         OR        A, L:0x5457
         LD        L:0x5457, A
-        RET
-??SYSCFG_RIIOSwitchConfig_6:
+        JRA       L:??SYSCFG_RIIOSwitchConfig_2
+??SYSCFG_RIIOSwitchConfig_7:
         CLRW      X
         INCW      X
         LD        A, S:?b1
@@ -238,6 +250,7 @@ SYSCFG_RIIOSwitchConfig:
         CPL       A
         AND       A, L:0x5457
         LD        L:0x5457, A
+??SYSCFG_RIIOSwitchConfig_2:
         RET
 
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
@@ -249,12 +262,13 @@ SYSCFG_RIResistorConfig:
         LD        A, L:0x543f
         OR        A, S:?b1
         LD        L:0x543f, A
-        RET
+        JRA       L:??SYSCFG_RIResistorConfig_1
 ??SYSCFG_RIResistorConfig_0:
-        CPL       S:?b1
         LD        A, S:?b1
+        CPL       A
         AND       A, L:0x543f
         LD        L:0x543f, A
+??SYSCFG_RIResistorConfig_1:
         RET
 
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
@@ -268,12 +282,11 @@ SYSCFG_REMAPDeInit:
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
         CODE
 SYSCFG_REMAPPinConfig:
-        LD        S:?b1, A
-        CLR       A
-        RLWA      X, A
         LD        S:?b0, A
-        RRWA      X, A
-        LD        A, S:?b0
+        CLR       S:?b1
+        LD        A, XH
+        LD        S:?b1, A
+        LD        A, S:?b1
         CP        A, #0x1
         JRNE      L:??SYSCFG_REMAPPinConfig_0
         LD        A, XL
@@ -282,35 +295,36 @@ SYSCFG_REMAPPinConfig:
         OR        A, #0xf
         AND       A, L:0x509e
         LD        L:0x509e, A
-        TNZ       S:?b1
+        TNZ       S:?b0
         JREQ      L:??SYSCFG_REMAPPinConfig_1
         LD        A, XL
         AND       A, #0xf0
         OR        A, L:0x509e
         LD        L:0x509e, A
-        RET
+        JRA       L:??SYSCFG_REMAPPinConfig_1
 ??SYSCFG_REMAPPinConfig_0:
+        LD        A, S:?b1
         CP        A, #0x2
         JRNE      L:??SYSCFG_REMAPPinConfig_2
-        TNZ       S:?b1
+        TNZ       S:?b0
         JREQ      L:??SYSCFG_REMAPPinConfig_3
         LD        A, XL
         OR        A, L:0x509f
         LD        L:0x509f, A
-        RET
+        JRA       L:??SYSCFG_REMAPPinConfig_1
 ??SYSCFG_REMAPPinConfig_3:
         LD        A, XL
         CPL       A
         AND       A, L:0x509f
         LD        L:0x509f, A
-        RET
+        JRA       L:??SYSCFG_REMAPPinConfig_1
 ??SYSCFG_REMAPPinConfig_2:
-        TNZ       S:?b1
+        TNZ       S:?b0
         JREQ      L:??SYSCFG_REMAPPinConfig_4
         LD        A, XL
         OR        A, L:0x509d
         LD        L:0x509d, A
-        RET
+        JRA       L:??SYSCFG_REMAPPinConfig_1
 ??SYSCFG_REMAPPinConfig_4:
         LD        A, XL
         CPL       A
@@ -346,9 +360,9 @@ SYSCFG_REMAPDMAChannelConfig:
 
         END
 // 
-// 476 bytes in section .near_func.text
+// 506 bytes in section .near_func.text
 // 
-// 476 bytes of CODE memory
+// 506 bytes of CODE memory
 //
 //Errors: none
 //Warnings: none

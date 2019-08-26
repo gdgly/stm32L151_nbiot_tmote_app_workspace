@@ -1,15 +1,15 @@
 ///////////////////////////////////////////////////////////////////////////////
 //
-// IAR C/C++ Compiler V3.11.1.207 for STM8                22/Aug/2019  15:05:23
+// IAR C/C++ Compiler V3.11.1.207 for STM8                26/Aug/2019  11:13:01
 // Copyright 2010-2019 IAR Systems AB.
 // PC-locked license - IAR Embedded Workbench for STMicroelectronics STM8
 //
 //    Source file  =  
 //        F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\Libraries\src\stm8l15x_tim4.c
 //    Command line =  
-//        -f C:\Users\kyjapple\AppData\Local\Temp\EWD640.tmp
+//        -f C:\Users\kyjapple\AppData\Local\Temp\EW7981.tmp
 //        (F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\Libraries\src\stm8l15x_tim4.c
-//        -e -Ol --no_cse --no_unroll --no_inline --no_code_motion --no_tbaa
+//        -e -On --no_cse --no_unroll --no_inline --no_code_motion --no_tbaa
 //        --no_cross_call --debug --code_model small --data_model medium -o
 //        F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\Output\Obj
 //        --dlib_config "F:\IAR Systems\Embedded Workbench
@@ -33,6 +33,10 @@
 //        F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\System\Sys\
 //        -I
 //        F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\System\Usart\
+//        -I
+//        F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\Hardware\TIMER\
+//        -I
+//        F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\Hardware\OOK\
 //        --vregs 16)
 //    Locale       =  Chinese (Simplified)_CHN.936
 //    List file    =  
@@ -98,14 +102,17 @@ TIM4_TimeBaseInit:
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
         CODE
 TIM4_PrescalerConfig:
+        LD        S:?b1, A
+        LD        A, S:?b1
         LD        L:0x52e8, A
         LD        A, S:?b0
         CP        A, #0x1
         JRNE      L:??TIM4_PrescalerConfig_0
         BSET      L:0x52e6, #0x0
-        RET
+        JRA       L:??TIM4_PrescalerConfig_1
 ??TIM4_PrescalerConfig_0:
         BRES      L:0x52e6, #0x0
+??TIM4_PrescalerConfig_1:
         RET
 
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
@@ -140,9 +147,10 @@ TIM4_UpdateDisableConfig:
         TNZ       A
         JREQ      L:??TIM4_UpdateDisableConfig_0
         BSET      L:0x52e0, #0x1
-        RET
+        JRA       L:??TIM4_UpdateDisableConfig_1
 ??TIM4_UpdateDisableConfig_0:
         BRES      L:0x52e0, #0x1
+??TIM4_UpdateDisableConfig_1:
         RET
 
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
@@ -151,9 +159,10 @@ TIM4_UpdateRequestConfig:
         CP        A, #0x1
         JRNE      L:??TIM4_UpdateRequestConfig_0
         BSET      L:0x52e0, #0x2
-        RET
+        JRA       L:??TIM4_UpdateRequestConfig_1
 ??TIM4_UpdateRequestConfig_0:
         BRES      L:0x52e0, #0x2
+??TIM4_UpdateRequestConfig_1:
         RET
 
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
@@ -162,9 +171,10 @@ TIM4_ARRPreloadConfig:
         TNZ       A
         JREQ      L:??TIM4_ARRPreloadConfig_0
         BSET      L:0x52e0, #0x7
-        RET
+        JRA       L:??TIM4_ARRPreloadConfig_1
 ??TIM4_ARRPreloadConfig_0:
         BRES      L:0x52e0, #0x7
+??TIM4_ARRPreloadConfig_1:
         RET
 
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
@@ -173,9 +183,10 @@ TIM4_SelectOnePulseMode:
         CP        A, #0x1
         JRNE      L:??TIM4_SelectOnePulseMode_0
         BSET      L:0x52e0, #0x3
-        RET
+        JRA       L:??TIM4_SelectOnePulseMode_1
 ??TIM4_SelectOnePulseMode_0:
         BRES      L:0x52e0, #0x3
+??TIM4_SelectOnePulseMode_1:
         RET
 
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
@@ -184,9 +195,10 @@ TIM4_Cmd:
         TNZ       A
         JREQ      L:??TIM4_Cmd_0
         BSET      L:0x52e0, #0x0
-        RET
+        JRA       L:??TIM4_Cmd_1
 ??TIM4_Cmd_0:
         BRES      L:0x52e0, #0x0
+??TIM4_Cmd_1:
         RET
 
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
@@ -198,12 +210,13 @@ TIM4_ITConfig:
         LD        A, L:0x52e4
         OR        A, S:?b1
         LD        L:0x52e4, A
-        RET
+        JRA       L:??TIM4_ITConfig_1
 ??TIM4_ITConfig_0:
-        CPL       S:?b1
         LD        A, S:?b1
+        CPL       A
         AND       A, L:0x52e4
         LD        L:0x52e4, A
+??TIM4_ITConfig_1:
         RET
 
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
@@ -224,7 +237,8 @@ TIM4_GetFlagStatus:
         AND       A, S:?b1
         CP        A, #0x0
         JREQ      L:??TIM4_GetFlagStatus_0
-        MOV       S:?b0, #0x1
+        LD        A, #0x1
+        LD        S:?b0, A
         JRA       L:??TIM4_GetFlagStatus_1
 ??TIM4_GetFlagStatus_0:
         CLR       S:?b0
@@ -235,6 +249,8 @@ TIM4_GetFlagStatus:
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
         CODE
 TIM4_ClearFlag:
+        LD        S:?b0, A
+        LD        A, S:?b0
         CPL       A
         LD        L:0x52e5, A
         RET
@@ -243,30 +259,33 @@ TIM4_ClearFlag:
         CODE
 TIM4_GetITStatus:
         LD        S:?b3, A
-        CLR       S:?b0
         CLR       S:?b2
         CLR       S:?b1
+        CLR       S:?b0
         LD        A, L:0x52e5
         AND       A, S:?b3
-        LD        S:?b2, A
+        LD        S:?b1, A
         LD        A, L:0x52e4
         AND       A, S:?b3
-        LD        S:?b1, A
-        TNZ       S:?b2
-        JREQ      L:??TIM4_GetITStatus_0
+        LD        S:?b0, A
         TNZ       S:?b1
         JREQ      L:??TIM4_GetITStatus_0
-        MOV       S:?b0, #0x1
+        TNZ       S:?b0
+        JREQ      L:??TIM4_GetITStatus_0
+        LD        A, #0x1
+        LD        S:?b2, A
         JRA       L:??TIM4_GetITStatus_1
 ??TIM4_GetITStatus_0:
-        CLR       S:?b0
+        CLR       S:?b2
 ??TIM4_GetITStatus_1:
-        LD        A, S:?b0
+        LD        A, S:?b2
         RET
 
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
         CODE
 TIM4_ClearITPendingBit:
+        LD        S:?b0, A
+        LD        A, S:?b0
         CPL       A
         LD        L:0x52e5, A
         RET
@@ -280,12 +299,13 @@ TIM4_DMACmd:
         LD        A, L:0x52e3
         OR        A, S:?b1
         LD        L:0x52e3, A
-        RET
+        JRA       L:??TIM4_DMACmd_1
 ??TIM4_DMACmd_0:
-        CPL       S:?b1
         LD        A, S:?b1
+        CPL       A
         AND       A, L:0x52e3
         LD        L:0x52e3, A
+??TIM4_DMACmd_1:
         RET
 
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
@@ -353,18 +373,19 @@ TIM4_SelectMasterSlaveMode:
         TNZ       A
         JREQ      L:??TIM4_SelectMasterSlaveMode_0
         BSET      L:0x52e2, #0x7
-        RET
+        JRA       L:??TIM4_SelectMasterSlaveMode_1
 ??TIM4_SelectMasterSlaveMode_0:
         BRES      L:0x52e2, #0x7
+??TIM4_SelectMasterSlaveMode_1:
         RET
 
         SECTION VREGS:DATA:REORDER:NOROOT(0)
 
         END
 // 
-// 398 bytes in section .near_func.text
+// 417 bytes in section .near_func.text
 // 
-// 398 bytes of CODE memory
+// 417 bytes of CODE memory
 //
 //Errors: none
 //Warnings: none

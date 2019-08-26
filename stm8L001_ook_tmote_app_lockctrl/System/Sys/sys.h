@@ -10,4 +10,4 @@ void Stm8_HSIClock_Init(CLK_SYSCLKDiv_TypeDef CLK_SYSCLKDiv);
 
 void Stm8_LSIClock_Init(CLK_SYSCLKDiv_TypeDef CLK_SYSCLKDiv);
 
-#endif
+#endif /* __SYS_H */

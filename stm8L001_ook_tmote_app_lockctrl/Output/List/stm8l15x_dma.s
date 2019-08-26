@@ -1,15 +1,15 @@
 ///////////////////////////////////////////////////////////////////////////////
 //
-// IAR C/C++ Compiler V3.11.1.207 for STM8                22/Aug/2019  15:05:18
+// IAR C/C++ Compiler V3.11.1.207 for STM8                26/Aug/2019  11:12:56
 // Copyright 2010-2019 IAR Systems AB.
 // PC-locked license - IAR Embedded Workbench for STMicroelectronics STM8
 //
 //    Source file  =  
 //        F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\Libraries\src\stm8l15x_dma.c
 //    Command line =  
-//        -f C:\Users\kyjapple\AppData\Local\Temp\EWC41D.tmp
+//        -f C:\Users\kyjapple\AppData\Local\Temp\EW629B.tmp
 //        (F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\Libraries\src\stm8l15x_dma.c
-//        -e -Ol --no_cse --no_unroll --no_inline --no_code_motion --no_tbaa
+//        -e -On --no_cse --no_unroll --no_inline --no_code_motion --no_tbaa
 //        --no_cross_call --debug --code_model small --data_model medium -o
 //        F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\Output\Obj
 //        --dlib_config "F:\IAR Systems\Embedded Workbench
@@ -33,6 +33,10 @@
 //        F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\System\Sys\
 //        -I
 //        F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\System\Usart\
+//        -I
+//        F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\Hardware\TIMER\
+//        -I
+//        F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\Hardware\OOK\
 //        --vregs 16)
 //    Locale       =  Chinese (Simplified)_CHN.936
 //    List file    =  
@@ -49,8 +53,11 @@
         EXTERN ?b6
         EXTERN ?b7
         EXTERN ?b8
+        EXTERN ?b9
+        EXTERN ?epilogue_l2
+        EXTERN ?push_l2
         EXTERN ?w0
-        EXTERN ?w2
+        EXTERN ?w5
 
         PUBLIC DMA_ClearFlag
         PUBLIC DMA_ClearITPendingBit
@@ -111,64 +118,68 @@ DMA_DeInit:
         LDW       X, Y
         ADDW      X, #0x7
         CLR       (X)
-        INCW      Y
-        CLR       (Y)
+        LDW       X, Y
+        INCW      X
+        CLR       (X)
         RET
 
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
         CODE
 DMA_Init:
-        PUSH      S:?b8
+        CALL      L:?push_l2
         LD        S:?b8, A
+        MOV       S:?b9, S:?b4
+        LD        A, (0x7,SP)
+        LD        S:?b4, A
         LD        A, (X)
         AND       A, #0xfe
         LD        (X), A
         CLR       (X)
         LD        A, S:?b5
-        OR        A, S:?b4
+        OR        A, S:?b9
         OR        A, S:?b6
         OR        A, (X)
         LD        (X), A
-        LDW       S:?w2, X
+        LDW       S:?w5, X
         PUSHW     X
-        LDW       X, S:?w2
+        LDW       X, S:?w5
         INCW      X
-        LDW       S:?w2, X
+        LDW       S:?w5, X
         POPW      X
-        LD        A, [S:?w2.w]
+        LD        A, [S:?w5.w]
         AND       A, #0xc7
-        LDW       S:?w2, X
+        LDW       S:?w5, X
         PUSHW     X
-        LDW       X, S:?w2
+        LDW       X, S:?w5
         INCW      X
-        LDW       S:?w2, X
+        LDW       S:?w5, X
         POPW      X
-        LD        [S:?w2.w], A
-        LD        A, (0x4,SP)
+        LD        [S:?w5.w], A
+        LD        A, S:?b4
         OR        A, S:?b7
-        LDW       S:?w2, X
+        LDW       S:?w5, X
         PUSHW     X
-        LDW       X, S:?w2
+        LDW       X, S:?w5
         INCW      X
-        LDW       S:?w2, X
+        LDW       S:?w5, X
         POPW      X
-        OR        A, [S:?w2.w]
-        LDW       S:?w2, X
+        OR        A, [S:?w5.w]
+        LDW       S:?w5, X
         PUSHW     X
-        LDW       X, S:?w2
+        LDW       X, S:?w5
         INCW      X
-        LDW       S:?w2, X
+        LDW       S:?w5, X
         POPW      X
-        LD        [S:?w2.w], A
-        LDW       S:?w2, X
+        LD        [S:?w5.w], A
+        LDW       S:?w5, X
         PUSHW     X
-        LDW       X, S:?w2
+        LDW       X, S:?w5
         INCW      X
         INCW      X
-        LDW       S:?w2, X
+        LDW       S:?w5, X
         POPW      X
         LD        A, S:?b8
-        LD        [S:?w2.w], A
+        LD        [S:?w5.w], A
         LD        A, YH
         ADDW      X, #0x3
         LD        (X), A
@@ -192,8 +203,7 @@ DMA_Init:
         ADDW      X, #0x7
         LD        (X), A
         SUBW      X, #0x7
-        POP       S:?b8
-        RET
+        JP        L:?epilogue_l2
 
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
         CODE
@@ -201,30 +211,35 @@ DMA_GlobalCmd:
         TNZ       A
         JREQ      L:??DMA_GlobalCmd_0
         BSET      L:0x5070, #0x0
-        RET
+        JRA       L:??DMA_GlobalCmd_1
 ??DMA_GlobalCmd_0:
         BRES      L:0x5070, #0x0
+??DMA_GlobalCmd_1:
         RET
 
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
         CODE
 DMA_Cmd:
-        TNZ       A
+        LD        S:?b0, A
+        TNZ       S:?b0
         JREQ      L:??DMA_Cmd_0
         LD        A, (X)
         OR        A, #0x1
         LD        (X), A
-        RET
+        JRA       L:??DMA_Cmd_1
 ??DMA_Cmd_0:
         LD        A, (X)
         AND       A, #0xfe
         LD        (X), A
+??DMA_Cmd_1:
         RET
 
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
         CODE
 DMA_SetTimeOut:
+        LD        S:?b0, A
         CLR       L:0x5070
+        LD        A, S:?b0
         SLL       A
         SLL       A
         LD        L:0x5070, A
@@ -233,6 +248,8 @@ DMA_SetTimeOut:
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
         CODE
 DMA_SetCurrDataCounter:
+        LDW       Y, X
+        LDW       X, Y
         INCW      X
         INCW      X
         LD        (X), A
@@ -255,35 +272,37 @@ DMA_ITConfig:
         LD        A, (X)
         OR        A, S:?b1
         LD        (X), A
-        RET
+        JRA       L:??DMA_ITConfig_1
 ??DMA_ITConfig_0:
-        CPL       S:?b1
         LD        A, S:?b1
+        CPL       A
         AND       A, (X)
         LD        (X), A
+??DMA_ITConfig_1:
         RET
 
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
         CODE
 DMA_GetFlagStatus:
-        LDW       S:?w0, X
-        CLR       A
+        LDW       Y, X
+        CLR       S:?b3
         LDW       X, #0x5075
+        LDW       S:?w0, X
         CLR       S:?b4
         CLR       S:?b2
-        MOV       S:?b3, L:0x5070
-        MOV       S:?b2, S:?b3
-        MOV       S:?b3, L:0x5071
-        MOV       S:?b4, S:?b3
-        LDW       Y, S:?w0
-        RLWA      Y, A
+        LD        A, L:0x5070
+        LD        S:?b2, A
+        LD        A, L:0x5071
+        LD        S:?b4, A
+        LDW       X, Y
+        RLWA      X, A
         AND       A, #0xf
-        RLWA      Y, A
+        RLWA      X, A
         AND       A, #0x0
-        RLWA      Y, A
-        TNZW      Y
+        RLWA      X, A
+        TNZW      X
         JREQ      L:??DMA_GetFlagStatus_0
-        LDW       X, S:?w0
+        LDW       X, Y
         RLWA      X, A
         AND       A, #0x1
         RLWA      X, A
@@ -292,9 +311,10 @@ DMA_GetFlagStatus:
         TNZW      X
         JREQ      L:??DMA_GetFlagStatus_1
         LDW       X, #0x5075
+        LDW       S:?w0, X
         JRA       L:??DMA_GetFlagStatus_2
 ??DMA_GetFlagStatus_1:
-        LDW       X, S:?w0
+        LDW       X, Y
         RLWA      X, A
         AND       A, #0x2
         RLWA      X, A
@@ -303,9 +323,10 @@ DMA_GetFlagStatus:
         TNZW      X
         JREQ      L:??DMA_GetFlagStatus_3
         LDW       X, #0x507f
+        LDW       S:?w0, X
         JRA       L:??DMA_GetFlagStatus_2
 ??DMA_GetFlagStatus_3:
-        LDW       X, S:?w0
+        LDW       X, Y
         RLWA      X, A
         AND       A, #0x4
         RLWA      X, A
@@ -314,38 +335,46 @@ DMA_GetFlagStatus:
         TNZW      X
         JREQ      L:??DMA_GetFlagStatus_4
         LDW       X, #0x5089
+        LDW       S:?w0, X
         JRA       L:??DMA_GetFlagStatus_2
 ??DMA_GetFlagStatus_4:
         LDW       X, #0x5093
+        LDW       S:?w0, X
 ??DMA_GetFlagStatus_2:
-        INCW      X
-        LD        A, S:?b1
-        AND       A, (X)
-        RET
-??DMA_GetFlagStatus_0:
         LDW       X, S:?w0
+        INCW      X
+        LD        A, YL
+        AND       A, (X)
+        LD        S:?b3, A
+        JRA       L:??DMA_GetFlagStatus_5
+??DMA_GetFlagStatus_0:
+        LDW       X, Y
         RLWA      X, A
         AND       A, #0x10
         RLWA      X, A
         AND       A, #0x0
         RLWA      X, A
         TNZW      X
-        JREQ      L:??DMA_GetFlagStatus_5
-        LD        A, S:?b1
+        JREQ      L:??DMA_GetFlagStatus_6
+        LD        A, YL
         AND       A, S:?b4
-        RET
-??DMA_GetFlagStatus_5:
+        LD        S:?b3, A
+        JRA       L:??DMA_GetFlagStatus_5
+??DMA_GetFlagStatus_6:
         LD        A, S:?b2
         AND       A, #0x2
+        LD        S:?b3, A
+??DMA_GetFlagStatus_5:
+        LD        A, S:?b3
         RET
 
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
         CODE
 DMA_ClearFlag:
-        LDW       S:?w0, X
-        LDW       X, #0x5075
         LDW       Y, X
-        LDW       X, S:?w0
+        LDW       X, #0x5075
+        LDW       S:?w0, X
+        LDW       X, Y
         RLWA      X, A
         AND       A, #0x1
         RLWA      X, A
@@ -354,10 +383,10 @@ DMA_ClearFlag:
         TNZW      X
         JREQ      L:??DMA_ClearFlag_0
         LDW       X, #0x5075
-        LDW       Y, X
+        LDW       S:?w0, X
         JRA       L:??DMA_ClearFlag_1
 ??DMA_ClearFlag_0:
-        LDW       X, S:?w0
+        LDW       X, Y
         RLWA      X, A
         AND       A, #0x2
         RLWA      X, A
@@ -366,10 +395,10 @@ DMA_ClearFlag:
         TNZW      X
         JREQ      L:??DMA_ClearFlag_2
         LDW       X, #0x507f
-        LDW       Y, X
+        LDW       S:?w0, X
         JRA       L:??DMA_ClearFlag_1
 ??DMA_ClearFlag_2:
-        LDW       X, S:?w0
+        LDW       X, Y
         RLWA      X, A
         AND       A, #0x4
         RLWA      X, A
@@ -378,20 +407,21 @@ DMA_ClearFlag:
         TNZW      X
         JREQ      L:??DMA_ClearFlag_3
         LDW       X, #0x5089
-        LDW       Y, X
+        LDW       S:?w0, X
         JRA       L:??DMA_ClearFlag_1
 ??DMA_ClearFlag_3:
         LDW       X, #0x5093
-        LDW       Y, X
+        LDW       S:?w0, X
 ??DMA_ClearFlag_1:
-        LD        A, S:?b1
+        LD        A, YL
         AND       A, #0x6
         CPL       A
-        LDW       X, Y
+        LDW       X, S:?w0
         INCW      X
         AND       A, (X)
-        INCW      Y
-        LD        (Y), A
+        LDW       X, S:?w0
+        INCW      X
+        LD        (X), A
         RET
 
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
@@ -406,24 +436,28 @@ DMA_GetITStatus:
         AND       A, #0x10
         CP        A, #0x0
         JREQ      L:??DMA_GetITStatus_0
-        LDW       Y, #0x5075
+        LDW       X, #0x5075
+        LDW       Y, X
         JRA       L:??DMA_GetITStatus_1
 ??DMA_GetITStatus_0:
         LD        A, S:?b2
         AND       A, #0x20
         CP        A, #0x0
         JREQ      L:??DMA_GetITStatus_2
-        LDW       Y, #0x507f
+        LDW       X, #0x507f
+        LDW       Y, X
         JRA       L:??DMA_GetITStatus_1
 ??DMA_GetITStatus_2:
         LD        A, S:?b2
         AND       A, #0x40
         CP        A, #0x0
         JREQ      L:??DMA_GetITStatus_3
-        LDW       Y, #0x5089
+        LDW       X, #0x5089
+        LDW       Y, X
         JRA       L:??DMA_GetITStatus_1
 ??DMA_GetITStatus_3:
-        LDW       Y, #0x5093
+        LDW       X, #0x5093
+        LDW       Y, X
 ??DMA_GetITStatus_1:
         LDW       X, Y
         INCW      X
@@ -445,29 +479,34 @@ DMA_GetITStatus:
         CODE
 DMA_ClearITPendingBit:
         LD        S:?b0, A
-        LDW       Y, #0x5075
+        LDW       X, #0x5075
+        LDW       Y, X
         LD        A, S:?b0
         AND       A, #0x10
         CP        A, #0x0
         JREQ      L:??DMA_ClearITPendingBit_0
-        LDW       Y, #0x5075
+        LDW       X, #0x5075
+        LDW       Y, X
         JRA       L:??DMA_ClearITPendingBit_1
 ??DMA_ClearITPendingBit_0:
         LD        A, S:?b0
         AND       A, #0x20
         CP        A, #0x0
         JREQ      L:??DMA_ClearITPendingBit_2
-        LDW       Y, #0x507f
+        LDW       X, #0x507f
+        LDW       Y, X
         JRA       L:??DMA_ClearITPendingBit_1
 ??DMA_ClearITPendingBit_2:
         LD        A, S:?b0
         AND       A, #0x40
         CP        A, #0x0
         JREQ      L:??DMA_ClearITPendingBit_3
-        LDW       Y, #0x5089
+        LDW       X, #0x5089
+        LDW       Y, X
         JRA       L:??DMA_ClearITPendingBit_1
 ??DMA_ClearITPendingBit_3:
-        LDW       Y, #0x5093
+        LDW       X, #0x5093
+        LDW       Y, X
 ??DMA_ClearITPendingBit_1:
         LD        A, S:?b0
         AND       A, #0x6
@@ -475,17 +514,18 @@ DMA_ClearITPendingBit:
         LDW       X, Y
         INCW      X
         AND       A, (X)
-        INCW      Y
-        LD        (Y), A
+        LDW       X, Y
+        INCW      X
+        LD        (X), A
         RET
 
         SECTION VREGS:DATA:REORDER:NOROOT(0)
 
         END
 // 
-// 628 bytes in section .near_func.text
+// 658 bytes in section .near_func.text
 // 
-// 628 bytes of CODE memory
+// 658 bytes of CODE memory
 //
 //Errors: none
 //Warnings: none

@@ -146,7 +146,7 @@
                 </option>
                 <option>
                     <name>IccOptLevel</name>
-                    <state>1</state>
+                    <state>0</state>
                 </option>
                 <option>
                     <name>IccOptStrategy</name>
@@ -155,7 +155,7 @@
                 </option>
                 <option>
                     <name>IccOptLevelSlave</name>
-                    <state>1</state>
+                    <state>0</state>
                 </option>
                 <option>
                     <name>IccOptAllowList</name>
@@ -264,6 +264,8 @@
                     <state>F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\System\Delay</state>
                     <state>F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\System\Sys</state>
                     <state>F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\System\Usart</state>
+                    <state>F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\Hardware\TIMER</state>
+                    <state>F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\Hardware\OOK</state>
                 </option>
                 <option>
                     <name>CCStdIncCheck</name>
@@ -1647,6 +1649,24 @@
     </group>
     <group>
         <name>Hardware</name>
+        <group>
+            <name>OOK</name>
+            <file>
+                <name>$PROJ_DIR$\..\Hardware\OOK\hal_ook.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\Hardware\OOK\hal_ook.h</name>
+            </file>
+        </group>
+        <group>
+            <name>TIMER</name>
+            <file>
+                <name>$PROJ_DIR$\..\Hardware\TIMER\hal_timer.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\Hardware\TIMER\hal_timer.h</name>
+            </file>
+        </group>
     </group>
     <group>
         <name>Libraries</name>

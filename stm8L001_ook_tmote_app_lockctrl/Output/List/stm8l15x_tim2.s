@@ -1,15 +1,15 @@
 ///////////////////////////////////////////////////////////////////////////////
 //
-// IAR C/C++ Compiler V3.11.1.207 for STM8                22/Aug/2019  15:05:23
+// IAR C/C++ Compiler V3.11.1.207 for STM8                26/Aug/2019  11:13:01
 // Copyright 2010-2019 IAR Systems AB.
 // PC-locked license - IAR Embedded Workbench for STMicroelectronics STM8
 //
 //    Source file  =  
 //        F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\Libraries\src\stm8l15x_tim2.c
 //    Command line =  
-//        -f C:\Users\kyjapple\AppData\Local\Temp\EWD498.tmp
+//        -f C:\Users\kyjapple\AppData\Local\Temp\EW77F8.tmp
 //        (F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\Libraries\src\stm8l15x_tim2.c
-//        -e -Ol --no_cse --no_unroll --no_inline --no_code_motion --no_tbaa
+//        -e -On --no_cse --no_unroll --no_inline --no_code_motion --no_tbaa
 //        --no_cross_call --debug --code_model small --data_model medium -o
 //        F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\Output\Obj
 //        --dlib_config "F:\IAR Systems\Embedded Workbench
@@ -33,6 +33,10 @@
 //        F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\System\Sys\
 //        -I
 //        F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\System\Usart\
+//        -I
+//        F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\Hardware\TIMER\
+//        -I
+//        F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\Hardware\OOK\
 //        --vregs 16)
 //    Locale       =  Chinese (Simplified)_CHN.936
 //    List file    =  
@@ -42,6 +46,8 @@
 
         EXTERN ?b0
         EXTERN ?b1
+        EXTERN ?b10
+        EXTERN ?b11
         EXTERN ?b2
         EXTERN ?b3
         EXTERN ?b4
@@ -50,9 +56,11 @@
         EXTERN ?b7
         EXTERN ?b8
         EXTERN ?b9
+        EXTERN ?epilogue_l2
         EXTERN ?epilogue_w4
+        EXTERN ?push_l2
         EXTERN ?push_w4
-        EXTERN ?w0
+        EXTERN ?w1
 
         PUBLIC TIM2_ARRPreloadConfig
         PUBLIC TIM2_BKRConfig
@@ -162,14 +170,17 @@ TIM2_TimeBaseInit:
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
         CODE
 TIM2_PrescalerConfig:
+        LD        S:?b1, A
+        LD        A, S:?b1
         LD        L:0x525e, A
         LD        A, S:?b0
         CP        A, #0x1
         JRNE      L:??TIM2_PrescalerConfig_0
         BSET      L:0x5258, #0x0
-        RET
+        JRA       L:??TIM2_PrescalerConfig_1
 ??TIM2_PrescalerConfig_0:
         BRES      L:0x5258, #0x0
+??TIM2_PrescalerConfig_1:
         RET
 
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
@@ -211,9 +222,12 @@ TIM2_SetAutoreload:
         CODE
 TIM2_GetCounter:
         CLRW      Y
-        MOV       S:?b0, L:0x525c
+        LD        A, L:0x525c
+        LD        S:?b0, A
         LD        A, L:0x525d
+        LD        S:?b1, A
         CLRW      X
+        LD        A, S:?b1
         LD        XL, A
         LDW       Y, X
         CLRW      X
@@ -221,11 +235,11 @@ TIM2_GetCounter:
         LD        XL, A
         CLR       A
         RLWA      X, A
-        LDW       S:?w0, X
+        LDW       S:?w1, X
         RRWA      Y, A
-        OR        A, S:?b1
+        OR        A, S:?b3
         RRWA      Y, A
-        OR        A, S:?b0
+        OR        A, S:?b2
         RRWA      Y, A
         LDW       X, Y
         RET
@@ -242,9 +256,10 @@ TIM2_UpdateDisableConfig:
         TNZ       A
         JREQ      L:??TIM2_UpdateDisableConfig_0
         BSET      L:0x5250, #0x1
-        RET
+        JRA       L:??TIM2_UpdateDisableConfig_1
 ??TIM2_UpdateDisableConfig_0:
         BRES      L:0x5250, #0x1
+??TIM2_UpdateDisableConfig_1:
         RET
 
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
@@ -253,9 +268,10 @@ TIM2_UpdateRequestConfig:
         CP        A, #0x1
         JRNE      L:??TIM2_UpdateRequestConfig_0
         BSET      L:0x5250, #0x2
-        RET
+        JRA       L:??TIM2_UpdateRequestConfig_1
 ??TIM2_UpdateRequestConfig_0:
         BRES      L:0x5250, #0x2
+??TIM2_UpdateRequestConfig_1:
         RET
 
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
@@ -264,9 +280,10 @@ TIM2_ARRPreloadConfig:
         TNZ       A
         JREQ      L:??TIM2_ARRPreloadConfig_0
         BSET      L:0x5250, #0x7
-        RET
+        JRA       L:??TIM2_ARRPreloadConfig_1
 ??TIM2_ARRPreloadConfig_0:
         BRES      L:0x5250, #0x7
+??TIM2_ARRPreloadConfig_1:
         RET
 
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
@@ -275,9 +292,10 @@ TIM2_SelectOnePulseMode:
         CP        A, #0x1
         JRNE      L:??TIM2_SelectOnePulseMode_0
         BSET      L:0x5250, #0x3
-        RET
+        JRA       L:??TIM2_SelectOnePulseMode_1
 ??TIM2_SelectOnePulseMode_0:
         BRES      L:0x5250, #0x3
+??TIM2_SelectOnePulseMode_1:
         RET
 
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
@@ -286,9 +304,10 @@ TIM2_Cmd:
         TNZ       A
         JREQ      L:??TIM2_Cmd_0
         BSET      L:0x5250, #0x0
-        RET
+        JRA       L:??TIM2_Cmd_1
 ??TIM2_Cmd_0:
         BRES      L:0x5250, #0x0
+??TIM2_Cmd_1:
         RET
 
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
@@ -386,15 +405,15 @@ TIM2_OC2Init:
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
         CODE
 TIM2_BKRConfig:
-        LD        S:?b4, A
+        LD        S:?b5, A
         LD        A, S:?b2
         OR        A, S:?b1
         PUSH      A
         LD        A, S:?b0
-        OR        A, S:?b4
-        LD        S:?b0, A
+        OR        A, S:?b5
+        LD        S:?b6, A
         POP       A
-        OR        A, S:?b0
+        OR        A, S:?b6
         OR        A, S:?b3
         LD        L:0x5265, A
         RET
@@ -405,15 +424,17 @@ TIM2_CtrlPWMOutputs:
         TNZ       A
         JREQ      L:??TIM2_CtrlPWMOutputs_0
         BSET      L:0x5265, #0x7
-        RET
+        JRA       L:??TIM2_CtrlPWMOutputs_1
 ??TIM2_CtrlPWMOutputs_0:
         BRES      L:0x5265, #0x7
+??TIM2_CtrlPWMOutputs_1:
         RET
 
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
         CODE
 TIM2_SelectOCxM:
-        TNZ       A
+        LD        S:?b1, A
+        TNZ       S:?b1
         JRNE      L:??TIM2_SelectOCxM_0
         BRES      L:0x525b, #0x0
         LD        A, L:0x5259
@@ -422,7 +443,7 @@ TIM2_SelectOCxM:
         LD        A, L:0x5259
         OR        A, S:?b0
         LD        L:0x5259, A
-        RET
+        JRA       L:??TIM2_SelectOCxM_1
 ??TIM2_SelectOCxM_0:
         BRES      L:0x525b, #0x4
         LD        A, L:0x525a
@@ -431,6 +452,7 @@ TIM2_SelectOCxM:
         LD        A, L:0x525a
         OR        A, S:?b0
         LD        L:0x525a, A
+??TIM2_SelectOCxM_1:
         RET
 
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
@@ -491,9 +513,10 @@ TIM2_OC1PreloadConfig:
         TNZ       A
         JREQ      L:??TIM2_OC1PreloadConfig_0
         BSET      L:0x5259, #0x3
-        RET
+        JRA       L:??TIM2_OC1PreloadConfig_1
 ??TIM2_OC1PreloadConfig_0:
         BRES      L:0x5259, #0x3
+??TIM2_OC1PreloadConfig_1:
         RET
 
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
@@ -502,9 +525,10 @@ TIM2_OC2PreloadConfig:
         TNZ       A
         JREQ      L:??TIM2_OC2PreloadConfig_0
         BSET      L:0x525a, #0x3
-        RET
+        JRA       L:??TIM2_OC2PreloadConfig_1
 ??TIM2_OC2PreloadConfig_0:
         BRES      L:0x525a, #0x3
+??TIM2_OC2PreloadConfig_1:
         RET
 
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
@@ -513,9 +537,10 @@ TIM2_OC1FastConfig:
         TNZ       A
         JREQ      L:??TIM2_OC1FastConfig_0
         BSET      L:0x5259, #0x2
-        RET
+        JRA       L:??TIM2_OC1FastConfig_1
 ??TIM2_OC1FastConfig_0:
         BRES      L:0x5259, #0x2
+??TIM2_OC1FastConfig_1:
         RET
 
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
@@ -524,9 +549,10 @@ TIM2_OC2FastConfig:
         TNZ       A
         JREQ      L:??TIM2_OC2FastConfig_0
         BSET      L:0x525a, #0x2
-        RET
+        JRA       L:??TIM2_OC2FastConfig_1
 ??TIM2_OC2FastConfig_0:
         BRES      L:0x525a, #0x2
+??TIM2_OC2FastConfig_1:
         RET
 
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
@@ -535,9 +561,10 @@ TIM2_OC1PolarityConfig:
         CP        A, #0x1
         JRNE      L:??TIM2_OC1PolarityConfig_0
         BSET      L:0x525b, #0x1
-        RET
+        JRA       L:??TIM2_OC1PolarityConfig_1
 ??TIM2_OC1PolarityConfig_0:
         BRES      L:0x525b, #0x1
+??TIM2_OC1PolarityConfig_1:
         RET
 
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
@@ -546,9 +573,10 @@ TIM2_OC2PolarityConfig:
         CP        A, #0x1
         JRNE      L:??TIM2_OC2PolarityConfig_0
         BSET      L:0x525b, #0x5
-        RET
+        JRA       L:??TIM2_OC2PolarityConfig_1
 ??TIM2_OC2PolarityConfig_0:
         BRES      L:0x525b, #0x5
+??TIM2_OC2PolarityConfig_1:
         RET
 
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
@@ -559,67 +587,161 @@ TIM2_CCxCmd:
         TNZ       S:?b0
         JREQ      L:??TIM2_CCxCmd_1
         BSET      L:0x525b, #0x0
-        RET
+        JRA       L:??TIM2_CCxCmd_2
 ??TIM2_CCxCmd_1:
         BRES      L:0x525b, #0x0
-        RET
+        JRA       L:??TIM2_CCxCmd_2
 ??TIM2_CCxCmd_0:
         TNZ       S:?b0
-        JREQ      L:??TIM2_CCxCmd_2
+        JREQ      L:??TIM2_CCxCmd_3
         BSET      L:0x525b, #0x4
-        RET
+        JRA       L:??TIM2_CCxCmd_2
+??TIM2_CCxCmd_3:
+        BRES      L:0x525b, #0x4
 ??TIM2_CCxCmd_2:
-        BRES      L:0x525b, #0x4
         RET
 
-        SECTION `.near_func.text`:CODE:NOROOT(0)
+        SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
         CODE
-TIM2_SetIC2Prescaler:
-        LD        S:?b0, A
-        CLR       S:?b1
-        LD        A, L:0x525a
-        LD        S:?b1, A
-        LD        A, S:?b1
-        AND       A, #0xf3
-        LD        S:?b1, A
-        LD        A, S:?b0
-        OR        A, S:?b1
-        LD        S:?b1, A
-        LD        A, S:?b1
-        LD        L:0x525a, A
-        RET
+TIM2_ICInit:
+        CALL      L:?push_w4
+        LD        S:?b5, A
+        MOV       S:?b6, S:?b0
+        MOV       S:?b7, S:?b1
+        MOV       S:?b8, S:?b2
+        MOV       S:?b9, S:?b3
+        TNZ       S:?b5
+        JRNE      L:??TIM2_ICInit_0
+        MOV       S:?b1, S:?b9
+        MOV       S:?b0, S:?b7
+        LD        A, S:?b6
+        CALL      L:TI1_Config
+        LD        A, S:?b8
+        CALL      L:TIM2_SetIC1Prescaler
+        JRA       L:??TIM2_ICInit_1
+??TIM2_ICInit_0:
+        MOV       S:?b1, S:?b9
+        MOV       S:?b0, S:?b7
+        LD        A, S:?b6
+        CALL      L:TI2_Config
+        LD        A, S:?b8
+        CALL      L:TIM2_SetIC2Prescaler
+??TIM2_ICInit_1:
+        JP        L:?epilogue_w4
 
-        SECTION `.near_func.text`:CODE:NOROOT(0)
+        SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
         CODE
-TI2_Config:
-        LD        S:?b2, A
-        CLR       S:?b3
-        LD        A, L:0x525a
-        LD        S:?b3, A
-        BRES      L:0x525b, #0x4
-        LD        A, S:?b3
-        AND       A, #0xc
-        LD        S:?b3, A
-        LD        A, S:?b1
-        SWAP      A
-        AND       A, #0xf0
-        OR        A, S:?b0
-        OR        A, S:?b3
-        LD        S:?b3, A
-        LD        A, S:?b3
-        LD        L:0x525a, A
-        LD        A, S:?b2
+TIM2_PWMIConfig:
+        CALL      L:?push_l2
+        LD        S:?b6, A
+        MOV       S:?b7, S:?b0
+        MOV       S:?b9, S:?b1
+        MOV       S:?b10, S:?b2
+        MOV       S:?b11, S:?b3
+        CLR       S:?b5
+        MOV       S:?b8, #0x1
+        TNZ       S:?b7
+        JRNE      L:??TIM2_PWMIConfig_0
+        LD        A, #0x1
+        LD        S:?b5, A
+        JRA       L:??TIM2_PWMIConfig_1
+??TIM2_PWMIConfig_0:
+        CLR       S:?b5
+??TIM2_PWMIConfig_1:
+        LD        A, S:?b9
         CP        A, #0x1
-        JRNE      L:??TI2_Config_0
-        BSET      L:0x525b, #0x5
-        JRA       L:??TI2_Config_1
-??TI2_Config_0:
-        BRES      L:0x525b, #0x5
-??TI2_Config_1:
-        BSET      L:0x525b, #0x4
+        JRNE      L:??TIM2_PWMIConfig_2
+        LD        A, #0x2
+        LD        S:?b8, A
+        JRA       L:??TIM2_PWMIConfig_3
+??TIM2_PWMIConfig_2:
+        LD        A, #0x1
+        LD        S:?b8, A
+??TIM2_PWMIConfig_3:
+        TNZ       S:?b6
+        JRNE      L:??TIM2_PWMIConfig_4
+        MOV       S:?b1, S:?b11
+        MOV       S:?b0, S:?b9
+        LD        A, S:?b7
+        CALL      L:TI1_Config
+        LD        A, S:?b10
+        CALL      L:TIM2_SetIC1Prescaler
+        MOV       S:?b1, S:?b11
+        MOV       S:?b0, S:?b8
+        LD        A, S:?b5
+        CALL      L:TI2_Config
+        LD        A, S:?b10
+        CALL      L:TIM2_SetIC2Prescaler
+        JRA       L:??TIM2_PWMIConfig_5
+??TIM2_PWMIConfig_4:
+        MOV       S:?b1, S:?b11
+        MOV       S:?b0, S:?b9
+        LD        A, S:?b7
+        CALL      L:TI2_Config
+        LD        A, S:?b10
+        CALL      L:TIM2_SetIC2Prescaler
+        MOV       S:?b1, S:?b11
+        MOV       S:?b0, S:?b8
+        LD        A, S:?b5
+        CALL      L:TI1_Config
+        LD        A, S:?b10
+        CALL      L:TIM2_SetIC1Prescaler
+??TIM2_PWMIConfig_5:
+        JP        L:?epilogue_l2
+
+        SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
+        CODE
+TIM2_GetCapture1:
+        CLRW      Y
+        LD        A, L:0x5261
+        LD        S:?b0, A
+        LD        A, L:0x5262
+        LD        S:?b1, A
+        CLRW      X
+        LD        A, S:?b1
+        LD        XL, A
+        LDW       Y, X
+        CLRW      X
+        LD        A, S:?b0
+        LD        XL, A
+        CLR       A
+        RLWA      X, A
+        LDW       S:?w1, X
+        RRWA      Y, A
+        OR        A, S:?b3
+        RRWA      Y, A
+        OR        A, S:?b2
+        RRWA      Y, A
+        LDW       X, Y
         RET
 
-        SECTION `.near_func.text`:CODE:NOROOT(0)
+        SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
+        CODE
+TIM2_GetCapture2:
+        CLRW      Y
+        LD        A, L:0x5263
+        LD        S:?b0, A
+        LD        A, L:0x5264
+        LD        S:?b1, A
+        CLRW      X
+        LD        A, S:?b1
+        LD        XL, A
+        LDW       Y, X
+        CLRW      X
+        LD        A, S:?b0
+        LD        XL, A
+        CLR       A
+        RLWA      X, A
+        LDW       S:?w1, X
+        RRWA      Y, A
+        OR        A, S:?b3
+        RRWA      Y, A
+        OR        A, S:?b2
+        RRWA      Y, A
+        LDW       X, Y
+        RET
+
+        SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
         CODE
 TIM2_SetIC1Prescaler:
         LD        S:?b0, A
@@ -636,153 +758,21 @@ TIM2_SetIC1Prescaler:
         LD        L:0x5259, A
         RET
 
-        SECTION `.near_func.text`:CODE:NOROOT(0)
+        SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
         CODE
-TI1_Config:
-        LD        S:?b2, A
-        CLR       S:?b3
-        LD        A, L:0x5259
-        LD        S:?b3, A
-        BRES      L:0x525b, #0x0
-        LD        A, S:?b3
-        AND       A, #0xc
-        LD        S:?b3, A
+TIM2_SetIC2Prescaler:
+        LD        S:?b0, A
+        CLR       S:?b1
+        LD        A, L:0x525a
+        LD        S:?b1, A
         LD        A, S:?b1
-        SWAP      A
-        AND       A, #0xf0
-        OR        A, S:?b0
-        OR        A, S:?b3
-        LD        S:?b3, A
-        LD        A, S:?b3
-        LD        L:0x5259, A
-        LD        A, S:?b2
-        CP        A, #0x1
-        JRNE      L:??TI1_Config_0
-        BSET      L:0x525b, #0x1
-        JRA       L:??TI1_Config_1
-??TI1_Config_0:
-        BRES      L:0x525b, #0x1
-??TI1_Config_1:
-        BSET      L:0x525b, #0x0
-        RET
-
-        SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
-        CODE
-TIM2_ICInit:
-        MOV       S:?b4, S:?b0
-        MOV       S:?b0, S:?b1
-        MOV       S:?b5, S:?b2
-        MOV       S:?b1, S:?b3
-        TNZ       A
-        JRNE      L:??TIM2_ICInit_0
-        LD        A, S:?b4
-        CALL      L:TI1_Config
-        LD        A, S:?b5
-        JP        L:TIM2_SetIC1Prescaler
-??TIM2_ICInit_0:
-        LD        A, S:?b4
-        CALL      L:TI2_Config
-        LD        A, S:?b5
-        JP        L:TIM2_SetIC2Prescaler
-
-        SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
-        CODE
-TIM2_PWMIConfig:
-        CALL      L:?push_w4
-        LD        S:?b7, A
-        MOV       S:?b6, S:?b0
-        MOV       S:?b0, S:?b1
-        MOV       S:?b8, S:?b2
-        MOV       S:?b9, S:?b3
-        CLR       S:?b4
-        MOV       S:?b5, #0x1
-        TNZ       S:?b6
-        JRNE      L:??TIM2_PWMIConfig_0
-        MOV       S:?b4, #0x1
-        JRA       L:??TIM2_PWMIConfig_1
-??TIM2_PWMIConfig_0:
-        CLR       S:?b4
-??TIM2_PWMIConfig_1:
+        AND       A, #0xf3
+        LD        S:?b1, A
         LD        A, S:?b0
-        CP        A, #0x1
-        JRNE      L:??TIM2_PWMIConfig_2
-        MOV       S:?b5, #0x2
-        JRA       L:??TIM2_PWMIConfig_3
-??TIM2_PWMIConfig_2:
-        MOV       S:?b5, #0x1
-??TIM2_PWMIConfig_3:
-        TNZ       S:?b7
-        JRNE      L:??TIM2_PWMIConfig_4
-        MOV       S:?b1, S:?b9
-        LD        A, S:?b6
-        CALL      L:TI1_Config
-        LD        A, S:?b8
-        CALL      L:TIM2_SetIC1Prescaler
-        MOV       S:?b1, S:?b9
-        MOV       S:?b0, S:?b5
-        LD        A, S:?b4
-        CALL      L:TI2_Config
-        LD        A, S:?b8
-        CALL      L:TIM2_SetIC2Prescaler
-        JP        L:?epilogue_w4
-??TIM2_PWMIConfig_4:
-        MOV       S:?b1, S:?b9
-        LD        A, S:?b6
-        CALL      L:TI2_Config
-        LD        A, S:?b8
-        CALL      L:TIM2_SetIC2Prescaler
-        MOV       S:?b1, S:?b9
-        MOV       S:?b0, S:?b5
-        LD        A, S:?b4
-        CALL      L:TI1_Config
-        LD        A, S:?b8
-        CALL      L:TIM2_SetIC1Prescaler
-        JP        L:?epilogue_w4
-
-        SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
-        CODE
-TIM2_GetCapture1:
-        CLRW      Y
-        MOV       S:?b0, L:0x5261
-        LD        A, L:0x5262
-        CLRW      X
-        LD        XL, A
-        LDW       Y, X
-        CLRW      X
-        LD        A, S:?b0
-        LD        XL, A
-        CLR       A
-        RLWA      X, A
-        LDW       S:?w0, X
-        RRWA      Y, A
         OR        A, S:?b1
-        RRWA      Y, A
-        OR        A, S:?b0
-        RRWA      Y, A
-        LDW       X, Y
-        RET
-
-        SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
-        CODE
-TIM2_GetCapture2:
-        CLRW      Y
-        MOV       S:?b0, L:0x5263
-        LD        A, L:0x5264
-        CLRW      X
-        LD        XL, A
-        LDW       Y, X
-        CLRW      X
-        LD        A, S:?b0
-        LD        XL, A
-        CLR       A
-        RLWA      X, A
-        LDW       S:?w0, X
-        RRWA      Y, A
-        OR        A, S:?b1
-        RRWA      Y, A
-        OR        A, S:?b0
-        RRWA      Y, A
-        LDW       X, Y
+        LD        S:?b1, A
+        LD        A, S:?b1
+        LD        L:0x525a, A
         RET
 
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
@@ -794,12 +784,13 @@ TIM2_ITConfig:
         LD        A, L:0x5255
         OR        A, S:?b1
         LD        L:0x5255, A
-        RET
+        JRA       L:??TIM2_ITConfig_1
 ??TIM2_ITConfig_0:
-        CPL       S:?b1
         LD        A, S:?b1
+        CPL       A
         AND       A, L:0x5255
         LD        L:0x5255, A
+??TIM2_ITConfig_1:
         RET
 
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
@@ -827,7 +818,8 @@ TIM2_GetFlagStatus:
         OR        A, S:?b2
         CP        A, #0x0
         JREQ      L:??TIM2_GetFlagStatus_0
-        MOV       S:?b0, #0x1
+        LD        A, #0x1
+        LD        S:?b0, A
         JRA       L:??TIM2_GetFlagStatus_1
 ??TIM2_GetFlagStatus_0:
         CLR       S:?b0
@@ -850,30 +842,33 @@ TIM2_ClearFlag:
         CODE
 TIM2_GetITStatus:
         LD        S:?b3, A
-        CLR       S:?b0
         CLR       S:?b2
         CLR       S:?b1
+        CLR       S:?b0
         LD        A, L:0x5256
         AND       A, S:?b3
-        LD        S:?b2, A
+        LD        S:?b1, A
         LD        A, L:0x5255
         AND       A, S:?b3
-        LD        S:?b1, A
-        TNZ       S:?b2
-        JREQ      L:??TIM2_GetITStatus_0
+        LD        S:?b0, A
         TNZ       S:?b1
         JREQ      L:??TIM2_GetITStatus_0
-        MOV       S:?b0, #0x1
+        TNZ       S:?b0
+        JREQ      L:??TIM2_GetITStatus_0
+        LD        A, #0x1
+        LD        S:?b2, A
         JRA       L:??TIM2_GetITStatus_1
 ??TIM2_GetITStatus_0:
-        CLR       S:?b0
+        CLR       S:?b2
 ??TIM2_GetITStatus_1:
-        LD        A, S:?b0
+        LD        A, S:?b2
         RET
 
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
         CODE
 TIM2_ClearITPendingBit:
+        LD        S:?b0, A
+        LD        A, S:?b0
         CPL       A
         LD        L:0x5256, A
         RET
@@ -887,12 +882,13 @@ TIM2_DMACmd:
         LD        A, L:0x5254
         OR        A, S:?b1
         LD        L:0x5254, A
-        RET
+        JRA       L:??TIM2_DMACmd_1
 ??TIM2_DMACmd_0:
-        CPL       S:?b1
         LD        A, S:?b1
+        CPL       A
         AND       A, L:0x5254
         LD        L:0x5254, A
+??TIM2_DMACmd_1:
         RET
 
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
@@ -901,9 +897,10 @@ TIM2_SelectCCDMA:
         TNZ       A
         JREQ      L:??TIM2_SelectCCDMA_0
         BSET      L:0x5251, #0x3
-        RET
+        JRA       L:??TIM2_SelectCCDMA_1
 ??TIM2_SelectCCDMA_0:
         BRES      L:0x5251, #0x3
+??TIM2_SelectCCDMA_1:
         RET
 
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
@@ -917,21 +914,24 @@ TIM2_InternalClockConfig:
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
         CODE
 TIM2_TIxExternalClockConfig:
-        LD        S:?b4, A
-        MOV       S:?b2, S:?b0
-        LD        A, S:?b4
+        LD        S:?b5, A
+        MOV       S:?b6, S:?b0
+        MOV       S:?b7, S:?b1
+        LD        A, S:?b5
         CP        A, #0x60
         JRNE      L:??TIM2_TIxExternalClockConfig_0
+        MOV       S:?b1, S:?b7
         MOV       S:?b0, #0x1
-        LD        A, S:?b2
+        LD        A, S:?b6
         CALL      L:TI2_Config
         JRA       L:??TIM2_TIxExternalClockConfig_1
 ??TIM2_TIxExternalClockConfig_0:
+        MOV       S:?b1, S:?b7
         MOV       S:?b0, #0x1
-        LD        A, S:?b2
+        LD        A, S:?b6
         CALL      L:TI1_Config
 ??TIM2_TIxExternalClockConfig_1:
-        LD        A, S:?b4
+        LD        A, S:?b5
         CALL      L:TIM2_SelectInputTrigger
         LD        A, L:0x5252
         OR        A, #0x7
@@ -941,6 +941,12 @@ TIM2_TIxExternalClockConfig:
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
         CODE
 TIM2_ETRClockMode1Config:
+        LD        S:?b3, A
+        MOV       S:?b4, S:?b0
+        MOV       S:?b5, S:?b1
+        MOV       S:?b1, S:?b5
+        MOV       S:?b0, S:?b4
+        LD        A, S:?b3
         CALL      L:TIM2_ETRConfig
         LD        A, L:0x5252
         AND       A, #0xf8
@@ -959,6 +965,12 @@ TIM2_ETRClockMode1Config:
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
         CODE
 TIM2_ETRClockMode2Config:
+        LD        S:?b3, A
+        MOV       S:?b4, S:?b0
+        MOV       S:?b5, S:?b1
+        MOV       S:?b1, S:?b5
+        MOV       S:?b0, S:?b4
+        LD        A, S:?b3
         CALL      L:TIM2_ETRConfig
         BSET      L:0x5253, #0x6
         RET
@@ -1020,9 +1032,10 @@ TIM2_SelectMasterSlaveMode:
         TNZ       A
         JREQ      L:??TIM2_SelectMasterSlaveMode_0
         BSET      L:0x5252, #0x7
-        RET
+        JRA       L:??TIM2_SelectMasterSlaveMode_1
 ??TIM2_SelectMasterSlaveMode_0:
         BRES      L:0x5252, #0x7
+??TIM2_SelectMasterSlaveMode_1:
         RET
 
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
@@ -1041,32 +1054,32 @@ TIM2_ETRConfig:
 TIM2_EncoderInterfaceConfig:
         LD        S:?b4, A
         CLR       S:?b5
-        CLR       S:?b2
         CLR       S:?b3
+        CLR       S:?b2
         LD        A, L:0x5252
         LD        S:?b5, A
         LD        A, L:0x5259
-        LD        S:?b2, A
-        LD        A, L:0x525a
         LD        S:?b3, A
+        LD        A, L:0x525a
+        LD        S:?b2, A
         LD        A, S:?b5
         AND       A, #0xf0
         LD        S:?b5, A
         LD        A, S:?b4
         OR        A, S:?b5
         LD        S:?b5, A
-        LD        A, S:?b2
-        AND       A, #0xfc
-        LD        S:?b2, A
         LD        A, S:?b3
         AND       A, #0xfc
         LD        S:?b3, A
         LD        A, S:?b2
-        OR        A, #0x1
+        AND       A, #0xfc
         LD        S:?b2, A
         LD        A, S:?b3
         OR        A, #0x1
         LD        S:?b3, A
+        LD        A, S:?b2
+        OR        A, #0x1
+        LD        S:?b2, A
         LD        A, S:?b0
         CP        A, #0x1
         JRNE      L:??TIM2_EncoderInterfaceConfig_0
@@ -1085,9 +1098,9 @@ TIM2_EncoderInterfaceConfig:
 ??TIM2_EncoderInterfaceConfig_3:
         LD        A, S:?b5
         LD        L:0x5252, A
-        LD        A, S:?b2
-        LD        L:0x5259, A
         LD        A, S:?b3
+        LD        L:0x5259, A
+        LD        A, S:?b2
         LD        L:0x525a, A
         RET
 
@@ -1097,18 +1110,81 @@ TIM2_SelectHallSensor:
         TNZ       A
         JREQ      L:??TIM2_SelectHallSensor_0
         BSET      L:0x5251, #0x7
-        RET
+        JRA       L:??TIM2_SelectHallSensor_1
 ??TIM2_SelectHallSensor_0:
         BRES      L:0x5251, #0x7
+??TIM2_SelectHallSensor_1:
+        RET
+
+        SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
+        CODE
+TI1_Config:
+        LD        S:?b2, A
+        CLR       S:?b4
+        MOV       S:?b3, S:?b2
+        LD        A, L:0x5259
+        LD        S:?b4, A
+        BRES      L:0x525b, #0x0
+        LD        A, S:?b4
+        AND       A, #0xc
+        LD        S:?b4, A
+        LD        A, S:?b1
+        SWAP      A
+        AND       A, #0xf0
+        OR        A, S:?b0
+        OR        A, S:?b4
+        LD        S:?b4, A
+        LD        A, S:?b4
+        LD        L:0x5259, A
+        LD        A, S:?b3
+        CP        A, #0x1
+        JRNE      L:??TI1_Config_0
+        BSET      L:0x525b, #0x1
+        JRA       L:??TI1_Config_1
+??TI1_Config_0:
+        BRES      L:0x525b, #0x1
+??TI1_Config_1:
+        BSET      L:0x525b, #0x0
+        RET
+
+        SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
+        CODE
+TI2_Config:
+        LD        S:?b2, A
+        CLR       S:?b4
+        MOV       S:?b3, S:?b2
+        LD        A, L:0x525a
+        LD        S:?b4, A
+        BRES      L:0x525b, #0x4
+        LD        A, S:?b4
+        AND       A, #0xc
+        LD        S:?b4, A
+        LD        A, S:?b1
+        SWAP      A
+        AND       A, #0xf0
+        OR        A, S:?b0
+        OR        A, S:?b4
+        LD        S:?b4, A
+        LD        A, S:?b4
+        LD        L:0x525a, A
+        LD        A, S:?b3
+        CP        A, #0x1
+        JRNE      L:??TI2_Config_0
+        BSET      L:0x525b, #0x5
+        JRA       L:??TI2_Config_1
+??TI2_Config_0:
+        BRES      L:0x525b, #0x5
+??TI2_Config_1:
+        BSET      L:0x525b, #0x4
         RET
 
         SECTION VREGS:DATA:REORDER:NOROOT(0)
 
         END
 // 
-// 1 628 bytes in section .near_func.text
+// 1 746 bytes in section .near_func.text
 // 
-// 1 628 bytes of CODE memory
+// 1 746 bytes of CODE memory
 //
 //Errors: none
 //Warnings: none

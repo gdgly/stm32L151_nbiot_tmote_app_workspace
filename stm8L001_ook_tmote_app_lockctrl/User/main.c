@@ -17,7 +17,8 @@
 #include "sys.h"
 #include "delay.h"
 #include "usart.h"
-
+#include "hal_ook.h"
+#include "hal_timer.h"
 
 
 
@@ -32,13 +33,13 @@ void main(void)
 {
      Stm8_HSIClock_Init(CLK_SYSCLKDiv_1);
      
-     GPIO_Init(GPIOB, GPIO_Pin_5, GPIO_Mode_Out_PP_High_Fast);
+     Stm8_OOK_Init();
      
-     GPIO_SetBits(GPIOB, GPIO_Pin_5);
+     OOK_DATA_TX_SET(ON);
      
      while (1) {
           
-          GPIO_ToggleBits(GPIOB, GPIO_Pin_5);
+          OOK_DATA_TX_TOGGLE();
           
           Delay_MS_Normal(1000);
      }

@@ -20,6 +20,8 @@ rule browsedata
 
 
 #Build steps
+build hal_ook.pbi : index hal_ook.xcl
+build hal_timer.pbi : index hal_timer.xcl
 build stm8l15x_adc.pbi : index stm8l15x_adc.xcl
 build stm8l15x_aes.pbi : index stm8l15x_aes.xcl
 build stm8l15x_beep.pbi : index stm8l15x_beep.xcl
@@ -53,12 +55,12 @@ build sys.pbi : index sys.xcl
 build usart.pbi : index usart.xcl
 build main.pbi : index main.xcl
 build stm8l15x_it.pbi : index stm8l15x_it.xcl
-build stm8L001_ook_tmote_app_lockctrl_part0.pbi : link stm8l15x_adc.pbi stm8l15x_aes.pbi stm8l15x_beep.pbi stm8l15x_clk.pbi stm8l15x_comp.pbi stm8l15x_dac.pbi
-build stm8L001_ook_tmote_app_lockctrl_part1.pbi : link stm8l15x_dma.pbi stm8l15x_exti.pbi stm8l15x_flash.pbi stm8l15x_gpio.pbi stm8l15x_i2c.pbi stm8l15x_irtim.pbi
-build stm8L001_ook_tmote_app_lockctrl_part2.pbi : link stm8l15x_itc.pbi stm8l15x_iwdg.pbi stm8l15x_lcd.pbi stm8l15x_pwr.pbi stm8l15x_rst.pbi stm8l15x_rtc.pbi
-build stm8L001_ook_tmote_app_lockctrl_part3.pbi : link stm8l15x_spi.pbi stm8l15x_syscfg.pbi stm8l15x_tim1.pbi stm8l15x_tim2.pbi stm8l15x_tim3.pbi stm8l15x_tim4.pbi
-build stm8L001_ook_tmote_app_lockctrl_part4.pbi : link stm8l15x_tim5.pbi stm8l15x_usart.pbi stm8l15x_wfe.pbi stm8l15x_wwdg.pbi delay.pbi sys.pbi
-build stm8L001_ook_tmote_app_lockctrl_part5.pbi : link usart.pbi main.pbi stm8l15x_it.pbi
+build stm8L001_ook_tmote_app_lockctrl_part0.pbi : link hal_ook.pbi hal_timer.pbi stm8l15x_adc.pbi stm8l15x_aes.pbi stm8l15x_beep.pbi stm8l15x_clk.pbi
+build stm8L001_ook_tmote_app_lockctrl_part1.pbi : link stm8l15x_comp.pbi stm8l15x_dac.pbi stm8l15x_dma.pbi stm8l15x_exti.pbi stm8l15x_flash.pbi stm8l15x_gpio.pbi
+build stm8L001_ook_tmote_app_lockctrl_part2.pbi : link stm8l15x_i2c.pbi stm8l15x_irtim.pbi stm8l15x_itc.pbi stm8l15x_iwdg.pbi stm8l15x_lcd.pbi stm8l15x_pwr.pbi
+build stm8L001_ook_tmote_app_lockctrl_part3.pbi : link stm8l15x_rst.pbi stm8l15x_rtc.pbi stm8l15x_spi.pbi stm8l15x_syscfg.pbi stm8l15x_tim1.pbi stm8l15x_tim2.pbi
+build stm8L001_ook_tmote_app_lockctrl_part4.pbi : link stm8l15x_tim3.pbi stm8l15x_tim4.pbi stm8l15x_tim5.pbi stm8l15x_usart.pbi stm8l15x_wfe.pbi stm8l15x_wwdg.pbi
+build stm8L001_ook_tmote_app_lockctrl_part5.pbi : link delay.pbi sys.pbi usart.pbi main.pbi stm8l15x_it.pbi
 build stm8L001_ook_tmote_app_lockctrl.pbd : link stm8L001_ook_tmote_app_lockctrl_part0.pbi stm8L001_ook_tmote_app_lockctrl_part1.pbi stm8L001_ook_tmote_app_lockctrl_part2.pbi stm8L001_ook_tmote_app_lockctrl_part3.pbi stm8L001_ook_tmote_app_lockctrl_part4.pbi stm8L001_ook_tmote_app_lockctrl_part5.pbi
 build stm8L001_ook_tmote_app_lockctrl.pbw : browsedata stm8L001_ook_tmote_app_lockctrl.pbd
 

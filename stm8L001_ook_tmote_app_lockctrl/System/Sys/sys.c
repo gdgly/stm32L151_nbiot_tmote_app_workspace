@@ -23,16 +23,16 @@
 **********************************************************************************************************/
 void Stm8_HSIClock_Init(CLK_SYSCLKDiv_TypeDef CLK_SYSCLKDiv)
 {
-     /* ʹ��HSI */
+     /* 使能HSI */
      CLK_HSICmd(ENABLE);
      
-     /* ʹ��ϵͳʱ��Դѡ�� */
+     /* 使能系统时钟源选择 */
      CLK_SYSCLKSourceSwitchCmd(ENABLE);
      
-     /* ϵͳʱ��Դѡ��HSI */
+     /* 系统时钟源选择HSI */
      CLK_SYSCLKSourceConfig(CLK_SYSCLKSource_HSI);
      
-     /* ����ϵͳ��Ƶϵ�� */
+     /* 设置系统分频系数 */
      CLK_SYSCLKDivConfig(CLK_SYSCLKDiv);
 }
 
@@ -44,16 +44,16 @@ void Stm8_HSIClock_Init(CLK_SYSCLKDiv_TypeDef CLK_SYSCLKDiv)
 **********************************************************************************************************/
 void Stm8_LSIClock_Init(CLK_SYSCLKDiv_TypeDef CLK_SYSCLKDiv)
 {
-     /* ʹ��LSI */
+     /* 使能LSI */
      CLK_LSICmd(ENABLE);
      
-     /* ʹ��ϵͳʱ��Դѡ�� */
+     /* 使能系统时钟源选择 */
      CLK_SYSCLKSourceSwitchCmd(ENABLE);
      
-     /* ϵͳʱ��Դѡ��LSI */
+     /* 系统时钟源选择LSI */
      CLK_SYSCLKSourceConfig(CLK_SYSCLKSource_LSI);
      
-     /* ����ϵͳ��Ƶϵ�� */
+     /* 设置系统分频系数 */
      CLK_SYSCLKDivConfig(CLK_SYSCLKDiv);
 }
 

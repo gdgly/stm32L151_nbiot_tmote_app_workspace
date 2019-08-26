@@ -1,15 +1,15 @@
 ///////////////////////////////////////////////////////////////////////////////
 //
-// IAR C/C++ Compiler V3.11.1.207 for STM8                22/Aug/2019  15:05:19
+// IAR C/C++ Compiler V3.11.1.207 for STM8                26/Aug/2019  11:12:56
 // Copyright 2010-2019 IAR Systems AB.
 // PC-locked license - IAR Embedded Workbench for STMicroelectronics STM8
 //
 //    Source file  =  
 //        F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\Libraries\src\stm8l15x_flash.c
 //    Command line =  
-//        -f C:\Users\kyjapple\AppData\Local\Temp\EWC6CE.tmp
+//        -f C:\Users\kyjapple\AppData\Local\Temp\EW65CA.tmp
 //        (F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\Libraries\src\stm8l15x_flash.c
-//        -e -Ol --no_cse --no_unroll --no_inline --no_code_motion --no_tbaa
+//        -e -On --no_cse --no_unroll --no_inline --no_code_motion --no_tbaa
 //        --no_cross_call --debug --code_model small --data_model medium -o
 //        F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\Output\Obj
 //        --dlib_config "F:\IAR Systems\Embedded Workbench
@@ -33,6 +33,10 @@
 //        F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\System\Sys\
 //        -I
 //        F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\System\Usart\
+//        -I
+//        F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\Hardware\TIMER\
+//        -I
+//        F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\Hardware\OOK\
 //        --vregs 16)
 //    Locale       =  Chinese (Simplified)_CHN.936
 //    List file    =  
@@ -43,26 +47,29 @@
         EXTERN ?add32_l0_l0_l1
         EXTERN ?b0
         EXTERN ?b1
+        EXTERN ?b12
+        EXTERN ?b13
         EXTERN ?b2
         EXTERN ?b3
-        EXTERN ?b8
-        EXTERN ?load32_0x_l0
-        EXTERN ?mov_l0_l3
+        EXTERN ?epilogue_l2
+        EXTERN ?epilogue_l2_l3
+        EXTERN ?load32_0x_l2
+        EXTERN ?mov_l0_l2
         EXTERN ?mov_l1_l0
-        EXTERN ?mov_l3_l0
+        EXTERN ?mov_l1_l2
+        EXTERN ?mov_l2_l0
+        EXTERN ?mov_w1_w7
         EXTERN ?mul16_x_x_w0
         EXTERN ?mul32_l0_l0_dl
-        EXTERN ?pop_l3
-        EXTERN ?pop_w5
         EXTERN ?push_l1
+        EXTERN ?push_l2
         EXTERN ?push_l3
-        EXTERN ?push_w5
         EXTERN ?w0
         EXTERN ?w1
         EXTERN ?w2
         EXTERN ?w3
+        EXTERN ?w4
         EXTERN ?w5
-        EXTERN ?w6
         EXTERN ?w7
 
         PUBLIC FLASH_DeInit
@@ -112,9 +119,10 @@ FLASH_PowerWaitModeConfig:
         CP        A, #0x1
         JREQ      L:??FLASH_PowerWaitModeConfig_0
         BSET      L:0x5050, #0x2
-        RET
+        JRA       L:??FLASH_PowerWaitModeConfig_1
 ??FLASH_PowerWaitModeConfig_0:
         BRES      L:0x5050, #0x2
+??FLASH_PowerWaitModeConfig_1:
         RET
 
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
@@ -199,8 +207,11 @@ FLASH_ReadByte:
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
         CODE
 FLASH_ProgramOptionByte:
+        LDW       Y, X
+        LD        S:?b2, A
         BSET      L:0x5051, #0x7
-        LD        (X), A
+        LD        A, S:?b2
+        LD        (Y), A
         LD        A, #0xfd
         CALL      L:FLASH_WaitForLastOperation
         BRES      L:0x5051, #0x7
@@ -209,8 +220,9 @@ FLASH_ProgramOptionByte:
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
         CODE
 FLASH_EraseOptionByte:
+        LDW       Y, X
         BSET      L:0x5051, #0x7
-        CLR       (X)
+        CLR       (Y)
         LD        A, #0xfd
         CALL      L:FLASH_WaitForLastOperation
         BRES      L:0x5051, #0x7
@@ -223,7 +235,8 @@ FLASH_GetReadOutProtectionStatus:
         LD        A, L:0x4800
         CP        A, #0xaa
         JRNE      L:??FLASH_GetReadOutProtectionStatus_0
-        MOV       S:?b0, #0x1
+        LD        A, #0x1
+        LD        S:?b0, A
         JRA       L:??FLASH_GetReadOutProtectionStatus_1
 ??FLASH_GetReadOutProtectionStatus_0:
         CLR       S:?b0
@@ -279,9 +292,10 @@ FLASH_ITConfig:
         TNZ       A
         JREQ      L:??FLASH_ITConfig_0
         BSET      L:0x5050, #0x1
-        RET
+        JRA       L:??FLASH_ITConfig_1
 ??FLASH_ITConfig_0:
         BRES      L:0x5050, #0x1
+??FLASH_ITConfig_1:
         RET
 
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
@@ -293,7 +307,8 @@ FLASH_GetFlagStatus:
         AND       A, S:?b1
         CP        A, #0x0
         JREQ      L:??FLASH_GetFlagStatus_0
-        MOV       S:?b0, #0x1
+        LD        A, #0x1
+        LD        S:?b0, A
         JRA       L:??FLASH_GetFlagStatus_1
 ??FLASH_GetFlagStatus_0:
         CLR       S:?b0
@@ -307,9 +322,10 @@ FLASH_PowerRunModeConfig:
         CP        A, #0x1
         JREQ      L:??FLASH_PowerRunModeConfig_0
         BSET      L:0x5050, #0x3
-        RET
+        JRA       L:??FLASH_PowerRunModeConfig_1
 ??FLASH_PowerRunModeConfig_0:
         BRES      L:0x5050, #0x3
+??FLASH_PowerRunModeConfig_1:
         RET
 
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
@@ -322,30 +338,33 @@ FLASH_GetPowerStatus:
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
         CODE
 FLASH_ProgramBlock:
+        CALL      L:?push_l2
         CALL      L:?push_l3
-        CALL      L:?push_w5
-        PUSH      S:?b8
-        LDW       S:?w1, X
-        MOV       S:?b8, S:?b0
-        LDW       S:?w5, Y
-        CLR       S:?b1
-        CLR       S:?b0
-        CLRW      X
+        PUSHW     Y
         LDW       S:?w7, X
-        LDW       S:?w6, X
+        LD        S:?b13, A
+        MOV       S:?b12, S:?b0
+        CLRW      Y
+        CLRW      X
+        LDW       S:?w5, X
+        LDW       S:?w4, X
+        LD        A, S:?b13
         CP        A, #0xfd
         JRNE      L:??FLASH_ProgramBlock_0
         LDW       X, #0x8000
-        LDW       S:?w7, X
+        LDW       S:?w1, X
         SLLW      X
-        LDW       S:?w6, X
+        LDW       S:?w0, X
+        CALL      L:?mov_l2_l0
         JRA       L:??FLASH_ProgramBlock_1
 ??FLASH_ProgramBlock_0:
         LDW       X, #0x1000
-        LDW       S:?w7, X
+        LDW       S:?w1, X
         CLRW      X
-        LDW       S:?w6, X
+        LDW       S:?w0, X
+        CALL      L:?mov_l2_l0
 ??FLASH_ProgramBlock_1:
+        CALL      L:?mov_w1_w7
         CLRW      X
         LDW       S:?w0, X
         CALL      L:?mul32_l0_l0_dl
@@ -353,42 +372,39 @@ FLASH_ProgramBlock:
         DC32      0x40
         CODE
         CALL      L:?mov_l1_l0
-        CALL      L:?mov_l0_l3
+        CALL      L:?mov_l0_l2
         CALL      L:?add32_l0_l0_l1
-        CALL      L:?mov_l3_l0
-        TNZ       S:?b8
+        CALL      L:?mov_l2_l0
+        TNZ       S:?b12
         JRNE      L:??FLASH_ProgramBlock_2
         BSET      L:0x5051, #0x0
         JRA       L:??FLASH_ProgramBlock_3
 ??FLASH_ProgramBlock_2:
         BSET      L:0x5051, #0x4
 ??FLASH_ProgramBlock_3:
-        CLR       S:?b1
-        CLR       S:?b0
+        CLRW      X
+        LDW       Y, X
+??FLASH_ProgramBlock_4:
+        CPW       Y, #0x40
+        JRNC      L:??FLASH_ProgramBlock_5
+        LDW       X, S:?w5
+        LDW       S:?w0, Y
+        ADDW      X, S:?w0
+        LDW       S:?w0, X
+        LDW       X, Y
+        ADDW      X, (0x1,SP)
+        LD        A, (X)
+        LD        [S:?w0.w], A
+        INCW      Y
         JRA       L:??FLASH_ProgramBlock_4
 ??FLASH_ProgramBlock_5:
-        LDW       X, S:?w7
-        ADDW      X, S:?w0
-        LDW       Y, X
-        LDW       X, S:?w0
-        ADDW      X, S:?w5
-        LD        A, (X)
-        LD        (Y), A
-        LDW       X, S:?w0
-        INCW      X
-        LDW       S:?w0, X
-??FLASH_ProgramBlock_4:
-        LDW       X, S:?w0
-        CPW       X, #0x40
-        JRC       L:??FLASH_ProgramBlock_5
-        POP       S:?b8
-        CALL      L:?pop_w5
-        CALL      L:?pop_l3
-        RET
+        ADD       SP, #0x2
+        JP        L:?epilogue_l2_l3
 
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
         CODE
 FLASH_EraseBlock:
+        CALL      L:?push_l2
         LDW       Y, X
         CLRW      X
         LDW       S:?w3, X
@@ -396,36 +412,42 @@ FLASH_EraseBlock:
         CP        A, #0xfd
         JRNE      L:??FLASH_EraseBlock_0
         LDW       X, #0x8000
-        LDW       S:?w3, X
+        LDW       S:?w5, X
         SLLW      X
-        LDW       S:?w2, X
+        LDW       S:?w4, X
+        CALL      L:?mov_l1_l2
         JRA       L:??FLASH_EraseBlock_1
 ??FLASH_EraseBlock_0:
         LDW       X, #0x1000
-        LDW       S:?w3, X
+        LDW       S:?w5, X
         CLRW      X
-        LDW       S:?w2, X
+        LDW       S:?w4, X
+        CALL      L:?mov_l1_l2
 ??FLASH_EraseBlock_1:
         LDW       X, #0x40
         LDW       S:?w0, X
         LDW       X, Y
         CALL      L:?mul16_x_x_w0
-        LDW       Y, S:?w3
-        LDW       S:?w0, X
-        ADDW      Y, S:?w0
+        LDW       S:?w4, X
+        LDW       X, S:?w3
+        ADDW      X, S:?w4
+        LDW       S:?w1, X
         BSET      L:0x5051, #0x5
         CLRW      X
-        LDW       S:?w1, X
-        LDW       S:?w0, X
-        LDW       X, Y
-        JP        L:?load32_0x_l0
+        LDW       S:?w5, X
+        LDW       S:?w4, X
+        LDW       X, S:?w1
+        CALL      L:?load32_0x_l2
+        JP        L:?epilogue_l2
 
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
         CODE
 FLASH_WaitForLastOperation:
+        LD        S:?b1, A
         CLRW      X
         DECW      X
         CLR       S:?b0
+        LD        A, S:?b1
         CP        A, #0xfd
         JRNE      L:??FLASH_WaitForLastOperation_0
 ??FLASH_WaitForLastOperation_1:
@@ -438,21 +460,22 @@ FLASH_WaitForLastOperation:
         LD        S:?b0, A
         DECW      X
         JRA       L:??FLASH_WaitForLastOperation_1
-??FLASH_WaitForLastOperation_3:
-        LD        A, L:0x5054
-        AND       A, #0x41
-        LD        S:?b0, A
-        DECW      X
 ??FLASH_WaitForLastOperation_0:
         TNZ       S:?b0
         JRNE      L:??FLASH_WaitForLastOperation_2
         TNZW      X
-        JRNE      L:??FLASH_WaitForLastOperation_3
+        JREQ      L:??FLASH_WaitForLastOperation_2
+        LD        A, L:0x5054
+        AND       A, #0x41
+        LD        S:?b0, A
+        DECW      X
+        JRA       L:??FLASH_WaitForLastOperation_0
 ??FLASH_WaitForLastOperation_2:
         TNZW      X
-        JRNE      L:??FLASH_WaitForLastOperation_4
-        MOV       S:?b0, #0x2
-??FLASH_WaitForLastOperation_4:
+        JRNE      L:??FLASH_WaitForLastOperation_3
+        LD        A, #0x2
+        LD        S:?b0, A
+??FLASH_WaitForLastOperation_3:
         LD        A, S:?b0
         RET
 
@@ -460,9 +483,9 @@ FLASH_WaitForLastOperation:
 
         END
 // 
-// 554 bytes in section .near_func.text
+// 586 bytes in section .near_func.text
 // 
-// 554 bytes of CODE memory
+// 586 bytes of CODE memory
 //
 //Errors: none
 //Warnings: none

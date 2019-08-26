@@ -1,15 +1,15 @@
 ///////////////////////////////////////////////////////////////////////////////
 //
-// IAR C/C++ Compiler V3.11.1.207 for STM8                22/Aug/2019  15:05:18
+// IAR C/C++ Compiler V3.11.1.207 for STM8                26/Aug/2019  11:12:54
 // Copyright 2010-2019 IAR Systems AB.
 // PC-locked license - IAR Embedded Workbench for STMicroelectronics STM8
 //
 //    Source file  =  
 //        F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\Libraries\src\stm8l15x_beep.c
 //    Command line =  
-//        -f C:\Users\kyjapple\AppData\Local\Temp\EWC0CD.tmp
+//        -f C:\Users\kyjapple\AppData\Local\Temp\EW5FB9.tmp
 //        (F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\Libraries\src\stm8l15x_beep.c
-//        -e -Ol --no_cse --no_unroll --no_inline --no_code_motion --no_tbaa
+//        -e -On --no_cse --no_unroll --no_inline --no_code_motion --no_tbaa
 //        --no_cross_call --debug --code_model small --data_model medium -o
 //        F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\Output\Obj
 //        --dlib_config "F:\IAR Systems\Embedded Workbench
@@ -33,6 +33,10 @@
 //        F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\System\Sys\
 //        -I
 //        F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\System\Usart\
+//        -I
+//        F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\Hardware\TIMER\
+//        -I
+//        F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\Hardware\OOK\
 //        --vregs 16)
 //    Locale       =  Chinese (Simplified)_CHN.936
 //    List file    =  
@@ -41,11 +45,19 @@
 ///////////////////////////////////////////////////////////////////////////////
 
         EXTERN ?b0
+        EXTERN ?b13
+        EXTERN ?epilogue_l2_l3
+        EXTERN ?mov_l0_l2
+        EXTERN ?mov_l2_l0
+        EXTERN ?mov_w7_w1
         EXTERN ?mul16_x_x_w0
+        EXTERN ?push_l2
+        EXTERN ?push_l3
         EXTERN ?udiv32_l0_l0_dl
         EXTERN ?w0
         EXTERN ?w1
-        EXTERN ?w2
+        EXTERN ?w6
+        EXTERN ?w7
 
         PUBLIC BEEP_Cmd
         PUBLIC BEEP_DeInit
@@ -88,9 +100,10 @@ BEEP_Cmd:
         TNZ       A
         JREQ      L:??BEEP_Cmd_0
         BSET      L:0x50f3, #0x5
-        RET
+        JRA       L:??BEEP_Cmd_1
 ??BEEP_Cmd_0:
         BRES      L:0x50f3, #0x5
+??BEEP_Cmd_1:
         RET
 
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
@@ -99,69 +112,76 @@ BEEP_LSClockToTIMConnectCmd:
         TNZ       A
         JREQ      L:??BEEP_LSClockToTIMConnectCmd_0
         BSET      L:0x50f0, #0x0
-        RET
+        JRA       L:??BEEP_LSClockToTIMConnectCmd_1
 ??BEEP_LSClockToTIMConnectCmd_0:
         BRES      L:0x50f0, #0x0
+??BEEP_LSClockToTIMConnectCmd_1:
         RET
 
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
         CODE
 BEEP_LSICalibrationConfig:
+        CALL      L:?push_l2
+        CALL      L:?push_l3
+        CALL      L:?mov_l2_l0
+        CALL      L:?mov_l0_l2
         CALL      L:?udiv32_l0_l0_dl
         DATA
         DC32      0x3e8
         CODE
+        CALL      L:?mov_w7_w1
         LD        A, L:0x50f3
         AND       A, #0xe0
         LD        L:0x50f3, A
-        LDW       X, S:?w1
+        LDW       X, S:?w7
         SRLW      X
         SRLW      X
         SRLW      X
-        LDW       Y, X
+        LDW       S:?w6, X
         LDW       X, #0x8
         LDW       S:?w0, X
-        LDW       X, Y
+        LDW       X, S:?w6
         CALL      L:?mul16_x_x_w0
-        LDW       S:?w2, X
-        LDW       X, S:?w1
-        SUBW      X, S:?w2
         LDW       S:?w1, X
-        LDW       X, Y
+        LDW       X, S:?w7
+        SUBW      X, S:?w1
+        LDW       Y, X
+        LDW       X, S:?w6
         SLLW      X
         LDW       S:?w0, X
         LDW       X, S:?w0
         INCW      X
         LDW       S:?w0, X
-        LDW       X, S:?w1
+        LDW       X, Y
         CALL      L:?mul16_x_x_w0
         LDW       S:?w1, X
         LDW       X, #0x8
         LDW       S:?w0, X
-        LDW       X, Y
+        LDW       X, S:?w6
         CALL      L:?mul16_x_x_w0
         CPW       X, S:?w1
         JRC       L:??BEEP_LSICalibrationConfig_0
-        LD        A, YL
+        LD        A, S:?b13
         DEC       A
         DEC       A
         OR        A, L:0x50f3
         LD        L:0x50f3, A
-        RET
+        JRA       L:??BEEP_LSICalibrationConfig_1
 ??BEEP_LSICalibrationConfig_0:
-        LD        A, YL
+        LD        A, S:?b13
         DEC       A
         OR        A, L:0x50f3
         LD        L:0x50f3, A
-        RET
+??BEEP_LSICalibrationConfig_1:
+        JP        L:?epilogue_l2_l3
 
         SECTION VREGS:DATA:REORDER:NOROOT(0)
 
         END
 // 
-// 166 bytes in section .near_func.text
+// 188 bytes in section .near_func.text
 // 
-// 166 bytes of CODE memory
+// 188 bytes of CODE memory
 //
 //Errors: none
 //Warnings: none

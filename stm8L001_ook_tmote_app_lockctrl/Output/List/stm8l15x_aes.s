@@ -1,15 +1,15 @@
 ///////////////////////////////////////////////////////////////////////////////
 //
-// IAR C/C++ Compiler V3.11.1.207 for STM8                22/Aug/2019  15:05:17
+// IAR C/C++ Compiler V3.11.1.207 for STM8                26/Aug/2019  11:12:54
 // Copyright 2010-2019 IAR Systems AB.
 // PC-locked license - IAR Embedded Workbench for STMicroelectronics STM8
 //
 //    Source file  =  
 //        F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\Libraries\src\stm8l15x_aes.c
 //    Command line =  
-//        -f C:\Users\kyjapple\AppData\Local\Temp\EWBF82.tmp
+//        -f C:\Users\kyjapple\AppData\Local\Temp\EW5F79.tmp
 //        (F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\Libraries\src\stm8l15x_aes.c
-//        -e -Ol --no_cse --no_unroll --no_inline --no_code_motion --no_tbaa
+//        -e -On --no_cse --no_unroll --no_inline --no_code_motion --no_tbaa
 //        --no_cross_call --debug --code_model small --data_model medium -o
 //        F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\Output\Obj
 //        --dlib_config "F:\IAR Systems\Embedded Workbench
@@ -33,6 +33,10 @@
 //        F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\System\Sys\
 //        -I
 //        F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\System\Usart\
+//        -I
+//        F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\Hardware\TIMER\
+//        -I
+//        F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\Hardware\OOK\
 //        --vregs 16)
 //    Locale       =  Chinese (Simplified)_CHN.936
 //    List file    =  
@@ -86,9 +90,10 @@ AES_Cmd:
         TNZ       A
         JREQ      L:??AES_Cmd_0
         BSET      L:0x53d0, #0x0
-        RET
+        JRA       L:??AES_Cmd_1
 ??AES_Cmd_0:
         BRES      L:0x53d0, #0x0
+??AES_Cmd_1:
         RET
 
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
@@ -124,12 +129,13 @@ AES_DMAConfig:
         LD        A, L:0x53d0
         OR        A, S:?b1
         LD        L:0x53d0, A
-        RET
+        JRA       L:??AES_DMAConfig_1
 ??AES_DMAConfig_0:
-        CPL       S:?b1
         LD        A, S:?b1
+        CPL       A
         AND       A, L:0x53d0
         LD        L:0x53d0, A
+??AES_DMAConfig_1:
         RET
 
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
@@ -141,38 +147,45 @@ AES_ITConfig:
         LD        A, L:0x53d0
         OR        A, S:?b1
         LD        L:0x53d0, A
-        RET
+        JRA       L:??AES_ITConfig_1
 ??AES_ITConfig_0:
-        CPL       S:?b1
         LD        A, S:?b1
+        CPL       A
         AND       A, L:0x53d0
         LD        L:0x53d0, A
+??AES_ITConfig_1:
         RET
 
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
         CODE
 AES_GetFlagStatus:
+        LD        S:?b1, A
         CLR       S:?b0
+        LD        A, S:?b1
         CP        A, #0x1
         JRNE      L:??AES_GetFlagStatus_0
         BTJF      L:0x53d1, #0x0, L:??AES_GetFlagStatus_1
-        MOV       S:?b0, #0x1
+        LD        A, #0x1
+        LD        S:?b0, A
         JRA       L:??AES_GetFlagStatus_2
 ??AES_GetFlagStatus_1:
         CLR       S:?b0
         JRA       L:??AES_GetFlagStatus_2
 ??AES_GetFlagStatus_0:
+        LD        A, S:?b1
         CP        A, #0x2
         JRNE      L:??AES_GetFlagStatus_3
         BTJF      L:0x53d1, #0x1, L:??AES_GetFlagStatus_4
-        MOV       S:?b0, #0x1
+        LD        A, #0x1
+        LD        S:?b0, A
         JRA       L:??AES_GetFlagStatus_2
 ??AES_GetFlagStatus_4:
         CLR       S:?b0
         JRA       L:??AES_GetFlagStatus_2
 ??AES_GetFlagStatus_3:
         BTJF      L:0x53d1, #0x2, L:??AES_GetFlagStatus_5
-        MOV       S:?b0, #0x1
+        LD        A, #0x1
+        LD        S:?b0, A
         JRA       L:??AES_GetFlagStatus_2
 ??AES_GetFlagStatus_5:
         CLR       S:?b0
@@ -186,9 +199,10 @@ AES_ClearFlag:
         CP        A, #0x1
         JRNE      L:??AES_ClearFlag_0
         BSET      L:0x53d0, #0x3
-        RET
+        JRA       L:??AES_ClearFlag_1
 ??AES_ClearFlag_0:
         BSET      L:0x53d0, #0x4
+??AES_ClearFlag_1:
         RET
 
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
@@ -210,7 +224,8 @@ AES_GetITStatus:
         JREQ      L:??AES_GetITStatus_1
         TNZ       S:?b1
         JREQ      L:??AES_GetITStatus_1
-        MOV       S:?b0, #0x1
+        LD        A, #0x1
+        LD        S:?b0, A
         JRA       L:??AES_GetITStatus_2
 ??AES_GetITStatus_1:
         CLR       S:?b0
@@ -221,7 +236,8 @@ AES_GetITStatus:
         AND       A, #0x6
         CP        A, #0x0
         JREQ      L:??AES_GetITStatus_4
-        MOV       S:?b0, #0x1
+        LD        A, #0x1
+        LD        S:?b0, A
         JRA       L:??AES_GetITStatus_2
 ??AES_GetITStatus_4:
         CLR       S:?b0
@@ -238,18 +254,19 @@ AES_ClearITPendingBit:
         CP        A, #0x20
         JRNE      L:??AES_ClearITPendingBit_0
         BSET      L:0x53d0, #0x3
-        RET
+        JRA       L:??AES_ClearITPendingBit_1
 ??AES_ClearITPendingBit_0:
         BSET      L:0x53d0, #0x4
+??AES_ClearITPendingBit_1:
         RET
 
         SECTION VREGS:DATA:REORDER:NOROOT(0)
 
         END
 // 
-// 270 bytes in section .near_func.text
+// 279 bytes in section .near_func.text
 // 
-// 270 bytes of CODE memory
+// 279 bytes of CODE memory
 //
 //Errors: none
 //Warnings: none

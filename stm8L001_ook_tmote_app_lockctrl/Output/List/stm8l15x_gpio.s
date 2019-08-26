@@ -1,15 +1,15 @@
 ///////////////////////////////////////////////////////////////////////////////
 //
-// IAR C/C++ Compiler V3.11.1.207 for STM8                22/Aug/2019  15:05:19
+// IAR C/C++ Compiler V3.11.1.207 for STM8                26/Aug/2019  11:12:56
 // Copyright 2010-2019 IAR Systems AB.
 // PC-locked license - IAR Embedded Workbench for STMicroelectronics STM8
 //
 //    Source file  =  
 //        F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\Libraries\src\stm8l15x_gpio.c
 //    Command line =  
-//        -f C:\Users\kyjapple\AppData\Local\Temp\EWC70E.tmp
+//        -f C:\Users\kyjapple\AppData\Local\Temp\EW6638.tmp
 //        (F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\Libraries\src\stm8l15x_gpio.c
-//        -e -Ol --no_cse --no_unroll --no_inline --no_code_motion --no_tbaa
+//        -e -On --no_cse --no_unroll --no_inline --no_code_motion --no_tbaa
 //        --no_cross_call --debug --code_model small --data_model medium -o
 //        F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\Output\Obj
 //        --dlib_config "F:\IAR Systems\Embedded Workbench
@@ -33,6 +33,10 @@
 //        F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\System\Sys\
 //        -I
 //        F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\System\Usart\
+//        -I
+//        F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\Hardware\TIMER\
+//        -I
+//        F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\Hardware\OOK\
 //        --vregs 16)
 //    Locale       =  Chinese (Simplified)_CHN.936
 //    List file    =  
@@ -69,8 +73,9 @@ GPIO_DeInit:
         INCW      X
         INCW      X
         CLR       (X)
-        ADDW      Y, #0x3
-        CLR       (Y)
+        LDW       X, Y
+        ADDW      X, #0x3
+        CLR       (X)
         RET
 
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
@@ -159,16 +164,17 @@ GPIO_Init:
         LDW       X, Y
         ADDW      X, #0x4
         LD        (X), A
-        RET
+        JRA       L:??GPIO_Init_7
 ??GPIO_Init_6:
         LDW       X, Y
         ADDW      X, #0x4
-        CPL       S:?b1
         LD        A, S:?b1
+        CPL       A
         AND       A, (X)
         LDW       X, Y
         ADDW      X, #0x4
         LD        (X), A
+??GPIO_Init_7:
         RET
 
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
@@ -184,16 +190,17 @@ GPIO_ExternalPullUpConfig:
         ADDW      X, #0x3
         LD        (X), A
         SUBW      X, #0x3
-        RET
+        JRA       L:??GPIO_ExternalPullUpConfig_1
 ??GPIO_ExternalPullUpConfig_0:
         LDW       Y, X
         ADDW      Y, #0x3
-        CPL       S:?b1
         LD        A, S:?b1
+        CPL       A
         AND       A, (Y)
         ADDW      X, #0x3
         LD        (X), A
         SUBW      X, #0x3
+??GPIO_ExternalPullUpConfig_1:
         RET
 
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
@@ -211,12 +218,13 @@ GPIO_WriteBit:
         LD        A, (X)
         OR        A, S:?b1
         LD        (X), A
-        RET
+        JRA       L:??GPIO_WriteBit_1
 ??GPIO_WriteBit_0:
-        CPL       S:?b1
         LD        A, S:?b1
+        CPL       A
         AND       A, (X)
         LD        (X), A
+??GPIO_WriteBit_1:
         RET
 
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
@@ -231,6 +239,8 @@ GPIO_SetBits:
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
         CODE
 GPIO_ResetBits:
+        LD        S:?b0, A
+        LD        A, S:?b0
         CPL       A
         AND       A, (X)
         LD        (X), A
@@ -279,9 +289,9 @@ GPIO_ReadOutputDataBit:
 
         END
 // 
-// 262 bytes in section .near_func.text
+// 265 bytes in section .near_func.text
 // 
-// 262 bytes of CODE memory
+// 265 bytes of CODE memory
 //
 //Errors: none
 //Warnings: none
