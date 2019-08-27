@@ -16,6 +16,7 @@
 #include "stm32l1xx_it.h"
 #include "usart.h"
 #include "hal_rtc.h"
+#include "hal_ook.h"
 #include "radar_api.h"
 #include "radar_adc.h"
 #include "radar_dac.h"
@@ -245,6 +246,57 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 #endif
 }
 
+
+/**********************************************************************************************************
+ @Function			void EXTI9_5_IRQHandler(void)
+ @Description			This function handles EXTI9_5 exception.
+ @Input				void
+ @Return				void
+**********************************************************************************************************/
+void EXTI9_5_IRQHandler(void)
+{
+	uint8_t pulse_high_time = 0;
+	uint8_t pulse_low_time = 0;
+	uint8_t leader_code_flag = 0;
+	uint8_t ook_data = 0;
+	
+	if(__HAL_GPIO_EXTI_GET_IT(OOK_PIN) != RESET) {
+		while (1) {
+			if (OOK_DATA_IN() == SET) {
+				pulse_high_time = OOK_EXTI_GetHighPulseTime();
+				
+				if (pulse_high_time >= 250) break;
+				
+				if (pulse_high_time >= 200 && pulse_high_time < 250) {
+					leader_code_flag = 1;
+				}
+				else if (pulse_high_time >= 10 && pulse_high_time < 50) {
+					ook_data = 0;
+				}
+				else if (pulse_high_time >= 50 && pulse_high_time < 100) {
+					ook_data = 1;
+				}
+				else if (pulse_high_time >= 100 && pulse_high_time < 200) {
+					OOKDataFrameFlag = 1;
+					break;
+				}
+				
+				if (leader_code_flag == 1) {
+					OOKDataFrameData <<= 1;
+					OOKDataFrameData += ook_data;
+				}
+			}
+			
+			if (OOK_DATA_IN() == RESET) {
+				pulse_low_time = OOK_EXTI_GetLowPulseTime();
+				
+				if (pulse_low_time >= 250) break;
+			}
+		}
+		
+		__HAL_GPIO_EXTI_CLEAR_IT(OOK_PIN);
+	}
+}
 
 /**********************************************************************************************************
  @Function			void EXTI15_10_IRQHandler(void)

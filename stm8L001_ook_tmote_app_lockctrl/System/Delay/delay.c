@@ -42,8 +42,18 @@ void Delay_MS_Normal(u16 nCount)
      }
 }
 
-
-
+/**********************************************************************************************************
+ @Function			void Delay_US_FuncType1(u16 nCount)
+ @Description			Delay_US_FuncType1            : 16M System Clock
+ @Input				nCount                        : US
+ @Return				void
+**********************************************************************************************************/
+void Delay_US_FuncType1(u16 nCount)
+{
+     while (nCount--) {
+          for (u16 i = 50; i > 0; i--) Delay_US_Normal();
+     }
+}
 
 
 

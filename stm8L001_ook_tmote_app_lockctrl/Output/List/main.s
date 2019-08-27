@@ -1,13 +1,13 @@
 ///////////////////////////////////////////////////////////////////////////////
 //
-// IAR C/C++ Compiler V3.11.1.207 for STM8                26/Aug/2019  16:56:04
+// IAR C/C++ Compiler V3.11.1.207 for STM8                27/Aug/2019  15:40:59
 // Copyright 2010-2019 IAR Systems AB.
 // PC-locked license - IAR Embedded Workbench for STMicroelectronics STM8
 //
 //    Source file  =  
 //        F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\User\main.c
 //    Command line =  
-//        -f C:\Users\kyjapple\AppData\Local\Temp\EW9879.tmp
+//        -f C:\Users\kyjapple\AppData\Local\Temp\EWCA50.tmp
 //        (F:\Movebroad\stm32L151_nbiot\workspace\stm32L151_nbiot_tmote_app_workspace\stm8L001_ook_tmote_app_lockctrl\User\main.c
 //        -e -On --no_cse --no_unroll --no_inline --no_code_motion --no_tbaa
 //        --no_cross_call --debug --code_model small --data_model medium -o
@@ -47,6 +47,7 @@
         #define SHT_PROGBITS 0x1
 
         EXTERN ?b8
+        EXTERN Delay_US_FuncType1
         EXTERN Delay_US_Normal
         EXTERN GPIO_ReadInputDataBit
         EXTERN GPIO_ResetBits
@@ -206,6 +207,7 @@ rfkey2:
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
         CODE
 main:
+        PUSH      S:?b8
         CLR       A
         CALL      L:Stm8_HSIClock_Init
         CALL      L:Stm8_OOK_Init
@@ -217,39 +219,163 @@ main:
         LDW       X, L:decode_ok
         CPW       X, #0x1
         JRNE      L:??main_0
-        LD        A, L:rfkeyflag
-        TNZ       A
-        JRNE      L:??main_1
-        MOV       L:rfkeyflag, #0x1
-        MOV       L:rfkey1, L:rf_data
-        MOV       L:rfkey2, L:rf_data + 1
-        JRA       L:??main_2
-??main_1:
-        LD        A, L:rf_data
-        CP        A, L:rfkey1
-        JRNE      L:??main_2
         LD        A, L:rf_data + 1
-        CP        A, L:rfkey2
-        JRNE      L:??main_2
-        LD        A, L:rf_data + 2
-        CP        A, #0x21
-        JREQ      L:??main_3
-        CP        A, #0x24
-        JREQ      L:??main_4
-        JRA       L:??main_2
+        ADD       A, L:rf_data
+        ADD       A, L:rf_data + 2
+        LD        L:rf_data + 3, A
+        LD        A, #0x4
+        LDW       X, #0x5000
+        CALL      L:GPIO_SetBits
+        LDW       X, #0x98
+        CALL      L:Delay_US_FuncType1
+        LD        A, #0x4
+        LDW       X, #0x5000
+        CALL      L:GPIO_ResetBits
+        LDW       X, #0x5
+        CALL      L:Delay_US_FuncType1
+        CLR       S:?b8
+??main_1:
+        LD        A, S:?b8
+        CP        A, #0x8
+        JRNC      L:??main_2
+        BTJF      L:rf_data, #0x7, L:??main_3
+        LD        A, #0x4
+        LDW       X, #0x5000
+        CALL      L:GPIO_SetBits
+        LDW       X, #0x34
+        CALL      L:Delay_US_FuncType1
+        LD        A, #0x4
+        LDW       X, #0x5000
+        CALL      L:GPIO_ResetBits
+        JRA       L:??main_4
 ??main_3:
         LD        A, #0x4
         LDW       X, #0x5000
         CALL      L:GPIO_SetBits
-        JRA       L:??main_2
-??main_4:
+        LDW       X, #0x14
+        CALL      L:Delay_US_FuncType1
         LD        A, #0x4
         LDW       X, #0x5000
         CALL      L:GPIO_ResetBits
+??main_4:
+        LD        A, L:rf_data
+        SLL       A
+        LD        L:rf_data, A
+        LDW       X, #0x5
+        CALL      L:Delay_US_FuncType1
+        INC       S:?b8
+        JRA       L:??main_1
 ??main_2:
+        CLR       S:?b8
+??main_5:
+        LD        A, S:?b8
+        CP        A, #0x8
+        JRNC      L:??main_6
+        BTJF      L:rf_data + 1, #0x7, L:??main_7
+        LD        A, #0x4
+        LDW       X, #0x5000
+        CALL      L:GPIO_SetBits
+        LDW       X, #0x34
+        CALL      L:Delay_US_FuncType1
+        LD        A, #0x4
+        LDW       X, #0x5000
+        CALL      L:GPIO_ResetBits
+        JRA       L:??main_8
+??main_7:
+        LD        A, #0x4
+        LDW       X, #0x5000
+        CALL      L:GPIO_SetBits
+        LDW       X, #0x14
+        CALL      L:Delay_US_FuncType1
+        LD        A, #0x4
+        LDW       X, #0x5000
+        CALL      L:GPIO_ResetBits
+??main_8:
+        LD        A, L:rf_data + 1
+        SLL       A
+        LD        L:rf_data + 1, A
+        LDW       X, #0x5
+        CALL      L:Delay_US_FuncType1
+        INC       S:?b8
+        JRA       L:??main_5
+??main_6:
+        CLR       S:?b8
+??main_9:
+        LD        A, S:?b8
+        CP        A, #0x8
+        JRNC      L:??main_10
+        BTJF      L:rf_data + 2, #0x7, L:??main_11
+        LD        A, #0x4
+        LDW       X, #0x5000
+        CALL      L:GPIO_SetBits
+        LDW       X, #0x34
+        CALL      L:Delay_US_FuncType1
+        LD        A, #0x4
+        LDW       X, #0x5000
+        CALL      L:GPIO_ResetBits
+        JRA       L:??main_12
+??main_11:
+        LD        A, #0x4
+        LDW       X, #0x5000
+        CALL      L:GPIO_SetBits
+        LDW       X, #0x14
+        CALL      L:Delay_US_FuncType1
+        LD        A, #0x4
+        LDW       X, #0x5000
+        CALL      L:GPIO_ResetBits
+??main_12:
+        LD        A, L:rf_data + 2
+        SLL       A
+        LD        L:rf_data + 2, A
+        LDW       X, #0x5
+        CALL      L:Delay_US_FuncType1
+        INC       S:?b8
+        JRA       L:??main_9
+??main_10:
+        CLR       S:?b8
+??main_13:
+        LD        A, S:?b8
+        CP        A, #0x8
+        JRNC      L:??main_14
+        BTJF      L:rf_data + 3, #0x7, L:??main_15
+        LD        A, #0x4
+        LDW       X, #0x5000
+        CALL      L:GPIO_SetBits
+        LDW       X, #0x34
+        CALL      L:Delay_US_FuncType1
+        LD        A, #0x4
+        LDW       X, #0x5000
+        CALL      L:GPIO_ResetBits
+        JRA       L:??main_16
+??main_15:
+        LD        A, #0x4
+        LDW       X, #0x5000
+        CALL      L:GPIO_SetBits
+        LDW       X, #0x14
+        CALL      L:Delay_US_FuncType1
+        LD        A, #0x4
+        LDW       X, #0x5000
+        CALL      L:GPIO_ResetBits
+??main_16:
+        LD        A, L:rf_data + 3
+        SLL       A
+        LD        L:rf_data + 3, A
+        LDW       X, #0x5
+        CALL      L:Delay_US_FuncType1
+        INC       S:?b8
+        JRA       L:??main_13
+??main_14:
+        LD        A, #0x4
+        LDW       X, #0x5000
+        CALL      L:GPIO_SetBits
+        LDW       X, #0x64
+        CALL      L:Delay_US_FuncType1
+        LD        A, #0x4
+        LDW       X, #0x5000
+        CALL      L:GPIO_ResetBits
         CLRW      X
         LDW       L:decode_ok, X
-        JRA       L:??main_0
+        JP        L:??main_0
 
         SECTION `.near_func.text`:CODE:REORDER:NOROOT(0)
         CODE
@@ -565,11 +691,11 @@ OOKRecvData:
 
         END
 // 
-//  38 bytes in section .near.bss
-// 821 bytes in section .near_func.text
+//    38 bytes in section .near.bss
+// 1 122 bytes in section .near_func.text
 // 
-// 821 bytes of CODE memory
-//  38 bytes of DATA memory
+// 1 122 bytes of CODE memory
+//    38 bytes of DATA memory
 //
 //Errors: none
 //Warnings: none

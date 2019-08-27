@@ -5,7 +5,7 @@
 
 void Delay_US_Normal(void);
 void Delay_MS_Normal(u16 nCount);
-
+void Delay_US_FuncType1(u16 nCount);
 
 
 

@@ -58,7 +58,7 @@ void main(void)
           
           OOKRecvData();
           
-#if 1     /* App Control */
+#if 0     /* App Control */
           if (decode_ok == 1) {
                
                if (rfkeyflag == 0) {
@@ -86,8 +86,104 @@ void main(void)
           }
 #endif
           
-          
-          
+#if 1     /* Data Send OOK */
+          if (decode_ok == 1) {
+               
+               /* Sum Check Code */
+               rf_data[3] = rf_data[0] + rf_data[1] + rf_data[2];
+               
+               /* Send Start Time Sequence */
+               OOK_DATA_TX_SET(ON);
+               Delay_US_FuncType1(152);
+               OOK_DATA_TX_SET(OFF);
+               
+               /* Low Time Sequence */
+               Delay_US_FuncType1(5);
+               
+               /* Send Data[0] Code Time Sequence */
+               for (uint8_t index = 0; index < 8; index++) {
+                    if (rf_data[0] & 0x80) {
+                         /* Send 1 bit */
+                         OOK_DATA_TX_SET(ON);
+                         Delay_US_FuncType1(52);
+                         OOK_DATA_TX_SET(OFF);
+                    }
+                    else {
+                         /* Send 0 bit */
+                         OOK_DATA_TX_SET(ON);
+                         Delay_US_FuncType1(20);
+                         OOK_DATA_TX_SET(OFF);
+                    }
+                    rf_data[0] <<= 1;
+                    /* Low Time Sequence */
+                    Delay_US_FuncType1(5);
+               }
+               
+               /* Send Data[0] Code Time Sequence */
+               for (uint8_t index = 0; index < 8; index++) {
+                    if (rf_data[1] & 0x80) {
+                         /* Send 1 bit */
+                         OOK_DATA_TX_SET(ON);
+                         Delay_US_FuncType1(52);
+                         OOK_DATA_TX_SET(OFF);
+                    }
+                    else {
+                         /* Send 0 bit */
+                         OOK_DATA_TX_SET(ON);
+                         Delay_US_FuncType1(20);
+                         OOK_DATA_TX_SET(OFF);
+                    }
+                    rf_data[1] <<= 1;
+                    /* Low Time Sequence */
+                    Delay_US_FuncType1(5);
+               }
+               
+               /* Send Data[0] Code Time Sequence */
+               for (uint8_t index = 0; index < 8; index++) {
+                    if (rf_data[2] & 0x80) {
+                         /* Send 1 bit */
+                         OOK_DATA_TX_SET(ON);
+                         Delay_US_FuncType1(52);
+                         OOK_DATA_TX_SET(OFF);
+                    }
+                    else {
+                         /* Send 0 bit */
+                         OOK_DATA_TX_SET(ON);
+                         Delay_US_FuncType1(20);
+                         OOK_DATA_TX_SET(OFF);
+                    }
+                    rf_data[2] <<= 1;
+                    /* Low Time Sequence */
+                    Delay_US_FuncType1(5);
+               }
+               
+               /* Send Data[0] Code Time Sequence */
+               for (uint8_t index = 0; index < 8; index++) {
+                    if (rf_data[3] & 0x80) {
+                         /* Send 1 bit */
+                         OOK_DATA_TX_SET(ON);
+                         Delay_US_FuncType1(52);
+                         OOK_DATA_TX_SET(OFF);
+                    }
+                    else {
+                         /* Send 0 bit */
+                         OOK_DATA_TX_SET(ON);
+                         Delay_US_FuncType1(20);
+                         OOK_DATA_TX_SET(OFF);
+                    }
+                    rf_data[3] <<= 1;
+                    /* Low Time Sequence */
+                    Delay_US_FuncType1(5);
+               }
+               
+               /* Send End Time Sequence */
+               OOK_DATA_TX_SET(ON);
+               Delay_US_FuncType1(100);
+               OOK_DATA_TX_SET(OFF);
+               
+               decode_ok = 0;
+          }
+#endif
      }
 }
 
