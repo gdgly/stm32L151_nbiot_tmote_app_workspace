@@ -2083,6 +2083,28 @@ unsigned char TCFG_EEPROM_GetDeviceRbtMode(void)
 }
 
 /**********************************************************************************************************
+ @Function			void TCFG_EEPROM_SetOOKEncoded(unsigned int val)
+ @Description			TCFG_EEPROM_SetOOKEncoded					: 保存OOKEncoded
+ @Input				val
+ @Return				void
+**********************************************************************************************************/
+void TCFG_EEPROM_SetOOKEncoded(unsigned int val)
+{
+	FLASH_EEPROM_WriteWord(TCFG_OOK_ENCODED_OFFSET, val);
+}
+
+/**********************************************************************************************************
+ @Function			unsigned int TCFG_EEPROM_GetOOKEncoded(void)
+ @Description			TCFG_EEPROM_GetOOKEncoded					: 读取OOKEncoded
+ @Input				void
+ @Return				val
+**********************************************************************************************************/
+unsigned int TCFG_EEPROM_GetOOKEncoded(void)
+{
+	return FLASH_EEPROM_ReadWord(TCFG_OOK_ENCODED_OFFSET);
+}
+
+/**********************************************************************************************************
  @Function			void TCFG_EEPROM_SetMqttSNIP(unsigned int val)
  @Description			TCFG_EEPROM_SetMqttSNIP						: 保存MqttSNIP
  @Input				val

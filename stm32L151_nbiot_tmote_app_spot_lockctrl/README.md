@@ -2,6 +2,12 @@
 > ##### Copyright (C) 2019 Movebroad Version:20.148 Design by Movebroad
 > ##### movebroad Kangkang ps: 版本号以下为此版本修改、增加、去除等内容记录！
 
+* 2019-08-30 :
+	* 车位锁修改。
+	* 增加OOK数据读取并保存到EEPROM。
+	* 增加OOK处理接收数据并执行锁控制。
+	* workinfo包上报ook编码值。
+	* 小无线下发命令ookinit进行编码采集。
 * 2019-08-19 :
 	* 车位锁修改。
 	* 增加CoAP一直检测下行数据包。

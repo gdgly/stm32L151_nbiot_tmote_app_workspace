@@ -23,6 +23,7 @@
 #include "stm32l1xx_config.h"
 #include "hal_beep.h"
 #include "hal_qmc5883l.h"
+#include "hal_ook.h"
 #include "radar_api.h"
 #include "inspectconfig.h"
 #include "net_nbiot_app.h"
@@ -600,6 +601,15 @@ char Radio_Rf_Operate_Recvmsg(uint8_t *inmsg, uint8_t len)
 					}
 				#if RADIO_CMD_ECHO_TYPE
 					Radio_Trf_Printf("spotlock:%hd", uval16);
+				#endif
+				}
+			#endif
+				/* OOKInit */
+			#if RADIO_DOWNLOAD_CMD_OOKINIT
+				else if (strstr(((tmote_general_cmd_s*)CFG_P_FRAME_PAYLOAD(inmsg))->buf, "ookinit")) {
+					OOK_EXTI_SetRecvdFlag(1);
+				#if RADIO_CMD_ECHO_TYPE
+					Radio_Trf_Printf("Remote control Init");
 				#endif
 				}
 			#endif

@@ -154,13 +154,14 @@ int main(void)
 	BEEP_CtrlRepeat_Extend(10, 50, 25);													//蜂鸣器
 	IWDG_Feed();																		//喂狗
 	
+	Radio_Trf_Printf(" Device Reboot:%d Cause:%d Radar:%d Nor:%s", TCFG_SystemData.DeviceBootCount, SoftResetFlag, radar_vcc, GD25Q_SPIFLASH_Get_Status()?"None":"Ok");
+	Radio_Trf_Printf(" Copyright (C) 2019 Movebroad Version:%d.%d", TCFG_Utility_Get_Major_Softnumber(), TCFG_Utility_Get_Sub_Softnumber());
+	
 	SPOT_Lock_Initialization();															//SpotLock初始化
 	IWDG_Feed();
 	
 	OOK_EXTI_Initialization();															//SpotLock遥控器初始化
-	
-	Radio_Trf_Printf(" Device Reboot:%d Cause:%d Radar:%d Nor:%s", TCFG_SystemData.DeviceBootCount, SoftResetFlag, radar_vcc, GD25Q_SPIFLASH_Get_Status()?"None":"Ok");
-	Radio_Trf_Printf(" Copyright (C) 2019 Movebroad Version:%d.%d", TCFG_Utility_Get_Major_Softnumber(), TCFG_Utility_Get_Sub_Softnumber());
+	IWDG_Feed();
 	
 	while (true) {
 		
@@ -350,6 +351,9 @@ void MainRollingUpwardsActived(void)
 		NET_NBIOT_App_Task();
 	#endif
 	}
+	
+	/* 遥控器编码处理 */
+	OOK_EXTI_PollExecution(false);
 	
 	/* 车锁控制 */
 	SPOT_Lock_App_Task();

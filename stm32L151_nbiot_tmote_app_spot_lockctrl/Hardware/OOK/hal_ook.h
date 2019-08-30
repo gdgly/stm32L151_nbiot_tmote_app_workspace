@@ -3,6 +3,12 @@
 
 #include "sys.h"
 
+#define OOK_DEBUG_LOG_RF_PRINT
+#define OOK_DEBUG_LOG_PRINTF				Radio_Trf_Printf
+
+#define OOK_ENCODED_BEEPDELAY_SEC			2
+#define OOK_ENCODED_EXECUTION_SEC			30
+
 #define OOK_GPIOx						GPIOB
 #define OOK_PIN						GPIO_PIN_5
 #define OOK_RCC_GPIO_CLK_ENABLE()			__HAL_RCC_GPIOB_CLK_ENABLE()
@@ -12,10 +18,19 @@
 
 #define OOK_DATA_IRQn					EXTI9_5_IRQn
 
+#define OOK_EXTI_SetFrameFlag(n)			(OOKDataFrameFlag = n)
+#define OOK_EXTI_GetFrameFlag()			(OOKDataFrameFlag)
+
+#define OOK_EXTI_SetRecvdFlag(n)			(OOKDataRecvdFlag = n)
+#define OOK_EXTI_GetRecvdFlag()			(OOKDataRecvdFlag)
+
 extern uint32_t OOKDataFrameData;
 extern uint8_t  OOKDataFrameFlag;
+extern uint8_t  OOKDataRecvdFlag;
 
 void OOK_EXTI_Initialization(void);
+
+void OOK_EXTI_PollExecution(bool EnableEEPROMCode);
 
 uint8_t OOK_EXTI_GetHighPulseTime(void);
 uint8_t OOK_EXTI_GetLowPulseTime(void);

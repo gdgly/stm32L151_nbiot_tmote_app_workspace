@@ -392,6 +392,7 @@
 #define	RADIO_DOWNLOAD_CMD_HIGHPASS		1								//RADIO下行指令RadarHighPass
 #define	RADIO_DOWNLOAD_CMD_RFDPRINTLV		1								//RADIO下行指令RFDprintLv
 #define	RADIO_DOWNLOAD_CMD_SPOTLOCK		1								//RADIO下行指令SpotLock
+#define	RADIO_DOWNLOAD_CMD_OOKINIT		1								//RADIO下行指令OOKInit
 #define	RADIO_DOWNLOAD_CMD_RESTORE		1								//RADIO下行指令Restore
 #endif
 #if NETPROTOCAL == NETMQTTSN
@@ -418,6 +419,7 @@
 #define	RADIO_DOWNLOAD_CMD_HIGHPASS		1								//RADIO下行指令RadarHighPass
 #define	RADIO_DOWNLOAD_CMD_RFDPRINTLV		1								//RADIO下行指令RFDprintLv
 #define	RADIO_DOWNLOAD_CMD_SPOTLOCK		1								//RADIO下行指令SpotLock
+#define	RADIO_DOWNLOAD_CMD_OOKINIT		1								//RADIO下行指令OOKInit
 #define	RADIO_DOWNLOAD_CMD_RESTORE		0								//RADIO下行指令Restore
 #endif
 #if NETPROTOCAL == NETONENET
@@ -444,6 +446,7 @@
 #define	RADIO_DOWNLOAD_CMD_HIGHPASS		1								//RADIO下行指令RadarHighPass
 #define	RADIO_DOWNLOAD_CMD_RFDPRINTLV		1								//RADIO下行指令RFDprintLv
 #define	RADIO_DOWNLOAD_CMD_SPOTLOCK		1								//RADIO下行指令SpotLock
+#define	RADIO_DOWNLOAD_CMD_OOKINIT		1								//RADIO下行指令OOKInit
 #define	RADIO_DOWNLOAD_CMD_RESTORE		1								//RADIO下行指令Restore
 #endif
 

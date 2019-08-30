@@ -25,6 +25,8 @@
 #include "nbiotconfig.h"
 #include "platform_config.h"
 #include "platform_map.h"
+#include "spotlockconfig.h"
+#include "spotlockapp.h"
 
 /**********************************************************************************************************
  @Function			void TIM2_IRQHandler(void)
