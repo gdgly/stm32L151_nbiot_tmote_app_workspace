@@ -196,7 +196,7 @@
 #define	BEEP_OFF_US					230								//无源蜂鸣器关时间
 
 #define	SOFTWAREMAJOR					20								//主固件版本
-#define	SOFTWARESUB					147								//从固件版本
+#define	SOFTWARESUB					148								//从固件版本
 #define	HARDWAREMAJOR_V1				2								//主硬件版本
 #define	HARDWAREMAJOR_V2				12								//主硬件版本
 
@@ -204,6 +204,11 @@
 #define	NBIOT_PRINT_ERRORCODE_DISABLE		0
 #define	NBIOT_PRINT_ERRORCODE_ENABLE		1
 #define	NBIOT_PRINT_ERROR_CODE_TYPE		NBIOT_PRINT_ERRORCODE_ENABLE			//NBIOT输出错误码模式
+
+#define	RADIO_CMD_UPLOAD_WORKINFO		1								//无线命令主动上报WorkInfo
+#define	RADIO_CMD_UPLOAD_NETINFO			1								//无线命令主动上报NetInfo
+#define	RADIO_CMD_UPLOAD_DEVINFO			1								//无线命令主动上报DeviceInfo
+#define	RADIO_CMD_UPLOAD_UPGRADEINFO		1								//无线命令主动上报UpgradeInfo
 
 #define	RADIO_PRINT_WORKINFO			1								//无线输出Workinfo
 #define	RADIO_PRINT_NETINFO				1								//无线输出NetInfo
@@ -257,6 +262,11 @@
 #define	NBIOT_PRINT_ERRORCODE_ENABLE		1
 #define	NBIOT_PRINT_ERROR_CODE_TYPE		NBIOT_PRINT_ERRORCODE_DISABLE			//NBIOT输出错误码模式
 
+#define	RADIO_CMD_UPLOAD_WORKINFO		1								//无线命令主动上报WorkInfo
+#define	RADIO_CMD_UPLOAD_NETINFO			1								//无线命令主动上报NetInfo
+#define	RADIO_CMD_UPLOAD_DEVINFO			0								//无线命令主动上报DeviceInfo
+#define	RADIO_CMD_UPLOAD_UPGRADEINFO		0								//无线命令主动上报UpgradeInfo
+
 #define	RADIO_PRINT_WORKINFO			0								//无线输出Workinfo
 #define	RADIO_PRINT_NETINFO				1								//无线输出NetInfo
 #define	RADIO_PRINT_DEVINFO				0								//无线输出DeviceInfo
@@ -309,6 +319,11 @@
 #define	NBIOT_PRINT_ERRORCODE_ENABLE		1
 #define	NBIOT_PRINT_ERROR_CODE_TYPE		NBIOT_PRINT_ERRORCODE_ENABLE			//NBIOT输出错误码模式
 
+#define	RADIO_CMD_UPLOAD_WORKINFO		1								//无线命令主动上报WorkInfo
+#define	RADIO_CMD_UPLOAD_NETINFO			1								//无线命令主动上报NetInfo
+#define	RADIO_CMD_UPLOAD_DEVINFO			1								//无线命令主动上报DeviceInfo
+#define	RADIO_CMD_UPLOAD_UPGRADEINFO		1								//无线命令主动上报UpgradeInfo
+
 #define	RADIO_PRINT_WORKINFO			1								//无线输出Workinfo
 #define	RADIO_PRINT_NETINFO				1								//无线输出NetInfo
 #define	RADIO_PRINT_DEVINFO				1								//无线输出DeviceInfo
@@ -356,11 +371,6 @@
 #define	RADIO_PRINT_DEVINFO_RGAIN		1								//无线输出DeviceInfo RGAIN
 #define	RADIO_PRINT_DEVINFO_SMODE		1								//无线输出DeviceInfo SMODE
 #endif
-
-#define	RADIO_CMD_UPLOAD_WORKINFO		1								//无线命令主动上报WorkInfo
-#define	RADIO_CMD_UPLOAD_NETINFO			1								//无线命令主动上报NetInfo
-#define	RADIO_CMD_UPLOAD_DEVINFO			1								//无线命令主动上报DeviceInfo
-#define	RADIO_CMD_UPLOAD_UPGRADEINFO		1								//无线命令主动上报UpgradeInfo
 
 #define	NBCOAP_SENDCODE_SHORT_STATUS		0								//NB上报信息使能CoapShortStatus
 #define	NBCOAP_SENDCODE_LONG_STATUS		1								//NB上报信息使能CoapLongStatus
