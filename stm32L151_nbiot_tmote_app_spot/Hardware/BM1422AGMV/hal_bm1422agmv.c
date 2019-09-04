@@ -21,6 +21,7 @@
 #include "hal_beep.h"
 #include "hal_iwdg.h"
 #include "delay.h"
+#include <stdlib.h>
 
 /**********************************************************************************************************
  @Function			static u8 BM1422AGMV_WriteByte(u8 ucRegAddr, u8 ucRegData)
@@ -77,7 +78,7 @@ static u8 BM1422AGMV_ReadByte(u8 ucRegAddr)
 	return ucData;
 }
 
-#if 0
+#if 1
 /**********************************************************************************************************
  @Function			static u8 BM1422AGMV_WriteBuffer(u8 ucRegAddr, u8 *pucRegData, u8 ucRegCount)
  @Description			BM1422AGMV写入nByte数据到寄存器( 内部调用 )
@@ -86,7 +87,7 @@ static u8 BM1422AGMV_ReadByte(u8 ucRegAddr)
 					ucRegCount : 写入数据个数
  @Return				0
 **********************************************************************************************************/
-static u8 BM1422AGMV_WriteBuffer(u8 ucRegAddr, u8 *pucRegData, u8 ucRegCount)
+u8 BM1422AGMV_WriteBuffer(u8 ucRegAddr, u8 *pucRegData, u8 ucRegCount)
 {
 	IIC_Start();																		//发送起始信号
 	
@@ -114,7 +115,7 @@ static u8 BM1422AGMV_WriteBuffer(u8 ucRegAddr, u8 *pucRegData, u8 ucRegCount)
 					ucRegCount : 读取数据个数
  @Return				0
 **********************************************************************************************************/
-static u8 BM1422AGMV_ReadBuffer(u8 ucRegAddr, u8 *pucRegData, u8 ucRegCount)
+u8 BM1422AGMV_ReadBuffer(u8 ucRegAddr, u8 *pucRegData, u8 ucRegCount)
 {
 	IIC_Start();																		//发送起始信号
 	
@@ -159,11 +160,17 @@ void BM1422AGMV_Init(void)
 	/* 工作, 14位, 复位释放, 1000Hz输出, 单次测量模式 */
 	BM1422AGMV_WriteByte(BM1422_CNTL1_RW, BM1422_CNTL1_PC1_ACTIVE | BM1422_CNTL1_OUT_14BIT | BM1422_CNTL1_RST_SOFT_REST_RELEASE | BM1422_CNTL1_ODR_RATES_1000HZ | BM1422_CNTL1_FS1_MODE_SINGLE);
 	
+	/* 控制寄存器4清0 */
+	BM1422AGMV_WriteByte(BM1422_CNTL4_WO_L, 0x00);
+	BM1422AGMV_WriteByte(BM1422_CNTL4_WO_H, 0x00);
+	
 	/* 使能DRDY引脚高电平有效 */
 	BM1422AGMV_WriteByte(BM1422_CNTL2_RW, BM1422_CNTL2_DRDY_HIGH_ACTIVE | BM1422_CNTL2_DRDY_ENABLE);
 	
+#if 0
 	/* 休眠 */
 	BM1422AGMV_PowerCtrl_Selection(BM1422_CNTL1_PC1_POWERDOWN);
+#endif
 	
 #if BM1422_DRDY_EXIT
 	BM1422AGMV_Drdy_Exti_Init();
@@ -354,9 +361,15 @@ void BM1422AGMV_PowerCtrl_Selection(u8 powerctrl)
 	}
 	else if (powerctrl == BM1422_CNTL1_PC1_ACTIVE) {
 		BM1422AGMV_WriteByte(BM1422_CNTL1_RW, ((reg & 0x7F) | BM1422_CNTL1_PC1_ACTIVE));
+		BM1422AGMV_WriteByte(BM1422_CNTL4_WO_L, 0x00);
+		BM1422AGMV_WriteByte(BM1422_CNTL4_WO_H, 0x00);
+		BM1422AGMV_WriteByte(BM1422_CNTL2_RW, BM1422_CNTL2_DRDY_HIGH_ACTIVE | BM1422_CNTL2_DRDY_ENABLE);
 	}
 	else {
 		BM1422AGMV_WriteByte(BM1422_CNTL1_RW, ((reg & 0x7F) | BM1422_CNTL1_PC1_ACTIVE));
+		BM1422AGMV_WriteByte(BM1422_CNTL4_WO_L, 0x00);
+		BM1422AGMV_WriteByte(BM1422_CNTL4_WO_H, 0x00);
+		BM1422AGMV_WriteByte(BM1422_CNTL2_RW, BM1422_CNTL2_DRDY_HIGH_ACTIVE | BM1422_CNTL2_DRDY_ENABLE);
 	}
 }
 
@@ -371,33 +384,95 @@ void BM1422AGMV_Start_Measurement(void)
 	BM1422AGMV_WriteByte(BM1422_CNTL3_RW, BM1422_CNTL3_FORCE_START);
 }
 
+/**********************************************************************************************************
+ @Function			void BM1422AGMV_ReadData_Single(short* x, short* y, short* z)
+ @Description			BM1422AGMV读取数据
+ @Input				x, y, z
+ @Return				void
+**********************************************************************************************************/
+void BM1422AGMV_ReadData_Single(short* x, short* y, short* z)
+{
+	uint8_t ucReadBuf[BM1422_SAMPLE_TIMES][BM1422_REG_MAG];
+	int16_t magdata_x[BM1422_SAMPLE_TIMES], magdata_y[BM1422_SAMPLE_TIMES], magdata_z[BM1422_SAMPLE_TIMES];
+	u8  index = 0;
+	u8  sample_times = 0;
+	u32 readtimeover = 0;
+	static short bm_x_old, bm_y_old, bm_z_old;
+	static char bm_same_cnt = 0;
+	
+	BM1422AGMV_Start_Measurement();
+	
+	while ((readtimeover++) < 10000) {
+		if (BM1422_DRDY_READ() == 1) {
+			BM1422AGMV_ReadBuffer(BM1422_DATA_OUT_X_RO_L, ucReadBuf[sample_times], BM1422_REG_MAG);
+			sample_times++;
+			if (sample_times < BM1422_SAMPLE_TIMES) BM1422AGMV_Start_Measurement();
+		}
+		
+		if (sample_times >= BM1422_SAMPLE_TIMES) {
+			for (index = 0; index < BM1422_SAMPLE_TIMES; index++) {
+				magdata_x[index] = (int16_t)(ucReadBuf[index][1] << 8) | ucReadBuf[index][0];
+				magdata_y[index] = (int16_t)(ucReadBuf[index][3] << 8) | ucReadBuf[index][2];
+				magdata_z[index] = (int16_t)(ucReadBuf[index][5] << 8) | ucReadBuf[index][4];
+			}
+			for (index = 1; index < BM1422_SAMPLE_TIMES; index++) {
+				if (abs(magdata_x[0] - magdata_x[index]) > BM1422_DEVIATION_MAX) {
+					sample_times = 0;
+					break;
+				}
+				else if (abs(magdata_y[0] - magdata_y[index]) > BM1422_DEVIATION_MAX) {
+					sample_times = 0;
+					break;
+				}
+				else if (abs(magdata_z[0] - magdata_z[index]) > BM1422_DEVIATION_MAX) {
+					sample_times = 0;
+					break;
+				}
+			}
+			if (sample_times != 0) break;
+		}
+		
+		Delay_US(10);
+	}
+	
+	if (sample_times >= BM1422_SAMPLE_TIMES) {
+		*x = 0; *y = 0; *z = 0;
+		
+		for (index = 0; index < BM1422_SAMPLE_TIMES; index++) {
+			*x += (((int16_t)(ucReadBuf[index][1] << 8)|ucReadBuf[index][0])+BM1422_SAMPLE_TIMES/2)/BM1422_SAMPLE_TIMES;
+			*y += (((int16_t)(ucReadBuf[index][3] << 8)|ucReadBuf[index][2])+BM1422_SAMPLE_TIMES/2)/BM1422_SAMPLE_TIMES;
+			*z += (((int16_t)(ucReadBuf[index][5] << 8)|ucReadBuf[index][4])+BM1422_SAMPLE_TIMES/2)/BM1422_SAMPLE_TIMES;
+		}
+		
+		if ((*x == bm_x_old) && (*y == bm_y_old) && (*z == bm_z_old)) {
+			bm_same_cnt++;
+		}
+		
+		bm_x_old = *x; bm_y_old = *y; bm_z_old = *z;
+		
+		if (bm_same_cnt > 60) {
+			bm_same_cnt = 0;
+			ReInitModule();
+		}
+	}
+	else {
+		ReInitModule();
+	}
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+/**********************************************************************************************************
+ @Function			void BM1422AGMV_ClearInsideData(void)
+ @Description			BM1422AGMV清除内部待读取数据缓存
+ @Input				void
+ @Return				void
+**********************************************************************************************************/
+void BM1422AGMV_ClearInsideData(void)
+{
+	u8 ucReadBuf[BM1422_REG_MAG];
+	
+	if (BM1422_DRDY_READ() == 1) {
+		BM1422AGMV_ReadBuffer(BM1422_DATA_OUT_X_RO_L, ucReadBuf, BM1422_REG_MAG);
+	}
+}
 
 /********************************************** END OF FLEE **********************************************/

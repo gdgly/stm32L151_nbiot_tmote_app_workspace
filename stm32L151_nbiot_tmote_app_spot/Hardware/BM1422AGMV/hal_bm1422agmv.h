@@ -7,7 +7,7 @@
 #define BM1422_DRDY_PIN							GPIO_PIN_11
 #define BM1422_DRDY_RCC_GPIO_CLK_ENABLE()			__HAL_RCC_GPIOA_CLK_ENABLE()
 #define BM1422_DRDY_RCC_GPIO_CLK_DISABLE()			__HAL_RCC_GPIOA_CLK_DISABLE()
-#define BM1422_DRDY_READ()						HAL_GPIO_ReadPin(QMC_DRDY_GPIOx, QMC_DRDY_PIN)
+#define BM1422_DRDY_READ()						HAL_GPIO_ReadPin(BM1422_DRDY_GPIOx, BM1422_DRDY_PIN)
 
 #define BM1422_DRDY_IRQn							EXTI15_10_IRQn								//DRDY中断线
 #define BM1422_DRDY_EXIT							0										//DRDY中断使能
@@ -54,10 +54,16 @@
 #define BM1422_CNTL3_RW							(0x1D)									//BM1422AGMV 控制寄存器3
 #define BM1422_CNTL3_FORCE_START					(1<<6)									//BM1422AGMV 启动测量
 
+#define BM1422_CNTL4_WO_L						(0x5C)									//BM1422AGMV 控制寄存器4低8位
+#define BM1422_CNTL4_WO_H						(0x5D)									//BM1422AGMV 控制寄存器4高8位
+
 #define BM1422_TEMP_RO_L							(0x60)									//BM1422AGMV 温度数据低8位
 #define BM1422_TEMP_RO_H							(0x61)									//BM1422AGMV 温度数据高8位
-
 /*----- BM1422AGMV Register Map -----*/
+
+#define BM1422_REG_MAG							6										//地磁数据
+#define BM1422_SAMPLE_TIMES						5										//采样次数
+#define BM1422_DEVIATION_MAX						900										//最大跳变值
 
 void BM1422AGMV_Init(void);																//BM1422AGMV初始化
 
@@ -74,16 +80,8 @@ void BM1422AGMV_PowerCtrl_Selection(u8 powerctrl);											//BM1422AGMV电源�
 
 void BM1422AGMV_Start_Measurement(void);													//BM1422AGMV启动测量
 
+void BM1422AGMV_ReadData_Single(short* x, short* y, short* z);									//BM1422AGMV读取数据
 
-
-
-
-
-
-
-
-
-
-
+void BM1422AGMV_ClearInsideData(void);														//BM1422AGMV清除内部待读取数据缓存
 
 #endif /* __BSP_BM1422AGMV_H */
