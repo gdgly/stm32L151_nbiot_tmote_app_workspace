@@ -178,7 +178,7 @@
 #define	BEEP_OFF_US					230								//无源蜂鸣器关时间
 
 #define	SOFTWAREMAJOR					20								//主固件版本
-#define	SOFTWARESUB					148								//从固件版本
+#define	SOFTWARESUB					149								//从固件版本
 #define	HARDWAREMAJOR_V1				2								//主硬件版本
 #define	HARDWAREMAJOR_V2				12								//主硬件版本
 
@@ -206,8 +206,8 @@
 #define	RADIO_PRINT_WORKINFO_TAC			1								//无线输出Workinfo TAC
 #define	RADIO_PRINT_WORKINFO_CI			1								//无线输出Workinfo CI
 #define	RADIO_PRINT_WORKINFO_CMDCNT		0								//无线输出Workinfo CMDCNT
-#define	RADIO_PRINT_WORKINFO_NBRUNTIME	1								//无线输出Workinfo NBRUNTIME
-#define	RADIO_PRINT_WORKINFO_APN			1								//无线输出Workinfo APN
+#define	RADIO_PRINT_WORKINFO_NBRUNTIME	0								//无线输出Workinfo NBRUNTIME
+#define	RADIO_PRINT_WORKINFO_APN			0								//无线输出Workinfo APN
 #define	RADIO_PRINT_WORKINFO_COEF		1								//无线输出Workinfo COEF
 
 #define	RADIO_PRINT_NETINFO_MUFTUR		1								//无线输出NetInfo MUFTUR
@@ -215,7 +215,7 @@
 #define	RADIO_PRINT_NETINFO_MDUVER		1								//无线输出NetInfo MDUVER
 #define	RADIO_PRINT_NETINFO_IMEI			1								//无线输出NetInfo IMEI
 #define	RADIO_PRINT_NETINFO_ICCID		1								//无线输出NetInfo ICCID
-#define	RADIO_PRINT_NETINFO_IMSI			0								//无线输出NetInfo IMSI
+#define	RADIO_PRINT_NETINFO_IMSI			1								//无线输出NetInfo IMSI
 #define	RADIO_PRINT_NETINFO_CGP			1								//无线输出NetInfo CGP
 #define	RADIO_PRINT_NETINFO_PDPTYPE		0								//无线输出NetInfo PDPTYPE
 #define	RADIO_PRINT_NETINFO_APN			0								//无线输出NetInfo APN
@@ -263,7 +263,7 @@
 #define	RADIO_PRINT_WORKINFO_TAC			1								//无线输出Workinfo TAC
 #define	RADIO_PRINT_WORKINFO_CI			1								//无线输出Workinfo CI
 #define	RADIO_PRINT_WORKINFO_CMDCNT		0								//无线输出Workinfo CMDCNT
-#define	RADIO_PRINT_WORKINFO_NBRUNTIME	1								//无线输出Workinfo NBRUNTIME
+#define	RADIO_PRINT_WORKINFO_NBRUNTIME	0								//无线输出Workinfo NBRUNTIME
 #define	RADIO_PRINT_WORKINFO_APN			0								//无线输出Workinfo APN
 #define	RADIO_PRINT_WORKINFO_COEF		1								//无线输出Workinfo COEF
 
@@ -272,7 +272,7 @@
 #define	RADIO_PRINT_NETINFO_MDUVER		0								//无线输出NetInfo MDUVER
 #define	RADIO_PRINT_NETINFO_IMEI			1								//无线输出NetInfo IMEI
 #define	RADIO_PRINT_NETINFO_ICCID		1								//无线输出NetInfo ICCID
-#define	RADIO_PRINT_NETINFO_IMSI			0								//无线输出NetInfo IMSI
+#define	RADIO_PRINT_NETINFO_IMSI			1								//无线输出NetInfo IMSI
 #define	RADIO_PRINT_NETINFO_CGP			0								//无线输出NetInfo CGP
 #define	RADIO_PRINT_NETINFO_PDPTYPE		0								//无线输出NetInfo PDPTYPE
 #define	RADIO_PRINT_NETINFO_APN			0								//无线输出NetInfo APN
@@ -320,8 +320,8 @@
 #define	RADIO_PRINT_WORKINFO_TAC			1								//无线输出Workinfo TAC
 #define	RADIO_PRINT_WORKINFO_CI			1								//无线输出Workinfo CI
 #define	RADIO_PRINT_WORKINFO_CMDCNT		0								//无线输出Workinfo CMDCNT
-#define	RADIO_PRINT_WORKINFO_NBRUNTIME	1								//无线输出Workinfo NBRUNTIME
-#define	RADIO_PRINT_WORKINFO_APN			1								//无线输出Workinfo APN
+#define	RADIO_PRINT_WORKINFO_NBRUNTIME	0								//无线输出Workinfo NBRUNTIME
+#define	RADIO_PRINT_WORKINFO_APN			0								//无线输出Workinfo APN
 #define	RADIO_PRINT_WORKINFO_COEF		1								//无线输出Workinfo COEF
 
 #define	RADIO_PRINT_NETINFO_MUFTUR		1								//无线输出NetInfo MUFTUR
@@ -329,7 +329,7 @@
 #define	RADIO_PRINT_NETINFO_MDUVER		1								//无线输出NetInfo MDUVER
 #define	RADIO_PRINT_NETINFO_IMEI			1								//无线输出NetInfo IMEI
 #define	RADIO_PRINT_NETINFO_ICCID		1								//无线输出NetInfo ICCID
-#define	RADIO_PRINT_NETINFO_IMSI			0								//无线输出NetInfo IMSI
+#define	RADIO_PRINT_NETINFO_IMSI			1								//无线输出NetInfo IMSI
 #define	RADIO_PRINT_NETINFO_CGP			1								//无线输出NetInfo CGP
 #define	RADIO_PRINT_NETINFO_PDPTYPE		0								//无线输出NetInfo PDPTYPE
 #define	RADIO_PRINT_NETINFO_APN			0								//无线输出NetInfo APN
@@ -505,10 +505,10 @@
 #define	MQTTSN_DOWNLOAD_CMD_SETQMCCOEF	0								//MQTTSN下行指令SetQmcCoef
 #define	MQTTSN_DOWNLOAD_CMD_BEEPOFF		0								//MQTTSN下行指令BeepOff
 #define	MQTTSN_DOWNLOAD_CMD_ROLLINIT		0								//MQTTSN下行指令RollInit
-#define	MQTTSN_DOWNLOAD_CMD_UPLIMIT		1								//MQTTSN下行指令UpLimit
-#define	MQTTSN_DOWNLOAD_CMD_NBLIMIT		1								//MQTTSN下行指令NBLimit
+#define	MQTTSN_DOWNLOAD_CMD_UPLIMIT		0								//MQTTSN下行指令UpLimit
+#define	MQTTSN_DOWNLOAD_CMD_NBLIMIT		0								//MQTTSN下行指令NBLimit
 #define	MQTTSN_DOWNLOAD_CMD_COVERGAIN		1								//MQTTSN下行指令CoverGain
-#define	MQTTSN_DOWNLOAD_CMD_RADARGAIN		0								//MQTTSN下行指令RadarGain
+#define	MQTTSN_DOWNLOAD_CMD_RADARGAIN		1								//MQTTSN下行指令RadarGain
 #define	MQTTSN_DOWNLOAD_CMD_SENSORMODE	1								//MQTTSN下行指令SensorMode
 #define	MQTTSN_DOWNLOAD_CMD_SETMAG		1								//MQTTSN下行指令SetMag
 #define	MQTTSN_DOWNLOAD_CMD_CFGRADAR		1								//MQTTSN下行指令ConfigRadar
@@ -665,30 +665,30 @@
 #define	COAPCDPPORT					COAPCDPPORT_CHINA_UNICOM
 
 #define	COAP_NBIOT_BAND_NUM				2
-#define	COAP_NBIOT_BAND_VAL1			NBNET_NBIOT_BAND3
-#define	COAP_NBIOT_BAND_VAL2			NBNET_NBIOT_BAND8
-#define	COAP_NBIOT_BAND_VAL3			NBNET_NBIOT_BAND3
+#define	COAP_NBIOT_BAND_VAL1			NBNET_NBIOT_BAND8
+#define	COAP_NBIOT_BAND_VAL2			NBNET_NBIOT_BAND3
+#define	COAP_NBIOT_BAND_VAL3			NBNET_NBIOT_BAND5
 #define	COAP_NBIOT_BAND_TYPE			CoAPNBIoTBandType
 #define	COAP_NBIOT_CGATT_TIME_S			3 * 60 + 60 * COAP_NBIOT_BAND_NUM
 
 #define	ONENET_NBIOT_BAND_NUM			2
-#define	ONENET_NBIOT_BAND_VAL1			NBNET_NBIOT_BAND3
-#define	ONENET_NBIOT_BAND_VAL2			NBNET_NBIOT_BAND8
-#define	ONENET_NBIOT_BAND_VAL3			NBNET_NBIOT_BAND3
+#define	ONENET_NBIOT_BAND_VAL1			NBNET_NBIOT_BAND8
+#define	ONENET_NBIOT_BAND_VAL2			NBNET_NBIOT_BAND3
+#define	ONENET_NBIOT_BAND_VAL3			NBNET_NBIOT_BAND5
 #define	ONENET_NBIOT_BAND_TYPE			OneNETNBIoTBandType
 #define	ONENET_NBIOT_CGATT_TIME_S		3 * 60 + 60 * ONENET_NBIOT_BAND_NUM
 
 #define	MQTTSN_NBIOT_BAND_NUM			2
-#define	MQTTSN_NBIOT_BAND_VAL1			NBNET_NBIOT_BAND3
-#define	MQTTSN_NBIOT_BAND_VAL2			NBNET_NBIOT_BAND8
-#define	MQTTSN_NBIOT_BAND_VAL3			NBNET_NBIOT_BAND3
+#define	MQTTSN_NBIOT_BAND_VAL1			NBNET_NBIOT_BAND8
+#define	MQTTSN_NBIOT_BAND_VAL2			NBNET_NBIOT_BAND3
+#define	MQTTSN_NBIOT_BAND_VAL3			NBNET_NBIOT_BAND5
 #define	MQTTSN_NBIOT_BAND_TYPE			MqttSNNBIoTBandType
 #define	MQTTSN_NBIOT_CGATT_TIME_S		3 * 60 + 60 * MQTTSN_NBIOT_BAND_NUM
 
 #define	DNS_NBIOT_BAND_NUM				2
-#define	DNS_NBIOT_BAND_VAL1				NBNET_NBIOT_BAND3
-#define	DNS_NBIOT_BAND_VAL2				NBNET_NBIOT_BAND8
-#define	DNS_NBIOT_BAND_VAL3				NBNET_NBIOT_BAND3
+#define	DNS_NBIOT_BAND_VAL1				NBNET_NBIOT_BAND8
+#define	DNS_NBIOT_BAND_VAL2				NBNET_NBIOT_BAND3
+#define	DNS_NBIOT_BAND_VAL3				NBNET_NBIOT_BAND5
 #define	DNS_NBIOT_BAND_TYPE				DNSNBIoTBandType
 #define	DNS_NBIOT_CGATT_TIME_S			3 * 60 + 60 * DNS_NBIOT_BAND_NUM
 #endif
