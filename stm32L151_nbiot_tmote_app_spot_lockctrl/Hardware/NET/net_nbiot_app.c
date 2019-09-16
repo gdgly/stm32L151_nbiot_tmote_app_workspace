@@ -124,7 +124,6 @@ void NET_NBIOT_Initialization(void)
 	
 	/* MQTTSN PCP数据传输接口初始化 */
 	MqttPCP_Transport_Init(&MqttSNPCPMqttNetHandler, &MqttSNClientHandler);
-	
 	/* MQTTSN PCP客户端初始化 */
 	MqttPCP_Client_Init(&MqttSNPCPClientHandler, &MqttSNPCPMqttNetHandler, &NetNbiotClientHandler);
 	
@@ -382,6 +381,9 @@ void NET_NBIOT_OneNETSentDataAfterExexution(void)
 {
 	TCFG_Utility_Add_NBIot_SentCount();
 	TCFG_Utility_Add_NBIot_SentCountDay();
+#if NBONENET_LISTEN_PARAMETER_TYPE == NBONENET_LISTEN_PARAMETER_ENABLE
+	OneNETClientHandler.ListenRunCtl.ListenEnterParameter.listenEnable = true;
+#endif
 }
 #endif
 
@@ -896,7 +898,7 @@ void NET_NBIOT_DataProcessing(NET_NBIOT_ClientsTypeDef* pClient)
 #if NBONENET_SENDCODE_RESPONSE_INFO
 		NET_NBIOT_OneNETInfoStructureInit();
 		OneNETInfoStructure.MsgPacket.Type					= ONENET_MSGTYPE_TYPE_INFO;
-		len = NET_ONENET_Message_Operate_Creat_Json_Response_Info((char *)&OneNETInfoStructure.InfoData, NETOneNETNeedSendCode.ResponseInfoErrcode);
+		len = NET_ONENET_Message_Operate_Creat_Json_Response_Info((char *)&OneNETInfoStructure.InfoData, NETOneNETNeedSendCode.ResponseInfoErrcode, NETOneNETNeedSendCode.ResponseInfoMsgId);
 		NET_OneNET_Message_SendDataEnqueue((unsigned char *)&OneNETInfoStructure, sizeof(OneNETInfoStructure) - sizeof(OneNETInfoStructure.InfoData) + len);
 		NETOneNETNeedSendCode.ResponseInfo = 0;
 		NET_NBIOT_OneNETSentDataAfterExexution();

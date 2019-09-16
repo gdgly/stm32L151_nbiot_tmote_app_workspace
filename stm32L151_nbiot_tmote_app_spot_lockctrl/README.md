@@ -2,6 +2,13 @@
 > ##### Copyright (C) 2019 Movebroad Version:20.149 Design by Movebroad
 > ##### movebroad Kangkang ps: 版本号以下为此版本修改、增加、去除等内容记录！
 
+* 2019-09-13 :
+	* OneNET监听器加入，监听信号检出。
+	* OneNET运行时间获取。
+* 2019-09-11 :
+	* OneNET发送数据ACKID采用自增方式，废弃原先255不变。
+	* OneNET发送数据携带raiMode标志0x400方式。
+	* OneNET生命周期更新包发送采用有应答方式。
 * 2019-09-09 :
 	* TMoteInfo上传IMSI号。
 	* Radio下发workinfo去掉打印nbruntime。
@@ -9,6 +16,7 @@
 	* Radio下发netinfo打印imsi。
 	* mqttsn下发命令去掉:uplimit,nblimit。
 	* 联通band表改为b8，b3。
+	* OneNET修复bug，命令下行应答参数少一个。
 * 2019-09-09 :
 	* 版本号修改为149。
 * 2019-09-02 :
