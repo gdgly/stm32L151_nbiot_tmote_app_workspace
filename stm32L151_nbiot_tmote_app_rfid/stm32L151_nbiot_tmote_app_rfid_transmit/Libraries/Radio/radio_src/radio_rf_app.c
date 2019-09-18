@@ -805,6 +805,18 @@ uint8_t Radio_Trf_Xmit_Get_Pktnum(void)
 }
 
 /**********************************************************************************************************
+ @Function			uint16_t Radio_Trf_Xmit_Get_RFID_Pktnum(void)
+ @Description			Radio_Trf_Xmit_Get_RFID_Pktnum
+ @Input				void
+ @Return				pktnum
+**********************************************************************************************************/
+uint16_t Radio_Trf_Xmit_Get_RFID_Pktnum(void)
+{
+	static uint16_t rfidpktnum = 0;
+	return rfidpktnum++;
+}
+
+/**********************************************************************************************************
  @Function			void Radio_Trf_Default_Resp(uint8_t ret, uint8_t type)
  @Description			Radio_Trf_Default_Resp
  @Input				void
@@ -910,6 +922,62 @@ void Radio_Trf_Do_Heartbeat(void)
 	Radio_Rf_Interrupt_Init();
 	
 	Radio_Trf_Xmit_Heartbeat();
+#endif
+}
+
+static uint8_t Radio_RFID_GetCheckCode(u8* buf, u16 len)
+{
+	u8 checkcode = 0;
+	
+	for (int i = 0; i < len; i++) {
+		checkcode += buf[i];
+	}
+	
+	return checkcode;
+}
+
+/**********************************************************************************************************
+ @Function			void Radio_Trf_Xmit_RFID_Transmit(void)
+ @Description			Radio_Trf_Xmit_RFID_Transmit
+ @Input				void
+ @Return				void
+**********************************************************************************************************/
+void Radio_Trf_Xmit_RFID_Transmit(void)
+{
+	trf_rfid_transmit *pRFIDTransmit = (trf_rfid_transmit*)(TRF_SendBuf + 32);
+	
+	if (TRF_OK != Radio_Rf_get_Status()) {
+		return;
+	}
+	
+	memset((void*)pRFIDTransmit, 0, sizeof(trf_rfid_transmit));
+	pRFIDTransmit->head.destSN			= 0xFFFFFFFF;
+	pRFIDTransmit->head.version			= TRF_MSG_VERSION;
+	pRFIDTransmit->head.type				= TRF_MSG_RFID;
+	pRFIDTransmit->transmitSN			= TCFG_EEPROM_Get_MAC_SN();
+	pRFIDTransmit->version				= TRF_RFID_MSG_VERSION;
+	pRFIDTransmit->motion				= 3;
+	pRFIDTransmit->battery				= 200;
+	pRFIDTransmit->packnum				= Radio_Trf_Xmit_Get_RFID_Pktnum();
+	pRFIDTransmit->checkcode				= Radio_RFID_GetCheckCode((u8*)pRFIDTransmit, sizeof(trf_rfid_transmit) - 1);
+	
+	Radio_Trf_Cfg_Buildframe((uint8_t *)pRFIDTransmit, TMOTE_PRFID_TRM, Radio_Trf_Xmit_Get_Pktnum(), TCFG_EEPROM_Get_MAC_SN(), TRF_SendBuf, sizeof(trf_rfid_transmit));
+	Radio_Rf_Send(TRF_SendBuf, TRF_SendBuf[0]);
+}
+
+/**********************************************************************************************************
+ @Function			void Radio_Trf_Do_RFID_Transmit(void)
+ @Description			Radio_Trf_Do_RFID_Transmit
+ @Input				void
+ @Return				void
+**********************************************************************************************************/
+void Radio_Trf_Do_RFID_Transmit(void)
+{
+#ifdef	RADIO_SI4438
+	Radio_Rf_Interface_Init();
+	Radio_Rf_Interrupt_Init();
+	
+	Radio_Trf_Xmit_RFID_Transmit();
 #endif
 }
 

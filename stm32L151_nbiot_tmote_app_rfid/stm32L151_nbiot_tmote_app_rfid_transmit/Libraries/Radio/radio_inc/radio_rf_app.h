@@ -19,6 +19,7 @@
 
 #define TRF_MSG_REBOOT					24
 #define TRF_MSG_HEART					27
+#define TRF_MSG_RFID					29
 
 #define TRF_MSG_DEFAULT					49
 #define TRF_MSG_SENSITIVITY				50
@@ -35,6 +36,8 @@
 #define TRF_MSG_DYNAMICINFO				60
 #define TRF_MSG_JSON					61
 #define TRF_MSG_GENERAL_CMD				62
+
+#define TRF_RFID_MSG_VERSION				0x01
 
 enum trfStatus
 {
@@ -156,6 +159,30 @@ typedef __packed struct _tmote_general_cmd
 	char								buf[16];
 }tmote_general_cmd_s;
 
+typedef __packed struct _trf_rfid_transmit
+{
+	trf_msghead_s						head;
+	uint32_t							transmitSN;
+	uint8_t							version;
+	uint8_t							motion;
+	uint8_t							battery;
+	uint8_t							reserve1;
+	uint32_t							reserve2;
+	uint16_t							packnum;
+	uint8_t							checkcode;
+}trf_rfid_transmit;
+
+typedef __packed struct _trf_rfid_transack
+{
+	trf_msghead_s						head;
+	uint32_t							receiverSN;
+	uint8_t							version;
+	uint8_t							reserve1;
+	uint32_t							reserve2;
+	uint16_t							packnum;
+	uint8_t							checkcode;
+}trf_rfid_transack;
+
 extern char gateway_nearby;
 
 void Radio_Rf_BeforeSleep(void);
@@ -167,6 +194,7 @@ char Radio_Rf_Operate_Recvmsg(uint8_t *inmsg, uint8_t len);
 void Radio_Trf_App_Task(void);
 void Radio_Trf_Cfg_Buildframe(uint8_t *inmsg, uint8_t pkttype, uint8_t pktnum, uint32_t sn, uint8_t *outsend, uint8_t len);
 uint8_t Radio_Trf_Xmit_Get_Pktnum(void);
+uint16_t Radio_Trf_Xmit_Get_RFID_Pktnum(void);
 void Radio_Trf_Default_Resp(uint8_t ret, uint8_t type);
 
 uint8_t Radio_Trf_Get_Workmode(void);
@@ -174,6 +202,9 @@ void Radio_Trf_Set_Workmode(uint8_t val);
 
 void Radio_Trf_Xmit_Heartbeat(void);
 void Radio_Trf_Do_Heartbeat(void);
+
+void Radio_Trf_Xmit_RFID_Transmit(void);
+void Radio_Trf_Do_RFID_Transmit(void);
 
 void Radio_Trf_Debug_Printf_Level3(const char *fmt, ...);
 void Radio_Trf_Debug_Printf_Level2(const char *fmt, ...);

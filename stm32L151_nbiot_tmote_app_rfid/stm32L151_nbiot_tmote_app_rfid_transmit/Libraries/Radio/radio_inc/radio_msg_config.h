@@ -73,6 +73,8 @@ enum
 	TMOTE_PLAIN_RSP					= 0x04,								//	4 终端应答命令给配置器
 	TMOTE_PLAIN_PUB					= 0x05,								//	5 终端主动上报信息给配置器,主动上报心跳包,状态包等
 	TMOTE_PLAIN_ACK					= 0x06,								//	6 配置器应答信息给终端
+	TMOTE_PRFID_TRM					= 0x07,								//	7 RFID发射端发送数据帧给接收端
+	TMOTE_PRFID_ACK					= 0x08,								//	8 RFID接收端发送应答帧给发射端
 };
 
 #endif
