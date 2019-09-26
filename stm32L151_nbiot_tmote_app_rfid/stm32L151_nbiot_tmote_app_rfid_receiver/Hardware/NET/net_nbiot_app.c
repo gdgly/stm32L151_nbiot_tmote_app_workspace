@@ -457,6 +457,18 @@ void NET_NBIOT_DataProcessing(NET_NBIOT_ClientsTypeDef* pClient)
 		NET_NBIOT_CoapSentDataAfterExexution();
 #endif
 	}
+	/* COAP RFID INFO DATA ENQUEUE */
+	else if (NETCoapNeedSendCode.RFIDInfo) {
+#if NBCOAP_SENDCODE_RFID_INFO
+		NET_NBIOT_CoapInfoStructureInit();
+		CoapInfoStructure.HeadPacket.PacketType				= 0x05;
+		CoapInfoStructure.MsgPacket.Type					= COAP_MSGTYPE_TYPE_RFID_INFO;
+		len = NET_COAP_Message_Operate_Creat_Json_RFID_Info((char *)&CoapInfoStructure.InfoData);
+		NET_Coap_Message_SendDataEnqueue((unsigned char *)&CoapInfoStructure, sizeof(CoapInfoStructure) - sizeof(CoapInfoStructure.InfoData) + len);
+		NETCoapNeedSendCode.RFIDInfo = 0;
+		NET_NBIOT_CoapSentDataAfterExexution();
+#endif
+	}
 	/* COAP RESPONSE INFO DATA ENQUEUE */
 	else if (NETCoapNeedSendCode.ResponseInfo) {
 #if NBCOAP_SENDCODE_RESPONSE_INFO
@@ -579,6 +591,18 @@ void NET_NBIOT_DataProcessing(NET_NBIOT_ClientsTypeDef* pClient)
 		NET_NBIOT_MqttSNSentDataAfterExexution();
 #endif
 	}
+	/* MQTTSN INFO RFID DATA ENQUEUE */
+	else if (NETMqttSNNeedSendCode.InfoRFID) {
+#if NBMQTTSN_SENDCODE_RFID_INFO
+		NET_NBIOT_MqttSNInfoStructureInit();
+		MqttSNInfoStructure.HeadPacket.PacketType			= 0x05;
+		MqttSNInfoStructure.MsgPacket.Type					= MQTTSN_MSGTYPE_TYPE_RFID_INFO;
+		len = NET_MQTTSN_Message_Operate_Creat_Json_RFID_Info((char *)&MqttSNInfoStructure.InfoData);
+		NET_MqttSN_Message_SendDataEnqueue((unsigned char *)&MqttSNInfoStructure, sizeof(MqttSNInfoStructure) - sizeof(MqttSNInfoStructure.InfoData) + len);
+		NETMqttSNNeedSendCode.InfoRFID = 0;
+		NET_NBIOT_MqttSNSentDataAfterExexution();
+#endif
+	}
 	/* MQTTSN INFO RESPONSE DATA ENQUEUE */
 	else if (NETMqttSNNeedSendCode.InfoResponse) {
 #if NBMQTTSN_SENDCODE_RESPONSE_INFO
@@ -698,6 +722,18 @@ void NET_NBIOT_DataProcessing(NET_NBIOT_ClientsTypeDef* pClient)
 		len = NET_ONENET_Message_Operate_Creat_Json_Dynamic_Info((char *)&OneNETInfoStructure.InfoData);
 		NET_OneNET_Message_SendDataEnqueue((unsigned char *)&OneNETInfoStructure, sizeof(OneNETInfoStructure) - sizeof(OneNETInfoStructure.InfoData) + len);
 		NETOneNETNeedSendCode.DynamicInfo = 0;
+		NET_NBIOT_OneNETSentDataAfterExexution();
+#endif
+	}
+	/* ONENET RFID INFO DATA ENQUEUE */
+	else if (NETOneNETNeedSendCode.RFIDInfo) {
+#if NBONENET_SENDCODE_RFID_INFO
+		NET_NBIOT_OneNETInfoStructureInit();
+		OneNETInfoStructure.HeadPacket.PacketType			= 0x05;
+		OneNETInfoStructure.MsgPacket.Type					= ONENET_MSGTYPE_TYPE_RFID_INFO;
+		len = NET_ONENET_Message_Operate_Creat_Json_RFID_Info((char *)&OneNETInfoStructure.InfoData);
+		NET_OneNET_Message_SendDataEnqueue((unsigned char *)&OneNETInfoStructure, sizeof(OneNETInfoStructure) - sizeof(OneNETInfoStructure.InfoData) + len);
+		NETOneNETNeedSendCode.RFIDInfo = 0;
 		NET_NBIOT_OneNETSentDataAfterExexution();
 #endif
 	}

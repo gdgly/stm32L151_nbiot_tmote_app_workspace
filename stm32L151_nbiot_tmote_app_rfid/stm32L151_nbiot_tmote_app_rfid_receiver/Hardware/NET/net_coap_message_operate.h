@@ -14,6 +14,7 @@
 #define COAP_MSGTYPE_TYPE_BASIC_INFO		0x3C
 #define COAP_MSGTYPE_TYPE_DYNAMIC_INFO		0x3D
 #define COAP_MSGTYPE_TYPE_QMCDATA_INFO		0x3F
+#define COAP_MSGTYPE_TYPE_RFID_INFO		0x42
 
 typedef __packed struct
 {
@@ -114,6 +115,7 @@ typedef struct
 int NET_COAP_Message_Operate_Creat_Json_Work_Info(char* outBuffer);
 int NET_COAP_Message_Operate_Creat_Json_Basic_Info(char* outBuffer);
 int NET_COAP_Message_Operate_Creat_Json_Dynamic_Info(char* outBuffer);
+int NET_COAP_Message_Operate_Creat_Json_RFID_Info(char* outBuffer);
 int NET_COAP_Message_Operate_Creat_Json_Response_Info(char* outBuffer, u16 errcode, char msgId);
 
 void NET_Coap_FifoSendMessageInit(void);																//发送数据Fifo初始化

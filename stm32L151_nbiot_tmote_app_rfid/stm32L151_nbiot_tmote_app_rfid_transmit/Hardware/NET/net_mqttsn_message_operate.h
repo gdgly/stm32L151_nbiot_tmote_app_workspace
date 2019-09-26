@@ -14,6 +14,7 @@
 #define MQTTSN_MSGTYPE_TYPE_BASIC_INFO		0x3C
 #define MQTTSN_MSGTYPE_TYPE_DYNAMIC_INFO	0x3D
 #define MQTTSN_MSGTYPE_TYPE_QMCDATA_INFO	0x3F
+#define MQTTSN_MSGTYPE_TYPE_RFID_INFO		0x42
 
 #define NET_MESSAGE_GET_MAGICNUM(Byte)		{Byte[0]='T';Byte[1]='C';Byte[2]='L';Byte[3]='D';}
 #define MESSAGE_VERSION					'1'
@@ -101,6 +102,7 @@ typedef struct
 int NET_MQTTSN_Message_Operate_Creat_Json_Work_Info(char* outBuffer);
 int NET_MQTTSN_Message_Operate_Creat_Json_Basic_Info(char* outBuffer);
 int NET_MQTTSN_Message_Operate_Creat_Json_Dynamic_Info(char* outBuffer);
+int NET_MQTTSN_Message_Operate_Creat_Json_RFID_Info(char* outBuffer);
 int NET_MQTTSN_Message_Operate_Creat_Json_Response_Info(char* outBuffer, u16 errcode, char msgId);
 
 void NET_MqttSN_FifoSendMessageInit(void);															//发送数据Fifo初始化

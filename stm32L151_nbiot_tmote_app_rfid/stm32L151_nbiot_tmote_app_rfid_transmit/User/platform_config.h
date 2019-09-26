@@ -373,6 +373,7 @@
 #define	NBCOAP_SENDCODE_WORK_INFO		1								//NB上报信息使能CoapWorkInfo
 #define	NBCOAP_SENDCODE_BASIC_INFO		1								//NB上报信息使能CoapBasicInfo
 #define	NBCOAP_SENDCODE_DYNAMIC_INFO		1								//NB上报信息使能CoapDynamicInfo
+#define	NBCOAP_SENDCODE_RFID_INFO		1								//NB上报信息使能CoapRFIDInfo
 #define	NBCOAP_SENDCODE_RESPONSE_INFO		1								//NB上报信息使能CoapResponseInfo
 
 #define	NBMQTTSN_SENDCODE_STATUS_BASIC	0								//NB上报信息使能MqttSNStatusBasic
@@ -380,6 +381,7 @@
 #define	NBMQTTSN_SENDCODE_WORK_INFO		1								//NB上报信息使能MqttSNWorkInfo
 #define	NBMQTTSN_SENDCODE_BASIC_INFO		1								//NB上报信息使能MqttSNBasicInfo
 #define	NBMQTTSN_SENDCODE_DYNAMIC_INFO	1								//NB上报信息使能MqttSNDynamicInfo
+#define	NBMQTTSN_SENDCODE_RFID_INFO		1								//NB上报信息使能MqttSNRFIDInfo
 #define	NBMQTTSN_SENDCODE_RESPONSE_INFO	1								//NB上报信息使能MqttSNResponseInfo
 
 #define	NBONENET_SENDCODE_SHORT_STATUS	0								//NB上报信息使能OneNETShortStatus
@@ -387,6 +389,7 @@
 #define	NBONENET_SENDCODE_WORK_INFO		1								//NB上报信息使能OneNETWorkInfo
 #define	NBONENET_SENDCODE_BASIC_INFO		1								//NB上报信息使能OneNETBasicInfo
 #define	NBONENET_SENDCODE_DYNAMIC_INFO	1								//NB上报信息使能OneNETDynamicInfo
+#define	NBONENET_SENDCODE_RFID_INFO		1								//NB上报信息使能OneNETRFIDInfo
 #define	NBONENET_SENDCODE_RESPONSE_INFO	1								//NB上报信息使能OneNETResponseInfo
 
 #if NETPROTOCAL == NETCOAP

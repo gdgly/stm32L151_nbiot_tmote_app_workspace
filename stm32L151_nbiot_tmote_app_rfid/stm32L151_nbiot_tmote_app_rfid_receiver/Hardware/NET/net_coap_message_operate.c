@@ -218,6 +218,39 @@ int NET_COAP_Message_Operate_Creat_Json_Dynamic_Info(char* outBuffer)
 }
 
 /**********************************************************************************************************
+ @Function			int NET_COAP_Message_Operate_Creat_Json_RFID_Info(char* outBuffer)
+ @Description			NET_COAP_Message_Operate_Creat_Json_RFID_Info
+ @Input				outBuffer
+ @Return				Length
+ @attention			!!<<< MaxLength 450Byte >>>!!
+**********************************************************************************************************/
+int NET_COAP_Message_Operate_Creat_Json_RFID_Info(char* outBuffer)
+{
+	sprintf(outBuffer, 
+		"{"
+			"\"SN\":\"%08x\","
+			"\"RFIDInfo\":"
+			"{"
+				"\"Spot\":%d,"
+				"\"Data\":\"%x\","
+				"\"Sn\":\"%08x\","
+				"\"Status\":%d,"
+				"\"Batt\":%d"
+			"}"
+		"}",
+		
+		TCFG_EEPROM_Get_MAC_SN(),
+		0x01,
+		0x01,
+		0x12345678,
+		0x01,
+		255
+	);
+	
+	return strlen(outBuffer);
+}
+
+/**********************************************************************************************************
  @Function			int NET_COAP_Message_Operate_Creat_Json_Response_Info(char* outBuffer, u16 errcode, char msgId)
  @Description			NET_COAP_Message_Operate_Creat_Json_Response_Info
  @Input				outBuffer
