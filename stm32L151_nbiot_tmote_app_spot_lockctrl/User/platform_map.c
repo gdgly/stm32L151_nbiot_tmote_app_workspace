@@ -2352,6 +2352,7 @@ void TCFG_Utility_Sub_Nbiot_IdleLifetime(void)
 	}
 }
 
+#if NBIOT_ATCMD_GET_ICCID
 /**********************************************************************************************************
  @Function			char* TCFG_Utility_Get_Nbiot_Iccid_String(void)
  @Description			TCFG_Utility_Get_Nbiot_Iccid_String			: 读取Nbiot Iccid字符串
@@ -2368,7 +2369,9 @@ char* TCFG_Utility_Get_Nbiot_Iccid_String(void)
 	return (char*)OneNETClientHandler.LWM2MStack->NBIotStack->Parameter.iccid;
 #endif
 }
+#endif
 
+#if NBIOT_ATCMD_GET_IMEI
 /**********************************************************************************************************
  @Function			char* TCFG_Utility_Get_Nbiot_Imei_String(void)
  @Description			TCFG_Utility_Get_Nbiot_Imei_String				: 读取Nbiot Imei字符串
@@ -2385,7 +2388,9 @@ char* TCFG_Utility_Get_Nbiot_Imei_String(void)
 	return (char*)OneNETClientHandler.LWM2MStack->NBIotStack->Parameter.imei;
 #endif
 }
+#endif
 
+#if NBIOT_ATCMD_GET_IMEISV
 /**********************************************************************************************************
  @Function			char* TCFG_Utility_Get_Nbiot_Imeisv_String(void)
  @Description			TCFG_Utility_Get_Nbiot_Imeisv_String			: 读取Nbiot Imeisv字符串
@@ -2402,7 +2407,9 @@ char* TCFG_Utility_Get_Nbiot_Imeisv_String(void)
 	return (char*)OneNETClientHandler.LWM2MStack->NBIotStack->Parameter.imeisv;
 #endif
 }
+#endif
 
+#if NBIOT_ATCMD_GET_IMSI
 /**********************************************************************************************************
  @Function			char* TCFG_Utility_Get_Nbiot_Imsi_String(void)
  @Description			TCFG_Utility_Get_Nbiot_Imsi_String				: 读取Nbiot Imesi字符串
@@ -2419,6 +2426,7 @@ char* TCFG_Utility_Get_Nbiot_Imsi_String(void)
 	return (char*)OneNETClientHandler.LWM2MStack->NBIotStack->Parameter.imsi;
 #endif
 }
+#endif
 
 /**********************************************************************************************************
  @Function			int TCFG_Utility_Get_Nbiot_Rssi_IntVal(void)
@@ -2505,6 +2513,7 @@ unsigned char TCFG_Utility_Get_Nbiot_NetStateIdentification(void)
 #endif
 }
 
+#if NBIOT_ATCMD_GET_AREACODE
 /**********************************************************************************************************
  @Function			unsigned int TCFG_Utility_Get_Nbiot_NetworkRegStatusTac(void)
  @Description			TCFG_Utility_Get_Nbiot_NetworkRegStatusTac		: 读取Nbiot NetworkRegStatusTac值
@@ -2538,7 +2547,9 @@ unsigned int TCFG_Utility_Get_Nbiot_NetworkRegStatusCellID(void)
 	return OneNETClientHandler.LWM2MStack->NBIotStack->Parameter.networkRegStatus.cellID;
 #endif
 }
+#endif
 
+#if NBIOT_ATCMD_GET_STATISTICSRADIO
 /**********************************************************************************************************
  @Function			int TCFG_Utility_Get_Nbiot_RadioSignalpower(void)
  @Description			TCFG_Utility_Get_Nbiot_RadioSignalpower			: 读取Nbiot RadioSignalpower值
@@ -2732,7 +2743,9 @@ int TCFG_Utility_Get_Nbiot_RadioRSRQ(void)
 	return OneNETClientHandler.LWM2MStack->NBIotStack->Parameter.statisticsRADIO.RSRQ;
 #endif
 }
+#endif
 
+#if NBIOT_ATCMD_GET_STATISTICSCELL
 /**********************************************************************************************************
  @Function			int TCFG_Utility_Get_Nbiot_CellEarfcn(void)
  @Description			TCFG_Utility_Get_Nbiot_CellEarfcn				: 读取Nbiot CellEarfcn值
@@ -2858,7 +2871,9 @@ int TCFG_Utility_Get_Nbiot_CellSnr(void)
 	
 	return nbRadioSnr;
 }
+#endif
 
+#if NBIOT_ATCMD_GET_AREACODE
 /**********************************************************************************************************
  @Function			unsigned int TCFG_Utility_Get_Nbiot_NetworkRegistStatusTac(void)
  @Description			TCFG_Utility_Get_Nbiot_NetworkRegistStatusTac	: 读取Nbiot NetworkRegistStatusTac值
@@ -2892,6 +2907,7 @@ unsigned int TCFG_Utility_Get_Nbiot_NetworkRegistStatusCellID(void)
 	return OneNETClientHandler.LWM2MStack->NBIotStack->Parameter.networkRegStatus.cellID;
 #endif
 }
+#endif
 
 /**********************************************************************************************************
  @Function			unsigned int TCFG_Utility_GetCoapConnectTime(void)
@@ -3063,6 +3079,7 @@ unsigned short TCFG_Utility_Get_Nbiot_PCPUpgradeStartTimes(void)
 #endif
 }
 
+#if NBIOT_ATCMD_GET_MANUFACTURER
 /**********************************************************************************************************
  @Function			char* TCFG_Utility_Get_Nbiot_Manufacturer(void)
  @Description			TCFG_Utility_Get_Nbiot_Manufacturer			: 读取Nbiot Manufacturer值
@@ -3079,7 +3096,9 @@ char* TCFG_Utility_Get_Nbiot_Manufacturer(void)
 	return OneNETClientHandler.LWM2MStack->NBIotStack->Parameter.manufacturer;
 #endif
 }
+#endif
 
+#if NBIOT_ATCMD_GET_MANUFACTURERMODEL
 /**********************************************************************************************************
  @Function			char* TCFG_Utility_Get_Nbiot_Manufacturermode(void)
  @Description			TCFG_Utility_Get_Nbiot_Manufacturermode			: 读取Nbiot Manufacturermode值
@@ -3096,7 +3115,9 @@ char* TCFG_Utility_Get_Nbiot_Manufacturermode(void)
 	return OneNETClientHandler.LWM2MStack->NBIotStack->Parameter.manufacturermode;
 #endif
 }
+#endif
 
+#if NBIOT_ATCMD_GET_MODULEVERSION
 /**********************************************************************************************************
  @Function			char* TCFG_Utility_Get_Nbiot_ModelVersion(void)
  @Description			TCFG_Utility_Get_Nbiot_ModelVersion			: 读取Nbiot ModelVersion值
@@ -3113,6 +3134,7 @@ char* TCFG_Utility_Get_Nbiot_ModelVersion(void)
 	return OneNETClientHandler.LWM2MStack->NBIotStack->Parameter.modelversion;
 #endif
 }
+#endif
 
 /**********************************************************************************************************
  @Function			char* TCFG_Utility_Get_Nbiot_PDPType(void)
@@ -3176,6 +3198,42 @@ char* TCFG_Utility_Get_Nbiot_PDPContext_APN(void)
 #endif
 #endif
 }
+
+#if NBIOT_ATCMD_GET_DNSSERVERADDRESS
+/**********************************************************************************************************
+ @Function			char* TCFG_Utility_Get_Nbiot_PrimaryDns(void)
+ @Description			TCFG_Utility_Get_Nbiot_PrimaryDns				: 读取Nbiot PrimaryDns值
+ @Input				void
+ @Return				PrimaryDns
+**********************************************************************************************************/
+char* TCFG_Utility_Get_Nbiot_PrimaryDns(void)
+{
+#if NETPROTOCAL == NETCOAP
+	return (char*)NbiotClientHandler.Parameter.qidnscfg.PrimaryDns;
+#elif NETPROTOCAL == NETMQTTSN
+	return (char*)MqttSNClientHandler.SocketStack->NBIotStack->Parameter.qidnscfg.PrimaryDns;
+#elif NETPROTOCAL == NETONENET
+	return (char*)OneNETClientHandler.LWM2MStack->NBIotStack->Parameter.qidnscfg.PrimaryDns;
+#endif
+}
+
+/**********************************************************************************************************
+ @Function			char* TCFG_Utility_Get_Nbiot_SecondaryDns(void)
+ @Description			TCFG_Utility_Get_Nbiot_SecondaryDns			: 读取Nbiot SecondaryDns值
+ @Input				void
+ @Return				SecondaryDns
+**********************************************************************************************************/
+char* TCFG_Utility_Get_Nbiot_SecondaryDns(void)
+{
+#if NETPROTOCAL == NETCOAP
+	return (char*)NbiotClientHandler.Parameter.qidnscfg.SecondaryDns;
+#elif NETPROTOCAL == NETMQTTSN
+	return (char*)MqttSNClientHandler.SocketStack->NBIotStack->Parameter.qidnscfg.SecondaryDns;
+#elif NETPROTOCAL == NETONENET
+	return (char*)OneNETClientHandler.LWM2MStack->NBIotStack->Parameter.qidnscfg.SecondaryDns;
+#endif
+}
+#endif
 
 /**********************************************************************************************************
  @Function			unsigned int TCFG_Utility_Get_Nbiot_SentCount(void)

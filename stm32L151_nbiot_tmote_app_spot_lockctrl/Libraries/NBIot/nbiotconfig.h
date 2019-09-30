@@ -17,6 +17,63 @@
 #define NBIOT_COMMAND_TIMEOUT_MANUAL		1
 #define NBIOT_COMMAND_TIMEOUT_TYPE			NBIOT_COMMAND_TIMEOUT_AUTO
 
+/* NBIOT 指令配置表 1编译, 0未编译 */
+#define NBIOT_ATCMD_SET_HARDWAREPOWEROFF	1
+#define NBIOT_ATCMD_SET_HARDWAREREBOOT		1
+#define NBIOT_ATCMD_SET_SOFTWAREREBOOT		1
+#define NBIOT_ATCMD_SET_CLEARSTOREDEARFCN	1
+#define NBIOT_ATCMD_GET_MANUFACTURER		1
+#define NBIOT_ATCMD_GET_MANUFACTURERMODEL	1
+#define NBIOT_ATCMD_GET_MODULEVERSION		1
+#define NBIOT_ATCMD_GET_IMEI				1
+#define NBIOT_ATCMD_GET_IMEISV			1
+#define NBIOT_ATCMD_GET_RSSI				1
+#define NBIOT_ATCMD_GET_STATISTICSRADIO		1
+#define NBIOT_ATCMD_GET_STATISTICSCELL		1
+#define NBIOT_ATCMD_GET_AREACODE			1
+#define NBIOT_ATCMD_GET_ICCID				1
+#define NBIOT_ATCMD_GET_IMSI				1
+#define NBIOT_ATCMD_GET_CGPADDR			1
+#define NBIOT_ATCMD_GET_CGDCONT			1
+#define NBIOT_ATCMD_GET_PDPCONTEXT			1
+#define NBIOT_ATCMD_GET_DATATIME			1
+#define NBIOT_ATCMD_GET_CHIPINFO			0
+#define NBIOT_ATCMD_GET_PSMSTATUS			1
+#define NBIOT_ATCMD_GET_CSCON				1
+#define NBIOT_ATCMD_GET_NMSTATUS			1
+#define NBIOT_ATCMD_SET_CGATT				1
+#define NBIOT_ATCMD_GET_CGATT				1
+#define NBIOT_ATCMD_SET_CFUN				1
+#define NBIOT_ATCMD_GET_CFUN				1
+#define NBIOT_ATCMD_SET_NNMI				1
+#define NBIOT_ATCMD_GET_NNMI				1
+#define NBIOT_ATCMD_SET_NSMI				1
+#define NBIOT_ATCMD_GET_NSMI				1
+#define NBIOT_ATCMD_SET_NBAND				1
+#define NBIOT_ATCMD_GET_NBAND				1
+#define NBIOT_ATCMD_TST_NBAND				1
+#define NBIOT_ATCMD_SET_CMEE				1
+#define NBIOT_ATCMD_GET_CMEE				1
+#define NBIOT_ATCMD_SET_NCDP				1
+#define NBIOT_ATCMD_GET_NCDP				1
+#define NBIOT_ATCMD_SET_DNSSERVERADDRESS	0
+#define NBIOT_ATCMD_GET_DNSSERVERADDRESS	0
+#define NBIOT_ATCMD_SET_LWM2MLIFETIME		0
+#define NBIOT_ATCMD_GET_LWM2MLIFETIME		0
+#define NBIOT_ATCMD_SET_NCONFIG			1
+#define NBIOT_ATCMD_GET_NCONFIG			1
+#define NBIOT_ATCMD_GET_NQMGS				1
+#define NBIOT_ATCMD_GET_NQMGR				1
+#define NBIOT_ATCMD_SET_COAPPAYLOAD		1
+#define NBIOT_ATCMD_GET_COAPPAYLOAD		1
+#define NBIOT_ATCMD_GET_CONDATA			1
+#define NBIOT_ATCMD_SET_CONDATA			1
+#define NBIOT_ATCMD_CRT_UDPSOCKET			1
+#define NBIOT_ATCMD_CLS_UDPSOCKET			1
+#define NBIOT_ATCMD_SED_UDPPAYLOAD			1
+#define NBIOT_ATCMD_SED_UDPPAYLOADFLAG		1
+#define NBIOT_ATCMD_RED_UDPPAYLOAD			1
+
 /* NBIOT 指令发送等待响应时间 */
 #define NBIOT_COMMAND_NCSEARFCN_MSEC		600
 #define NBIOT_COMMAND_CGMI_MSEC			600
@@ -32,6 +89,7 @@
 #define NBIOT_COMMAND_CGDCONT_MSEC			600
 #define NBIOT_COMMAND_CGCONTRDP_MSEC		600
 #define NBIOT_COMMAND_CCLK_MSEC			600
+#define NBIOT_COMMAND_CHIPINFO_MSEC		600
 #define NBIOT_COMMAND_NPSMR_MSEC			1800
 #define NBIOT_COMMAND_CSCON_MSEC			600
 #define NBIOT_COMMAND_NMSTATUS_MSEC		600
@@ -42,6 +100,8 @@
 #define NBIOT_COMMAND_NBAND_MSEC			600
 #define NBIOT_COMMAND_CMEE_MSEC			600
 #define NBIOT_COMMAND_NCDP_MSEC			600
+#define NBIOT_COMMAND_QIDNSCFG_MSEC		600
+#define NBIOT_COMMAND_LWM2MLIFE_MSEC		600
 #define NBIOT_COMMAND_NCONFIG_MSEC			1000
 #define NBIOT_COMMAND_NQMGS_MSEC			600
 #define NBIOT_COMMAND_NQMGR_MSEC			600
@@ -405,28 +465,46 @@ struct NBIOT_NBandTypeDef
 /* NBIOT Parameter */
 struct NBIOT_ParameterTypeDef
 {
+#if NBIOT_ATCMD_GET_MANUFACTURER
 	char								manufacturer[10];									//厂商名
+#endif
+#if NBIOT_ATCMD_GET_MANUFACTURERMODEL
 	char								manufacturermode[20];								//厂商型号
+#endif
+#if NBIOT_ATCMD_GET_MODULEVERSION
 	char								modelversion[30];									//模块软件版本
+#endif
+#if NBIOT_ATCMD_GET_IMEI
 	char								imei[20];											//IMEI
+#endif
+#if NBIOT_ATCMD_GET_IMEISV
 	char								imeisv[20];										//IMEISV
+#endif
+#if NBIOT_ATCMD_GET_ICCID
 	char								iccid[25];										//运营商卡号
+#endif
+#if NBIOT_ATCMD_GET_IMSI
 	char								imsi[20];											//IMSI
+#endif
 	char								cgpaddr[20];										//核心网地址
 	char								cgdcontPDPType[10];									//核心网类型
 	char								cgdcontAPN[15];									//核心网名称
 	char								cgcontrdpAPN[50];									//核心网名称
 	bool								bandsupport;										//band支持
 	int								rssi;											//信号质量
+#if NBIOT_ATCMD_GET_LWM2MLIFETIME
+	unsigned int						lwm2mlifetime;										//LWM2MLifetime
+#endif
 	
-	struct NetworkRegistrationStatusTypeDef
-	{
+#if NBIOT_ATCMD_GET_AREACODE
+	struct NetworkRegistrationStatusTypeDef {
 		unsigned short int				tac;												//跟踪区域代码
 		unsigned int					cellID;											//全球唯一基站标识ID
 	}networkRegStatus;
+#endif
 	
-	struct StatisticsRADIOTypeDef
-	{
+#if NBIOT_ATCMD_GET_STATISTICSRADIO
+	struct StatisticsRADIOTypeDef {
 		int							Signalpower;										//信号功率
 		int							Totalpower;										//总功率
 		int							TXpower;											//发送功率
@@ -439,9 +517,10 @@ struct NBIOT_ParameterTypeDef
 		int							PCI;												//PCI
 		int							RSRQ;											//参考信号接收质量
 	}statisticsRADIO;
+#endif
 	
-	struct StatisticsCELLTypeDef
-	{
+#if NBIOT_ATCMD_GET_STATISTICSCELL
+	struct StatisticsCELLTypeDef {
 		int							earfcn;											//基站频点
 		int							physicalcellID;									//小区物理ID
 		int							primarycell;										//1标识当前服务小区
@@ -450,9 +529,10 @@ struct NBIOT_ParameterTypeDef
 		int							rssi;											//信号质量
 		int							snr;												//信噪比
 	}statisticsCELL;
+#endif
 	
-	struct DataTimeTypeDef
-	{
+#if NBIOT_ATCMD_GET_DATATIME
+	struct DataTimeTypeDef {
 		int							year;
 		int							month;
 		int							day;
@@ -462,23 +542,26 @@ struct NBIOT_ParameterTypeDef
 		unsigned int					localstamp;
 		unsigned char					errcount;
 	}dataTime;
+#endif
 	
-	struct COAPSendMessage
-	{
+#if NBIOT_ATCMD_GET_NQMGS
+	struct COAPSendMessage {
 		int							pending;
 		int							sent;
 		int							error;
 	}coapSendMessage;
+#endif
 	
-	struct COAPReadMessage
-	{
+#if NBIOT_ATCMD_GET_NQMGR
+	struct COAPReadMessage {
 		int							buffered;
 		int							received;
 		int							dropped;
 	}coapReadMessage;
+#endif
 	
-	struct NConfigTypeDef
-	{
+#if NBIOT_ATCMD_GET_NCONFIG
+	struct NConfigTypeDef {
 		NBIOT_NConfigTypeDef			autoConnect;
 		NBIOT_NConfigTypeDef			crScrambling;
 		NBIOT_NConfigTypeDef			crSiAvoid;
@@ -486,6 +569,21 @@ struct NBIOT_ParameterTypeDef
 		NBIOT_NConfigTypeDef			cellReselection;
 		NBIOT_NConfigTypeDef			enableBip;
 	}nconfig;
+#endif
+	
+#if NBIOT_ATCMD_GET_DNSSERVERADDRESS
+	struct QIDNSCfgTypeDef {
+		unsigned char					PrimaryDns[16];
+		unsigned char					SecondaryDns[16];
+	}qidnscfg;
+#endif
+	
+#if NBIOT_ATCMD_GET_CHIPINFO
+	struct ChipInfoTypeDef {
+		unsigned int					temp;
+		unsigned int					vbat;
+	}qchipinfo;
+#endif
 	
 	NBIOT_CONDataStatusTypeDef			condatastate;
 	NBIOT_PSMStatusTypeDef				psmstate;

@@ -27,6 +27,7 @@
 #include "hal_switch.h"
 #include "hal_vbat.h"
 #include "hal_temperature.h"
+#include "hal_iic.h"
 #include "hal_qmc5883l.h"
 #include "hal_spiflash.h"
 #include "hal_testbench.h"

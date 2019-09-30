@@ -515,19 +515,31 @@ void			TCFG_Utility_Set_Nbiot_IdleLifetime(unsigned short val);											//NBIo
 unsigned short	TCFG_Utility_Get_Nbiot_IdleLifetime(void);														//NBIot 休眠模式保活时间获取
 void			TCFG_Utility_Sub_Nbiot_IdleLifetime(void);														//NBIot 休眠模式保活时间递减
 
+#if NBIOT_ATCMD_GET_ICCID
 char*		TCFG_Utility_Get_Nbiot_Iccid_String(void);														//读取Nbiot Iccid字符串
+#endif
+#if NBIOT_ATCMD_GET_IMEI
 char*		TCFG_Utility_Get_Nbiot_Imei_String(void);														//读取Nbiot Imei字符串
+#endif
+#if NBIOT_ATCMD_GET_IMEISV
 char*		TCFG_Utility_Get_Nbiot_Imeisv_String(void);														//读取Nbiot Imeisv字符串
+#endif
+#if NBIOT_ATCMD_GET_IMSI
 char*		TCFG_Utility_Get_Nbiot_Imsi_String(void);														//读取Nbiot Imsi字符串
+#endif
+
 int			TCFG_Utility_Get_Nbiot_Rssi_IntVal(void);														//读取Nbiot Rssi值
 unsigned char	TCFG_Utility_Get_Nbiot_Rssi_UnCharVal(void);														//读取Nbiot Rssi值
 unsigned char	TCFG_Utility_Get_Nbiot_WorkMode(void);															//读取Nbiot WorkMode值
 unsigned char	TCFG_Utility_Get_Nbiot_Registered(void);														//读取Nbiot Registered值
 unsigned char	TCFG_Utility_Get_Nbiot_NetStateIdentification(void);												//读取Nbiot NetStateIdentification值
 
+#if NBIOT_ATCMD_GET_AREACODE
 unsigned int	TCFG_Utility_Get_Nbiot_NetworkRegStatusTac(void);													//读取Nbiot NetworkRegStatusTac值
 unsigned int	TCFG_Utility_Get_Nbiot_NetworkRegStatusCellID(void);												//读取Nbiot NetworkRegStatusCellID值
+#endif
 
+#if NBIOT_ATCMD_GET_STATISTICSRADIO
 int			TCFG_Utility_Get_Nbiot_RadioSignalpower(void);													//读取Nbiot RadioSignalpower值
 int			TCFG_Utility_Get_Nbiot_RadioTotalpower(void);													//读取Nbiot RadioTotalpower值
 int			TCFG_Utility_Get_Nbiot_RadioTXpower(void);														//读取Nbiot RadioTXpower值
@@ -539,7 +551,9 @@ int			TCFG_Utility_Get_Nbiot_RadioSNR(void);															//读取Nbiot RadioSN
 int			TCFG_Utility_Get_Nbiot_RadioEARFCN(void);														//读取Nbiot RadioEARFCN值
 int			TCFG_Utility_Get_Nbiot_RadioPCI(void);															//读取Nbiot RadioPCI值
 int			TCFG_Utility_Get_Nbiot_RadioRSRQ(void);															//读取Nbiot RadioRSRQ值
+#endif
 
+#if NBIOT_ATCMD_GET_STATISTICSCELL
 int			TCFG_Utility_Get_Nbiot_CellEarfcn(void);														//读取Nbiot CellEarfcn值
 int			TCFG_Utility_Get_Nbiot_CellPhysicalCellID(void);													//读取Nbiot PhysicalCellCellID值
 int			TCFG_Utility_Get_Nbiot_CellPrimaryCell(void);													//读取Nbiot PrimaryCellCell值
@@ -547,9 +561,12 @@ int			TCFG_Utility_Get_Nbiot_CellRsrp(void);															//读取Nbiot CellRsr
 int			TCFG_Utility_Get_Nbiot_CellRsrq(void);															//读取Nbiot CellRsrq值
 int			TCFG_Utility_Get_Nbiot_CellCellrssi(void);														//读取Nbiot CellCellrssi值
 int			TCFG_Utility_Get_Nbiot_CellSnr(void);															//读取Nbiot CellSnr值
+#endif
 
+#if NBIOT_ATCMD_GET_AREACODE
 unsigned int	TCFG_Utility_Get_Nbiot_NetworkRegistStatusTac(void);												//读取Nbiot NetworkRegistStatusTac值
 unsigned int	TCFG_Utility_Get_Nbiot_NetworkRegistStatusCellID(void);											//读取Nbiot NetworkRegistStatusCellID值
+#endif
 
 unsigned int	TCFG_Utility_GetCoapConnectTime(void);															//读取Nbiot CoapConnectTime值
 unsigned int	TCFG_Utility_GetCoapIdleTime(void);															//读取Nbiot CoapIdleTime值
@@ -563,12 +580,25 @@ unsigned short	TCFG_Utility_Get_Nbiot_PCPUpgradePackSliceIndex(void);											
 unsigned short	TCFG_Utility_Get_Nbiot_PCPUpgradePackCheckCode(void);												//读取Nbiot PCPUpgradePackCheckCode值
 unsigned short	TCFG_Utility_Get_Nbiot_PCPUpgradeStartTimes(void);												//读取Nbiot PCPUpgradeStartTimes值
 
+#if NBIOT_ATCMD_GET_MANUFACTURER
 char*		TCFG_Utility_Get_Nbiot_Manufacturer(void);														//读取Nbiot Manufacturer值
+#endif
+#if NBIOT_ATCMD_GET_MANUFACTURERMODEL
 char*		TCFG_Utility_Get_Nbiot_Manufacturermode(void);													//读取Nbiot Manufacturermode值
+#endif
+#if NBIOT_ATCMD_GET_MODULEVERSION
 char*		TCFG_Utility_Get_Nbiot_ModelVersion(void);														//读取Nbiot ModelVersion值
+#endif
+
 char*		TCFG_Utility_Get_Nbiot_PDPType(void);															//读取Nbiot PDPType值
 char*		TCFG_Utility_Get_Nbiot_APN(void);																//读取Nbiot APN值
 char*		TCFG_Utility_Get_Nbiot_PDPContext_APN(void);														//读取Nbiot PDPContext APN值
+
+#if NBIOT_ATCMD_GET_DNSSERVERADDRESS
+char*		TCFG_Utility_Get_Nbiot_PrimaryDns(void);														//读取Nbiot PrimaryDns值
+char*		TCFG_Utility_Get_Nbiot_SecondaryDns(void);														//读取Nbiot SecondaryDns值
+#endif
+
 unsigned int	TCFG_Utility_Get_Nbiot_SentCount(void);															//读取Nbiot SentCount值
 unsigned int	TCFG_Utility_Get_Nbiot_RecvCount(void);															//读取Nbiot RecvCount值
 unsigned short	TCFG_Utility_Get_Device_Batt_ShortVal(void);														//读取Device Batt值
