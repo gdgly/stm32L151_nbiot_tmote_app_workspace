@@ -220,6 +220,8 @@ void MOTOR_SPOTLOCK_Initialization(MOTOR_SpotLockCtrlTypeDef ctrl)
 	INFRARED_TUBE_TRANSMIT_ENABLE();
 	
 	while (true) {
+		IWDG_Feed();
+		
 		if ((ctrl != SPOTLOCK_CTRL_RISE) && (ctrl != SPOTLOCK_CTRL_FALL)) break;
 		
 		if (ctrl == SPOTLOCK_CTRL_RISE) {

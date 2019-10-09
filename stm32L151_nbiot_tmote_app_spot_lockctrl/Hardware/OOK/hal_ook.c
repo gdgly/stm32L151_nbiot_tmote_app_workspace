@@ -26,7 +26,7 @@
 
 uint32_t OOKDataFrameData = 0;
 uint8_t  OOKDataFrameFlag = 0;
-uint8_t  OOKDataRecvdFlag = 0;
+uint8_t  OOKDataRecvdFlag = OOK_ENCODED_EEPROM_DEFAULT;
 
 /**********************************************************************************************************
  @Function			void OOK_EXTI_Initialization(void)
@@ -64,14 +64,17 @@ void OOK_EXTI_PollExecution(bool EnableEEPROMCode)
 	uint32_t OOKArr[5] = {1, 2, 3, 4, 5};
 	Stm32_CalculagraphTypeDef BeepTime;
 	Stm32_CalculagraphTypeDef EncodeTime;
+	uint8_t  OOKRecvNum = 0;
 	
 #ifdef OOK_DEBUG_LOG_RF_PRINT
-	//OOK_DEBUG_LOG_PRINTF("Remote code: 0x%08X", TCFG_EEPROM_GetOOKEncoded());
+	//OOK_DEBUG_LOG_PRINTF("Remote code: 0x%08X", TCFG_EEPROM_GetOOKKEYEncoded(0));
 #endif
 	
-	if (OOK_EXTI_GetFrameFlag()) {
+	if ((!EnableEEPROMCode) && OOK_EXTI_GetFrameFlag()) {
 		OOKCode = OOK_EXTI_Process();
-		if ((OOKCode & 0xFFFFF000) == TCFG_EEPROM_GetOOKEncoded()) {
+		if (((OOKCode & 0xFFFFF000) == TCFG_EEPROM_GetOOKKEYEncoded(0)) || ((OOKCode & 0xFFFFF000) == TCFG_EEPROM_GetOOKKEYEncoded(1)) || \
+		    ((OOKCode & 0xFFFFF000) == TCFG_EEPROM_GetOOKKEYEncoded(2)) || ((OOKCode & 0xFFFFF000) == TCFG_EEPROM_GetOOKKEYEncoded(3)) || \
+		    ((OOKCode & 0xFFFFF000) == TCFG_EEPROM_GetOOKKEYEncoded(4))) {
 			if ((OOKCode & (~0xFFFFF0FF)) == 0x0400) {
 				SPOT_Lock_App_FALL(300);
 			}
@@ -82,9 +85,16 @@ void OOK_EXTI_PollExecution(bool EnableEEPROMCode)
 		OOK_EXTI_SetFrameFlag(0);
 	}
 	
-	if (EnableEEPROMCode && (TCFG_EEPROM_GetOOKEncoded() != 0)) return;
+	if (EnableEEPROMCode && ((TCFG_EEPROM_GetOOKKEYEncoded(0) != 0) || (TCFG_EEPROM_GetOOKKEYEncoded(1) != 0) || (TCFG_EEPROM_GetOOKKEYEncoded(2) != 0) || (TCFG_EEPROM_GetOOKKEYEncoded(3) != 0) || (TCFG_EEPROM_GetOOKKEYEncoded(4) != 0))) {
+		OOK_EXTI_SetRecvdFlag(0);
+		return;
+	}
 	
-	if ((!EnableEEPROMCode) && (OOK_EXTI_GetRecvdFlag() != 1)) return;
+	if ((!EnableEEPROMCode) && (OOK_EXTI_GetRecvdFlag() == 0)) return;
+	
+	if (OOK_EXTI_GetRecvdFlag() > OOK_ENCODED_EEPROM_MAX) OOK_EXTI_SetRecvdFlag(OOK_ENCODED_EEPROM_MAX);
+	
+	if (OOK_EXTI_GetRecvdFlag() == 0) return;
 	
 	Stm32_Calculagraph_CountdownSec(&BeepTime, OOK_ENCODED_BEEPDELAY_SEC);
 	Stm32_Calculagraph_CountdownSec(&EncodeTime, OOK_ENCODED_EXECUTION_SEC);
@@ -102,12 +112,15 @@ void OOK_EXTI_PollExecution(bool EnableEEPROMCode)
 		}
 		
 		if ((OOKArr[0] != 0) && (OOKArr[0] == OOKArr[1]) && (OOKArr[1] == OOKArr[2]) && (OOKArr[2] == OOKArr[3]) && (OOKArr[3] == OOKArr[4])) {
-			TCFG_EEPROM_SetOOKEncoded(0xFFFFF000 & OOKArr[0]);
+			if (!((OOKRecvNum != 0) && ((0xFFFFF000 & OOKArr[0]) == TCFG_EEPROM_GetOOKKEYEncoded(OOKRecvNum - 1)))) {
+				TCFG_EEPROM_SetOOKKEYEncoded(OOKRecvNum, 0xFFFFF000 & OOKArr[0]);
 #ifdef OOK_DEBUG_LOG_RF_PRINT
-			OOK_DEBUG_LOG_PRINTF("Remote code: 0x%08X", TCFG_EEPROM_GetOOKEncoded());
+				OOK_DEBUG_LOG_PRINTF("Remote code: 0x%08X", TCFG_EEPROM_GetOOKKEYEncoded(OOKRecvNum));
 #endif
-			BEEP_CtrlRepeat_Extend(5, 50, 25);
-			break;
+				BEEP_CtrlRepeat_Extend(5, 50, 25);
+				OOKRecvNum++;
+				if ((OOKRecvNum >= OOK_EXTI_GetRecvdFlag()) || (OOKRecvNum >= OOK_ENCODED_EEPROM_MAX)) goto over;
+			}
 		}
 		
 		if (Stm32_Calculagraph_IsExpiredSec(&BeepTime)) {
@@ -125,6 +138,11 @@ void OOK_EXTI_PollExecution(bool EnableEEPROMCode)
 			BEEP_CtrlRepeat_Extend(1, 500, 10);
 			break;
 		}
+	}
+	
+over:
+	for (int i = OOK_EXTI_GetRecvdFlag(); i < OOK_ENCODED_EEPROM_MAX; i++) {
+		TCFG_EEPROM_SetOOKKEYEncoded(i, 0x00);
 	}
 	
 	OOK_EXTI_SetRecvdFlag(0);

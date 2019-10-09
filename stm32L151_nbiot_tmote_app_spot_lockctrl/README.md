@@ -1,7 +1,15 @@
-# stm32L151_nbiot_tmote_app_spot
+# stm32L151_nbiot_tmote_app_spot_lockctrl
 > ##### Copyright (C) 2019 Movebroad Version:20.149 Design by Movebroad
 > ##### movebroad Kangkang ps: 版本号以下为此版本修改、增加、去除等内容记录！
 
+* 2019-10-09 :
+	* 车位锁修改。
+	* MOTOR_SPOTLOCK_Initialization 中优化看门狗。
+	* SPOT_Lock_Client_Init 中修改上电为升锁态。
+	* platform_map.h 中增加4个ook key编码存储eeprom地址。
+	* TCFG_EEPROM_SetOOKKEYEncoded与TCFG_EEPROM_GetOOKKEYEncoded修改为可存取指定ook数据。
+	* hal_ook 算法修改支持最大5把钥匙，默认配置2把。
+	* netinfo上报ook数据。
 * 2019-09-27 :
 	* NBIOT 限定字符串类参数读取字节数。
 * 2019-09-26 :

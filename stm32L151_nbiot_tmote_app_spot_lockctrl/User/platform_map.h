@@ -219,8 +219,16 @@
 #define TCFG_RADAR_SAMPLEINTERVAL_OFFSET	TCFG_RADAR_HIGHPASS_OFFSET + TCFG_RADAR_HIGHPASS_LENGTH					//0x08080E4F
 #define TCFG_RADAR_SAMPLEINTERVAL_LENGTH	1																//RadarSampleInterval	Radar采样频率
 
-#define TCFG_OOK_ENCODED_OFFSET			TCFG_RADAR_SAMPLEINTERVAL_OFFSET + TCFG_RADAR_SAMPLEINTERVAL_LENGTH			//0x08080E50
-#define TCFG_OOK_ENCODED_LENGTH			4																//OOKEncoded			OOK编码器编码
+#define TCFG_OOK_ENCODED_KEY1_OFFSET		TCFG_RADAR_SAMPLEINTERVAL_OFFSET + TCFG_RADAR_SAMPLEINTERVAL_LENGTH			//0x08080E50
+#define TCFG_OOK_ENCODED_KEY1_LENGTH		4																//OOKEncoded			OOK编码器KEY1编码
+#define TCFG_OOK_ENCODED_KEY2_OFFSET		TCFG_OOK_ENCODED_KEY1_OFFSET + TCFG_OOK_ENCODED_KEY1_LENGTH					//0x08080E54
+#define TCFG_OOK_ENCODED_KEY2_LENGTH		4																//OOKEncoded			OOK编码器KEY2编码
+#define TCFG_OOK_ENCODED_KEY3_OFFSET		TCFG_OOK_ENCODED_KEY2_OFFSET + TCFG_OOK_ENCODED_KEY2_LENGTH					//0x08080E58
+#define TCFG_OOK_ENCODED_KEY3_LENGTH		4																//OOKEncoded			OOK编码器KEY3编码
+#define TCFG_OOK_ENCODED_KEY4_OFFSET		TCFG_OOK_ENCODED_KEY3_OFFSET + TCFG_OOK_ENCODED_KEY3_LENGTH					//0x08080E5C
+#define TCFG_OOK_ENCODED_KEY4_LENGTH		4																//OOKEncoded			OOK编码器KEY4编码
+#define TCFG_OOK_ENCODED_KEY5_OFFSET		TCFG_OOK_ENCODED_KEY4_OFFSET + TCFG_OOK_ENCODED_KEY4_LENGTH					//0x08080E60
+#define TCFG_OOK_ENCODED_KEY5_LENGTH		4																//OOKEncoded			OOK编码器KEY5编码
 /************************************************************** End **************************************************************/
 
 enum TCFG_SENSITIVITY																					//传感器灵敏度
@@ -487,8 +495,8 @@ unsigned char	TCFG_EEPROM_GetRollingOverInitSensor(void);														//读取R
 void			TCFG_EEPROM_SetDeviceRbtMode(uint8_t val);														//保存DeviceRbtMode
 unsigned char	TCFG_EEPROM_GetDeviceRbtMode(void);															//读取DeviceRbtMode
 
-void			TCFG_EEPROM_SetOOKEncoded(unsigned int val);														//保存OOKEncoded
-unsigned int	TCFG_EEPROM_GetOOKEncoded(void);																//读取OOKEncoded
+void			TCFG_EEPROM_SetOOKKEYEncoded(unsigned int index, unsigned int val);									//保存OOKKEYEncoded
+unsigned int	TCFG_EEPROM_GetOOKKEYEncoded(unsigned int index);													//读取OOKKEYEncoded
 
 void			TCFG_EEPROM_SetMqttSNIP(unsigned int val);														//保存MqttSNIP
 unsigned int	TCFG_EEPROM_GetMqttSNIP(void);																//读取MqttSNIP

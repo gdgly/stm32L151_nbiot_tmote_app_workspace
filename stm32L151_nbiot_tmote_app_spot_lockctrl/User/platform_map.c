@@ -2083,25 +2083,29 @@ unsigned char TCFG_EEPROM_GetDeviceRbtMode(void)
 }
 
 /**********************************************************************************************************
- @Function			void TCFG_EEPROM_SetOOKEncoded(unsigned int val)
- @Description			TCFG_EEPROM_SetOOKEncoded					: 保存OOKEncoded
+ @Function			void TCFG_EEPROM_SetOOKKEYEncoded(unsigned int index, unsigned int val)
+ @Description			TCFG_EEPROM_SetOOKKEYEncoded					: 保存OOKKEYEncoded
  @Input				val
  @Return				void
 **********************************************************************************************************/
-void TCFG_EEPROM_SetOOKEncoded(unsigned int val)
+void TCFG_EEPROM_SetOOKKEYEncoded(unsigned int index, unsigned int val)
 {
-	FLASH_EEPROM_WriteWord(TCFG_OOK_ENCODED_OFFSET, val);
+	if (index > 4) index = 4;
+	
+	FLASH_EEPROM_WriteWord(TCFG_OOK_ENCODED_KEY1_OFFSET + 4 * index, val);
 }
 
 /**********************************************************************************************************
- @Function			unsigned int TCFG_EEPROM_GetOOKEncoded(void)
- @Description			TCFG_EEPROM_GetOOKEncoded					: 读取OOKEncoded
+ @Function			unsigned int TCFG_EEPROM_GetOOKKEYEncoded(unsigned int index)
+ @Description			TCFG_EEPROM_GetOOKKEYEncoded					: 读取OOKKEYEncoded
  @Input				void
  @Return				val
 **********************************************************************************************************/
-unsigned int TCFG_EEPROM_GetOOKEncoded(void)
+unsigned int TCFG_EEPROM_GetOOKKEYEncoded(unsigned int index)
 {
-	return FLASH_EEPROM_ReadWord(TCFG_OOK_ENCODED_OFFSET);
+	if (index > 4) index = 4;
+	
+	return FLASH_EEPROM_ReadWord(TCFG_OOK_ENCODED_KEY1_OFFSET + 4 * index);
 }
 
 /**********************************************************************************************************

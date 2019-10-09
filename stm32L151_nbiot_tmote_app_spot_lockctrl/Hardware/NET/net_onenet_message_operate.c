@@ -68,7 +68,7 @@ int NET_ONENET_Message_Operate_Creat_Json_Work_Info(char* outBuffer)
 				"\"Nbruntime\":\"%d.%d\","
 				"\"APN\":\"%s\","
 				"\"Coef\":\"%d.%d.%d\","
-				"\"OOK\":\"%08X\","
+				"\"OOK\":[\"%X\",\"%X\",\"%X\",\"%X\",\"%X\"],"
 				"\"RadioRv\":%d"
 			"}"
 		"}",
@@ -85,7 +85,7 @@ int NET_ONENET_Message_Operate_Creat_Json_Work_Info(char* outBuffer)
 		TCFG_Utility_GetCoapConnectTime(), TCFG_Utility_GetCoapIdleTime(),
 		TCFG_Utility_Get_Nbiot_PDPContext_APN(),
 		TCFG_SystemData.MagCoefX, TCFG_SystemData.MagCoefY, TCFG_SystemData.MagCoefZ,
-		TCFG_EEPROM_GetOOKEncoded(),
+		TCFG_EEPROM_GetOOKKEYEncoded(0) >> 12, TCFG_EEPROM_GetOOKKEYEncoded(1) >> 12, TCFG_EEPROM_GetOOKKEYEncoded(2) >> 12, TCFG_EEPROM_GetOOKKEYEncoded(3) >> 12, TCFG_EEPROM_GetOOKKEYEncoded(4) >> 12,
 		TCFG_Utility_Get_RadioGatewayNearby()
 	);
 	

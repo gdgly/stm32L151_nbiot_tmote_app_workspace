@@ -25,8 +25,8 @@ SpotLock_ClientsTypeDef SpotLockClientHandler;
 **********************************************************************************************************/
 void SPOT_Lock_Client_Init(SpotLock_ClientsTypeDef* pClient)
 {
-	pClient->SpotLockState									= SPOTLOCK_CTRL_FALL;
-	pClient->SpotLockControl									= SPOTLOCK_CTRL_FALL;
+	pClient->SpotLockState									= SPOTLOCK_CTRL_RISE;
+	pClient->SpotLockControl									= SPOTLOCK_CTRL_RISE;
 	
 	pClient->ControlRISEEnable								= false;
 	pClient->ControlFALLEnable								= false;

@@ -69,7 +69,7 @@ int NET_COAP_Message_Operate_Creat_Json_Work_Info(char* outBuffer)
 				"\"APN\":\"%s\","
 				"\"PCP\":\"%d.%d-%d.%d.V%d.%d\","
 				"\"Coef\":\"%d.%d.%d\","
-				"\"OOK\":\"%08X\","
+				"\"OOK\":[\"%X\",\"%X\",\"%X\",\"%X\",\"%X\"],"
 				"\"RadioRv\":%d"
 			"}"
 		"}",
@@ -88,7 +88,7 @@ int NET_COAP_Message_Operate_Creat_Json_Work_Info(char* outBuffer)
 		TCFG_Utility_Get_Nbiot_PCPUpgradeStartTimes(), TCFG_Utility_Get_Nbiot_PCPUpgradePackSliceIndex(), TCFG_Utility_Get_Nbiot_PCPUpgradePackSliceNum(),
 		TCFG_Utility_Get_Nbiot_PCPUpgradePackSliceSize(), TCFG_Utility_Get_Nbiot_PCPPlatformSoftVersionMajor(), TCFG_Utility_Get_Nbiot_PCPPlatformSoftVersionSub(),
 		TCFG_SystemData.MagCoefX, TCFG_SystemData.MagCoefY, TCFG_SystemData.MagCoefZ,
-		TCFG_EEPROM_GetOOKEncoded(),
+		TCFG_EEPROM_GetOOKKEYEncoded(0) >> 12, TCFG_EEPROM_GetOOKKEYEncoded(1) >> 12, TCFG_EEPROM_GetOOKKEYEncoded(2) >> 12, TCFG_EEPROM_GetOOKKEYEncoded(3) >> 12, TCFG_EEPROM_GetOOKKEYEncoded(4) >> 12,
 		TCFG_Utility_Get_RadioGatewayNearby()
 	);
 	

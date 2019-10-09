@@ -608,7 +608,9 @@ char Radio_Rf_Operate_Recvmsg(uint8_t *inmsg, uint8_t len)
 				/* OOKInit */
 			#if RADIO_DOWNLOAD_CMD_OOKINIT
 				else if (strstr(((tmote_general_cmd_s*)CFG_P_FRAME_PAYLOAD(inmsg))->buf, "ookinit")) {
-					OOK_EXTI_SetRecvdFlag(1);
+					sscanf(((tmote_general_cmd_s*)CFG_P_FRAME_PAYLOAD(inmsg))->buf, "ookinit:%hu", &uval16);
+					if (uval16 > OOK_ENCODED_EEPROM_MAX) uval16 = OOK_ENCODED_EEPROM_MAX;
+					OOK_EXTI_SetRecvdFlag(uval16);
 				#if RADIO_CMD_ECHO_TYPE
 					Radio_Trf_Printf("Remote control Init");
 				#endif
