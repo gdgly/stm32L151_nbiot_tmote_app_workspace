@@ -2,6 +2,9 @@
 > ##### Copyright (C) 2019 Movebroad Version:20.149 Design by Movebroad
 > ##### movebroad Kangkang ps: 版本号以下为此版本修改、增加、去除等内容记录！
 
+* 2109-10-11 :
+	* hal_motor.c 去掉蜂鸣器提示，加入外置喇叭警报。
+	* hal_ook.c 修复蜂鸣器异常提示，优化遥控器控制。
 * 2019-10-09 :
 	* 车位锁修改。
 	* MOTOR_SPOTLOCK_Initialization 中优化看门狗。
