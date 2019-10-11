@@ -39,6 +39,8 @@ void OOK_EXTI_Initialization(void);
 
 void OOK_EXTI_PollExecution(bool EnableEEPROMCode);
 
+void OOK_EXTI_IRQPollExecution(bool EnableEEPROMCode);
+
 uint8_t OOK_EXTI_GetHighPulseTime(void);
 uint8_t OOK_EXTI_GetLowPulseTime(void);
 

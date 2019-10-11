@@ -296,6 +296,8 @@ void EXTI9_5_IRQHandler(void)
 			}
 		}
 		
+		OOK_EXTI_IRQPollExecution(false);
+		
 		__HAL_GPIO_EXTI_CLEAR_IT(OOK_PIN);
 	}
 }

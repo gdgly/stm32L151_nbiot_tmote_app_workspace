@@ -53,7 +53,10 @@ void SPOT_Lock_App_Task(void)
 	if (SpotLockClientHandler.SpotLockState != SpotLockClientHandler.SpotLockControl) {
 		if ((SpotLockClientHandler.SpotLockControl == SPOTLOCK_CTRL_RISE) && (SpotLockClientHandler.ControlRISEEnable == false)) {
 			
+			HAL_NVIC_DisableIRQ(OOK_DATA_IRQn);
 			MOTOR_SPOTLOCK_Control(SPOTLOCK_CTRL_RISE);
+			HAL_NVIC_ClearPendingIRQ(OOK_DATA_IRQn);
+			HAL_NVIC_EnableIRQ(OOK_DATA_IRQn);
 			
 			OOK_EXTI_SetMotorFlag(0);
 			
@@ -65,7 +68,10 @@ void SPOT_Lock_App_Task(void)
 		
 		if (SpotLockClientHandler.SpotLockControl == SPOTLOCK_CTRL_FALL) {
 			
+			HAL_NVIC_DisableIRQ(OOK_DATA_IRQn);
 			MOTOR_SPOTLOCK_Control(SPOTLOCK_CTRL_FALL);
+			HAL_NVIC_ClearPendingIRQ(OOK_DATA_IRQn);
+			HAL_NVIC_EnableIRQ(OOK_DATA_IRQn);
 			
 			OOK_EXTI_SetMotorFlag(0);
 			
@@ -88,21 +94,10 @@ void SPOT_Lock_App_Task(void)
 		SpotLockClientHandler.ControlRISEEnable = false;
 	}
 	
-	
-	
-	
-	
-	
+	HAL_NVIC_DisableIRQ(OOK_DATA_IRQn);
 	MOTOR_SPOTLOCK_Keep(SpotLockClientHandler.SpotLockState);
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	HAL_NVIC_ClearPendingIRQ(OOK_DATA_IRQn);
+	HAL_NVIC_EnableIRQ(OOK_DATA_IRQn);
 }
 
 

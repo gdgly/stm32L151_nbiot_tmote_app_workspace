@@ -43,8 +43,6 @@ struct SpotLock_ClientsTypeDef
 	Stm32_CalculagraphTypeDef			ControlFALLDelayS;
 	
 	SpotLock_StateFlagTypeDef			SpotLockStateFlag;
-	
-	
 };
 
 

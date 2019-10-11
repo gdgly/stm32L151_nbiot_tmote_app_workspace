@@ -74,7 +74,7 @@ void OOK_EXTI_PollExecution(bool EnableEEPROMCode)
 	//OOK_DEBUG_LOG_PRINTF("Remote code: 0x%08X", TCFG_EEPROM_GetOOKKEYEncoded(0));
 #endif
 	
-	if ((!EnableEEPROMCode) && OOK_EXTI_GetFrameFlag()) {
+	if ((!EnableEEPROMCode) && OOK_EXTI_GetFrameFlag() && (OOK_EXTI_GetRecvdFlag() == 0)) {
 		OOKCode = OOK_EXTI_Process();
 		if (((OOKCode & 0xFFFFF000) == TCFG_EEPROM_GetOOKKEYEncoded(0)) || ((OOKCode & 0xFFFFF000) == TCFG_EEPROM_GetOOKKEYEncoded(1)) || \
 		    ((OOKCode & 0xFFFFF000) == TCFG_EEPROM_GetOOKKEYEncoded(2)) || ((OOKCode & 0xFFFFF000) == TCFG_EEPROM_GetOOKKEYEncoded(3)) || \
@@ -179,6 +179,46 @@ over:
 	BEEP_CtrlRepeat_Extend(5, 50, 20);
 	HAL_NVIC_ClearPendingIRQ(OOK_DATA_IRQn);
 	HAL_NVIC_EnableIRQ(OOK_DATA_IRQn);
+}
+
+/**********************************************************************************************************
+ @Function			void OOK_EXTI_IRQPollExecution(bool EnableEEPROMCode)
+ @Description			OOK_EXTI_IRQPollExecution
+ @Input				EnableEEPROMCode
+ @Return				void
+**********************************************************************************************************/
+void OOK_EXTI_IRQPollExecution(bool EnableEEPROMCode)
+{
+	uint32_t OOKCode;
+	
+	if ((!EnableEEPROMCode) && OOK_EXTI_GetFrameFlag() && (OOK_EXTI_GetRecvdFlag() == 0)) {
+		OOKCode = OOK_EXTI_Process();
+		if (((OOKCode & 0xFFFFF000) == TCFG_EEPROM_GetOOKKEYEncoded(0)) || ((OOKCode & 0xFFFFF000) == TCFG_EEPROM_GetOOKKEYEncoded(1)) || \
+		    ((OOKCode & 0xFFFFF000) == TCFG_EEPROM_GetOOKKEYEncoded(2)) || ((OOKCode & 0xFFFFF000) == TCFG_EEPROM_GetOOKKEYEncoded(3)) || \
+		    ((OOKCode & 0xFFFFF000) == TCFG_EEPROM_GetOOKKEYEncoded(4))) {
+			if ((OOKCode & (~0xFFFFF0FF)) == 0x0400) {
+				if ((MOTOR_SPOTLOCK_STATE() != SPOTLOCK_CTRL_FALL) && (OOK_EXTI_GetMotorFlag() != 1)) {
+					HAL_NVIC_DisableIRQ(OOK_DATA_IRQn);
+					BEEP_CtrlRepeat_Extend(1, 380, 100);
+					HAL_NVIC_ClearPendingIRQ(OOK_DATA_IRQn);
+					HAL_NVIC_EnableIRQ(OOK_DATA_IRQn);
+					SPOT_Lock_App_FALL(300);
+					OOK_EXTI_SetMotorFlag(1);
+				}
+			}
+			if ((OOKCode & (~0xFFFFF0FF)) == 0x0100) {
+				if ((MOTOR_SPOTLOCK_STATE() != SPOTLOCK_CTRL_RISE) && (OOK_EXTI_GetMotorFlag() != 1)) {
+					HAL_NVIC_DisableIRQ(OOK_DATA_IRQn);
+					BEEP_CtrlRepeat_Extend(1, 380, 100);
+					HAL_NVIC_ClearPendingIRQ(OOK_DATA_IRQn);
+					HAL_NVIC_EnableIRQ(OOK_DATA_IRQn);
+					SPOT_Lock_App_RISE(0);
+					OOK_EXTI_SetMotorFlag(1);
+				}
+			}
+		}
+		OOK_EXTI_SetFrameFlag(0);
+	}
 }
 
 /**********************************************************************************************************
