@@ -27,6 +27,7 @@
 uint32_t OOKDataFrameData = 0;
 uint8_t  OOKDataFrameFlag = 0;
 uint8_t  OOKDataRecvdFlag = OOK_ENCODED_EEPROM_DEFAULT;
+uint8_t  OOKDataMotorFlag = 0;
 
 /**********************************************************************************************************
  @Function			void OOK_EXTI_Initialization(void)
@@ -47,6 +48,9 @@ void OOK_EXTI_Initialization(void)
 	HAL_GPIO_Init(OOK_GPIOx, &GPIO_Initure);
 	
 	HAL_NVIC_SetPriority(OOK_DATA_IRQn, 2, 2);
+	
+	HAL_NVIC_ClearPendingIRQ(OOK_DATA_IRQn);
+	
 	HAL_NVIC_EnableIRQ(OOK_DATA_IRQn);
 	
 	OOK_EXTI_PollExecution(true);
@@ -76,13 +80,28 @@ void OOK_EXTI_PollExecution(bool EnableEEPROMCode)
 		    ((OOKCode & 0xFFFFF000) == TCFG_EEPROM_GetOOKKEYEncoded(2)) || ((OOKCode & 0xFFFFF000) == TCFG_EEPROM_GetOOKKEYEncoded(3)) || \
 		    ((OOKCode & 0xFFFFF000) == TCFG_EEPROM_GetOOKKEYEncoded(4))) {
 			if ((OOKCode & (~0xFFFFF0FF)) == 0x0400) {
-				SPOT_Lock_App_FALL(300);
+				if ((MOTOR_SPOTLOCK_STATE() != SPOTLOCK_CTRL_FALL) && (OOK_EXTI_GetMotorFlag() != 1)) {
+					HAL_NVIC_DisableIRQ(OOK_DATA_IRQn);
+					BEEP_CtrlRepeat_Extend(1, 380, 100);
+					HAL_NVIC_ClearPendingIRQ(OOK_DATA_IRQn);
+					HAL_NVIC_EnableIRQ(OOK_DATA_IRQn);
+					SPOT_Lock_App_FALL(300);
+					OOK_EXTI_SetMotorFlag(1);
+				}
 			}
 			if ((OOKCode & (~0xFFFFF0FF)) == 0x0100) {
-				SPOT_Lock_App_RISE(0);
+				if ((MOTOR_SPOTLOCK_STATE() != SPOTLOCK_CTRL_RISE) && (OOK_EXTI_GetMotorFlag() != 1)) {
+					HAL_NVIC_DisableIRQ(OOK_DATA_IRQn);
+					BEEP_CtrlRepeat_Extend(1, 380, 100);
+					HAL_NVIC_ClearPendingIRQ(OOK_DATA_IRQn);
+					HAL_NVIC_EnableIRQ(OOK_DATA_IRQn);
+					SPOT_Lock_App_RISE(0);
+					OOK_EXTI_SetMotorFlag(1);
+				}
 			}
 		}
 		OOK_EXTI_SetFrameFlag(0);
+		return;
 	}
 	
 	if (EnableEEPROMCode && ((TCFG_EEPROM_GetOOKKEYEncoded(0) != 0) || (TCFG_EEPROM_GetOOKKEYEncoded(1) != 0) || (TCFG_EEPROM_GetOOKKEYEncoded(2) != 0) || (TCFG_EEPROM_GetOOKKEYEncoded(3) != 0) || (TCFG_EEPROM_GetOOKKEYEncoded(4) != 0))) {
@@ -117,9 +136,14 @@ void OOK_EXTI_PollExecution(bool EnableEEPROMCode)
 #ifdef OOK_DEBUG_LOG_RF_PRINT
 				OOK_DEBUG_LOG_PRINTF("Remote code: 0x%08X", TCFG_EEPROM_GetOOKKEYEncoded(OOKRecvNum));
 #endif
-				BEEP_CtrlRepeat_Extend(5, 50, 25);
+				HAL_NVIC_DisableIRQ(OOK_DATA_IRQn);
+				BEEP_CtrlRepeat_Extend(1, 1000, 100);
+				HAL_NVIC_ClearPendingIRQ(OOK_DATA_IRQn);
+				HAL_NVIC_EnableIRQ(OOK_DATA_IRQn);
+				Stm32_Calculagraph_CountdownSec(&BeepTime, OOK_ENCODED_BEEPDELAY_SEC);
 				OOKRecvNum++;
 				if ((OOKRecvNum >= OOK_EXTI_GetRecvdFlag()) || (OOKRecvNum >= OOK_ENCODED_EEPROM_MAX)) goto over;
+				continue;
 			}
 		}
 		
@@ -127,7 +151,10 @@ void OOK_EXTI_PollExecution(bool EnableEEPROMCode)
 #ifdef OOK_DEBUG_LOG_RF_PRINT
 			OOK_DEBUG_LOG_PRINTF("Please press the remote control");
 #endif
-			BEEP_CtrlRepeat_Extend(2, 50, 50);
+			HAL_NVIC_DisableIRQ(OOK_DATA_IRQn);
+			BEEP_CtrlRepeat_Extend(3, 50, 300);
+			HAL_NVIC_ClearPendingIRQ(OOK_DATA_IRQn);
+			HAL_NVIC_EnableIRQ(OOK_DATA_IRQn);
 			Stm32_Calculagraph_CountdownSec(&BeepTime, OOK_ENCODED_BEEPDELAY_SEC);
 		}
 		
@@ -135,7 +162,6 @@ void OOK_EXTI_PollExecution(bool EnableEEPROMCode)
 #ifdef OOK_DEBUG_LOG_RF_PRINT
 			OOK_DEBUG_LOG_PRINTF("Remote control code not received");
 #endif
-			BEEP_CtrlRepeat_Extend(1, 500, 10);
 			break;
 		}
 	}
@@ -146,6 +172,13 @@ over:
 	}
 	
 	OOK_EXTI_SetRecvdFlag(0);
+	
+	Delay_MS(300);
+	
+	HAL_NVIC_DisableIRQ(OOK_DATA_IRQn);
+	BEEP_CtrlRepeat_Extend(5, 50, 20);
+	HAL_NVIC_ClearPendingIRQ(OOK_DATA_IRQn);
+	HAL_NVIC_EnableIRQ(OOK_DATA_IRQn);
 }
 
 /**********************************************************************************************************

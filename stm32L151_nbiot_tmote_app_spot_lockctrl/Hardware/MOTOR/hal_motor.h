@@ -3,6 +3,14 @@
 
 #include "sys.h"
 
+#define MOTOR_BEEP_CTRL_ON				1
+#define MOTOR_BEEP_CTRL_OFF				0
+#define MOTOR_BEEP_CTRL					MOTOR_BEEP_CTRL_OFF
+
+#define MOTOR_BUZZER_ERR_ON				1
+#define MOTOR_BUZZER_ERR_OFF				0
+#define MOTOR_BUZZER_ERR					MOTOR_BUZZER_ERR_ON
+
 #define MOTOR_ERROR_DELAY_MS				10000
 
 #define MOTOR_SNS_THRESHOLD_DELAY_MS		300

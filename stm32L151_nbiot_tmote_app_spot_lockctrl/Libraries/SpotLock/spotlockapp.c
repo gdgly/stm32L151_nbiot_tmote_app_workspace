@@ -16,6 +16,7 @@
 #include "spotlockapp.h"
 #include "platform_config.h"
 #include "platform_map.h"
+#include "hal_ook.h"
 #include "radio_hal_rf.h"
 #include "radio_rf_app.h"
 #include "inspectconfig.h"
@@ -54,6 +55,8 @@ void SPOT_Lock_App_Task(void)
 			
 			MOTOR_SPOTLOCK_Control(SPOTLOCK_CTRL_RISE);
 			
+			OOK_EXTI_SetMotorFlag(0);
+			
 			SpotLockClientHandler.SpotLockState	= MOTOR_SPOTLOCK_STATE();
 			SpotLockClientHandler.SpotLockControl	= MOTOR_SPOTLOCK_STATE();
 			
@@ -63,6 +66,8 @@ void SPOT_Lock_App_Task(void)
 		if (SpotLockClientHandler.SpotLockControl == SPOTLOCK_CTRL_FALL) {
 			
 			MOTOR_SPOTLOCK_Control(SPOTLOCK_CTRL_FALL);
+			
+			OOK_EXTI_SetMotorFlag(0);
 			
 			SpotLockClientHandler.SpotLockState	= MOTOR_SPOTLOCK_STATE();
 			SpotLockClientHandler.SpotLockControl	= MOTOR_SPOTLOCK_STATE();
@@ -99,6 +104,17 @@ void SPOT_Lock_App_Task(void)
 	
 	
 }
+
+
+
+
+
+
+
+
+
+
+
 
 /**********************************************************************************************************
  @Function			void SPOT_Lock_App_RISE(u32 timerSec)

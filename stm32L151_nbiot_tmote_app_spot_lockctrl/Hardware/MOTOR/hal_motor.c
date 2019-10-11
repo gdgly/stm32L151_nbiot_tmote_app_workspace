@@ -260,7 +260,11 @@ void MOTOR_SPOTLOCK_Initialization(MOTOR_SpotLockCtrlTypeDef ctrl)
 				MOTOR_LOCK();
 			}
 			
+#if MOTOR_BEEP_CTRL
 			BEEP_CtrlRepeat_Extend(3, 50, 15);
+#else
+			Delay_MS(100);
+#endif
 			break;
 		}
 		
@@ -278,7 +282,11 @@ void MOTOR_SPOTLOCK_Initialization(MOTOR_SpotLockCtrlTypeDef ctrl)
 				MOTOR_LOCK();
 			}
 			
+#if MOTOR_BEEP_CTRL
 			BEEP_CtrlRepeat_Extend(1, 50, 25);
+#else
+			Delay_MS(100);
+#endif
 			break;
 		}
 exit:
@@ -349,7 +357,11 @@ void MOTOR_SPOTLOCK_Control(MOTOR_SpotLockCtrlTypeDef ctrl)
 				MOTOR_LOCK();
 			}
 			
+#if MOTOR_BEEP_CTRL
 			BEEP_CtrlRepeat_Extend(3, 50, 15);
+#else
+			Delay_MS(100);
+#endif
 			break;
 		}
 		
@@ -367,7 +379,11 @@ void MOTOR_SPOTLOCK_Control(MOTOR_SpotLockCtrlTypeDef ctrl)
 				MOTOR_LOCK();
 			}
 			
+#if MOTOR_BEEP_CTRL
 			BEEP_CtrlRepeat_Extend(1, 50, 25);
+#else
+			Delay_MS(100);
+#endif
 			break;
 		}
 exit:
@@ -404,12 +420,20 @@ void MOTOR_SPOTLOCK_Keep(MOTOR_SpotLockCtrlTypeDef ctrl)
 	INFRARED_TUBE_TRANSMIT_ENABLE();
 	
 	if ((SpotLockKeepErr > MOTOR_CTRL_KEEP_ERR) && (INFRARED_TUBE_SPOTLOCK_STATE() != INFRARED_TUBE_ERROR) && (INFRARED_TUBE_SPOTLOCK_STATE() != INFRARED_TUBE_FALL)) {
+#if MOTOR_BUZZER_ERR
+		BUZZERCtrlIO(ON);
+#else
 		BEEP_CtrlRepeat_Extend(1, 50, 15);
+#endif
 		goto error;
 	}
 	
 	if ((SpotLockKeepErr > MOTOR_CTRL_KEEP_ERR) && (MOTOR_SPOTLOCK_STATE() != ctrl)) {
+#if MOTOR_BUZZER_ERR
+		BUZZERCtrlIO(ON);
+#else
 		BEEP_CtrlRepeat_Extend(1, 50, 15);
+#endif
 		goto error;
 	}
 	
@@ -467,7 +491,11 @@ void MOTOR_SPOTLOCK_Keep(MOTOR_SpotLockCtrlTypeDef ctrl)
 			BeepON = true;
 		}
 		
+#if MOTOR_BEEP_CTRL
 		if (BeepON) BEEP_CtrlRepeat_Extend(3, 50, 15);
+#else
+		if (BeepON) Delay_MS(100);
+#endif
 	}
 	
 	if (ctrl == SPOTLOCK_CTRL_FALL) {
@@ -488,10 +516,18 @@ void MOTOR_SPOTLOCK_Keep(MOTOR_SpotLockCtrlTypeDef ctrl)
 			BeepON = true;
 		}
 		
+#if MOTOR_BEEP_CTRL
 		if (BeepON) BEEP_CtrlRepeat_Extend(1, 50, 25);
+#else
+		if (BeepON) Delay_MS(100);
+#endif
 	}
 	
 	SpotLockKeepErr = 0;
+	
+#if MOTOR_BUZZER_ERR
+	BUZZERCtrlIO(OFF);
+#endif
 	
 error:
 	if (SpotLockKeepErr < 100) SpotLockKeepErr++;

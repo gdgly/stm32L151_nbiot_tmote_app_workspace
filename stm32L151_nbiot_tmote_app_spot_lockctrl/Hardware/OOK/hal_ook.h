@@ -9,8 +9,8 @@
 #define OOK_ENCODED_EEPROM_MAX			5
 #define OOK_ENCODED_EEPROM_DEFAULT			2
 
-#define OOK_ENCODED_BEEPDELAY_SEC			2
-#define OOK_ENCODED_EXECUTION_SEC			30
+#define OOK_ENCODED_BEEPDELAY_SEC			5
+#define OOK_ENCODED_EXECUTION_SEC			60
 
 #define OOK_GPIOx						GPIOB
 #define OOK_PIN						GPIO_PIN_5
@@ -27,9 +27,13 @@
 #define OOK_EXTI_SetRecvdFlag(n)			(OOKDataRecvdFlag = n)
 #define OOK_EXTI_GetRecvdFlag()			(OOKDataRecvdFlag)
 
+#define OOK_EXTI_SetMotorFlag(n)			(OOKDataMotorFlag = n)
+#define OOK_EXTI_GetMotorFlag()			(OOKDataMotorFlag)
+
 extern uint32_t OOKDataFrameData;
 extern uint8_t  OOKDataFrameFlag;
 extern uint8_t  OOKDataRecvdFlag;
+extern uint8_t  OOKDataMotorFlag;
 
 void OOK_EXTI_Initialization(void);
 
