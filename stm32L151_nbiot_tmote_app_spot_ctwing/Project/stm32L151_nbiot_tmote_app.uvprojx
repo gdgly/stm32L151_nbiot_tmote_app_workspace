@@ -1160,6 +1160,26 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>CTWing</GroupName>
+          <Files>
+            <File>
+              <FileName>ctwingconfig.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Libraries\CTWing\ctwingconfig.c</FilePath>
+            </File>
+            <File>
+              <FileName>ctwingfunc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Libraries\CTWing\ctwingfunc.c</FilePath>
+            </File>
+            <File>
+              <FileName>ctwingtransport.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Libraries\CTWing\ctwingtransport.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>Net</GroupName>
           <Files>
             <File>
@@ -1191,6 +1211,16 @@
               <FileName>net_onenet_app.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Hardware\NET\net_onenet_app.c</FilePath>
+            </File>
+            <File>
+              <FileName>net_ctwing_message_operate.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Hardware\NET\net_ctwing_message_operate.c</FilePath>
+            </File>
+            <File>
+              <FileName>net_ctwing_app.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Hardware\NET\net_ctwing_app.c</FilePath>
             </File>
             <File>
               <FileName>net_mqttsn_message_operate.c</FileName>

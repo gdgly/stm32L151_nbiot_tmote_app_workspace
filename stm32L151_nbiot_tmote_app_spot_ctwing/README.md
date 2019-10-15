@@ -1,7 +1,11 @@
 # stm32L151_nbiot_tmote_app_spot
-> ##### Copyright (C) 2019 Movebroad Version:20.149 Design by Movebroad
+> ##### Copyright (C) 2019 Movebroad Version:20.150 Design by Movebroad
 > ##### movebroad Kangkang ps: 版本号以下为此版本修改、增加、去除等内容记录！
 
+* 2019-10-15 :
+	* CTWing加入服务器CDP配置到platform_map。
+* 2019-10-14 :
+	* 版本号修改为150。
 * 2019-10-09 :
 	* instpectconfig.c中, < if (status_pre != SpotStatusDataBackUp.spot_status) { > 改为 < if ((status_pre&0x01) != (SpotStatusDataBackUp.spot_status&0x01)) { >。
 	* 修复会导致无车心跳之后继续发送无车心跳count会加1。

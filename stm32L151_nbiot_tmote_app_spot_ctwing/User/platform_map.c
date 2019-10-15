@@ -71,6 +71,28 @@ static void TCFG_EEPROM_Write_MqttSNServerAddr(void)
 }
 #endif
 
+#if NETPROTOCAL == NETCTWING
+/**********************************************************************************************************
+ @Function			static void TCFG_EEPROM_Write_CTWingCDPAddr(void)
+ @Description			TCFG_EEPROM_Write_CTWingCDPAddr				: 写入CTWing CDP Addr
+ @Input				void
+ @Return				void
+**********************************************************************************************************/
+static void TCFG_EEPROM_Write_CTWingCDPAddr(void)
+{
+	int serverip[4];
+	
+	sscanf(CCTWINGADDR, "%d.%d.%d.%d", &serverip[3], &serverip[2], &serverip[1], &serverip[0]);
+	TCFG_SystemData.CTWingCDPServer.ip.ip8[3] = serverip[3];
+	TCFG_SystemData.CTWingCDPServer.ip.ip8[2] = serverip[2];
+	TCFG_SystemData.CTWingCDPServer.ip.ip8[1] = serverip[1];
+	TCFG_SystemData.CTWingCDPServer.ip.ip8[0] = serverip[0];
+	TCFG_SystemData.CTWingCDPServer.port = CCTWINGPORT;
+	TCFG_EEPROM_SetCTWingIP(TCFG_SystemData.CTWingCDPServer.ip.ip32);
+	TCFG_EEPROM_SetCTWingPort(TCFG_SystemData.CTWingCDPServer.port);
+}
+#endif
+
 /**********************************************************************************************************
  @Function			void TCFG_EEPROM_SystemInfo_Init(void)
  @Description			TCFG_EEPROM_SystemInfo_Init					: 系统信息初始化
@@ -255,6 +277,11 @@ void TCFG_EEPROM_WriteConfigData(void)
 #if NETPROTOCAL == NETMQTTSN
 	TCFG_EEPROM_Write_MqttSNServerAddr();
 #endif
+	
+	/* CTWing服务器地址 */
+#if NETPROTOCAL == NETCTWING
+	TCFG_EEPROM_Write_CTWingCDPAddr();
+#endif
 }
 
 /**********************************************************************************************************
@@ -436,6 +463,15 @@ void TCFG_EEPROM_ReadConfigData(void)
 		TCFG_EEPROM_Write_MqttSNServerAddr();
 	}
 #endif
+	
+	/* CTWing服务器地址 */
+#if NETPROTOCAL == NETCTWING
+	TCFG_SystemData.CTWingCDPServer.ip.ip32 = TCFG_EEPROM_GetCTWingIP();
+	TCFG_SystemData.CTWingCDPServer.port = TCFG_EEPROM_GetCTWingPort();
+	if ((TCFG_SystemData.CTWingCDPServer.ip.ip32 == 0) && (TCFG_SystemData.CTWingCDPServer.port == 0)) {
+		TCFG_EEPROM_Write_CTWingCDPAddr();
+	}
+#endif
 }
 
 /**********************************************************************************************************
@@ -469,6 +505,11 @@ void TCFG_EEPROM_WriteParameterData(void)
 	/* MqttSN服务器地址 */
 #if NETPROTOCAL == NETMQTTSN
 	TCFG_EEPROM_Write_MqttSNServerAddr();
+#endif
+	
+	/* CTWing服务器地址 */
+#if NETPROTOCAL == NETCTWING
+	TCFG_EEPROM_Write_CTWingCDPAddr();
 #endif
 }
 
@@ -999,6 +1040,86 @@ char* TCFG_EEPROM_Get_ServerPort_String(void)
 	
 	return (char *)TCFG_SystemData.NBCoapCDPServerPort;
 }
+
+#if NETPROTOCAL == NETCTWING
+/**********************************************************************************************************
+ @Function			void TCFG_EEPROM_SetCTWingIP(unsigned int val)
+ @Description			TCFG_EEPROM_SetCTWingIP						: 保存CTWingIP
+ @Input				val
+ @Return				void
+**********************************************************************************************************/
+void TCFG_EEPROM_SetCTWingIP(unsigned int val)
+{
+	FLASH_EEPROM_WriteWord(TCFG_CTWING_SERVER_OFFSET, val);
+}
+
+/**********************************************************************************************************
+ @Function			unsigned int TCFG_EEPROM_GetCTWingIP(void)
+ @Description			TCFG_EEPROM_GetCTWingIP						: 读取CTWingIP
+ @Input				void
+ @Return				val
+**********************************************************************************************************/
+unsigned int TCFG_EEPROM_GetCTWingIP(void)
+{
+	return FLASH_EEPROM_ReadWord(TCFG_CTWING_SERVER_OFFSET);
+}
+
+/**********************************************************************************************************
+ @Function			void TCFG_EEPROM_SetCTWingPort(unsigned short val)
+ @Description			TCFG_EEPROM_SetCTWingPort					: 保存CTWingPort
+ @Input				val
+ @Return				void
+**********************************************************************************************************/
+void TCFG_EEPROM_SetCTWingPort(unsigned short val)
+{
+	FLASH_EEPROM_WriteHalfWord(TCFG_CTWING_SERVER_OFFSET + 4, val);
+}
+
+/**********************************************************************************************************
+ @Function			unsigned short TCFG_EEPROM_GetCTWingPort(void)
+ @Description			TCFG_EEPROM_GetCTWingPort					: 读取CTWingPort
+ @Input				void
+ @Return				val
+**********************************************************************************************************/
+unsigned short TCFG_EEPROM_GetCTWingPort(void)
+{
+	return FLASH_EEPROM_ReadHalfWord(TCFG_CTWING_SERVER_OFFSET + 4);
+}
+
+/**********************************************************************************************************
+ @Function			char* TCFG_EEPROM_Get_CTWingIP_String(void)
+ @Description			TCFG_EEPROM_Get_CTWingIP_String				: 读取CTWingIP字符串
+ @Input				void
+ @Return				CTWingIP_string
+**********************************************************************************************************/
+char* TCFG_EEPROM_Get_CTWingIP_String(void)
+{
+	TCFG_SystemData.CTWingCDPServer.ip.ip32 = TCFG_EEPROM_GetCTWingIP();
+	
+	memset((void*)&TCFG_SystemData.CTWingCDPServerIP, 0, sizeof(TCFG_SystemData.CTWingCDPServerIP));
+	sprintf((char *)TCFG_SystemData.CTWingCDPServerIP, "%d.%d.%d.%d", 
+	TCFG_SystemData.CTWingCDPServer.ip.ip8[3], TCFG_SystemData.CTWingCDPServer.ip.ip8[2], 
+	TCFG_SystemData.CTWingCDPServer.ip.ip8[1], TCFG_SystemData.CTWingCDPServer.ip.ip8[0]);
+	
+	return (char *)TCFG_SystemData.CTWingCDPServerIP;
+}
+
+/**********************************************************************************************************
+ @Function			char* TCFG_EEPROM_Get_CTWingPort_String(void)
+ @Description			TCFG_EEPROM_Get_CTWingPort_String				: 读取CTWingPort字符串
+ @Input				void
+ @Return				CTWingPort_string
+**********************************************************************************************************/
+char* TCFG_EEPROM_Get_CTWingPort_String(void)
+{
+	TCFG_SystemData.CTWingCDPServer.port = TCFG_EEPROM_GetCTWingPort();
+	
+	memset((void*)&TCFG_SystemData.CTWingCDPServerPort, 0, sizeof(TCFG_SystemData.CTWingCDPServerPort));
+	sprintf((char *)TCFG_SystemData.CTWingCDPServerPort, "%d", TCFG_SystemData.CTWingCDPServer.port);
+	
+	return (char *)TCFG_SystemData.CTWingCDPServerPort;
+}
+#endif
 
 /**********************************************************************************************************
  @Function			void TCFG_EEPROM_SetWorkMode(unsigned char val)
