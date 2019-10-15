@@ -48,6 +48,13 @@ ONENET_PacketLongTypeDef			OneNETLongStructure;						//ONENET Long Packet
 ONENET_PacketInfoTypeDef			OneNETInfoStructure;						//ONENET Info Packet
 #endif
 
+#if NETPROTOCAL == NETCTWING
+/* CTWing Packet */
+CTWING_PacketShortTypeDef		CTWingShortStructure;						//CTWING Short Packet
+CTWING_PacketLongTypeDef			CTWingLongStructure;						//CTWING Long Packet
+CTWING_PacketInfoTypeDef			CTWingInfoStructure;						//CTWING Info Packet
+#endif
+
 /* NET Handler */
 NET_NBIOT_ClientsTypeDef			NetNbiotClientHandler;						//NET NBIOT Clinet Handler
 NBIOT_ATCmdTypeDef				NbiotATCmdHandler;							//NBIOT AT Cmd Handler
@@ -74,10 +81,16 @@ ONENET_LWM2MTransportTypeDef		OneNETLWM2MNetHandler;						//ONENET Net Handler
 ONENET_ClientsTypeDef			OneNETClientHandler;						//ONENET Clinet Handler
 #endif
 
+#if NETPROTOCAL == NETCTWING
+CTWING_LWM2MTransportTypeDef		CTWingLWM2MNetHandler;						//CTWing Net Handler
+CTWING_ClientsTypeDef			CTWingClientHandler;						//CTWing Clinet Handler
+#endif
+
 NBIOT_NBandTypeDef				CoAPNBIoTBandType	= {COAP_NBIOT_BAND_NUM,   COAP_NBIOT_BAND_VAL1,   COAP_NBIOT_BAND_VAL2,   COAP_NBIOT_BAND_VAL3};
 NBIOT_NBandTypeDef				OneNETNBIoTBandType	= {ONENET_NBIOT_BAND_NUM, ONENET_NBIOT_BAND_VAL1, ONENET_NBIOT_BAND_VAL2, ONENET_NBIOT_BAND_VAL3};
 NBIOT_NBandTypeDef				MqttSNNBIoTBandType	= {MQTTSN_NBIOT_BAND_NUM, MQTTSN_NBIOT_BAND_VAL1, MQTTSN_NBIOT_BAND_VAL2, MQTTSN_NBIOT_BAND_VAL3};
 NBIOT_NBandTypeDef				DNSNBIoTBandType	= {DNS_NBIOT_BAND_NUM,    DNS_NBIOT_BAND_VAL1,    DNS_NBIOT_BAND_VAL2,    DNS_NBIOT_BAND_VAL3};
+NBIOT_NBandTypeDef				CTWingNBIoTBandType	= {CTWING_NBIOT_BAND_NUM, CTWING_NBIOT_BAND_VAL1, CTWING_NBIOT_BAND_VAL2, CTWING_NBIOT_BAND_VAL3};
 
 /**********************************************************************************************************
  @Function			void RadioPrintWorkinfo(void)

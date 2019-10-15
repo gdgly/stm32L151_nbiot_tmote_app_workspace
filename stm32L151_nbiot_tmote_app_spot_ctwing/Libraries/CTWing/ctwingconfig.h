@@ -8,6 +8,12 @@
 
 
 
+#define CTWING_COMMAND_TIMEOUT_SEC			30
+#define CTWING_COMMAND_FAILURE_CNT			3
+
+
+
+
 /* CTWING 协议栈开辟缓存大小 */
 #define CTWING_BUFFER_SIZE				512
 #define CTWING_DATASTACK_SIZE				1100
@@ -21,7 +27,7 @@
 
 
 
-
+typedef struct CTWING_LWM2MTransportTypeDef	CTWING_LWM2MTransportTypeDef;
 typedef struct CTWING_ClientsTypeDef		CTWING_ClientsTypeDef;
 
 /* CTWING Status */
@@ -113,17 +119,24 @@ struct CTWING_ClientsTypeDef
 	short							Recvlen;
 	unsigned char*						DataProcessStack;
 	size_t							DataProcessStack_size;
+	unsigned short						Command_Timeout_Sec;
+	unsigned short						Command_Failure_Cnt;
 	
 	
 	
 	
+	
+	
+	
+	CTWING_LWM2MTransportTypeDef*			LWM2MStack;
+	NET_NBIOT_ClientsTypeDef*			NetNbiotStack;
 	
 	
 	
 };
 
 /* Application Programming Interface */
-
+void CTWing_Client_Init(CTWING_ClientsTypeDef* pClient, CTWING_LWM2MTransportTypeDef* NetSock, NET_NBIOT_ClientsTypeDef* NetNbiotStack);	//CTWING客户端初始化
 
 
 

@@ -20,6 +20,7 @@
 #include "net_mqttsn_app.h"
 #include "net_mqttsn_pcp_app.h"
 #include "net_onenet_app.h"
+#include "net_ctwing_app.h"
 #include "stm32l1xx_config.h"
 #include "platform_config.h"
 #include "platform_map.h"

@@ -40,6 +40,7 @@
 #include "net_mqttsn_app.h"
 #include "net_mqttsn_pcp_app.h"
 #include "net_onenet_app.h"
+#include "net_ctwing_app.h"
 #include "radar_api.h"
 #include "radio_hal_rf.h"
 #include "radio_rf_app.h"
