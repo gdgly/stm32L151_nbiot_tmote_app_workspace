@@ -32,6 +32,7 @@
 NETCoapNeedSendCodeTypeDef	NETCoapNeedSendCode = NETCoapNeedSendCode_initializer;
 NETMqttSNNeedSendCodeTypeDef	NETMqttSNNeedSendCode = NETMqttSNNeedSendCode_initializer;
 NETOneNETNeedSendCodeTypeDef	NETOneNETNeedSendCode = NETOneNETNeedSendCode_initializer;
+NETCTWingNeedSendCodeTypeDef	NETCTWingNeedSendCode = NETCTWingNeedSendCode_initializer;
 
 /**********************************************************************************************************
  @Function			void NET_NBIOT_FIFOMessage_Initialization(void)
@@ -72,6 +73,13 @@ void NET_NBIOT_FIFOMessage_Initialization(void)
 	NET_OneNET_FifoSendMessageInit();
 	/* ONENET接收数据FIFO初始化 */
 	NET_OneNET_FifoRecvMessageInit();
+	
+#elif (NETPROTOCAL == NETCTWING)
+	
+	/* CTWING发送数据FIFO初始化 */
+	NET_CTWing_FifoSendMessageInit();
+	/* CTWING接收数据FIFO初始化 */
+	NET_CTWing_FifoRecvMessageInit();
 	
 #else
 	#error NETPROTOCAL Define Error
@@ -133,6 +141,13 @@ void NET_NBIOT_Initialization(void)
 	/* ONENET客户端初始化 */
 	OneNET_Client_Init(&OneNETClientHandler, &OneNETLWM2MNetHandler, &NetNbiotClientHandler);
 	
+#elif (NETPROTOCAL == NETCTWING)
+	
+	/* CTWING数据传输接口初始化 */
+	CTWING_Transport_Init(&CTWingLWM2MNetHandler, &NbiotClientHandler);
+	/* CTWING客户端初始化 */
+	CTWing_Client_Init(&CTWingClientHandler, &CTWingLWM2MNetHandler, &NetNbiotClientHandler);
+	
 #else
 	#error NETPROTOCAL Define Error
 #endif
@@ -147,6 +162,9 @@ void NET_NBIOT_Initialization(void)
 **********************************************************************************************************/
 void NET_NBIOT_Client_Init(NET_NBIOT_ClientsTypeDef* pClient)
 {
+#ifndef NETPROTOCAL
+	#error No Define NETPROTOCAL!
+#else
 #if NETPROTOCAL == NETCOAP
 	
 	pClient->PollExecution								= NET_POLL_EXECUTION_COAP;
@@ -164,6 +182,13 @@ void NET_NBIOT_Client_Init(NET_NBIOT_ClientsTypeDef* pClient)
 	
 	pClient->PollExecution								= NET_POLL_EXECUTION_ONENET;
 	
+#elif NETPROTOCAL == NETCTWING
+	
+	pClient->PollExecution								= NET_POLL_EXECUTION_CTWING;
+	
+#else
+	#error NETPROTOCAL Define Error
+#endif
 #endif
 }
 
@@ -349,6 +374,9 @@ void NET_NBIOT_OneNETSentDataAfterExexution(void)
 **********************************************************************************************************/
 void NET_NBIOT_DataProcessing(NET_NBIOT_ClientsTypeDef* pClient)
 {
+#ifndef NETPROTOCAL
+	#error No Define NETPROTOCAL!
+#else
 #if NETPROTOCAL == NETCOAP
 	
 	u32 len = 0;
@@ -715,6 +743,13 @@ void NET_NBIOT_DataProcessing(NET_NBIOT_ClientsTypeDef* pClient)
 #endif
 	}
 	
+#elif NETPROTOCAL == NETCTWING
+	
+	
+	
+#else
+	#error NETPROTOCAL Define Error
+#endif
 #endif
 }
 
@@ -726,6 +761,9 @@ void NET_NBIOT_DataProcessing(NET_NBIOT_ClientsTypeDef* pClient)
 **********************************************************************************************************/
 void NET_NBIOT_TaskProcessing(NET_NBIOT_ClientsTypeDef* pClient)
 {
+#ifndef NETPROTOCAL
+	#error No Define NETPROTOCAL!
+#else
 	/* NBIOT PollExecution */
 #if NETPROTOCAL == NETCOAP
 	
@@ -748,6 +786,10 @@ void NET_NBIOT_TaskProcessing(NET_NBIOT_ClientsTypeDef* pClient)
 		break;
 	
 	case NET_POLL_EXECUTION_ONENET:
+		pClient->PollExecution = NET_POLL_EXECUTION_COAP;
+		break;
+		
+	case NET_POLL_EXECUTION_CTWING:
 		pClient->PollExecution = NET_POLL_EXECUTION_COAP;
 		break;
 	}
@@ -790,6 +832,15 @@ void NET_NBIOT_TaskProcessing(NET_NBIOT_ClientsTypeDef* pClient)
 		pClient->PollExecution = NET_POLL_EXECUTION_DNS;
 #endif
 		break;
+	
+	case NET_POLL_EXECUTION_CTWING:
+#if MQTTSN_DNS_SERVER_TYPE == MQTTSN_DNS_SERVER_DISABLE
+		pClient->PollExecution = NET_POLL_EXECUTION_MQTTSN;
+#endif
+#if MQTTSN_DNS_SERVER_TYPE == MQTTSN_DNS_SERVER_ENABLE
+		pClient->PollExecution = NET_POLL_EXECUTION_DNS;
+#endif
+		break;
 	}
 	
 #elif NETPROTOCAL == NETONENET
@@ -815,8 +866,44 @@ void NET_NBIOT_TaskProcessing(NET_NBIOT_ClientsTypeDef* pClient)
 	case NET_POLL_EXECUTION_ONENET:
 		NET_ONENET_APP_PollExecution(&OneNETClientHandler);
 		break;
+	
+	case NET_POLL_EXECUTION_CTWING:
+		pClient->PollExecution = NET_POLL_EXECUTION_ONENET;
+		break;
 	}
 	
+#elif NETPROTOCAL == NETCTWING
+	
+	switch (pClient->PollExecution)
+	{
+	case NET_POLL_EXECUTION_COAP:
+		pClient->PollExecution = NET_POLL_EXECUTION_CTWING;
+		break;
+	
+	case NET_POLL_EXECUTION_DNS:
+		pClient->PollExecution = NET_POLL_EXECUTION_CTWING;
+		break;
+	
+	case NET_POLL_EXECUTION_MQTTSN:
+		pClient->PollExecution = NET_POLL_EXECUTION_CTWING;
+		break;
+	
+	case NET_POLL_EXECUTION_PCP:
+		pClient->PollExecution = NET_POLL_EXECUTION_CTWING;
+		break;
+	
+	case NET_POLL_EXECUTION_ONENET:
+		pClient->PollExecution = NET_POLL_EXECUTION_CTWING;
+		break;
+	
+	case NET_POLL_EXECUTION_CTWING:
+		NET_CTWING_APP_PollExecution(&CTWingClientHandler);
+		break;
+	}
+	
+#else
+	#error NETPROTOCAL Define Error
+#endif
 #endif
 }
 
@@ -853,6 +940,10 @@ void NET_NBIOT_BackupCurrentApp_Task(void)
 	MqttPCP_Upgrade_BackupCurrentAPP(&MqttSNPCPClientHandler);
 	
 #elif (NETPROTOCAL == NETONENET)
+	
+	//Todo
+	
+#elif (NETPROTOCAL == NETCTWING)
 	
 	//Todo
 	

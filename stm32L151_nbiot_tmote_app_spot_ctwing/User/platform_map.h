@@ -371,7 +371,6 @@ unsigned short	TCFG_EEPROM_GetServerPort(void);																//读取ServerPor
 char*		TCFG_EEPROM_Get_ServerIP_String(void);															//读取ServerIP字符串
 char*		TCFG_EEPROM_Get_ServerPort_String(void);														//读取ServerPort字符串
 
-#if NETPROTOCAL == NETCTWING
 void			TCFG_EEPROM_SetCTWingIP(unsigned int val);														//保存CTWingIP
 unsigned int	TCFG_EEPROM_GetCTWingIP(void);																//读取CTWingIP
 
@@ -380,7 +379,6 @@ unsigned short	TCFG_EEPROM_GetCTWingPort(void);																//读取CTWingPor
 
 char*		TCFG_EEPROM_Get_CTWingIP_String(void);															//读取CTWingIP字符串
 char*		TCFG_EEPROM_Get_CTWingPort_String(void);														//读取CTWingPort字符串
-#endif
 
 void			TCFG_EEPROM_SetWorkMode(unsigned char val);														//保存WorkMode
 unsigned char	TCFG_EEPROM_GetWorkMode(void);																//读取WorkMode
