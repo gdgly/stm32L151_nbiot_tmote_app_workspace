@@ -33,17 +33,17 @@ void NET_CTWING_NBIOT_Event_AttachCheck(CTWING_ClientsTypeDef* pClient);			//注
 void NET_CTWING_NBIOT_Event_AttachExecute(CTWING_ClientsTypeDef* pClient);			//注网进行
 void NET_CTWING_NBIOT_Event_AttachInquire(CTWING_ClientsTypeDef* pClient);			//注网查询
 void NET_CTWING_NBIOT_Event_ParameterCheckOut(CTWING_ClientsTypeDef* pClient);		//参数检出
+void NET_CTWING_NBIOT_Event_SendData(CTWING_ClientsTypeDef* pClient);				//发送数据
+void NET_CTWING_NBIOT_Event_RecvData(CTWING_ClientsTypeDef* pClient);				//接收数据
+void NET_CTWING_NBIOT_Event_SendDataRANormal(CTWING_ClientsTypeDef* pClient);		//发送数据RANormal
+void NET_CTWING_NBIOT_Event_RecvDataRANormal(CTWING_ClientsTypeDef* pClient);		//接收数据RANormal
+void NET_CTWING_NBIOT_Event_ExecutDownlinkData(CTWING_ClientsTypeDef* pClient);		//下行数据处理
 
-
-
-
-
-
-
-
-
-
-
-
+void NET_CTWING_Listen_PollExecution(CTWING_ClientsTypeDef* pClient);				//CTWING监听器处理
+void NET_CTWING_NBIOT_Listen_Enable_EnterNone(CTWING_ClientsTypeDef* pClient);		//事件(进入None模式)监听
+#if NBCTWING_LISTEN_PARAMETER_TYPE == NBCTWING_LISTEN_PARAMETER_ENABLE
+void NET_CTWING_NBIOT_Listen_Enable_EnterParameter(CTWING_ClientsTypeDef* pClient);	//使能(进入NBIOT运行信息)监听
+void NET_CTWING_NBIOT_Listen_Event_EnterParameter(CTWING_ClientsTypeDef* pClient);	//事件(进入NBIOT运行信息)监听
+#endif
 
 #endif /* __NET_ONENET_APP_H */

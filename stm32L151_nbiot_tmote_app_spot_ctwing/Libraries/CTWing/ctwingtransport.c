@@ -20,28 +20,6 @@
 #include "nbiotfunc.h"
 #include "string.h"
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /**********************************************************************************************************
  @Function			CTWING_StatusTypeDef CTWING_Transport_Init(CTWING_LWM2MTransportTypeDef* NetLWM2M, NBIOT_ClientsTypeDef* NBIotStack)
  @Description			CTWING_StatusTypeDef	: Initiative初始化CTWING数据传输接口
@@ -54,12 +32,6 @@ CTWING_StatusTypeDef CTWING_Transport_Init(CTWING_LWM2MTransportTypeDef* NetLWM2
 	CTWING_StatusTypeDef CTWingStatus = CTWING_OK;
 	
 	NetLWM2M->NBIotStack = NBIotStack;
-	
-	
-	
-	
-	
-	
 	
 	return CTWingStatus;
 }

@@ -5,27 +5,29 @@
 #include "nbiotconfig.h"
 #include "net_nbiot_app.h"
 
-
-
-
 #define CTWING_COMMAND_TIMEOUT_SEC			30
 #define CTWING_COMMAND_FAILURE_CNT			3
-
-
-
 
 /* CTWING 协议栈开辟缓存大小 */
 #define CTWING_BUFFER_SIZE				512
 #define CTWING_DATASTACK_SIZE				1100
 
+/* CTWING Server Type */
+#define CTWING_BYTESTREAM_UPLOAD_CMDTYPE	0x02
+#define CTWING_BYTESTREAM_UPLOAD_DATASETID	0x0001
+#define CTWING_BYTESTREAM_DNLOAD_CMDTYPE	0x06
+#define CTWING_BYTESTREAM_DNLOAD_DATASETID	0x1F41
 
+/* CTWING 事件监听器配置 */
+#define NBCTWING_LISTEN_MODE_ENTER_NONE		CTWING_ENTER_NONE
+#define NBCTWING_LISTEN_MODE_ENTER_PARAMETER	CTWING_ENTER_PARAMETER_CHECKOUT
+#define NBCTWING_LISTEN_DEFAULT_BOOTMODE	NBCTWING_LISTEN_MODE_ENTER_PARAMETER					// CTWing监听NB默认起始模式
 
+#define NBCTWING_LISTEN_ENTER_PARAMETER_SEC	45												// CTWing监听NB进入参数检查等待时间
 
-
-
-
-
-
+#define NBCTWING_LISTEN_PARAMETER_DISABLE	0
+#define NBCTWING_LISTEN_PARAMETER_ENABLE	1
+#define NBCTWING_LISTEN_PARAMETER_TYPE		NBCTWING_LISTEN_PARAMETER_ENABLE						// CTWing监听NB进入参数检查模式
 
 typedef struct CTWING_LWM2MTransportTypeDef	CTWING_LWM2MTransportTypeDef;
 typedef struct CTWING_ClientsTypeDef		CTWING_ClientsTypeDef;
@@ -92,12 +94,12 @@ typedef enum
 	CTWING_Not_the_at_allocated_socket		= 530
 }CTWING_StatusTypeDef;
 
-
-
-
-
-
-
+/* CTWING Listen Event */
+typedef enum
+{
+	CTWING_ENTER_NONE					= 0x00,											//无监听
+	CTWING_ENTER_PARAMETER_CHECKOUT		= 0x01											//进入NBIOT运行信息监听
+}CTWING_ListenEventTypeDef;
 
 /* CTWING Transport */
 struct CTWING_LWM2MTransportTypeDef
@@ -122,29 +124,34 @@ struct CTWING_ClientsTypeDef
 	unsigned short						Command_Timeout_Sec;
 	unsigned short						Command_Failure_Cnt;
 	
-	
-	
-	
-	
-	
+	/* 事件运行监听器 */
+	struct CTWINGListenRuningCtlTypeDef
+	{
+#if NBCTWING_LISTEN_PARAMETER_TYPE == NBCTWING_LISTEN_PARAMETER_ENABLE
+		struct CTWINGListenEnterParameterTypeDef
+		{
+			bool						listenEnable;
+			bool						listenStatus;
+			unsigned int				listenTimereachSec;
+			Stm32_CalculagraphTypeDef	listenRunTime;
+			
+			struct CTWINGEventCtlParameterTypedef
+			{
+				bool						eventEnable;
+				unsigned int				eventTimeoutSec;
+				unsigned char				eventFailureCnt;
+				Stm32_CalculagraphTypeDef	eventRunTime;
+			}EventCtl;
+		}ListenEnterParameter;
+#endif
+		CTWING_ListenEventTypeDef		listenEvent;
+	}ListenRunCtl;
 	
 	CTWING_LWM2MTransportTypeDef*			LWM2MStack;
 	NET_NBIOT_ClientsTypeDef*			NetNbiotStack;
-	
-	
-	
 };
 
 /* Application Programming Interface */
 void CTWing_Client_Init(CTWING_ClientsTypeDef* pClient, CTWING_LWM2MTransportTypeDef* NetSock, NET_NBIOT_ClientsTypeDef* NetNbiotStack);	//CTWING客户端初始化
-
-
-
-
-
-
-
-
-
 
 #endif /* __CTWING_CONFIG_H */

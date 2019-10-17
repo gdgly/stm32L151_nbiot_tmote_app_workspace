@@ -47,49 +47,19 @@ void CTWing_Client_Init(CTWING_ClientsTypeDef* pClient, CTWING_LWM2MTransportTyp
 	pClient->Command_Timeout_Sec									= CTWING_COMMAND_TIMEOUT_SEC;
 	pClient->Command_Failure_Cnt									= CTWING_COMMAND_FAILURE_CNT;
 	
-	
-	
-	
-	
-	
-	
-	
+	/* 事件运行监听器 */
+#if NBCTWING_LISTEN_PARAMETER_TYPE == NBCTWING_LISTEN_PARAMETER_ENABLE
+	pClient->ListenRunCtl.ListenEnterParameter.listenEnable			= false;
+	pClient->ListenRunCtl.ListenEnterParameter.listenStatus			= false;
+	pClient->ListenRunCtl.ListenEnterParameter.listenTimereachSec		= NBCTWING_LISTEN_ENTER_PARAMETER_SEC;
+	pClient->ListenRunCtl.ListenEnterParameter.EventCtl.eventEnable		= false;
+	pClient->ListenRunCtl.ListenEnterParameter.EventCtl.eventTimeoutSec	= 0;
+	pClient->ListenRunCtl.ListenEnterParameter.EventCtl.eventFailureCnt	= 0;
+#endif
+	pClient->ListenRunCtl.listenEvent								= NBCTWING_LISTEN_DEFAULT_BOOTMODE;
 	
 	pClient->LWM2MStack											= NetSock;
 	pClient->NetNbiotStack										= NetNbiotStack;
-	
-	
-	
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /********************************************** END OF FLEE **********************************************/

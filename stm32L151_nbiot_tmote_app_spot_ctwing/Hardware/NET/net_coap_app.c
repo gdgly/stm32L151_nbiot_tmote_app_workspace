@@ -2091,6 +2091,7 @@ void NET_COAP_NBIOT_Event_ExecutDownlinkData(NBIOT_ClientsTypeDef* pClient)
 							NETCoapNeedSendCode.DynamicInfo = 1;
 							#endif
 							NET_Coap_Message_RecvDataOffSet();
+							NETCoapNeedSendCode.ResponseInfoMsgId = pClient->Recvbuf[recvBufOffset + TCLOD_MSGTYPE_OFFSET];
 							NETCoapNeedSendCode.ResponseInfoErrcode = ret;
 							NETCoapNeedSendCode.ResponseInfo = 1;
 							NET_NBIOT_Initialization();

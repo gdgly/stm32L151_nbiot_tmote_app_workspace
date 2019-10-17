@@ -4,21 +4,4 @@
 #include "sys.h"
 #include "ctwingconfig.h"
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #endif /* __CTWING_FUNC_H */
