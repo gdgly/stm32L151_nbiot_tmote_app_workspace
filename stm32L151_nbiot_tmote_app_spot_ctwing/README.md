@@ -2,6 +2,8 @@
 > ##### Copyright (C) 2019 Movebroad Version:20.150 Design by Movebroad
 > ##### movebroad Kangkang ps: 版本号以下为此版本修改、增加、去除等内容记录！
 
+* 2019-10-18 :
+	* CTWing协议加入完成。
 * 2019-10-15 :
 	* CTWing框架搭建完成。
 * 2019-10-15 :

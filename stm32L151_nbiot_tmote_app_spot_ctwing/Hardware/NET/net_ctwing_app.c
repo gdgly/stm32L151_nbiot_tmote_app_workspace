@@ -89,7 +89,7 @@ void NET_CTWING_APP_PollExecution(CTWING_ClientsTypeDef* pClient)
 #if NBIOT_CLEAR_STORED_EARFCN_STAT
 		NET_CTWING_NBIOT_Event_ClearStoredEARFCN(pClient);
 #else
-		pClient->DictateRunCtl.dictateEvent = HARDWARE_REBOOT;
+		pClient->LWM2MStack->NBIotStack->DictateRunCtl.dictateEvent = HARDWARE_REBOOT;
 #endif
 		break;
 	
@@ -1168,7 +1168,8 @@ void NET_CTWING_NBIOT_Event_MiscEquipConfig(CTWING_ClientsTypeDef* pClient)
 	CTWING_NBIOT_DictateEvent_SetTime(pClient, 30);
 	
 	if (((NBStatus = NBIOT_Neul_NBxx_CheckReadNewMessageIndications(pClient->LWM2MStack->NBIotStack)) == NBIOT_OK) &&
-	    ((NBStatus = NBIOT_Neul_NBxx_CheckReadSentMessageIndications(pClient->LWM2MStack->NBIotStack)) == NBIOT_OK)) {
+	    ((NBStatus = NBIOT_Neul_NBxx_CheckReadSentMessageIndications(pClient->LWM2MStack->NBIotStack)) == NBIOT_OK) &&
+	    ((NBStatus = NBIOT_Neul_NBxx_CheckReadLWM2MLifetime(pClient->LWM2MStack->NBIotStack)) == NBIOT_OK)) {
 		/* Dictate execute is Success */
 		CTWING_NBIOT_DictateEvent_SuccessExecute(pClient, ATTACH_CHECK, MISC_EQUIP_CONFIG);
 		
@@ -1232,6 +1233,30 @@ void NET_CTWING_NBIOT_Event_MiscEquipConfig(CTWING_ClientsTypeDef* pClient)
 			CTWING_DEBUG_LOG_PRINTF("CTWing NSMI %d Fail ECde %d", CloseFunc, NBStatus);
 		#else
 			CTWING_DEBUG_LOG_PRINTF("CTWing NSMI %d Fail", CloseFunc);
+		#endif
+#endif
+			return;
+		}
+	}
+	
+	if (pClient->LWM2MStack->NBIotStack->Parameter.lwm2mlifetime != CTWING_LWM2M_LIFETIME) {
+		if ((NBStatus = NBIOT_Neul_NBxx_SetLWM2MLifetime(pClient->LWM2MStack->NBIotStack, CTWING_LWM2M_LIFETIME)) == NBIOT_OK) {
+			/* Dictate execute is Success */
+			CTWING_NBIOT_DictateEvent_SuccessExecute(pClient, ATTACH_CHECK, MISC_EQUIP_CONFIG);
+			
+#ifdef CTWING_DEBUG_LOG_RF_PRINT
+			CTWING_DEBUG_LOG_PRINTF("CTWing LifeTime %d Ok", CTWING_LWM2M_LIFETIME);
+#endif
+		}
+		else {
+			/* Dictate execute is Fail */
+			CTWING_NBIOT_DictateEvent_FailExecute(pClient, HARDWARE_REBOOT, STOP_MODE, MISC_EQUIP_CONFIG);
+			
+#ifdef CTWING_DEBUG_LOG_RF_PRINT
+		#if NBIOT_PRINT_ERROR_CODE_TYPE
+			CTWING_DEBUG_LOG_PRINTF("CTWing LifeTime %d Fail ECde %d", CTWING_LWM2M_LIFETIME, NBStatus);
+		#else
+			CTWING_DEBUG_LOG_PRINTF("CTWing LifeTime %d Fail", CTWING_LWM2M_LIFETIME);
 		#endif
 #endif
 			return;
