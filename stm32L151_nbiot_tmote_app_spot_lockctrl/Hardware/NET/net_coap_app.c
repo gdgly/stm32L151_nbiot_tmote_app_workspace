@@ -915,9 +915,9 @@ void NET_COAP_NBIOT_Event_ClearStoredEARFCN(NBIOT_ClientsTypeDef* pClient)
 		
 #ifdef COAP_DEBUG_LOG_RF_PRINT
 	#if NBIOT_PRINT_ERROR_CODE_TYPE
-		DNS_DEBUG_LOG_PRINTF("NB Clear EARFCN Fail Ecde %d", NBStatus);
+		COAP_DEBUG_LOG_PRINTF("NB Clear EARFCN Fail Ecde %d", NBStatus);
 	#else
-		DNS_DEBUG_LOG_PRINTF("NB Clear EARFCN Fail");
+		COAP_DEBUG_LOG_PRINTF("NB Clear EARFCN Fail");
 	#endif
 #endif
 		return;
@@ -1402,6 +1402,7 @@ void NET_COAP_NBIOT_Event_ParameterCheckOut(NBIOT_ClientsTypeDef* pClient)
 		/* Dictate execute is Success */
 		COAP_NBIOT_DictateEvent_SuccessExecute(pClient, NBCOAP_SENDMODE_TYPE, PARAMETER_CHECKOUT);
 		
+		/* 标记注网成功 */
 		pClient->Registered = true;
 		
 #ifdef COAP_DEBUG_LOG_RF_PRINT
@@ -1564,6 +1565,14 @@ void NET_COAP_NBIOT_Event_SendData(NBIOT_ClientsTypeDef* pClient)
 			COAP_NBIOT_DictateEvent_SuccessExecute(pClient, RECV_DATA, SEND_DATA);
 		}
 #else
+	#if NBCOAP_EXCEED_MSGLEN_TYPE
+		if (pClient->Sendlen > NBCOAP_EXCEED_MSGLEN_MAX) {
+			NET_Coap_Message_SendDataOffSet();
+			COAP_NBIOT_DictateEvent_SuccessExecute(pClient, SEND_DATA, SEND_DATA);
+			return;
+		}
+	#endif
+		
 		/* Send Data Success */
 		COAP_NBIOT_DictateEvent_SuccessExecute(pClient, RECV_DATA, SEND_DATA);
 #endif
@@ -1818,6 +1827,14 @@ void NET_COAP_NBIOT_Event_SendDataRANormal(NBIOT_ClientsTypeDef* pClient)
 			COAP_NBIOT_DictateEvent_SuccessExecute(pClient, RECV_DATA_RA_NORMAL, SEND_DATA_RA_NORMAL);
 		}
 #else
+	#if NBCOAP_EXCEED_MSGLEN_TYPE
+		if (pClient->Sendlen > NBCOAP_EXCEED_MSGLEN_MAX) {
+			NET_Coap_Message_SendDataOffSet();
+			COAP_NBIOT_DictateEvent_SuccessExecute(pClient, SEND_DATA_RA_NORMAL, SEND_DATA_RA_NORMAL);
+			return;
+		}
+	#endif
+		
 		/* Send Data Success */
 		COAP_NBIOT_DictateEvent_SuccessExecute(pClient, RECV_DATA_RA_NORMAL, SEND_DATA_RA_NORMAL);
 #endif

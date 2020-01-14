@@ -71,6 +71,28 @@ static void TCFG_EEPROM_Write_MqttSNServerAddr(void)
 }
 #endif
 
+#if NETPROTOCAL == NETCTWING
+/**********************************************************************************************************
+ @Function			static void TCFG_EEPROM_Write_CTWingCDPAddr(void)
+ @Description			TCFG_EEPROM_Write_CTWingCDPAddr				: 写入CTWing CDP Addr
+ @Input				void
+ @Return				void
+**********************************************************************************************************/
+static void TCFG_EEPROM_Write_CTWingCDPAddr(void)
+{
+	int serverip[4];
+	
+	sscanf(CCTWINGADDR, "%d.%d.%d.%d", &serverip[3], &serverip[2], &serverip[1], &serverip[0]);
+	TCFG_SystemData.CTWingCDPServer.ip.ip8[3] = serverip[3];
+	TCFG_SystemData.CTWingCDPServer.ip.ip8[2] = serverip[2];
+	TCFG_SystemData.CTWingCDPServer.ip.ip8[1] = serverip[1];
+	TCFG_SystemData.CTWingCDPServer.ip.ip8[0] = serverip[0];
+	TCFG_SystemData.CTWingCDPServer.port = CCTWINGPORT;
+	TCFG_EEPROM_SetCTWingIP(TCFG_SystemData.CTWingCDPServer.ip.ip32);
+	TCFG_EEPROM_SetCTWingPort(TCFG_SystemData.CTWingCDPServer.port);
+}
+#endif
+
 /**********************************************************************************************************
  @Function			void TCFG_EEPROM_SystemInfo_Init(void)
  @Description			TCFG_EEPROM_SystemInfo_Init					: 系统信息初始化
@@ -255,6 +277,11 @@ void TCFG_EEPROM_WriteConfigData(void)
 #if NETPROTOCAL == NETMQTTSN
 	TCFG_EEPROM_Write_MqttSNServerAddr();
 #endif
+	
+	/* CTWing服务器地址 */
+#if NETPROTOCAL == NETCTWING
+	TCFG_EEPROM_Write_CTWingCDPAddr();
+#endif
 }
 
 /**********************************************************************************************************
@@ -436,6 +463,15 @@ void TCFG_EEPROM_ReadConfigData(void)
 		TCFG_EEPROM_Write_MqttSNServerAddr();
 	}
 #endif
+	
+	/* CTWing服务器地址 */
+#if NETPROTOCAL == NETCTWING
+	TCFG_SystemData.CTWingCDPServer.ip.ip32 = TCFG_EEPROM_GetCTWingIP();
+	TCFG_SystemData.CTWingCDPServer.port = TCFG_EEPROM_GetCTWingPort();
+	if ((TCFG_SystemData.CTWingCDPServer.ip.ip32 == 0) && (TCFG_SystemData.CTWingCDPServer.port == 0)) {
+		TCFG_EEPROM_Write_CTWingCDPAddr();
+	}
+#endif
 }
 
 /**********************************************************************************************************
@@ -469,6 +505,11 @@ void TCFG_EEPROM_WriteParameterData(void)
 	/* MqttSN服务器地址 */
 #if NETPROTOCAL == NETMQTTSN
 	TCFG_EEPROM_Write_MqttSNServerAddr();
+#endif
+	
+	/* CTWing服务器地址 */
+#if NETPROTOCAL == NETCTWING
+	TCFG_EEPROM_Write_CTWingCDPAddr();
 #endif
 }
 
@@ -999,6 +1040,152 @@ char* TCFG_EEPROM_Get_ServerPort_String(void)
 	
 	return (char *)TCFG_SystemData.NBCoapCDPServerPort;
 }
+
+#if NETPROTOCAL == NETCTWING
+/**********************************************************************************************************
+ @Function			void TCFG_EEPROM_SetCTWingIP(unsigned int val)
+ @Description			TCFG_EEPROM_SetCTWingIP						: 保存CTWingIP
+ @Input				val
+ @Return				void
+**********************************************************************************************************/
+void TCFG_EEPROM_SetCTWingIP(unsigned int val)
+{
+	FLASH_EEPROM_WriteWord(TCFG_CTWING_SERVER_OFFSET, val);
+}
+
+/**********************************************************************************************************
+ @Function			unsigned int TCFG_EEPROM_GetCTWingIP(void)
+ @Description			TCFG_EEPROM_GetCTWingIP						: 读取CTWingIP
+ @Input				void
+ @Return				val
+**********************************************************************************************************/
+unsigned int TCFG_EEPROM_GetCTWingIP(void)
+{
+	return FLASH_EEPROM_ReadWord(TCFG_CTWING_SERVER_OFFSET);
+}
+
+/**********************************************************************************************************
+ @Function			void TCFG_EEPROM_SetCTWingPort(unsigned short val)
+ @Description			TCFG_EEPROM_SetCTWingPort					: 保存CTWingPort
+ @Input				val
+ @Return				void
+**********************************************************************************************************/
+void TCFG_EEPROM_SetCTWingPort(unsigned short val)
+{
+	FLASH_EEPROM_WriteHalfWord(TCFG_CTWING_SERVER_OFFSET + 4, val);
+}
+
+/**********************************************************************************************************
+ @Function			unsigned short TCFG_EEPROM_GetCTWingPort(void)
+ @Description			TCFG_EEPROM_GetCTWingPort					: 读取CTWingPort
+ @Input				void
+ @Return				val
+**********************************************************************************************************/
+unsigned short TCFG_EEPROM_GetCTWingPort(void)
+{
+	return FLASH_EEPROM_ReadHalfWord(TCFG_CTWING_SERVER_OFFSET + 4);
+}
+
+/**********************************************************************************************************
+ @Function			char* TCFG_EEPROM_Get_CTWingIP_String(void)
+ @Description			TCFG_EEPROM_Get_CTWingIP_String				: 读取CTWingIP字符串
+ @Input				void
+ @Return				CTWingIP_string
+**********************************************************************************************************/
+char* TCFG_EEPROM_Get_CTWingIP_String(void)
+{
+	TCFG_SystemData.CTWingCDPServer.ip.ip32 = TCFG_EEPROM_GetCTWingIP();
+	
+	memset((void*)&TCFG_SystemData.CTWingCDPServerIP, 0, sizeof(TCFG_SystemData.CTWingCDPServerIP));
+	sprintf((char *)TCFG_SystemData.CTWingCDPServerIP, "%d.%d.%d.%d", 
+	TCFG_SystemData.CTWingCDPServer.ip.ip8[3], TCFG_SystemData.CTWingCDPServer.ip.ip8[2], 
+	TCFG_SystemData.CTWingCDPServer.ip.ip8[1], TCFG_SystemData.CTWingCDPServer.ip.ip8[0]);
+	
+	return (char *)TCFG_SystemData.CTWingCDPServerIP;
+}
+
+/**********************************************************************************************************
+ @Function			char* TCFG_EEPROM_Get_CTWingPort_String(void)
+ @Description			TCFG_EEPROM_Get_CTWingPort_String				: 读取CTWingPort字符串
+ @Input				void
+ @Return				CTWingPort_string
+**********************************************************************************************************/
+char* TCFG_EEPROM_Get_CTWingPort_String(void)
+{
+	TCFG_SystemData.CTWingCDPServer.port = TCFG_EEPROM_GetCTWingPort();
+	
+	memset((void*)&TCFG_SystemData.CTWingCDPServerPort, 0, sizeof(TCFG_SystemData.CTWingCDPServerPort));
+	sprintf((char *)TCFG_SystemData.CTWingCDPServerPort, "%d", TCFG_SystemData.CTWingCDPServer.port);
+	
+	return (char *)TCFG_SystemData.CTWingCDPServerPort;
+}
+#else
+/**********************************************************************************************************
+ @Function			void TCFG_EEPROM_SetCTWingIP(unsigned int val)
+ @Description			TCFG_EEPROM_SetCTWingIP						: 保存CTWingIP
+ @Input				val
+ @Return				void
+**********************************************************************************************************/
+void TCFG_EEPROM_SetCTWingIP(unsigned int val)
+{
+	FLASH_EEPROM_WriteWord(TCFG_CTWING_SERVER_OFFSET, val);
+}
+
+/**********************************************************************************************************
+ @Function			unsigned int TCFG_EEPROM_GetCTWingIP(void)
+ @Description			TCFG_EEPROM_GetCTWingIP						: 读取CTWingIP
+ @Input				void
+ @Return				val
+**********************************************************************************************************/
+unsigned int TCFG_EEPROM_GetCTWingIP(void)
+{
+	return FLASH_EEPROM_ReadWord(TCFG_CTWING_SERVER_OFFSET);
+}
+
+/**********************************************************************************************************
+ @Function			void TCFG_EEPROM_SetCTWingPort(unsigned short val)
+ @Description			TCFG_EEPROM_SetCTWingPort					: 保存CTWingPort
+ @Input				val
+ @Return				void
+**********************************************************************************************************/
+void TCFG_EEPROM_SetCTWingPort(unsigned short val)
+{
+	FLASH_EEPROM_WriteHalfWord(TCFG_CTWING_SERVER_OFFSET + 4, val);
+}
+
+/**********************************************************************************************************
+ @Function			unsigned short TCFG_EEPROM_GetCTWingPort(void)
+ @Description			TCFG_EEPROM_GetCTWingPort					: 读取CTWingPort
+ @Input				void
+ @Return				val
+**********************************************************************************************************/
+unsigned short TCFG_EEPROM_GetCTWingPort(void)
+{
+	return FLASH_EEPROM_ReadHalfWord(TCFG_CTWING_SERVER_OFFSET + 4);
+}
+
+/**********************************************************************************************************
+ @Function			char* TCFG_EEPROM_Get_CTWingIP_String(void)
+ @Description			TCFG_EEPROM_Get_CTWingIP_String				: 读取CTWingIP字符串
+ @Input				void
+ @Return				CTWingIP_string
+**********************************************************************************************************/
+char* TCFG_EEPROM_Get_CTWingIP_String(void)
+{
+	return (char *)0;
+}
+
+/**********************************************************************************************************
+ @Function			char* TCFG_EEPROM_Get_CTWingPort_String(void)
+ @Description			TCFG_EEPROM_Get_CTWingPort_String				: 读取CTWingPort字符串
+ @Input				void
+ @Return				CTWingPort_string
+**********************************************************************************************************/
+char* TCFG_EEPROM_Get_CTWingPort_String(void)
+{
+	return (char *)0;
+}
+#endif
 
 /**********************************************************************************************************
  @Function			void TCFG_EEPROM_SetWorkMode(unsigned char val)
@@ -1600,6 +1787,7 @@ void TCFG_EEPROM_GetVender(char* vender)
 char* TCFG_EEPROM_Get_Vender_String(void)
 {
 	TCFG_EEPROM_GetVender((char *)&TCFG_SystemData.SubVender);
+	TCFG_SystemData.SubVender[3] = '\0';
 	
 	return (char*)TCFG_SystemData.SubVender;
 }
@@ -2371,6 +2559,8 @@ char* TCFG_Utility_Get_Nbiot_Iccid_String(void)
 	return (char*)MqttSNClientHandler.SocketStack->NBIotStack->Parameter.iccid;
 #elif NETPROTOCAL == NETONENET
 	return (char*)OneNETClientHandler.LWM2MStack->NBIotStack->Parameter.iccid;
+#elif NETPROTOCAL == NETCTWING
+	return (char*)CTWingClientHandler.LWM2MStack->NBIotStack->Parameter.iccid;
 #endif
 }
 #endif
@@ -2390,6 +2580,8 @@ char* TCFG_Utility_Get_Nbiot_Imei_String(void)
 	return (char*)MqttSNClientHandler.SocketStack->NBIotStack->Parameter.imei;
 #elif NETPROTOCAL == NETONENET
 	return (char*)OneNETClientHandler.LWM2MStack->NBIotStack->Parameter.imei;
+#elif NETPROTOCAL == NETCTWING
+	return (char*)CTWingClientHandler.LWM2MStack->NBIotStack->Parameter.imei;
 #endif
 }
 #endif
@@ -2409,6 +2601,8 @@ char* TCFG_Utility_Get_Nbiot_Imeisv_String(void)
 	return (char*)MqttSNClientHandler.SocketStack->NBIotStack->Parameter.imeisv;
 #elif NETPROTOCAL == NETONENET
 	return (char*)OneNETClientHandler.LWM2MStack->NBIotStack->Parameter.imeisv;
+#elif NETPROTOCAL == NETCTWING
+	return (char*)CTWingClientHandler.LWM2MStack->NBIotStack->Parameter.imeisv;
 #endif
 }
 #endif
@@ -2428,6 +2622,8 @@ char* TCFG_Utility_Get_Nbiot_Imsi_String(void)
 	return (char*)MqttSNClientHandler.SocketStack->NBIotStack->Parameter.imsi;
 #elif NETPROTOCAL == NETONENET
 	return (char*)OneNETClientHandler.LWM2MStack->NBIotStack->Parameter.imsi;
+#elif NETPROTOCAL == NETCTWING
+	return (char*)CTWingClientHandler.LWM2MStack->NBIotStack->Parameter.imsi;
 #endif
 }
 #endif
@@ -2446,6 +2642,8 @@ int TCFG_Utility_Get_Nbiot_Rssi_IntVal(void)
 	return MqttSNClientHandler.SocketStack->NBIotStack->Parameter.rssi;
 #elif NETPROTOCAL == NETONENET
 	return OneNETClientHandler.LWM2MStack->NBIotStack->Parameter.rssi;
+#elif NETPROTOCAL == NETCTWING
+	return CTWingClientHandler.LWM2MStack->NBIotStack->Parameter.rssi;
 #endif
 }
 
@@ -2463,6 +2661,8 @@ unsigned char TCFG_Utility_Get_Nbiot_Rssi_UnCharVal(void)
 	return MqttSNClientHandler.SocketStack->NBIotStack->Parameter.rssi;
 #elif NETPROTOCAL == NETONENET
 	return OneNETClientHandler.LWM2MStack->NBIotStack->Parameter.rssi;
+#elif NETPROTOCAL == NETCTWING
+	return CTWingClientHandler.LWM2MStack->NBIotStack->Parameter.rssi;
 #endif
 }
 
@@ -2480,6 +2680,8 @@ unsigned char TCFG_Utility_Get_Nbiot_WorkMode(void)
 	return MqttSNClientHandler.SocketStack->NBIotStack->Parameter.connectedstate;
 #elif NETPROTOCAL == NETONENET
 	return OneNETClientHandler.LWM2MStack->NBIotStack->Parameter.connectedstate;
+#elif NETPROTOCAL == NETCTWING
+	return CTWingClientHandler.LWM2MStack->NBIotStack->Parameter.connectedstate;
 #endif
 }
 
@@ -2497,6 +2699,8 @@ unsigned char TCFG_Utility_Get_Nbiot_Registered(void)
 	return MqttSNClientHandler.SocketStack->NBIotStack->Registered;
 #elif NETPROTOCAL == NETONENET
 	return OneNETClientHandler.LWM2MStack->NBIotStack->Registered;
+#elif NETPROTOCAL == NETCTWING
+	return CTWingClientHandler.LWM2MStack->NBIotStack->Registered;
 #endif
 }
 
@@ -2514,6 +2718,8 @@ unsigned char TCFG_Utility_Get_Nbiot_NetStateIdentification(void)
 	return MqttSNClientHandler.SocketStack->NBIotStack->NetStateIdentification;
 #elif NETPROTOCAL == NETONENET
 	return OneNETClientHandler.LWM2MStack->NBIotStack->NetStateIdentification;
+#elif NETPROTOCAL == NETCTWING
+	return CTWingClientHandler.LWM2MStack->NBIotStack->NetStateIdentification;
 #endif
 }
 
@@ -2532,6 +2738,8 @@ unsigned int TCFG_Utility_Get_Nbiot_NetworkRegStatusTac(void)
 	return MqttSNClientHandler.SocketStack->NBIotStack->Parameter.networkRegStatus.tac;
 #elif NETPROTOCAL == NETONENET
 	return OneNETClientHandler.LWM2MStack->NBIotStack->Parameter.networkRegStatus.tac;
+#elif NETPROTOCAL == NETCTWING
+	return CTWingClientHandler.LWM2MStack->NBIotStack->Parameter.networkRegStatus.tac;
 #endif
 }
 
@@ -2549,6 +2757,8 @@ unsigned int TCFG_Utility_Get_Nbiot_NetworkRegStatusCellID(void)
 	return MqttSNClientHandler.SocketStack->NBIotStack->Parameter.networkRegStatus.cellID;
 #elif NETPROTOCAL == NETONENET
 	return OneNETClientHandler.LWM2MStack->NBIotStack->Parameter.networkRegStatus.cellID;
+#elif NETPROTOCAL == NETCTWING
+	return CTWingClientHandler.LWM2MStack->NBIotStack->Parameter.networkRegStatus.cellID;
 #endif
 }
 #endif
@@ -2568,6 +2778,8 @@ int TCFG_Utility_Get_Nbiot_RadioSignalpower(void)
 	return MqttSNClientHandler.SocketStack->NBIotStack->Parameter.statisticsRADIO.Signalpower;
 #elif NETPROTOCAL == NETONENET
 	return OneNETClientHandler.LWM2MStack->NBIotStack->Parameter.statisticsRADIO.Signalpower;
+#elif NETPROTOCAL == NETCTWING
+	return CTWingClientHandler.LWM2MStack->NBIotStack->Parameter.statisticsRADIO.Signalpower;
 #endif
 }
 
@@ -2585,6 +2797,8 @@ int TCFG_Utility_Get_Nbiot_RadioTotalpower(void)
 	return MqttSNClientHandler.SocketStack->NBIotStack->Parameter.statisticsRADIO.Totalpower;
 #elif NETPROTOCAL == NETONENET
 	return OneNETClientHandler.LWM2MStack->NBIotStack->Parameter.statisticsRADIO.Totalpower;
+#elif NETPROTOCAL == NETCTWING
+	return CTWingClientHandler.LWM2MStack->NBIotStack->Parameter.statisticsRADIO.Totalpower;
 #endif
 }
 
@@ -2602,6 +2816,8 @@ int TCFG_Utility_Get_Nbiot_RadioTXpower(void)
 	return MqttSNClientHandler.SocketStack->NBIotStack->Parameter.statisticsRADIO.TXpower;
 #elif NETPROTOCAL == NETONENET
 	return OneNETClientHandler.LWM2MStack->NBIotStack->Parameter.statisticsRADIO.TXpower;
+#elif NETPROTOCAL == NETCTWING
+	return CTWingClientHandler.LWM2MStack->NBIotStack->Parameter.statisticsRADIO.TXpower;
 #endif
 }
 
@@ -2619,6 +2835,8 @@ unsigned int TCFG_Utility_Get_Nbiot_RadioTXtime(void)
 	return MqttSNClientHandler.SocketStack->NBIotStack->Parameter.statisticsRADIO.TXtime;
 #elif NETPROTOCAL == NETONENET
 	return OneNETClientHandler.LWM2MStack->NBIotStack->Parameter.statisticsRADIO.TXtime;
+#elif NETPROTOCAL == NETCTWING
+	return CTWingClientHandler.LWM2MStack->NBIotStack->Parameter.statisticsRADIO.TXtime;
 #endif
 }
 
@@ -2636,6 +2854,8 @@ unsigned int TCFG_Utility_Get_Nbiot_RadioRXtime(void)
 	return MqttSNClientHandler.SocketStack->NBIotStack->Parameter.statisticsRADIO.RXtime;
 #elif NETPROTOCAL == NETONENET
 	return OneNETClientHandler.LWM2MStack->NBIotStack->Parameter.statisticsRADIO.RXtime;
+#elif NETPROTOCAL == NETCTWING
+	return CTWingClientHandler.LWM2MStack->NBIotStack->Parameter.statisticsRADIO.RXtime;
 #endif
 }
 
@@ -2653,6 +2873,8 @@ unsigned int TCFG_Utility_Get_Nbiot_RadioCellID(void)
 	return MqttSNClientHandler.SocketStack->NBIotStack->Parameter.statisticsRADIO.CellID;
 #elif NETPROTOCAL == NETONENET
 	return OneNETClientHandler.LWM2MStack->NBIotStack->Parameter.statisticsRADIO.CellID;
+#elif NETPROTOCAL == NETCTWING
+	return CTWingClientHandler.LWM2MStack->NBIotStack->Parameter.statisticsRADIO.CellID;
 #endif
 }
 
@@ -2670,6 +2892,8 @@ int TCFG_Utility_Get_Nbiot_RadioECL(void)
 	return MqttSNClientHandler.SocketStack->NBIotStack->Parameter.statisticsRADIO.ECL;
 #elif NETPROTOCAL == NETONENET
 	return OneNETClientHandler.LWM2MStack->NBIotStack->Parameter.statisticsRADIO.ECL;
+#elif NETPROTOCAL == NETCTWING
+	return CTWingClientHandler.LWM2MStack->NBIotStack->Parameter.statisticsRADIO.ECL;
 #endif
 }
 
@@ -2682,17 +2906,37 @@ int TCFG_Utility_Get_Nbiot_RadioECL(void)
 int TCFG_Utility_Get_Nbiot_RadioSNR(void)
 {
 	int nbRadioSnr = 0;
+	int lastval = 0;
 	
 #if NETPROTOCAL == NETCOAP
-	nbRadioSnr = NbiotClientHandler.Parameter.statisticsRADIO.SNR >  127 ?  127 : NbiotClientHandler.Parameter.statisticsRADIO.SNR;
-	nbRadioSnr = NbiotClientHandler.Parameter.statisticsRADIO.SNR < -127 ? -127 : NbiotClientHandler.Parameter.statisticsRADIO.SNR;
+	lastval = NbiotClientHandler.Parameter.statisticsRADIO.SNR % 10;
+	nbRadioSnr = (NbiotClientHandler.Parameter.statisticsRADIO.SNR >=  127) ?  127 : NbiotClientHandler.Parameter.statisticsRADIO.SNR;
+	NbiotClientHandler.Parameter.statisticsRADIO.SNR = nbRadioSnr;
+	nbRadioSnr = (NbiotClientHandler.Parameter.statisticsRADIO.SNR <= -128) ? -128 : NbiotClientHandler.Parameter.statisticsRADIO.SNR;
+	NbiotClientHandler.Parameter.statisticsRADIO.SNR = nbRadioSnr;
 #elif NETPROTOCAL == NETMQTTSN
-	nbRadioSnr = MqttSNClientHandler.SocketStack->NBIotStack->Parameter.statisticsRADIO.SNR >  127 ?  127 : MqttSNClientHandler.SocketStack->NBIotStack->Parameter.statisticsRADIO.SNR;
-	nbRadioSnr = MqttSNClientHandler.SocketStack->NBIotStack->Parameter.statisticsRADIO.SNR < -127 ? -127 : MqttSNClientHandler.SocketStack->NBIotStack->Parameter.statisticsRADIO.SNR;
+	lastval = MqttSNClientHandler.SocketStack->NBIotStack->Parameter.statisticsRADIO.SNR % 10;
+	nbRadioSnr = (MqttSNClientHandler.SocketStack->NBIotStack->Parameter.statisticsRADIO.SNR >=  127) ?  127 : MqttSNClientHandler.SocketStack->NBIotStack->Parameter.statisticsRADIO.SNR;
+	MqttSNClientHandler.SocketStack->NBIotStack->Parameter.statisticsRADIO.SNR = nbRadioSnr;
+	nbRadioSnr = (MqttSNClientHandler.SocketStack->NBIotStack->Parameter.statisticsRADIO.SNR <= -128) ? -128 : MqttSNClientHandler.SocketStack->NBIotStack->Parameter.statisticsRADIO.SNR;
+	MqttSNClientHandler.SocketStack->NBIotStack->Parameter.statisticsRADIO.SNR = nbRadioSnr;
 #elif NETPROTOCAL == NETONENET
-	nbRadioSnr = OneNETClientHandler.LWM2MStack->NBIotStack->Parameter.statisticsRADIO.SNR >  127 ?  127 : OneNETClientHandler.LWM2MStack->NBIotStack->Parameter.statisticsRADIO.SNR;
-	nbRadioSnr = OneNETClientHandler.LWM2MStack->NBIotStack->Parameter.statisticsRADIO.SNR < -127 ? -127 : OneNETClientHandler.LWM2MStack->NBIotStack->Parameter.statisticsRADIO.SNR;
+	lastval = OneNETClientHandler.LWM2MStack->NBIotStack->Parameter.statisticsRADIO.SNR % 10;
+	nbRadioSnr = (OneNETClientHandler.LWM2MStack->NBIotStack->Parameter.statisticsRADIO.SNR >=  127) ?  127 : OneNETClientHandler.LWM2MStack->NBIotStack->Parameter.statisticsRADIO.SNR;
+	OneNETClientHandler.LWM2MStack->NBIotStack->Parameter.statisticsRADIO.SNR = nbRadioSnr;
+	nbRadioSnr = (OneNETClientHandler.LWM2MStack->NBIotStack->Parameter.statisticsRADIO.SNR <= -128) ? -128 : OneNETClientHandler.LWM2MStack->NBIotStack->Parameter.statisticsRADIO.SNR;
+	OneNETClientHandler.LWM2MStack->NBIotStack->Parameter.statisticsRADIO.SNR = nbRadioSnr;
+#elif NETPROTOCAL == NETCTWING
+	lastval = CTWingClientHandler.LWM2MStack->NBIotStack->Parameter.statisticsRADIO.SNR % 10;
+	nbRadioSnr = (CTWingClientHandler.LWM2MStack->NBIotStack->Parameter.statisticsRADIO.SNR >=  127) ?  127 : CTWingClientHandler.LWM2MStack->NBIotStack->Parameter.statisticsRADIO.SNR;
+	CTWingClientHandler.LWM2MStack->NBIotStack->Parameter.statisticsRADIO.SNR = nbRadioSnr;
+	nbRadioSnr = (CTWingClientHandler.LWM2MStack->NBIotStack->Parameter.statisticsRADIO.SNR <= -128) ? -128 : CTWingClientHandler.LWM2MStack->NBIotStack->Parameter.statisticsRADIO.SNR;
+	CTWingClientHandler.LWM2MStack->NBIotStack->Parameter.statisticsRADIO.SNR = nbRadioSnr;
 #endif
+	
+	if (lastval < 0) lastval = -lastval;
+	if (nbRadioSnr ==  127) nbRadioSnr -= lastval;
+	if (nbRadioSnr == -128) nbRadioSnr += lastval;
 	
 	return nbRadioSnr;
 }
@@ -2711,6 +2955,8 @@ int TCFG_Utility_Get_Nbiot_RadioEARFCN(void)
 	return MqttSNClientHandler.SocketStack->NBIotStack->Parameter.statisticsRADIO.EARFCN;
 #elif NETPROTOCAL == NETONENET
 	return OneNETClientHandler.LWM2MStack->NBIotStack->Parameter.statisticsRADIO.EARFCN;
+#elif NETPROTOCAL == NETCTWING
+	return CTWingClientHandler.LWM2MStack->NBIotStack->Parameter.statisticsRADIO.EARFCN;
 #endif
 }
 
@@ -2728,6 +2974,8 @@ int TCFG_Utility_Get_Nbiot_RadioPCI(void)
 	return MqttSNClientHandler.SocketStack->NBIotStack->Parameter.statisticsRADIO.PCI;
 #elif NETPROTOCAL == NETONENET
 	return OneNETClientHandler.LWM2MStack->NBIotStack->Parameter.statisticsRADIO.PCI;
+#elif NETPROTOCAL == NETCTWING
+	return CTWingClientHandler.LWM2MStack->NBIotStack->Parameter.statisticsRADIO.PCI;
 #endif
 }
 
@@ -2745,6 +2993,8 @@ int TCFG_Utility_Get_Nbiot_RadioRSRQ(void)
 	return MqttSNClientHandler.SocketStack->NBIotStack->Parameter.statisticsRADIO.RSRQ;
 #elif NETPROTOCAL == NETONENET
 	return OneNETClientHandler.LWM2MStack->NBIotStack->Parameter.statisticsRADIO.RSRQ;
+#elif NETPROTOCAL == NETCTWING
+	return CTWingClientHandler.LWM2MStack->NBIotStack->Parameter.statisticsRADIO.RSRQ;
 #endif
 }
 #endif
@@ -2764,6 +3014,8 @@ int TCFG_Utility_Get_Nbiot_CellEarfcn(void)
 	return MqttSNClientHandler.SocketStack->NBIotStack->Parameter.statisticsCELL.earfcn;
 #elif NETPROTOCAL == NETONENET
 	return OneNETClientHandler.LWM2MStack->NBIotStack->Parameter.statisticsCELL.earfcn;
+#elif NETPROTOCAL == NETCTWING
+	return CTWingClientHandler.LWM2MStack->NBIotStack->Parameter.statisticsCELL.earfcn;
 #endif
 }
 
@@ -2781,6 +3033,8 @@ int TCFG_Utility_Get_Nbiot_CellPhysicalCellID(void)
 	return MqttSNClientHandler.SocketStack->NBIotStack->Parameter.statisticsCELL.physicalcellID;
 #elif NETPROTOCAL == NETONENET
 	return OneNETClientHandler.LWM2MStack->NBIotStack->Parameter.statisticsCELL.physicalcellID;
+#elif NETPROTOCAL == NETCTWING
+	return CTWingClientHandler.LWM2MStack->NBIotStack->Parameter.statisticsCELL.physicalcellID;
 #endif
 }
 
@@ -2798,6 +3052,8 @@ int TCFG_Utility_Get_Nbiot_CellPrimaryCell(void)
 	return MqttSNClientHandler.SocketStack->NBIotStack->Parameter.statisticsCELL.primarycell;
 #elif NETPROTOCAL == NETONENET
 	return OneNETClientHandler.LWM2MStack->NBIotStack->Parameter.statisticsCELL.primarycell;
+#elif NETPROTOCAL == NETCTWING
+	return CTWingClientHandler.LWM2MStack->NBIotStack->Parameter.statisticsCELL.primarycell;
 #endif
 }
 
@@ -2815,6 +3071,8 @@ int TCFG_Utility_Get_Nbiot_CellRsrp(void)
 	return MqttSNClientHandler.SocketStack->NBIotStack->Parameter.statisticsCELL.rsrp;
 #elif NETPROTOCAL == NETONENET
 	return OneNETClientHandler.LWM2MStack->NBIotStack->Parameter.statisticsCELL.rsrp;
+#elif NETPROTOCAL == NETCTWING
+	return CTWingClientHandler.LWM2MStack->NBIotStack->Parameter.statisticsCELL.rsrp;
 #endif
 }
 
@@ -2832,6 +3090,8 @@ int TCFG_Utility_Get_Nbiot_CellRsrq(void)
 	return MqttSNClientHandler.SocketStack->NBIotStack->Parameter.statisticsCELL.rsrq;
 #elif NETPROTOCAL == NETONENET
 	return OneNETClientHandler.LWM2MStack->NBIotStack->Parameter.statisticsCELL.rsrq;
+#elif NETPROTOCAL == NETCTWING
+	return CTWingClientHandler.LWM2MStack->NBIotStack->Parameter.statisticsCELL.rsrq;
 #endif
 }
 
@@ -2849,6 +3109,8 @@ int TCFG_Utility_Get_Nbiot_CellCellrssi(void)
 	return MqttSNClientHandler.SocketStack->NBIotStack->Parameter.statisticsCELL.rssi;
 #elif NETPROTOCAL == NETONENET
 	return OneNETClientHandler.LWM2MStack->NBIotStack->Parameter.statisticsCELL.rssi;
+#elif NETPROTOCAL == NETCTWING
+	return CTWingClientHandler.LWM2MStack->NBIotStack->Parameter.statisticsCELL.rssi;
 #endif
 }
 
@@ -2862,6 +3124,7 @@ int TCFG_Utility_Get_Nbiot_CellSnr(void)
 {
 	int nbRadioSnr = 0;
 	
+#if 0
 #if NETPROTOCAL == NETCOAP
 	nbRadioSnr = NbiotClientHandler.Parameter.statisticsCELL.snr >  127 ?  127 : NbiotClientHandler.Parameter.statisticsCELL.snr;
 	nbRadioSnr = NbiotClientHandler.Parameter.statisticsCELL.snr < -127 ? -127 : NbiotClientHandler.Parameter.statisticsCELL.snr;
@@ -2871,6 +3134,20 @@ int TCFG_Utility_Get_Nbiot_CellSnr(void)
 #elif NETPROTOCAL == NETONENET
 	nbRadioSnr = OneNETClientHandler.LWM2MStack->NBIotStack->Parameter.statisticsCELL.snr >  127 ?  127 : OneNETClientHandler.LWM2MStack->NBIotStack->Parameter.statisticsCELL.snr;
 	nbRadioSnr = OneNETClientHandler.LWM2MStack->NBIotStack->Parameter.statisticsCELL.snr < -127 ? -127 : OneNETClientHandler.LWM2MStack->NBIotStack->Parameter.statisticsCELL.snr;
+#elif NETPROTOCAL == NETCTWING
+	nbRadioSnr = CTWingClientHandler.LWM2MStack->NBIotStack->Parameter.statisticsCELL.snr >  127 ?  127 : CTWingClientHandler.LWM2MStack->NBIotStack->Parameter.statisticsCELL.snr;
+	nbRadioSnr = CTWingClientHandler.LWM2MStack->NBIotStack->Parameter.statisticsCELL.snr < -127 ? -127 : CTWingClientHandler.LWM2MStack->NBIotStack->Parameter.statisticsCELL.snr;
+#endif
+#else
+#if NETPROTOCAL == NETCOAP
+	nbRadioSnr = NbiotClientHandler.Parameter.statisticsCELL.snr;
+#elif NETPROTOCAL == NETMQTTSN
+	nbRadioSnr = MqttSNClientHandler.SocketStack->NBIotStack->Parameter.statisticsCELL.snr;
+#elif NETPROTOCAL == NETONENET
+	nbRadioSnr = OneNETClientHandler.LWM2MStack->NBIotStack->Parameter.statisticsCELL.snr;
+#elif NETPROTOCAL == NETCTWING
+	nbRadioSnr = CTWingClientHandler.LWM2MStack->NBIotStack->Parameter.statisticsCELL.snr;
+#endif
 #endif
 	
 	return nbRadioSnr;
@@ -2892,6 +3169,8 @@ unsigned int TCFG_Utility_Get_Nbiot_NetworkRegistStatusTac(void)
 	return MqttSNClientHandler.SocketStack->NBIotStack->Parameter.networkRegStatus.tac;
 #elif NETPROTOCAL == NETONENET
 	return OneNETClientHandler.LWM2MStack->NBIotStack->Parameter.networkRegStatus.tac;
+#elif NETPROTOCAL == NETCTWING
+	return CTWingClientHandler.LWM2MStack->NBIotStack->Parameter.networkRegStatus.tac;
 #endif
 }
 
@@ -2909,6 +3188,8 @@ unsigned int TCFG_Utility_Get_Nbiot_NetworkRegistStatusCellID(void)
 	return MqttSNClientHandler.SocketStack->NBIotStack->Parameter.networkRegStatus.cellID;
 #elif NETPROTOCAL == NETONENET
 	return OneNETClientHandler.LWM2MStack->NBIotStack->Parameter.networkRegStatus.cellID;
+#elif NETPROTOCAL == NETCTWING
+	return CTWingClientHandler.LWM2MStack->NBIotStack->Parameter.networkRegStatus.cellID;
 #endif
 }
 #endif
@@ -2949,6 +3230,8 @@ char* TCFG_Utility_Get_Nbiot_PCPPlatformSoftVersion(void)
 	return (char*)MqttSNPCPClientHandler.Parameter.PlatformSoftVersion;
 #elif NETPROTOCAL == NETONENET
 	return (char*)NULL;
+#elif NETPROTOCAL == NETCTWING
+	return (char*)NULL;
 #endif
 }
 
@@ -2968,6 +3251,9 @@ unsigned char TCFG_Utility_Get_Nbiot_PCPPlatformSoftVersionMajor(void)
 #elif NETPROTOCAL == NETMQTTSN
 	sscanf((const char*)MqttSNPCPClientHandler.Parameter.PlatformSoftVersion, "V%d.%d", &softMajor, &softSub);
 #elif NETPROTOCAL == NETONENET
+	softMajor = softMajor;
+	softSub = softSub;
+#elif NETPROTOCAL == NETCTWING
 	softMajor = softMajor;
 	softSub = softSub;
 #endif
@@ -2993,6 +3279,9 @@ unsigned char TCFG_Utility_Get_Nbiot_PCPPlatformSoftVersionSub(void)
 #elif NETPROTOCAL == NETONENET
 	softMajor = softMajor;
 	softSub = softSub;
+#elif NETPROTOCAL == NETCTWING
+	softMajor = softMajor;
+	softSub = softSub;
 #endif
 	
 	return softSub;
@@ -3012,6 +3301,8 @@ unsigned short TCFG_Utility_Get_Nbiot_PCPUpgradePackSliceSize(void)
 	return MqttSNPCPClientHandler.Parameter.UpgradePackSliceSize;
 #elif NETPROTOCAL == NETONENET
 	return 0;
+#elif NETPROTOCAL == NETCTWING
+	return 0;
 #endif
 }
 
@@ -3028,6 +3319,8 @@ unsigned short TCFG_Utility_Get_Nbiot_PCPUpgradePackSliceNum(void)
 #elif NETPROTOCAL == NETMQTTSN
 	return MqttSNPCPClientHandler.Parameter.UpgradePackSliceNum;
 #elif NETPROTOCAL == NETONENET
+	return 0;
+#elif NETPROTOCAL == NETCTWING
 	return 0;
 #endif
 }
@@ -3046,6 +3339,8 @@ unsigned short TCFG_Utility_Get_Nbiot_PCPUpgradePackSliceIndex(void)
 	return MqttSNPCPClientHandler.Parameter.UpgradePackSliceIndex;
 #elif NETPROTOCAL == NETONENET
 	return 0;
+#elif NETPROTOCAL == NETCTWING
+	return 0;
 #endif
 }
 
@@ -3063,6 +3358,8 @@ unsigned short TCFG_Utility_Get_Nbiot_PCPUpgradePackCheckCode(void)
 	return MqttSNPCPClientHandler.Parameter.UpgradePackCheckCode;
 #elif NETPROTOCAL == NETONENET
 	return 0;
+#elif NETPROTOCAL == NETCTWING
+	return 0;
 #endif
 }
 
@@ -3079,6 +3376,8 @@ unsigned short TCFG_Utility_Get_Nbiot_PCPUpgradeStartTimes(void)
 #elif NETPROTOCAL == NETMQTTSN
 	return MqttSNPCPClientHandler.Parameter.UpgradeStartTimes;
 #elif NETPROTOCAL == NETONENET
+	return 0;
+#elif NETPROTOCAL == NETCTWING
 	return 0;
 #endif
 }
@@ -3098,6 +3397,8 @@ char* TCFG_Utility_Get_Nbiot_Manufacturer(void)
 	return MqttSNClientHandler.SocketStack->NBIotStack->Parameter.manufacturer;
 #elif NETPROTOCAL == NETONENET
 	return OneNETClientHandler.LWM2MStack->NBIotStack->Parameter.manufacturer;
+#elif NETPROTOCAL == NETCTWING
+	return CTWingClientHandler.LWM2MStack->NBIotStack->Parameter.manufacturer;
 #endif
 }
 #endif
@@ -3117,6 +3418,8 @@ char* TCFG_Utility_Get_Nbiot_Manufacturermode(void)
 	return MqttSNClientHandler.SocketStack->NBIotStack->Parameter.manufacturermode;
 #elif NETPROTOCAL == NETONENET
 	return OneNETClientHandler.LWM2MStack->NBIotStack->Parameter.manufacturermode;
+#elif NETPROTOCAL == NETCTWING
+	return CTWingClientHandler.LWM2MStack->NBIotStack->Parameter.manufacturermode;
 #endif
 }
 #endif
@@ -3136,6 +3439,8 @@ char* TCFG_Utility_Get_Nbiot_ModelVersion(void)
 	return MqttSNClientHandler.SocketStack->NBIotStack->Parameter.modelversion;
 #elif NETPROTOCAL == NETONENET
 	return OneNETClientHandler.LWM2MStack->NBIotStack->Parameter.modelversion;
+#elif NETPROTOCAL == NETCTWING
+	return CTWingClientHandler.LWM2MStack->NBIotStack->Parameter.modelversion;
 #endif
 }
 #endif
@@ -3154,6 +3459,8 @@ char* TCFG_Utility_Get_Nbiot_PDPType(void)
 	return MqttSNClientHandler.SocketStack->NBIotStack->Parameter.cgdcontPDPType;
 #elif NETPROTOCAL == NETONENET
 	return OneNETClientHandler.LWM2MStack->NBIotStack->Parameter.cgdcontPDPType;
+#elif NETPROTOCAL == NETCTWING
+	return CTWingClientHandler.LWM2MStack->NBIotStack->Parameter.cgdcontPDPType;
 #endif
 }
 
@@ -3171,6 +3478,8 @@ char* TCFG_Utility_Get_Nbiot_APN(void)
 	return MqttSNClientHandler.SocketStack->NBIotStack->Parameter.cgdcontAPN;
 #elif NETPROTOCAL == NETONENET
 	return OneNETClientHandler.LWM2MStack->NBIotStack->Parameter.cgdcontAPN;
+#elif NETPROTOCAL == NETCTWING
+	return CTWingClientHandler.LWM2MStack->NBIotStack->Parameter.cgdcontAPN;
 #endif
 }
 
@@ -3189,6 +3498,8 @@ char* TCFG_Utility_Get_Nbiot_PDPContext_APN(void)
 	return MqttSNClientHandler.SocketStack->NBIotStack->Parameter.cgdcontAPN;
 #elif NETPROTOCAL == NETONENET
 	return OneNETClientHandler.LWM2MStack->NBIotStack->Parameter.cgdcontAPN;
+#elif NETPROTOCAL == NETCTWING
+	return CTWingClientHandler.LWM2MStack->NBIotStack->Parameter.cgdcontAPN;
 #endif
 #endif
 	
@@ -3199,6 +3510,8 @@ char* TCFG_Utility_Get_Nbiot_PDPContext_APN(void)
 	return MqttSNClientHandler.SocketStack->NBIotStack->Parameter.cgcontrdpAPN;
 #elif NETPROTOCAL == NETONENET
 	return OneNETClientHandler.LWM2MStack->NBIotStack->Parameter.cgcontrdpAPN;
+#elif NETPROTOCAL == NETCTWING
+	return CTWingClientHandler.LWM2MStack->NBIotStack->Parameter.cgcontrdpAPN;
 #endif
 #endif
 }
@@ -3218,6 +3531,8 @@ char* TCFG_Utility_Get_Nbiot_PrimaryDns(void)
 	return (char*)MqttSNClientHandler.SocketStack->NBIotStack->Parameter.qidnscfg.PrimaryDns;
 #elif NETPROTOCAL == NETONENET
 	return (char*)OneNETClientHandler.LWM2MStack->NBIotStack->Parameter.qidnscfg.PrimaryDns;
+#elif NETPROTOCAL == NETCTWING
+	return (char*)CTWingClientHandler.LWM2MStack->NBIotStack->Parameter.qidnscfg.PrimaryDns;
 #endif
 }
 
@@ -3235,6 +3550,8 @@ char* TCFG_Utility_Get_Nbiot_SecondaryDns(void)
 	return (char*)MqttSNClientHandler.SocketStack->NBIotStack->Parameter.qidnscfg.SecondaryDns;
 #elif NETPROTOCAL == NETONENET
 	return (char*)OneNETClientHandler.LWM2MStack->NBIotStack->Parameter.qidnscfg.SecondaryDns;
+#elif NETPROTOCAL == NETCTWING
+	return (char*)CTWingClientHandler.LWM2MStack->NBIotStack->Parameter.qidnscfg.SecondaryDns;
 #endif
 }
 #endif

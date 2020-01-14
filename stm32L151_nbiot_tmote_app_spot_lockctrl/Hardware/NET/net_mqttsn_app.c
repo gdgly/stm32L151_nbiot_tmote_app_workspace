@@ -1402,6 +1402,7 @@ void NET_MQTTSN_NBIOT_Event_ParameterCheckOut(MQTTSN_ClientsTypeDef* pClient)
 		/* Dictate execute is Success */
 		MQTTSN_NBIOT_DictateEvent_SuccessExecute(pClient, MQTTSN_PROCESS_STACK, PARAMETER_CHECKOUT);
 		
+		/* 标记注网成功 */
 		pClient->SocketStack->NBIotStack->Registered = true;
 		
 #ifdef MQTTSN_DEBUG_LOG_RF_PRINT
@@ -2262,7 +2263,10 @@ MQTTSN_StatusTypeDef NET_MQTTSN_SendPayloadPacket(MQTTSN_ClientsTypeDef* pClient
 			topic.type = MQTTSN_TOPIC_TYPE_PREDEFINED;
 			topic.data.id = TOPICID_STANDARD;
 			if ((MQTTSNStatus = MQTTSN_Publish(pClient, topic, &message)) != MQTTSN_OK) {
-				//Todo
+#if MQTTSN_EXCEED_MSGLEN_TYPE
+				/* It's info msg must Trans OK */
+				if (pMsgLen > MQTTSN_EXCEED_MSGLEN_MAX) MQTTSNStatus = MQTTSN_OK;
+#endif
 			}
 			break;
 		}
