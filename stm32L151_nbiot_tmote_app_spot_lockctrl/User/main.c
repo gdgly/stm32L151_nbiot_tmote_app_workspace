@@ -43,6 +43,7 @@
 #include "net_mqttsn_app.h"
 #include "net_mqttsn_pcp_app.h"
 #include "net_onenet_app.h"
+#include "net_ctwing_app.h"
 #include "radar_api.h"
 #include "radio_hal_rf.h"
 #include "radio_rf_app.h"
@@ -295,6 +296,8 @@ void MainRollingEnteredUpWork(void)
 	NETMqttSNNeedSendCode.InfoWorkWait = 3;
 #elif NETPROTOCAL == NETONENET
 	NETOneNETNeedSendCode.WorkInfoWait = 3;
+#elif NETPROTOCAL == NETCTWING
+	NETCTWingNeedSendCode.WorkInfoWait = 3;
 #endif
 	
 	if (TCFG_SystemData.NBIotSentCountDay != 0) TCFG_SystemData.NBIotSentCountDay = 0;
@@ -327,7 +330,53 @@ void MainRollingUpwardsActived(void)
 	/* 日常处理 */
 	MainHandleRoutine();
 	
-	if (!((NETCoapNeedSendCode.WorkInfoWait > 0) || (NETMqttSNNeedSendCode.InfoWorkWait > 0) || (NETOneNETNeedSendCode.WorkInfoWait > 0))) {
+	if (!((NETCoapNeedSendCode.WorkInfoWait > 0) || (NETMqttSNNeedSendCode.InfoWorkWait > 0) || (NETOneNETNeedSendCode.WorkInfoWait > 0) || (NETCTWingNeedSendCode.WorkInfoWait > 0))) {
+#if PRODUCTTEST_READ_TYPE
+		if (ProductTest_Read() || (TCFG_Utility_Get_Device_BootCount() > PRODUCTTEST_OVER_BOOTCNT)) {
+		#if NBIOT_SNEDCOUNTDAY_LIMIT_TYPE
+			if (TCFG_Utility_Get_NBIot_SentCountDay() == TCFG_EEPROM_GetNBIotSentCountLimit()) {
+			#if NETPROTOCAL == NETCOAP
+				NETCoapNeedSendCode.DynamicInfo = 1;
+			#elif NETPROTOCAL == NETMQTTSN
+				NETMqttSNNeedSendCode.InfoDynamic = 1;
+			#elif NETPROTOCAL == NETONENET
+				NETOneNETNeedSendCode.DynamicInfo = 1;
+			#elif NETPROTOCAL == NETCTWING
+				NETCTWingNeedSendCode.DynamicInfo = 1;
+			#endif
+			}
+			if (TCFG_Utility_Get_NBIot_SentCountDay() > TCFG_EEPROM_GetNBIotSentCountLimit() + 1) {
+				if (NBIOTPOWER_IO_READ()) {
+					NET_NBIOT_Initialization();
+					NBIOTPOWER(OFF);
+				}
+			}
+			else {
+				/* NBIOT APP Task */
+				NET_NBIOT_App_Task();
+			}
+		#else
+			/* NBIOT APP Task */
+			NET_NBIOT_App_Task();
+		#endif
+		}
+		else {
+			/* NBIOT Power OFF */
+			if (NBIOTPOWER_IO_READ()) {
+				NBIOT_Neul_NBxx_CheckReadIMEI(&NbiotClientHandler);
+				NBIOT_Neul_NBxx_TestSupportedBands(&NbiotClientHandler, NBIOT_MODULE_BAND_SUPPORT);
+				NET_NBIOT_Initialization();
+				NBIOTPOWER(OFF);
+			}
+			if (NbiotClientHandler.Parameter.bandsupport != true) {
+				Radio_Trf_Printf("imei:null or band:no support");
+				BEEP_CtrlRepeat_Extend(3, 50, 25);
+			}
+			else {
+				Radio_Trf_Printf("imei:%s", TCFG_Utility_Get_Nbiot_Imei_String());
+			}
+		}
+#else
 	#if NBIOT_SNEDCOUNTDAY_LIMIT_TYPE
 		if (TCFG_Utility_Get_NBIot_SentCountDay() == TCFG_EEPROM_GetNBIotSentCountLimit()) {
 		#if NETPROTOCAL == NETCOAP
@@ -336,6 +385,8 @@ void MainRollingUpwardsActived(void)
 			NETMqttSNNeedSendCode.InfoDynamic = 1;
 		#elif NETPROTOCAL == NETONENET
 			NETOneNETNeedSendCode.DynamicInfo = 1;
+		#elif NETPROTOCAL == NETCTWING
+			NETCTWingNeedSendCode.DynamicInfo = 1;
 		#endif
 		}
 		if (TCFG_Utility_Get_NBIot_SentCountDay() > TCFG_EEPROM_GetNBIotSentCountLimit() + 1) {
@@ -352,6 +403,7 @@ void MainRollingUpwardsActived(void)
 		/* NBIOT APP Task */
 		NET_NBIOT_App_Task();
 	#endif
+#endif
 	}
 	
 	/* 遥控器编码处理 */
@@ -372,6 +424,7 @@ void MainRollingUpwardsActived(void)
 **********************************************************************************************************/
 void MainRollingUpwardsSleep(void)
 {
+#if NBIOT_UPWARDSSLEEP_TYPE
 	/* 日常处理 */
 	MainHandleRoutine();
 	
@@ -380,15 +433,18 @@ void MainRollingUpwardsSleep(void)
 		NET_NBIOT_App_Task();
 	}
 	else {
+#endif
 		/* NBIOT Power OFF */
 		if (NBIOTPOWER_IO_READ()) {
 			NET_NBIOT_Initialization();
 			NBIOTPOWER(OFF);
 		}
+#if NBIOT_UPWARDSSLEEP_TYPE
 	}
 	
 	/* 小无线处理 */
 	Radio_Trf_App_Task();
+#endif
 }
 
 /* ============================================ 倒放处理 =============================================== */
@@ -418,6 +474,8 @@ void MainRollingEnteredDownWork(void)
 	NETMqttSNNeedSendCode.InfoWorkWait = 3;
 #elif NETPROTOCAL == NETONENET
 	NETOneNETNeedSendCode.WorkInfoWait = 3;
+#elif NETPROTOCAL == NETCTWING
+	NETCTWingNeedSendCode.WorkInfoWait = 3;
 #endif
 }
 
@@ -432,9 +490,23 @@ void MainRollingEnteredDownSleepKeepActived(void)
 	/* 日常处理 */
 	MainHandleRoutine();
 	
-	if (!((NETCoapNeedSendCode.WorkInfoWait > 0) || (NETMqttSNNeedSendCode.InfoWorkWait > 0) || (NETOneNETNeedSendCode.WorkInfoWait > 0))) {
+	if (!((NETCoapNeedSendCode.WorkInfoWait > 0) || (NETMqttSNNeedSendCode.InfoWorkWait > 0) || (NETOneNETNeedSendCode.WorkInfoWait > 0) || (NETCTWingNeedSendCode.WorkInfoWait > 0))) {
+#if PRODUCTTEST_READ_TYPE
+		if (ProductTest_Read() || (TCFG_Utility_Get_Device_BootCount() > PRODUCTTEST_OVER_BOOTCNT)) {
+			/* NBIOT APP Task */
+			NET_NBIOT_App_Task();
+		}
+		else {
+			/* NBIOT Power OFF */
+			if (NBIOTPOWER_IO_READ()) {
+				NET_NBIOT_Initialization();
+				NBIOTPOWER(OFF);
+			}
+		}
+#else
 		/* NBIOT APP Task */
 		NET_NBIOT_App_Task();
+#endif
 	}
 }
 
@@ -461,11 +533,24 @@ void MainRollingEnteringDownSleep(void)
 **********************************************************************************************************/
 void MainRollingDownSleep(void)
 {
-	/* NBIOT Power OFF */
-	if (NBIOTPOWER_IO_READ()) {
-		NET_NBIOT_Initialization();
-		NBIOTPOWER(OFF);
+#if NBIOT_DNWARDSSLEEP_TYPE
+	/* 日常处理 */
+	MainHandleRoutine();
+	
+	if (TCFG_Utility_Get_Nbiot_IdleLifetime() > 0) {
+		/* NBIOT APP Task */
+		NET_NBIOT_App_Task();
 	}
+	else {
+#endif
+		/* NBIOT Power OFF */
+		if (NBIOTPOWER_IO_READ()) {
+			NET_NBIOT_Initialization();
+			NBIOTPOWER(OFF);
+		}
+#if NBIOT_DNWARDSSLEEP_TYPE
+	}
+#endif
 }
 
 /* ============================================ 日常处理 =============================================== */
@@ -495,9 +580,11 @@ void MainHandleRoutine(void)
 				__NOP();
 			}
 			else if (NETCoapNeedSendCode.WorkInfoWait > 0) {
+		#if ROLLINGOVER_WORKINFO_TYPE
 			#if NBCOAP_SENDCODE_WORK_INFO
 				NETCoapNeedSendCode.WorkInfo = 1;
 			#endif
+		#endif
 			}
 			NETCoapNeedSendCode.WorkInfoWait--;
 		}
@@ -508,9 +595,11 @@ void MainHandleRoutine(void)
 				__NOP();
 			}
 			else if (NETMqttSNNeedSendCode.InfoWorkWait > 0) {
+		#if ROLLINGOVER_WORKINFO_TYPE
 			#if NBMQTTSN_SENDCODE_WORK_INFO
 				NETMqttSNNeedSendCode.InfoWork = 1;
 			#endif
+		#endif
 			}
 			NETMqttSNNeedSendCode.InfoWorkWait--;
 		}
@@ -521,11 +610,28 @@ void MainHandleRoutine(void)
 				__NOP();
 			}
 			else if (NETOneNETNeedSendCode.WorkInfoWait > 0) {
+		#if ROLLINGOVER_WORKINFO_TYPE
 			#if NBONENET_SENDCODE_WORK_INFO
 				NETOneNETNeedSendCode.WorkInfo = 1;
 			#endif
+		#endif
 			}
 			NETOneNETNeedSendCode.WorkInfoWait--;
+		}
+#endif
+#if NETPROTOCAL == NETCTWING
+		if (NETCTWingNeedSendCode.WorkInfoWait > 0) {
+			if (NETCTWingNeedSendCode.WorkInfoWait > 1) {
+				__NOP();
+			}
+			else if (NETCTWingNeedSendCode.WorkInfoWait > 0) {
+		#if ROLLINGOVER_WORKINFO_TYPE
+			#if NBCTWING_SENDCODE_WORK_INFO
+				NETCTWingNeedSendCode.WorkInfo = 1;
+			#endif
+		#endif
+			}
+			NETCTWingNeedSendCode.WorkInfoWait--;
 		}
 #endif
 		TCFG_Utility_Sub_Nbiot_IdleLifetime();
@@ -534,6 +640,17 @@ void MainHandleRoutine(void)
 	if ((Stm32_GetSecondTick() / 60) != SystemRunningTime.minutes) {
 		SystemRunningTime.minutes = Stm32_GetSecondTick() / 60;
 		
+#if NETDATACONNECT_TIMEOUT_TYPE
+		if ((DeviceIdleMode == false) && (DeviceActivedMode == true)) {
+			NetDataConnectTimeout++;
+			if (NetDataConnectTimeout >= NETDATACONNECT_TIMEOUT_TIME) {
+				Stm32_System_Software_Reboot(RBTMODE_NETCONNECT_OVERTIME);
+			}
+		}
+		else {
+			NetDataConnectTimeout = 0;
+		}
+#endif
 	}
 	/* Every FifteenMinutes Running */
 	if ((Stm32_GetSecondTick() / 900) != SystemRunningTime.fifteenMinutes) {
@@ -610,6 +727,13 @@ void MainHandleRoutine(void)
 	#if NBONENET_SENDCODE_DYNAMIC_INFO
 		NETOneNETNeedSendCode.DynamicInfo = 1;
 	#endif
+#elif NETPROTOCAL == NETCTWING
+	#if NBCTWING_SENDCODE_WORK_INFO
+		NETCTWingNeedSendCode.WorkInfo = 1;
+	#endif
+	#if NBCTWING_SENDCODE_DYNAMIC_INFO
+		NETCTWingNeedSendCode.DynamicInfo = 1;
+	#endif
 #endif
 		
 		TCFG_SystemData.CoapConnectTime = TCFG_Utility_GetCoapConnectTime();
@@ -642,6 +766,10 @@ void MainHandleRoutine(void)
 #elif NETPROTOCAL == NETONENET
 	#if NBONENET_SENDCODE_BASIC_INFO
 		NETOneNETNeedSendCode.BasicInfo = 1;
+	#endif
+#elif NETPROTOCAL == NETCTWING
+	#if NBCTWING_SENDCODE_BASIC_INFO
+		NETCTWingNeedSendCode.BasicInfo = 1;
 	#endif
 #endif
 	}

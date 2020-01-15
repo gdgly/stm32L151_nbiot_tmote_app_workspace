@@ -1650,6 +1650,11 @@ void NET_COAP_NBIOT_Event_RecvData(NBIOT_ClientsTypeDef* pClient)
 				/* NB 继续活跃注入时间 */
 				TCFG_Utility_Set_Nbiot_IdleLifetime(NBIOT_CONTINUE_LIFETIME);
 				
+#if NETDATACONNECT_TIMEOUT_TYPE
+				/* Net Data Connect Time Clear 0 */
+				NetDataConnectTimeout = 0;
+#endif
+				
 				/* Get ConnectTime */
 				COAP_NBIOT_GetConnectTime(pClient, true);
 				
@@ -1923,6 +1928,11 @@ void NET_COAP_NBIOT_Event_RecvDataRANormal(NBIOT_ClientsTypeDef* pClient)
 		/* NB 继续活跃注入时间 */
 		TCFG_Utility_Set_Nbiot_IdleLifetime(NBIOT_CONTINUE_LIFETIME);
 		
+#if NETDATACONNECT_TIMEOUT_TYPE
+		/* Net Data Connect Time Clear 0 */
+		NetDataConnectTimeout = 0;
+#endif
+		
 		/* Get ConnectTime */
 		COAP_NBIOT_GetConnectTime(pClient, true);
 		
@@ -2137,6 +2147,7 @@ void NET_COAP_NBIOT_Event_ExecutDownlinkData(NBIOT_ClientsTypeDef* pClient)
 							NETCoapNeedSendCode.DynamicInfo = 1;
 							#endif
 							NET_Coap_Message_RecvDataOffSet();
+							NETCoapNeedSendCode.ResponseInfoMsgId = pClient->Recvbuf[recvBufOffset + TCLOD_MSGTYPE_OFFSET];
 							NETCoapNeedSendCode.ResponseInfoErrcode = ret;
 							NETCoapNeedSendCode.ResponseInfo = 1;
 							NET_NBIOT_Initialization();

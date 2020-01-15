@@ -133,6 +133,10 @@ void TCFG_EEPROM_WriteConfigData(void)
 	TCFG_SystemData.CoverGain = RADAR_COVERGAIN_DEFAULT;
 	TCFG_EEPROM_SetCoverGain(TCFG_SystemData.CoverGain);
 	
+	/* 高通滤波器截止频率 */
+	TCFG_SystemData.RadarHighPass = TRADAR_HIGHPASS_DEFAULT;
+	TCFG_EEPROM_SetHighPass(TCFG_SystemData.RadarHighPass);
+	
 	/* 雷达整体增益 */
 	TCFG_SystemData.RadarGain = TRADAR_GAIN_DEFAULT;
 	TCFG_EEPROM_SetRadarGain(TCFG_SystemData.RadarGain);
@@ -1847,8 +1851,8 @@ void TCFG_EEPROM_SetNbiotHeart(uint8_t val)
 	if (val == 0) {
 		val = NBIOT_HEART_DATA_TIMER;
 	}
-	else if (val > 48) {
-		val = 48;
+	else if (val > 192) {
+		val = 192;
 	}
 	
 	FLASH_EEPROM_WriteByte(TCFG_NB_HEART_OFFSET, val);
@@ -1868,8 +1872,8 @@ unsigned char TCFG_EEPROM_GetNbiotHeart(void)
 	if (val == 0) {
 		val = NBIOT_HEART_DATA_TIMER;
 	}
-	else if (val > 48) {
-		val = 48;
+	else if (val > 192) {
+		val = 192;
 	}
 	
 	return val;

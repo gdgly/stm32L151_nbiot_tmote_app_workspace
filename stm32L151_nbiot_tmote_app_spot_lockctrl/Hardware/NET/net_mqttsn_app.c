@@ -1570,6 +1570,10 @@ void NET_MQTTSN_Event_Active(MQTTSN_ClientsTypeDef* pClient)
 		#endif
 			/* NB 继续活跃注入时间 */
 			TCFG_Utility_Set_Nbiot_IdleLifetime(NBIOT_CONTINUE_LIFETIME);
+#if NETDATACONNECT_TIMEOUT_TYPE
+			/* Net Data Connect Time Clear 0 */
+			NetDataConnectTimeout = 0;
+#endif
 			/* Get ConnectTime */
 			MQTTSN_NBIOT_GetConnectTime(pClient, true);
 #ifdef MQTTSN_DEBUG_LOG_RF_PRINT
