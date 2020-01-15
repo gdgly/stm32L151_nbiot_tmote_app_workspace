@@ -193,7 +193,7 @@ int main(void)
 		SystemSoftResetTime = 0;
 		
 		/* 运行正常BootCount清0 */
-		if ((BootUp == true) && (Stm32_GetSecondTick() > 90)) {
+		if ((BootUp == true) && (Stm32_GetSecondTick() > RUNNING_SUCCESS_BOOT_COUNT_SEC)) {
 			TCFG_EEPROM_SetBootCount(0);
 			if (TCFG_EEPROM_GetBootCount() == 0) {
 				BootUp = false;
@@ -201,7 +201,7 @@ int main(void)
 		}
 		
 		/* 运行正常BackupApp */
-		if ((BackUp == true) && (Stm32_GetSecondTick() > (24 * 3600))) {
+		if ((BackUp == true) && (Stm32_GetSecondTick() > RUNNING_SUCCESS_BACKUP_APP_SEC)) {
 			NET_NBIOT_BackupCurrentApp_Task();
 			BackUp = false;
 		}
@@ -821,7 +821,7 @@ void DeBugMain(void)
 		SystemSoftResetTime = 0;
 		
 		/* 运行正常BootCount清0 */
-		if ((BootUp == true) && (Stm32_GetSecondTick() > 90)) {
+		if ((BootUp == true) && (Stm32_GetSecondTick() > RUNNING_SUCCESS_BOOT_COUNT_SEC)) {
 			TCFG_EEPROM_SetBootCount(0);
 			if (TCFG_EEPROM_GetBootCount() == 0) {
 				BootUp = false;
@@ -829,7 +829,7 @@ void DeBugMain(void)
 		}
 		
 		/* 运行正常BackupApp */
-		if ((BackUp == true) && (Stm32_GetSecondTick() > (24 * 3600))) {
+		if ((BackUp == true) && (Stm32_GetSecondTick() > RUNNING_SUCCESS_BACKUP_APP_SEC)) {
 			NET_NBIOT_BackupCurrentApp_Task();
 			BackUp = false;
 		}

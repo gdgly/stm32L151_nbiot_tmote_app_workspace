@@ -2,6 +2,9 @@
 > ##### Copyright (C) 2020 Movebroad Version:20.151 Design by Movebroad
 > ##### movebroad Kangkang ps: 版本号以下为此版本修改、增加、去除等内容记录！
 
+* 2020-01-15 :
+	* 车位锁修改。
+	* 蜂鸣器引脚上电不用进行统一IO口初始化。
 * 2020-01-13 :
 	* 发布151固件。
 * 2020-01-10 :
