@@ -797,10 +797,18 @@ void DeBugMain(void)
 	INFRARED_TUBE_TRANSMIT_ENABLE();
 #endif
 	
+#if 0
+	SPOT_Lock_Initialization();
+#endif
+	
 	while (true) {
 		
 #if 0
 		Radio_Trf_Printf("Infr : %d", INFRARED_TUBE_RECEIVE_STATE());
+#endif
+		
+#if 0
+		SPOT_Lock_App_Task();
 #endif
 		
 #if DEBUGLOWPOWERMODE == DEBUGLOWPOWERENABLE

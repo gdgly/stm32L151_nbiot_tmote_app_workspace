@@ -32,15 +32,6 @@ void SPOT_Lock_Client_Init(SpotLock_ClientsTypeDef* pClient)
 	pClient->ControlFALLEnable								= false;
 	
 	pClient->SpotLockStateFlag								= SPOT_LOCK_NONE;
-	
-	
-	
-	
-	
-	
-	
-	
-	
 }
 
 /**********************************************************************************************************
@@ -99,15 +90,5 @@ SpotLock_StateFlagTypeDef SPOT_Lock_Client_GetStateFlag(SpotLock_ClientsTypeDef*
 {
 	return pClient->SpotLockStateFlag;
 }
-
-
-
-
-
-
-
-
-
-
 
 /********************************************** END OF FLEE **********************************************/

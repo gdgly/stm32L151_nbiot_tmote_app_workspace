@@ -110,28 +110,6 @@ u16 MOTOR_SNS_Read(u32 timeout)
 	return pwr_vol * 280 / 4096.0;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /**********************************************************************************************************
  @Function			void MOTOR_BI_OUT(u8 val)
  @Description			MOTOR_BI_OUT
@@ -174,34 +152,7 @@ void MOTOR_FI_OUT(u8 val)
 	MOTOR_FI(val);
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#if MOTOR_DEVICE_TYPE == MOTOR_DEVICE_TYPE1
 /**********************************************************************************************************
  @Function			void MOTOR_SPOTLOCK_Initialization(MOTOR_SpotLockCtrlTypeDef ctrl)
  @Description			MOTOR_SPOTLOCK_Initialization
@@ -226,6 +177,7 @@ void MOTOR_SPOTLOCK_Initialization(MOTOR_SpotLockCtrlTypeDef ctrl)
 		
 		if (ctrl == SPOTLOCK_CTRL_RISE) {
 			if (INFRARED_TUBE_RECEIVE_STATE() == INFRARED_TUBE_RISE) {
+				Stm32_Calculagraph_CountdownMS(&motorTimer, MOTOR_SNS_THRESHOLD_DELAY_MS);
 				MOTOR_FALL();
 				while ((INFRARED_TUBE_RECEIVE_STATE() == INFRARED_TUBE_RISE)) {
 					if ((Stm32_Calculagraph_IsExpiredMS(&motorTimer) == true) && (MOTOR_SNS_Read(MOTOR_SNS_READ_VOLTAGE_DELAY_MS) > MOTOR_SNS_THRESHOLD_VOLTAGE)) goto error;
@@ -300,7 +252,9 @@ error:
 	
 	MOTOR_OPEN();
 }
+#endif
 
+#if MOTOR_DEVICE_TYPE == MOTOR_DEVICE_TYPE1
 /**********************************************************************************************************
  @Function			void MOTOR_SPOTLOCK_Control(MOTOR_SpotLockCtrlTypeDef ctrl)
  @Description			MOTOR_SPOTLOCK_Control
@@ -323,6 +277,7 @@ void MOTOR_SPOTLOCK_Control(MOTOR_SpotLockCtrlTypeDef ctrl)
 		
 		if (ctrl == SPOTLOCK_CTRL_RISE) {
 			if (INFRARED_TUBE_RECEIVE_STATE() == INFRARED_TUBE_RISE) {
+				Stm32_Calculagraph_CountdownMS(&motorTimer, MOTOR_SNS_THRESHOLD_DELAY_MS);
 				MOTOR_FALL();
 				while ((INFRARED_TUBE_RECEIVE_STATE() == INFRARED_TUBE_RISE)) {
 					if ((Stm32_Calculagraph_IsExpiredMS(&motorTimer) == true) && (MOTOR_SNS_Read(MOTOR_SNS_READ_VOLTAGE_DELAY_MS) > MOTOR_SNS_THRESHOLD_VOLTAGE)) goto error;
@@ -397,7 +352,9 @@ error:
 	
 	MOTOR_OPEN();
 }
+#endif
 
+#if MOTOR_DEVICE_TYPE == MOTOR_DEVICE_TYPE1
 /**********************************************************************************************************
  @Function			void MOTOR_SPOTLOCK_Keep(MOTOR_SpotLockCtrlTypeDef ctrl)
  @Description			MOTOR_SPOTLOCK_Keep
@@ -419,7 +376,7 @@ void MOTOR_SPOTLOCK_Keep(MOTOR_SpotLockCtrlTypeDef ctrl)
 	
 	INFRARED_TUBE_TRANSMIT_ENABLE();
 	
-	if ((SpotLockKeepErr > MOTOR_CTRL_KEEP_ERR) && (INFRARED_TUBE_SPOTLOCK_STATE() != INFRARED_TUBE_ERROR) && (INFRARED_TUBE_SPOTLOCK_STATE() != INFRARED_TUBE_FALL)) {
+	if ((SpotLockKeepErr > MOTOR_CTRL_KEEP_ERR_CNT) && (INFRARED_TUBE_SPOTLOCK_STATE() != INFRARED_TUBE_ERROR) && (INFRARED_TUBE_SPOTLOCK_STATE() != INFRARED_TUBE_FALL)) {
 #if MOTOR_BUZZER_ERR
 		BUZZERCtrlIO(ON);
 #else
@@ -428,7 +385,7 @@ void MOTOR_SPOTLOCK_Keep(MOTOR_SpotLockCtrlTypeDef ctrl)
 		goto error;
 	}
 	
-	if ((SpotLockKeepErr > MOTOR_CTRL_KEEP_ERR) && (MOTOR_SPOTLOCK_STATE() != ctrl)) {
+	if ((SpotLockKeepErr > MOTOR_CTRL_KEEP_ERR_CNT) && (MOTOR_SPOTLOCK_STATE() != ctrl)) {
 #if MOTOR_BUZZER_ERR
 		BUZZERCtrlIO(ON);
 #else
@@ -445,7 +402,7 @@ void MOTOR_SPOTLOCK_Keep(MOTOR_SpotLockCtrlTypeDef ctrl)
 			MOTOR_FALL();
 			while ((INFRARED_TUBE_RECEIVE_STATE() == INFRARED_TUBE_RISE)) {
 				if (Stm32_Calculagraph_IsExpiredMS(&motorErrTimer) == true) {
-					SpotLockKeepErr += MOTOR_CTRL_KEEP_ERR;
+					SpotLockKeepErr += MOTOR_CTRL_KEEP_ERR_CNT;
 					goto error;
 				}
 			#if MOTOR_CTRL_KEEP_MODE == MOTOR_CTRL_KEEP_MODE2
@@ -462,7 +419,7 @@ void MOTOR_SPOTLOCK_Keep(MOTOR_SpotLockCtrlTypeDef ctrl)
 			MOTOR_RISE();
 			while ((INFRARED_TUBE_RECEIVE_STATE() == INFRARED_TUBE_FALL)) {
 				if (Stm32_Calculagraph_IsExpiredMS(&motorErrTimer) == true) {
-					SpotLockKeepErr += MOTOR_CTRL_KEEP_ERR;
+					SpotLockKeepErr += MOTOR_CTRL_KEEP_ERR_CNT;
 					goto error;
 				}
 			#if MOTOR_CTRL_KEEP_MODE == MOTOR_CTRL_KEEP_MODE2
@@ -479,7 +436,7 @@ void MOTOR_SPOTLOCK_Keep(MOTOR_SpotLockCtrlTypeDef ctrl)
 			MOTOR_RISE();
 			while ((INFRARED_TUBE_RECEIVE_STATE() == INFRARED_TUBE_PROCESS)) {
 				if (Stm32_Calculagraph_IsExpiredMS(&motorErrTimer) == true) {
-					SpotLockKeepErr += MOTOR_CTRL_KEEP_ERR;
+					SpotLockKeepErr += MOTOR_CTRL_KEEP_ERR_CNT;
 					goto error;
 				}
 			#if MOTOR_CTRL_KEEP_MODE == MOTOR_CTRL_KEEP_MODE2
@@ -504,7 +461,7 @@ void MOTOR_SPOTLOCK_Keep(MOTOR_SpotLockCtrlTypeDef ctrl)
 			MOTOR_FALL();
 			while (!(INFRARED_TUBE_RECEIVE_STATE() == INFRARED_TUBE_FALL)) {
 				if (Stm32_Calculagraph_IsExpiredMS(&motorErrTimer) == true) {
-					SpotLockKeepErr += MOTOR_CTRL_KEEP_ERR;
+					SpotLockKeepErr += MOTOR_CTRL_KEEP_ERR_CNT;
 					goto error;
 				}
 			#if MOTOR_CTRL_KEEP_MODE == MOTOR_CTRL_KEEP_MODE2
@@ -538,39 +495,461 @@ error:
 	
 	MOTOR_OPEN();
 }
+#endif
 
+#if MOTOR_DEVICE_TYPE == MOTOR_DEVICE_TYPE2
+/**********************************************************************************************************
+ @Function			void MOTOR_SPOTLOCK_Initialization(MOTOR_SpotLockCtrlTypeDef ctrl)
+ @Description			MOTOR_SPOTLOCK_Initialization
+ @Input				SPOTLOCK_CTRL_FALL or SPOTLOCK_CTRL_RISE
+ @Return				void
+**********************************************************************************************************/
+void MOTOR_SPOTLOCK_Initialization(MOTOR_SpotLockCtrlTypeDef ctrl)
+{
+	/* 电机SNS电流过大超时时间定时器 */
+	Stm32_CalculagraphTypeDef motorSNSTimer;
+	/* 间隔MS超时退出电机控制定时器 */
+	Stm32_CalculagraphTypeDef motorErrTimer;
+	
+	/* 单次摇臂控制时间注入 */
+	Stm32_Calculagraph_CountdownMS(&motorErrTimer, MOTOR_ERROR_DELAY_MS);
+	
+	/* 喂狗 */
+	IWDG_Feed();
+	
+	/* 红外发射管使能开启 */
+	INFRARED_TUBE_TRANSMIT_ENABLE();
+	
+	while (true) {
+		
+		/* 喂狗 */
+		IWDG_Feed();
+		
+		/* 控制类型判断 */
+		if ((ctrl != SPOTLOCK_CTRL_RISE) && (ctrl != SPOTLOCK_CTRL_FALL)) break;
+		
+		/* 控制锁摇臂升起 */
+		if (ctrl == SPOTLOCK_CTRL_RISE) {
+			
+			/* 90° <= 摇臂 <= 180°状态 */
+			if (INFRARED_TUBE_RECEIVE_STATE() == INFRARED_TUBE_RISE) {
+				/* 电机SNS电流过大超时时间注入 */
+				Stm32_Calculagraph_CountdownMS(&motorSNSTimer, MOTOR_SNS_THRESHOLD_DELAY_MS);
+				/* 电机反转 */
+				MOTOR_FALL();
+				/* 等待摇臂 <= 90° */
+				while (INFRARED_TUBE_RECEIVE_STATE() == INFRARED_TUBE_RISE) {
+					if ((Stm32_Calculagraph_IsExpiredMS(&motorSNSTimer) == true) && (MOTOR_SNS_Read(MOTOR_SNS_READ_VOLTAGE_DELAY_MS) > MOTOR_SNS_THRESHOLD_VOLTAGE)) goto error;
+					if (Stm32_Calculagraph_IsExpiredMS(&motorErrTimer) == true) goto error;
+				}
+				/* 电机锁定 */
+				MOTOR_LOCK();
+			}
+			
+			/* 00° <= 摇臂 <= 05°状态 */
+			if (INFRARED_TUBE_RECEIVE_STATE() == INFRARED_TUBE_FALL) {
+				/* 电机SNS电流过大超时时间注入 */
+				Stm32_Calculagraph_CountdownMS(&motorSNSTimer, MOTOR_SNS_THRESHOLD_DELAY_MS);
+				/* 电机正转 */
+				MOTOR_RISE();
+				/* 等待摇臂 >= 05° */
+				while (INFRARED_TUBE_RECEIVE_STATE() == INFRARED_TUBE_FALL) {
+					if ((Stm32_Calculagraph_IsExpiredMS(&motorSNSTimer) == true) && (MOTOR_SNS_Read(MOTOR_SNS_READ_VOLTAGE_DELAY_MS) > MOTOR_SNS_THRESHOLD_VOLTAGE)) {
+						ctrl = SPOTLOCK_CTRL_FALL;
+						goto exit;
+					}
+					if (Stm32_Calculagraph_IsExpiredMS(&motorErrTimer) == true) goto error;
+				}
+				/* 电机锁定 */
+				MOTOR_LOCK();
+			}
+			
+			/* 05° <= 摇臂 <= 80°状态 */
+			if (INFRARED_TUBE_RECEIVE_STATE() == INFRARED_TUBE_PROCESS) {
+				/* 电机SNS电流过大超时时间注入 */
+				Stm32_Calculagraph_CountdownMS(&motorSNSTimer, MOTOR_SNS_THRESHOLD_DELAY_MS);
+				/* 电机正转 */
+				MOTOR_RISE();
+				/* 等待摇臂 >= 80° */
+				while ((INFRARED_TUBE_RECEIVE_STATE() == INFRARED_TUBE_PROCESS)) {
+					if ((Stm32_Calculagraph_IsExpiredMS(&motorSNSTimer) == true) && (MOTOR_SNS_Read(MOTOR_SNS_READ_VOLTAGE_DELAY_MS) > MOTOR_SNS_THRESHOLD_VOLTAGE)) {
+						ctrl = SPOTLOCK_CTRL_FALL;
+						goto exit;
+					}
+					if (Stm32_Calculagraph_IsExpiredMS(&motorErrTimer) == true) goto error;
+				}
+				/* 电机锁定 */
+				MOTOR_OPEN();
+			}
+			
+#if MOTOR_BEEP_CTRL
+			BEEP_CtrlRepeat_Extend(3, 50, 15);
+#else
+			Delay_MS(100);
+#endif
+			break;
+		}
+		
+		/* 控制锁摇臂降下 */
+		if (ctrl == SPOTLOCK_CTRL_FALL) {
+			
+			/* 摇臂 != 00°状态 */
+			if (INFRARED_TUBE_RECEIVE_STATE() != INFRARED_TUBE_FALL) {
+				/* 电机SNS电流过大超时时间注入 */
+				Stm32_Calculagraph_CountdownMS(&motorSNSTimer, MOTOR_SNS_THRESHOLD_DELAY_MS);
+				/* 电机反转 */
+				MOTOR_FALL();
+				/* 等待摇臂 == 00° */
+				while (INFRARED_TUBE_RECEIVE_STATE() != INFRARED_TUBE_FALL) {
+					if ((Stm32_Calculagraph_IsExpiredMS(&motorSNSTimer) == true) && (MOTOR_SNS_Read(MOTOR_SNS_READ_VOLTAGE_DELAY_MS) > MOTOR_SNS_THRESHOLD_VOLTAGE)) {
+						ctrl = SPOTLOCK_CTRL_RISE;
+						goto exit;
+					}
+					if (Stm32_Calculagraph_IsExpiredMS(&motorErrTimer) == true) goto error;
+				}
+				/* 电机锁定 */
+				MOTOR_LOCK();
+			}
+			
+#if MOTOR_BEEP_CTRL
+			BEEP_CtrlRepeat_Extend(1, 50, 25);
+#else
+			Delay_MS(100);
+#endif
+			break;
+		}
+		
+exit:
+		continue;
+	}
+	
+error:
+	/* 红外发射管失能关闭 */
+	INFRARED_TUBE_TRANSMIT_DISABLE();
+	
+	/* 喂狗 */
+	IWDG_Feed();
+	
+	/* 电机释放 */
+	MOTOR_OPEN();
+}
+#endif
 
+#if MOTOR_DEVICE_TYPE == MOTOR_DEVICE_TYPE2
+/**********************************************************************************************************
+ @Function			void MOTOR_SPOTLOCK_Control(MOTOR_SpotLockCtrlTypeDef ctrl)
+ @Description			MOTOR_SPOTLOCK_Control
+ @Input				SPOTLOCK_CTRL_FALL or SPOTLOCK_CTRL_RISE
+ @Return				void
+**********************************************************************************************************/
+void MOTOR_SPOTLOCK_Control(MOTOR_SpotLockCtrlTypeDef ctrl)
+{
+	/* 电机SNS电流过大超时时间定时器 */
+	Stm32_CalculagraphTypeDef motorSNSTimer;
+	/* 间隔MS超时退出电机控制定时器 */
+	Stm32_CalculagraphTypeDef motorErrTimer;
+	
+	/* 单次摇臂控制时间注入 */
+	Stm32_Calculagraph_CountdownMS(&motorErrTimer, MOTOR_ERROR_DELAY_MS);
+	
+	/* 喂狗 */
+	IWDG_Feed();
+	
+	/* 红外发射管使能开启 */
+	INFRARED_TUBE_TRANSMIT_ENABLE();
+	
+	while (true) {
+		
+		/* 喂狗 */
+		IWDG_Feed();
+		
+		/* 控制类型判断 */
+		if ((ctrl != SPOTLOCK_CTRL_RISE) && (ctrl != SPOTLOCK_CTRL_FALL)) break;
+		
+		/* 控制锁摇臂升起 */
+		if (ctrl == SPOTLOCK_CTRL_RISE) {
+			
+			/* 90° <= 摇臂 <= 180°状态 */
+			if (INFRARED_TUBE_RECEIVE_STATE() == INFRARED_TUBE_RISE) {
+				/* 电机SNS电流过大超时时间注入 */
+				Stm32_Calculagraph_CountdownMS(&motorSNSTimer, MOTOR_SNS_THRESHOLD_DELAY_MS);
+				/* 电机反转 */
+				MOTOR_FALL();
+				/* 等待摇臂 <= 90° */
+				while (INFRARED_TUBE_RECEIVE_STATE() == INFRARED_TUBE_RISE) {
+					if ((Stm32_Calculagraph_IsExpiredMS(&motorSNSTimer) == true) && (MOTOR_SNS_Read(MOTOR_SNS_READ_VOLTAGE_DELAY_MS) > MOTOR_SNS_THRESHOLD_VOLTAGE)) goto error;
+					if (Stm32_Calculagraph_IsExpiredMS(&motorErrTimer) == true) goto error;
+				}
+				/* 电机锁定 */
+				MOTOR_LOCK();
+			}
+			
+			/* 00° <= 摇臂 <= 05°状态 */
+			if (INFRARED_TUBE_RECEIVE_STATE() == INFRARED_TUBE_FALL) {
+				/* 电机SNS电流过大超时时间注入 */
+				Stm32_Calculagraph_CountdownMS(&motorSNSTimer, MOTOR_SNS_THRESHOLD_DELAY_MS);
+				/* 电机正转 */
+				MOTOR_RISE();
+				/* 等待摇臂 >= 05° */
+				while (INFRARED_TUBE_RECEIVE_STATE() == INFRARED_TUBE_FALL) {
+					if ((Stm32_Calculagraph_IsExpiredMS(&motorSNSTimer) == true) && (MOTOR_SNS_Read(MOTOR_SNS_READ_VOLTAGE_DELAY_MS) > MOTOR_SNS_THRESHOLD_VOLTAGE)) {
+						ctrl = SPOTLOCK_CTRL_FALL;
+						goto exit;
+					}
+					if (Stm32_Calculagraph_IsExpiredMS(&motorErrTimer) == true) goto error;
+				}
+				/* 电机锁定 */
+				MOTOR_LOCK();
+			}
+			
+			/* 05° <= 摇臂 <= 80°状态 */
+			if (INFRARED_TUBE_RECEIVE_STATE() == INFRARED_TUBE_PROCESS) {
+				/* 电机SNS电流过大超时时间注入 */
+				Stm32_Calculagraph_CountdownMS(&motorSNSTimer, MOTOR_SNS_THRESHOLD_DELAY_MS);
+				/* 电机正转 */
+				MOTOR_RISE();
+				/* 等待摇臂 >= 80° */
+				while ((INFRARED_TUBE_RECEIVE_STATE() == INFRARED_TUBE_PROCESS)) {
+					if ((Stm32_Calculagraph_IsExpiredMS(&motorSNSTimer) == true) && (MOTOR_SNS_Read(MOTOR_SNS_READ_VOLTAGE_DELAY_MS) > MOTOR_SNS_THRESHOLD_VOLTAGE)) {
+						ctrl = SPOTLOCK_CTRL_FALL;
+						goto exit;
+					}
+					if (Stm32_Calculagraph_IsExpiredMS(&motorErrTimer) == true) goto error;
+				}
+				/* 电机锁定 */
+				MOTOR_OPEN();
+			}
+			
+#if MOTOR_BEEP_CTRL
+			BEEP_CtrlRepeat_Extend(3, 50, 15);
+#else
+			Delay_MS(100);
+#endif
+			break;
+		}
+		
+		/* 控制锁摇臂降下 */
+		if (ctrl == SPOTLOCK_CTRL_FALL) {
+			
+			/* 摇臂 != 00°状态 */
+			if (INFRARED_TUBE_RECEIVE_STATE() != INFRARED_TUBE_FALL) {
+				/* 电机SNS电流过大超时时间注入 */
+				Stm32_Calculagraph_CountdownMS(&motorSNSTimer, MOTOR_SNS_THRESHOLD_DELAY_MS);
+				/* 电机反转 */
+				MOTOR_FALL();
+				/* 等待摇臂 == 00° */
+				while (INFRARED_TUBE_RECEIVE_STATE() != INFRARED_TUBE_FALL) {
+					if ((Stm32_Calculagraph_IsExpiredMS(&motorSNSTimer) == true) && (MOTOR_SNS_Read(MOTOR_SNS_READ_VOLTAGE_DELAY_MS) > MOTOR_SNS_THRESHOLD_VOLTAGE)) {
+						ctrl = SPOTLOCK_CTRL_RISE;
+						goto exit;
+					}
+					if (Stm32_Calculagraph_IsExpiredMS(&motorErrTimer) == true) goto error;
+				}
+				/* 电机锁定 */
+				MOTOR_LOCK();
+			}
+			
+#if MOTOR_BEEP_CTRL
+			BEEP_CtrlRepeat_Extend(1, 50, 25);
+#else
+			Delay_MS(100);
+#endif
+			break;
+		}
+		
+exit:
+		continue;
+	}
+	
+error:
+	/* 红外发射管失能关闭 */
+	INFRARED_TUBE_TRANSMIT_DISABLE();
+	
+	/* 喂狗 */
+	IWDG_Feed();
+	
+	/* 电机释放 */
+	MOTOR_OPEN();
+}
+#endif
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#if MOTOR_DEVICE_TYPE == MOTOR_DEVICE_TYPE2
+/**********************************************************************************************************
+ @Function			void MOTOR_SPOTLOCK_Keep(MOTOR_SpotLockCtrlTypeDef ctrl)
+ @Description			MOTOR_SPOTLOCK_Keep
+ @Input				SPOTLOCK_CTRL_FALL or SPOTLOCK_CTRL_RISE
+ @Return				void
+**********************************************************************************************************/
+void MOTOR_SPOTLOCK_Keep(MOTOR_SpotLockCtrlTypeDef ctrl)
+{
+	bool BeepON = false;
+	
+	/* 电机控制摇臂异常计数器 */
+	static unsigned char SpotLockKeepErrCnt = 0;
+	
+	/* 电机SNS电流过大超时时间定时器 */
+	Stm32_CalculagraphTypeDef motorSNSTimer;
+	/* 间隔MS超时退出电机控制定时器 */
+	Stm32_CalculagraphTypeDef motorErrTimer;
+	
+	/* 单次摇臂控制时间注入 */
+	Stm32_Calculagraph_CountdownMS(&motorErrTimer, MOTOR_ERROR_DELAY_MS);
+	
+	/* 喂狗 */
+	IWDG_Feed();
+	
+	/* 红外发射管使能开启 */
+	INFRARED_TUBE_TRANSMIT_ENABLE();
+	
+	/* 判断电机控制摇臂是否异常, 异常警报 */
+	if ((SpotLockKeepErrCnt >= MOTOR_CTRL_KEEP_ERR_CNT) && (INFRARED_TUBE_SPOTLOCK_STATE() != INFRARED_TUBE_RISE) && (INFRARED_TUBE_SPOTLOCK_STATE() != INFRARED_TUBE_FALL)) {
+#if MOTOR_BUZZER_ERR
+		BUZZERCtrlIO(ON);
+#else
+		BEEP_CtrlRepeat_Extend(1, 50, 15);
+#endif
+		goto error;
+	}
+	
+	/* 判断电机控制摇臂是否为所要控制的状态, 异常警报 */
+	if ((SpotLockKeepErrCnt >= MOTOR_CTRL_KEEP_ERR_CNT) && (MOTOR_SPOTLOCK_STATE() != ctrl)) {
+#if MOTOR_BUZZER_ERR
+		BUZZERCtrlIO(ON);
+#else
+		BEEP_CtrlRepeat_Extend(1, 50, 15);
+#endif
+		goto error;
+	}
+	
+	/* 红外发射管使能开启 */
+	INFRARED_TUBE_TRANSMIT_ENABLE();
+	
+	/* 控制锁摇臂升起 */
+	if (ctrl == SPOTLOCK_CTRL_RISE) {
+		
+		/* 90° <= 摇臂 <= 180°状态 */
+		if (INFRARED_TUBE_RECEIVE_STATE() == INFRARED_TUBE_RISE) {
+			/* 电机SNS电流过大超时时间注入 */
+			Stm32_Calculagraph_CountdownMS(&motorSNSTimer, MOTOR_SNS_THRESHOLD_DELAY_MS);
+			/* 电机反转 */
+			MOTOR_FALL();
+			/* 等待摇臂 <= 90° */
+			while (INFRARED_TUBE_RECEIVE_STATE() == INFRARED_TUBE_RISE) {
+				if (Stm32_Calculagraph_IsExpiredMS(&motorErrTimer) == true) {
+					SpotLockKeepErrCnt += MOTOR_CTRL_KEEP_ERR_CNT;
+					goto error;
+				}
+			#if MOTOR_CTRL_KEEP_MODE == MOTOR_CTRL_KEEP_MODE2
+				if ((Stm32_Calculagraph_IsExpiredMS(&motorSNSTimer) == true) && (MOTOR_SNS_Read(MOTOR_SNS_READ_VOLTAGE_DELAY_MS) > MOTOR_SNS_THRESHOLD_VOLTAGE)) goto error;
+			#endif
+			}
+			/* 电机锁定 */
+			MOTOR_LOCK();
+			
+			BeepON = true;
+		}
+		
+		/* 00° <= 摇臂 <= 05°状态 */
+		if (INFRARED_TUBE_RECEIVE_STATE() == INFRARED_TUBE_FALL) {
+			/* 电机SNS电流过大超时时间注入 */
+			Stm32_Calculagraph_CountdownMS(&motorSNSTimer, MOTOR_SNS_THRESHOLD_DELAY_MS);
+			/* 电机正转 */
+			MOTOR_RISE();
+			/* 等待摇臂 >= 05° */
+			while (INFRARED_TUBE_RECEIVE_STATE() == INFRARED_TUBE_FALL) {
+				if (Stm32_Calculagraph_IsExpiredMS(&motorErrTimer) == true) {
+					SpotLockKeepErrCnt += MOTOR_CTRL_KEEP_ERR_CNT;
+					goto error;
+				}
+			#if MOTOR_CTRL_KEEP_MODE == MOTOR_CTRL_KEEP_MODE2
+				if ((Stm32_Calculagraph_IsExpiredMS(&motorSNSTimer) == true) && (MOTOR_SNS_Read(MOTOR_SNS_READ_VOLTAGE_DELAY_MS) > MOTOR_SNS_THRESHOLD_VOLTAGE)) goto error;
+			#endif
+			}
+			/* 电机锁定 */
+			MOTOR_LOCK();
+			
+			BeepON = true;
+		}
+		
+		/* 05° <= 摇臂 <= 80°状态 */
+		if (INFRARED_TUBE_RECEIVE_STATE() == INFRARED_TUBE_PROCESS) {
+			/* 电机SNS电流过大超时时间注入 */
+			Stm32_Calculagraph_CountdownMS(&motorSNSTimer, MOTOR_SNS_THRESHOLD_DELAY_MS);
+			/* 电机正转 */
+			MOTOR_RISE();
+			/* 等待摇臂 >= 80° */
+			while ((INFRARED_TUBE_RECEIVE_STATE() == INFRARED_TUBE_PROCESS)) {
+				if (Stm32_Calculagraph_IsExpiredMS(&motorErrTimer) == true) {
+					SpotLockKeepErrCnt += MOTOR_CTRL_KEEP_ERR_CNT;
+					goto error;
+				}
+			#if MOTOR_CTRL_KEEP_MODE == MOTOR_CTRL_KEEP_MODE2
+				if ((Stm32_Calculagraph_IsExpiredMS(&motorSNSTimer) == true) && (MOTOR_SNS_Read(MOTOR_SNS_READ_VOLTAGE_DELAY_MS) > MOTOR_SNS_THRESHOLD_VOLTAGE)) goto error;
+			#endif
+			}
+			/* 电机锁定 */
+			MOTOR_LOCK();
+			
+			BeepON = true;
+		}
+		
+#if MOTOR_BEEP_CTRL
+		if (BeepON) BEEP_CtrlRepeat_Extend(3, 50, 15);
+#else
+		if (BeepON) Delay_MS(100);
+#endif
+	}
+	
+	/* 控制锁摇臂降下 */
+	if (ctrl == SPOTLOCK_CTRL_FALL) {
+		
+		/* 摇臂 != 00°状态 */
+		if (INFRARED_TUBE_RECEIVE_STATE() != INFRARED_TUBE_FALL) {
+			/* 电机SNS电流过大超时时间注入 */
+			Stm32_Calculagraph_CountdownMS(&motorSNSTimer, MOTOR_SNS_THRESHOLD_DELAY_MS);
+			/* 电机反转 */
+			MOTOR_FALL();
+			/* 等待摇臂 == 00° */
+			while (INFRARED_TUBE_RECEIVE_STATE() != INFRARED_TUBE_FALL) {
+				if (Stm32_Calculagraph_IsExpiredMS(&motorErrTimer) == true) {
+					SpotLockKeepErrCnt += MOTOR_CTRL_KEEP_ERR_CNT;
+					goto error;
+				}
+			#if MOTOR_CTRL_KEEP_MODE == MOTOR_CTRL_KEEP_MODE2
+				if ((Stm32_Calculagraph_IsExpiredMS(&motorSNSTimer) == true) && (MOTOR_SNS_Read(MOTOR_SNS_READ_VOLTAGE_DELAY_MS) > MOTOR_SNS_THRESHOLD_VOLTAGE)) goto error;
+			#endif
+			}
+			/* 电机锁定 */
+			MOTOR_LOCK();
+			
+			BeepON = true;
+		}
+		
+#if MOTOR_BEEP_CTRL
+		if (BeepON) BEEP_CtrlRepeat_Extend(1, 50, 25);
+#else
+		if (BeepON) Delay_MS(100);
+#endif
+	}
+	
+	SpotLockKeepErrCnt = 0;
+	
+#if MOTOR_BUZZER_ERR
+	BUZZERCtrlIO(OFF);
+#endif
+	
+error:
+	if (SpotLockKeepErrCnt < 100) SpotLockKeepErrCnt++;
+	
+	/* 红外发射管失能关闭 */
+	INFRARED_TUBE_TRANSMIT_DISABLE();
+	
+	/* 喂狗 */
+	IWDG_Feed();
+	
+	/* 电机释放 */
+	MOTOR_OPEN();
+}
+#endif
 
 /********************************************** END OF FLEE **********************************************/

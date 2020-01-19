@@ -100,17 +100,6 @@ void SPOT_Lock_App_Task(void)
 	HAL_NVIC_EnableIRQ(OOK_DATA_IRQn);
 }
 
-
-
-
-
-
-
-
-
-
-
-
 /**********************************************************************************************************
  @Function			void SPOT_Lock_App_RISE(u32 timerSec)
  @Description			SPOT_Lock_App_RISE
@@ -132,38 +121,5 @@ void SPOT_Lock_App_FALL(u32 timerSec)
 {
 	SPOT_Lock_Client_ControlFALL(&SpotLockClientHandler, timerSec);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /********************************************** END OF FLEE **********************************************/

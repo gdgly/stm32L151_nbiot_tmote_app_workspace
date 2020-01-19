@@ -84,6 +84,7 @@ u8 InfraredTube_OPT_K2_IN(void)
 	return OPT_K2_IN();
 }
 
+#if INFRARED_TUBE_TYPE == INFRARED_TUBE_TYPE1
 /**********************************************************************************************************
  @Function			INFRARED_Tube_StatusTypeDef InfraredTube_SpotLock_Read(void)
  @Description			InfraredTube_SpotLock_Read					: 车位锁状态读取
@@ -104,6 +105,30 @@ INFRARED_Tube_StatusTypeDef InfraredTube_SpotLock_Read(void)
 		else return INFRARED_TUBE_FALL;					/* K1: 1, K2: 1 */
 	}
 }
+#endif
+
+#if INFRARED_TUBE_TYPE == INFRARED_TUBE_TYPE2
+/**********************************************************************************************************
+ @Function			INFRARED_Tube_StatusTypeDef InfraredTube_SpotLock_Read(void)
+ @Description			InfraredTube_SpotLock_Read					: 车位锁状态读取
+ @Input				void
+ @Return				INFRARED_Tube_StatusTypeDef
+**********************************************************************************************************/
+INFRARED_Tube_StatusTypeDef InfraredTube_SpotLock_Read(void)
+{
+	u8 OPTK1 = OPT_K1_IN();
+	u8 OPTK2 = OPT_K2_IN();
+	
+	if (OPTK1 == 0) {
+		if (OPTK2 == 0) return INFRARED_TUBE_ERROR;			/* K1: 0, K2: 0 */
+		else return INFRARED_TUBE_RISE;					/* K1: 0, K2: 1 */
+	}
+	else {
+		if (OPTK2 == 0) return INFRARED_TUBE_PROCESS;		/* K1: 1, K2: 0 */
+		else return INFRARED_TUBE_FALL;					/* K1: 1, K2: 1 */
+	}
+}
+#endif
 
 /**********************************************************************************************************
  @Function			INFRARED_Tube_StatusTypeDef InfraredTube_SpotLock_State(void)

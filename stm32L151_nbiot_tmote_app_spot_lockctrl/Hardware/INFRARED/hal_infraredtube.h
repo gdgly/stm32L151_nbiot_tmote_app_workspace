@@ -22,13 +22,18 @@
 #define OPT_K2_IN()						HAL_GPIO_ReadPin(OPT_K2_GPIOx, OPT_K2_PIN)
 #define OPT_K3_OUT(n)					(n?HAL_GPIO_WritePin(OPT_K3_GPIOx, OPT_K3_PIN, GPIO_PIN_SET):HAL_GPIO_WritePin(OPT_K3_GPIOx, OPT_K3_PIN, GPIO_PIN_RESET))
 
-#define INFRARED_TUBE_TRANSMIT_ENABLE()		InfraredTube_OPT_K3_OUT(ON)
-#define INFRARED_TUBE_TRANSMIT_DISABLE()	InfraredTube_OPT_K3_OUT(OFF)
+#define INFRARED_TUBE_TRANSMIT_ENABLE()		InfraredTube_OPT_K3_OUT(ON)			//红外发射管使能开启
+#define INFRARED_TUBE_TRANSMIT_DISABLE()	InfraredTube_OPT_K3_OUT(OFF)			//红外发射管失能关闭
 
-#define INFRARED_TUBE_RECEIVE_STATE()		InfraredTube_SpotLock_Read()
-#define INFRARED_TUBE_SPOTLOCK_STATE()		InfraredTube_SpotLock_State()
+#define INFRARED_TUBE_RECEIVE_STATE()		InfraredTube_SpotLock_Read()			//红外数据读取(只读取接收管状态)
+#define INFRARED_TUBE_SPOTLOCK_STATE()		InfraredTube_SpotLock_State()			//红外数据读取(先开启发送管, 然后读取接收管, 最后关闭发射管)
+
+#define INFRARED_TUBE_TYPE1				0
+#define INFRARED_TUBE_TYPE2				1
+#define INFRARED_TUBE_TYPE				INFRARED_TUBE_TYPE2					//红外对管模式(不同锁对管格栅不同使用不同模式)
 
 /* Infrared Tube Status */
+#if INFRARED_TUBE_TYPE == INFRARED_TUBE_TYPE1								//对管格栅1代
 typedef enum
 {
 	INFRARED_TUBE_ERROR					= 0x00,
@@ -36,6 +41,18 @@ typedef enum
 	INFRARED_TUBE_RISE					= 0x02,
 	INFRARED_TUBE_FALL					= 0x03
 }INFRARED_Tube_StatusTypeDef;
+#endif
+
+/* Infrared Tube Status */
+#if INFRARED_TUBE_TYPE == INFRARED_TUBE_TYPE2								//对管格栅2代
+typedef enum
+{
+	INFRARED_TUBE_ERROR					= 0x00,
+	INFRARED_TUBE_RISE					= 0x01,
+	INFRARED_TUBE_PROCESS				= 0x02,
+	INFRARED_TUBE_FALL					= 0x03
+}INFRARED_Tube_StatusTypeDef;
+#endif
 
 void InfraredTube_OPT_K3_OUT(u8 enable);									//红外对管发射管输出控制
 

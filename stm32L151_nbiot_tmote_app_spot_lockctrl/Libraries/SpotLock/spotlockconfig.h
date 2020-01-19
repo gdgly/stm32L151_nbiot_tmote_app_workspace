@@ -6,12 +6,7 @@
 #include "hal_buzzer.h"
 #include "hal_motor.h"
 
-
-
 typedef struct SpotLock_ClientsTypeDef		SpotLock_ClientsTypeDef;
-
-
-
 
 /* SpotLock Status */
 typedef enum
@@ -28,9 +23,6 @@ typedef enum
 	SPOT_LOCK_FALL						= 0x02
 }SpotLock_StateFlagTypeDef;
 
-
-
-
 /* SpotLock Clients */
 struct SpotLock_ClientsTypeDef
 {
@@ -45,13 +37,7 @@ struct SpotLock_ClientsTypeDef
 	SpotLock_StateFlagTypeDef			SpotLockStateFlag;
 };
 
-
-
-
 extern SpotLock_ClientsTypeDef			SpotLockClientHandler;
-
-
-
 
 void SPOT_Lock_Client_Init(SpotLock_ClientsTypeDef* pClient);
 
@@ -60,10 +46,5 @@ void SPOT_Lock_Client_ControlFALL(SpotLock_ClientsTypeDef* pClient, u32 timerSec
 
 SpotLock_StateFlagTypeDef SPOT_Lock_Client_SetStateFlag(SpotLock_ClientsTypeDef* pClient, SpotLock_StateFlagTypeDef LockState);
 SpotLock_StateFlagTypeDef SPOT_Lock_Client_GetStateFlag(SpotLock_ClientsTypeDef* pClient);
-
-
-
-
-
 
 #endif /* __SPOT_LOCK_CONFIG_H */
