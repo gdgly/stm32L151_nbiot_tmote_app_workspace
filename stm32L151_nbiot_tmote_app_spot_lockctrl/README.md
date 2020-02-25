@@ -2,6 +2,9 @@
 > ##### Copyright (C) 2020 Movebroad Version:20.152 Design by Movebroad
 > ##### movebroad Kangkang ps: 版本号以下为此版本修改、增加、去除等内容记录！
 
+* 2020-02-25 :
+	* 车位锁修改。
+	* 增加新钥匙写入方式, 每次上电前20秒进行记录, 钥匙需两个键同时按下。
 * 2020-01-19 :
 	* MqttSN协议中小无线下行命令恢复restore, 去除rfdplv。
 	* NBIOT指令修改, 命令读取解析指令中一些[+XXX]指令去掉+。

@@ -69,6 +69,7 @@ void OOK_EXTI_PollExecution(bool EnableEEPROMCode)
 	Stm32_CalculagraphTypeDef BeepTime;
 	Stm32_CalculagraphTypeDef EncodeTime;
 	uint8_t  OOKRecvNum = 0;
+	uint32_t OOKLastRecvCode = 0;
 	
 #ifdef OOK_DEBUG_LOG_RF_PRINT
 	//OOK_DEBUG_LOG_PRINTF("Remote code: 0x%08X", TCFG_EEPROM_GetOOKKEYEncoded(0));
@@ -104,6 +105,72 @@ void OOK_EXTI_PollExecution(bool EnableEEPROMCode)
 		return;
 	}
 	
+	/* 上电启动有钥匙一定时间进行钥匙写入, 按键双击记入 */
+	if (EnableEEPROMCode && ((TCFG_EEPROM_GetOOKKEYEncoded(0) != 0) || (TCFG_EEPROM_GetOOKKEYEncoded(1) != 0) || (TCFG_EEPROM_GetOOKKEYEncoded(2) != 0) || (TCFG_EEPROM_GetOOKKEYEncoded(3) != 0) || (TCFG_EEPROM_GetOOKKEYEncoded(4) != 0))) {
+		OOKRecvNum = 0;
+		OOKLastRecvCode = 0;
+		
+		Stm32_Calculagraph_CountdownSec(&BeepTime, OOK_ENCODED_BEEPDELAY_SEC);
+		Stm32_Calculagraph_CountdownSec(&EncodeTime, OOK_ENCODED_RXECUTION_SEC);
+		
+		while (1) {
+			IWDG_Feed();
+			SystemSoftResetTime = 0;
+			
+			if (OOK_EXTI_GetFrameFlag()) {
+				OOKArr[0] = OOKArr[1];
+				OOKArr[1] = OOKArr[2];
+				OOKArr[2] = OOKArr[3];
+				OOKArr[3] = OOKArr[4];
+				OOKArr[4] = OOK_EXTI_Process();
+				OOK_EXTI_SetFrameFlag(0);
+			}
+			
+			if ((OOKArr[0] != 0) && (OOKArr[0] == OOKArr[1]) && (OOKArr[1] == OOKArr[2]) && (OOKArr[2] == OOKArr[3]) && (OOKArr[3] == OOKArr[4])) {
+				if ((OOKArr[0] & (~0xFFFFF0FF)) == 0x0500) {
+					if (!((OOKRecvNum != 0) && ((0xFFFFF000 & OOKArr[0]) == OOKLastRecvCode))) {
+						for (int i = (OOK_ENCODED_EEPROM_MAX - 1); i > 0; i--) {
+							TCFG_EEPROM_SetOOKKEYEncoded(i, TCFG_EEPROM_GetOOKKEYEncoded(i - 1));
+						}
+						TCFG_EEPROM_SetOOKKEYEncoded(0, 0xFFFFF000 & OOKArr[0]);
+						OOKLastRecvCode = TCFG_EEPROM_GetOOKKEYEncoded(0);
+#ifdef OOK_DEBUG_LOG_RF_PRINT
+						OOK_DEBUG_LOG_PRINTF("Remote code: 0x%08X", TCFG_EEPROM_GetOOKKEYEncoded(0));
+#endif
+						HAL_NVIC_DisableIRQ(OOK_DATA_IRQn);
+						BEEP_CtrlRepeat_Extend(1, 1000, 100);
+						HAL_NVIC_ClearPendingIRQ(OOK_DATA_IRQn);
+						HAL_NVIC_EnableIRQ(OOK_DATA_IRQn);
+						Stm32_Calculagraph_CountdownSec(&BeepTime, OOK_ENCODED_BEEPDELAY_SEC);
+						OOKRecvNum++;
+					}
+				}
+				
+				OOK_EXTI_SetFrameFlag(0);
+				OOKArr[0] = 0;
+				continue;
+			}
+			
+			if (Stm32_Calculagraph_IsExpiredSec(&BeepTime)) {
+#ifdef OOK_DEBUG_LOG_RF_PRINT
+				OOK_DEBUG_LOG_PRINTF("Please press the remote control");
+#endif
+				HAL_NVIC_DisableIRQ(OOK_DATA_IRQn);
+				BEEP_CtrlRepeat_Extend(3, 50, 300);
+				HAL_NVIC_ClearPendingIRQ(OOK_DATA_IRQn);
+				HAL_NVIC_EnableIRQ(OOK_DATA_IRQn);
+				Stm32_Calculagraph_CountdownSec(&BeepTime, OOK_ENCODED_BEEPDELAY_SEC);
+			}
+			
+			if (Stm32_Calculagraph_IsExpiredSec(&EncodeTime)) {
+				break;
+			}
+		}
+		
+		OOKRecvNum = 0;
+		OOKLastRecvCode = 0;
+	}
+	
 	if (EnableEEPROMCode && ((TCFG_EEPROM_GetOOKKEYEncoded(0) != 0) || (TCFG_EEPROM_GetOOKKEYEncoded(1) != 0) || (TCFG_EEPROM_GetOOKKEYEncoded(2) != 0) || (TCFG_EEPROM_GetOOKKEYEncoded(3) != 0) || (TCFG_EEPROM_GetOOKKEYEncoded(4) != 0))) {
 		OOK_EXTI_SetRecvdFlag(0);
 		return;
@@ -118,8 +185,10 @@ void OOK_EXTI_PollExecution(bool EnableEEPROMCode)
 	Stm32_Calculagraph_CountdownSec(&BeepTime, OOK_ENCODED_BEEPDELAY_SEC);
 	Stm32_Calculagraph_CountdownSec(&EncodeTime, OOK_ENCODED_EXECUTION_SEC);
 	
+	/* 上电启动无钥匙一定时间进行钥匙写入, 运行中配置钥匙写入 */
 	while (1) {
 		IWDG_Feed();
+		SystemSoftResetTime = 0;
 		
 		if (OOK_EXTI_GetFrameFlag()) {
 			OOKArr[0] = OOKArr[1];
@@ -143,8 +212,11 @@ void OOK_EXTI_PollExecution(bool EnableEEPROMCode)
 				Stm32_Calculagraph_CountdownSec(&BeepTime, OOK_ENCODED_BEEPDELAY_SEC);
 				OOKRecvNum++;
 				if ((OOKRecvNum >= OOK_EXTI_GetRecvdFlag()) || (OOKRecvNum >= OOK_ENCODED_EEPROM_MAX)) goto over;
-				continue;
 			}
+			
+			OOK_EXTI_SetFrameFlag(0);
+			OOKArr[0] = 0;
+			continue;
 		}
 		
 		if (Stm32_Calculagraph_IsExpiredSec(&BeepTime)) {

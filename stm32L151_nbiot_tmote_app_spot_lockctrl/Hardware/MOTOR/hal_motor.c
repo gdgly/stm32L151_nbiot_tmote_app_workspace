@@ -167,11 +167,13 @@ void MOTOR_SPOTLOCK_Initialization(MOTOR_SpotLockCtrlTypeDef ctrl)
 	Stm32_Calculagraph_CountdownMS(&motorErrTimer, MOTOR_ERROR_DELAY_MS);
 	
 	IWDG_Feed();
+	SystemSoftResetTime = 0;
 	
 	INFRARED_TUBE_TRANSMIT_ENABLE();
 	
 	while (true) {
 		IWDG_Feed();
+		SystemSoftResetTime = 0;
 		
 		if ((ctrl != SPOTLOCK_CTRL_RISE) && (ctrl != SPOTLOCK_CTRL_FALL)) break;
 		
@@ -249,6 +251,7 @@ error:
 	INFRARED_TUBE_TRANSMIT_DISABLE();
 	
 	IWDG_Feed();
+	SystemSoftResetTime = 0;
 	
 	MOTOR_OPEN();
 }
@@ -269,10 +272,14 @@ void MOTOR_SPOTLOCK_Control(MOTOR_SpotLockCtrlTypeDef ctrl)
 	Stm32_Calculagraph_CountdownMS(&motorErrTimer, MOTOR_ERROR_DELAY_MS);
 	
 	IWDG_Feed();
+	SystemSoftResetTime = 0;
 	
 	INFRARED_TUBE_TRANSMIT_ENABLE();
 	
 	while (true) {
+		IWDG_Feed();
+		SystemSoftResetTime = 0;
+		
 		if ((ctrl != SPOTLOCK_CTRL_RISE) && (ctrl != SPOTLOCK_CTRL_FALL)) break;
 		
 		if (ctrl == SPOTLOCK_CTRL_RISE) {
@@ -349,6 +356,7 @@ error:
 	INFRARED_TUBE_TRANSMIT_DISABLE();
 	
 	IWDG_Feed();
+	SystemSoftResetTime = 0;
 	
 	MOTOR_OPEN();
 }
@@ -373,6 +381,7 @@ void MOTOR_SPOTLOCK_Keep(MOTOR_SpotLockCtrlTypeDef ctrl)
 	Stm32_Calculagraph_CountdownMS(&motorErrTimer, MOTOR_ERROR_DELAY_MS);
 	
 	IWDG_Feed();
+	SystemSoftResetTime = 0;
 	
 	INFRARED_TUBE_TRANSMIT_ENABLE();
 	
@@ -492,6 +501,7 @@ error:
 	INFRARED_TUBE_TRANSMIT_DISABLE();
 	
 	IWDG_Feed();
+	SystemSoftResetTime = 0;
 	
 	MOTOR_OPEN();
 }
@@ -517,6 +527,9 @@ void MOTOR_SPOTLOCK_Initialization(MOTOR_SpotLockCtrlTypeDef ctrl)
 	/* 喂狗 */
 	IWDG_Feed();
 	
+	/* 软重启计数器清0 */
+	SystemSoftResetTime = 0;
+	
 	/* 红外发射管使能开启 */
 	INFRARED_TUBE_TRANSMIT_ENABLE();
 	
@@ -524,6 +537,9 @@ void MOTOR_SPOTLOCK_Initialization(MOTOR_SpotLockCtrlTypeDef ctrl)
 		
 		/* 喂狗 */
 		IWDG_Feed();
+		
+		/* 软重启计数器清0 */
+		SystemSoftResetTime = 0;
 		
 		/* 控制类型判断 */
 		if ((ctrl != SPOTLOCK_CTRL_RISE) && (ctrl != SPOTLOCK_CTRL_FALL)) break;
@@ -629,6 +645,9 @@ error:
 	
 	/* 喂狗 */
 	IWDG_Feed();
+	
+	/* 软重启计数器清0 */
+	SystemSoftResetTime = 0;
 	
 	/* 电机释放 */
 	MOTOR_OPEN();
@@ -655,6 +674,9 @@ void MOTOR_SPOTLOCK_Control(MOTOR_SpotLockCtrlTypeDef ctrl)
 	/* 喂狗 */
 	IWDG_Feed();
 	
+	/* 软重启计数器清0 */
+	SystemSoftResetTime = 0;
+	
 	/* 红外发射管使能开启 */
 	INFRARED_TUBE_TRANSMIT_ENABLE();
 	
@@ -662,6 +684,9 @@ void MOTOR_SPOTLOCK_Control(MOTOR_SpotLockCtrlTypeDef ctrl)
 		
 		/* 喂狗 */
 		IWDG_Feed();
+		
+		/* 软重启计数器清0 */
+		SystemSoftResetTime = 0;
 		
 		/* 控制类型判断 */
 		if ((ctrl != SPOTLOCK_CTRL_RISE) && (ctrl != SPOTLOCK_CTRL_FALL)) break;
@@ -767,6 +792,9 @@ error:
 	
 	/* 喂狗 */
 	IWDG_Feed();
+	
+	/* 软重启计数器清0 */
+	SystemSoftResetTime = 0;
 	
 	/* 电机释放 */
 	MOTOR_OPEN();
@@ -797,6 +825,9 @@ void MOTOR_SPOTLOCK_Keep(MOTOR_SpotLockCtrlTypeDef ctrl)
 	
 	/* 喂狗 */
 	IWDG_Feed();
+	
+	/* 软重启计数器清0 */
+	SystemSoftResetTime = 0;
 	
 	/* 红外发射管使能开启 */
 	INFRARED_TUBE_TRANSMIT_ENABLE();
@@ -946,6 +977,9 @@ error:
 	
 	/* 喂狗 */
 	IWDG_Feed();
+	
+	/* 软重启计数器清0 */
+	SystemSoftResetTime = 0;
 	
 	/* 电机释放 */
 	MOTOR_OPEN();

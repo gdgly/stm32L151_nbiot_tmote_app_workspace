@@ -161,10 +161,12 @@ int main(void)
 	Radio_Trf_Printf(" Copyright (C) 2020 Movebroad Version:%d.%d", TCFG_Utility_Get_Major_Softnumber(), TCFG_Utility_Get_Sub_Softnumber());
 	
 	SPOT_Lock_Initialization();															//SpotLock初始化
-	IWDG_Feed();
+	IWDG_Feed();																		//喂狗
+	SystemSoftResetTime = 0;																//软重启计数器清0
 	
 	OOK_EXTI_Initialization();															//SpotLock遥控器初始化
-	IWDG_Feed();
+	IWDG_Feed();																		//喂狗
+	SystemSoftResetTime = 0;																//软重启计数器清0
 	
 	while (true) {
 		
