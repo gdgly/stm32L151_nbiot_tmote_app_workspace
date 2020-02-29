@@ -385,7 +385,7 @@ void OOKRecvData(void)
                break;
           }
           
-          for (uint8_t us = 0; us < 60; us++) {
+          for (uint8_t us = 0; us < 42; us++) {
                Delay_US_Normal();
           }
      }

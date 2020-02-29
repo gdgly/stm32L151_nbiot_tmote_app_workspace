@@ -80,7 +80,7 @@ void OOK_EXTI_PollExecution(bool EnableEEPROMCode)
 		if (((OOKCode & 0xFFFFF000) == TCFG_EEPROM_GetOOKKEYEncoded(0)) || ((OOKCode & 0xFFFFF000) == TCFG_EEPROM_GetOOKKEYEncoded(1)) || \
 		    ((OOKCode & 0xFFFFF000) == TCFG_EEPROM_GetOOKKEYEncoded(2)) || ((OOKCode & 0xFFFFF000) == TCFG_EEPROM_GetOOKKEYEncoded(3)) || \
 		    ((OOKCode & 0xFFFFF000) == TCFG_EEPROM_GetOOKKEYEncoded(4))) {
-			if ((OOKCode & (~0xFFFFF0FF)) == 0x0400) {
+			if ((OOKCode & (~0xFFFFF0FF)) == OOK_KEY_UNLOCK_TYPE) {
 				if ((MOTOR_SPOTLOCK_STATE() != SPOTLOCK_CTRL_FALL) && (OOK_EXTI_GetMotorFlag() != 1)) {
 					HAL_NVIC_DisableIRQ(OOK_DATA_IRQn);
 					BEEP_CtrlRepeat_Extend(1, 380, 100);
@@ -90,7 +90,7 @@ void OOK_EXTI_PollExecution(bool EnableEEPROMCode)
 					OOK_EXTI_SetMotorFlag(1);
 				}
 			}
-			if ((OOKCode & (~0xFFFFF0FF)) == 0x0100) {
+			if ((OOKCode & (~0xFFFFF0FF)) == OOK_KEY_ISLOCK_TYPE) {
 				if ((MOTOR_SPOTLOCK_STATE() != SPOTLOCK_CTRL_RISE) && (OOK_EXTI_GetMotorFlag() != 1)) {
 					HAL_NVIC_DisableIRQ(OOK_DATA_IRQn);
 					BEEP_CtrlRepeat_Extend(1, 380, 100);
@@ -127,7 +127,7 @@ void OOK_EXTI_PollExecution(bool EnableEEPROMCode)
 			}
 			
 			if ((OOKArr[0] != 0) && (OOKArr[0] == OOKArr[1]) && (OOKArr[1] == OOKArr[2]) && (OOKArr[2] == OOKArr[3]) && (OOKArr[3] == OOKArr[4])) {
-				if ((OOKArr[0] & (~0xFFFFF0FF)) == 0x0500) {
+				if ((OOKArr[0] & (~0xFFFFF0FF)) == (OOK_KEY_ISLOCK_TYPE + OOK_KEY_UNLOCK_TYPE)) {
 					if (!((OOKRecvNum != 0) && ((0xFFFFF000 & OOKArr[0]) == OOKLastRecvCode))) {
 						for (int i = (OOK_ENCODED_EEPROM_MAX - 1); i > 0; i--) {
 							TCFG_EEPROM_SetOOKKEYEncoded(i, TCFG_EEPROM_GetOOKKEYEncoded(i - 1));
@@ -268,7 +268,7 @@ void OOK_EXTI_IRQPollExecution(bool EnableEEPROMCode)
 		if (((OOKCode & 0xFFFFF000) == TCFG_EEPROM_GetOOKKEYEncoded(0)) || ((OOKCode & 0xFFFFF000) == TCFG_EEPROM_GetOOKKEYEncoded(1)) || \
 		    ((OOKCode & 0xFFFFF000) == TCFG_EEPROM_GetOOKKEYEncoded(2)) || ((OOKCode & 0xFFFFF000) == TCFG_EEPROM_GetOOKKEYEncoded(3)) || \
 		    ((OOKCode & 0xFFFFF000) == TCFG_EEPROM_GetOOKKEYEncoded(4))) {
-			if ((OOKCode & (~0xFFFFF0FF)) == 0x0400) {
+			if ((OOKCode & (~0xFFFFF0FF)) == OOK_KEY_UNLOCK_TYPE) {
 				if ((MOTOR_SPOTLOCK_STATE() != SPOTLOCK_CTRL_FALL) && (OOK_EXTI_GetMotorFlag() != 1)) {
 					HAL_NVIC_DisableIRQ(OOK_DATA_IRQn);
 					BEEP_CtrlRepeat_Extend(1, 380, 100);
@@ -278,7 +278,7 @@ void OOK_EXTI_IRQPollExecution(bool EnableEEPROMCode)
 					OOK_EXTI_SetMotorFlag(1);
 				}
 			}
-			if ((OOKCode & (~0xFFFFF0FF)) == 0x0100) {
+			if ((OOKCode & (~0xFFFFF0FF)) == OOK_KEY_ISLOCK_TYPE) {
 				if ((MOTOR_SPOTLOCK_STATE() != SPOTLOCK_CTRL_RISE) && (OOK_EXTI_GetMotorFlag() != 1)) {
 					HAL_NVIC_DisableIRQ(OOK_DATA_IRQn);
 					BEEP_CtrlRepeat_Extend(1, 380, 100);
