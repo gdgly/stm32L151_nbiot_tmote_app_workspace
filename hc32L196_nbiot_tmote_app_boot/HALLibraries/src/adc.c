@@ -52,6 +52,7 @@
  * Include files
  ******************************************************************************/
 #include "adc.h"
+#include "delay.h"
 
 /**
  ******************************************************************************
@@ -158,7 +159,7 @@ en_result_t Adc_Init(stc_adc_cfg_t* pstcAdcCfg)
     }
 
     M0P_ADC->CR0 = 0x1u;    ///< ADC 使能
-    delay10us(2);
+    Delay_US(20);
 
     M0P_ADC->CR0 |= (uint32_t)pstcAdcCfg->enAdcClkDiv       |
                     (uint32_t)pstcAdcCfg->enAdcRefVolSel    |

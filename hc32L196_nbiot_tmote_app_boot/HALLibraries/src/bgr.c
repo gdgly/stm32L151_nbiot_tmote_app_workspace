@@ -53,6 +53,8 @@
  * Include files
  ******************************************************************************/
 #include "bgr.h"
+#include "delay.h"
+
 /**
  *******************************************************************************
  ** \addtogroup FlashGroup
@@ -94,7 +96,7 @@ void Bgr_BgrEnable(void)
 {    
     M0P_BGR->CR |= 0x1u;
     
-    delay10us(2);
+    Delay_US(20);
 }
 
 /**
@@ -120,7 +122,7 @@ void Bgr_TempSensorEnable(void)
 {
     M0P_BGR->CR |= 0x2u;
     
-    delay10us(2);  
+    Delay_US(20);
 }
 
 /**
