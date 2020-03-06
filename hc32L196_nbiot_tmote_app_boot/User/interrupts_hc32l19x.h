@@ -39,24 +39,12 @@
 * included with each copy of this software, whether used in part or whole,
 * at all times.
 */
-/******************************************************************************/
-/** \file interrupts_hc32l17x.h
- **
- ** Interrupt common define.
- ** @link IRQGroup Some description @endlink
- **
- **   - 2019-03-01  1.0  Lux     First version.
- **
- ******************************************************************************/
+
 #ifndef __INTERRUPTS_HC32L17x_H__
 #define __INTERRUPTS_HC32L17x_H__
 
-/******************************************************************************/
-/* Include files                                                              */
-/******************************************************************************/
 #include "ddl.h"
 
-/* C binding of definitions if building with C++ compiler */
 #ifdef __cplusplus
 extern "C"
 {
@@ -65,13 +53,13 @@ extern "C"
 /******************************************************************************/
 /* Global pre-processor symbols/macros ('#define')                            */
 /******************************************************************************/
-#define DDL_IRQ_LEVEL_DEFAULT                   3u
+#define DDL_IRQ_LEVEL_DEFAULT					3u
 
 //<<此选项会打开interrupt_hc32xxx.c中的中断回调函数，用户如果需要实现中断服务函数，
 //<<可在源码文件中定义该文件中用"__WEAK"声明的同名中断服务函数即可。
-#define INT_CALLBACK_ON                                  1u  //<<(默认值)
+#define INT_CALLBACK_ON						1u  //<<(默认值)
 //<<此选项会关闭interrupt_hc32xxx.c中的中断回调函数，此时用户可在该文件中自行定义中断服务函数的实现。
-#define INT_CALLBACK_OFF                                 0u
+#define INT_CALLBACK_OFF						0u
 /******************************************************************************
  * Global type definitions
  ******************************************************************************/
@@ -115,8 +103,7 @@ extern "C"
 #define INT_CALLBACK_FLASH                       INT_CALLBACK_ON
 #define INT_CALLBACK_RAM                         INT_CALLBACK_ON
 #define INT_CALLBACK_CLKTRIM                     INT_CALLBACK_ON
- 
- 
+
 /**
  *******************************************************************************
  ** \brief 中断优先级数据类型定义
@@ -130,21 +117,14 @@ typedef enum en_irq_level
     IrqLevel3  = 3u,               ///< 优先级3
 } en_irq_level_t; 
 
-
 /******************************************************************************
  * Global function prototypes (definition in C source)
  ******************************************************************************/
 ///< 系统中断使能开关
 extern void EnableNvic(IRQn_Type enIrq, en_irq_level_t enLevel, boolean_t bEn);
 
-
 #ifdef __cplusplus
 }
 #endif
 
-
 #endif /* __INTERRUPTS_HC32L17x_H__ */
-
-/******************************************************************************
- * EOF (not truncated)
- ******************************************************************************/

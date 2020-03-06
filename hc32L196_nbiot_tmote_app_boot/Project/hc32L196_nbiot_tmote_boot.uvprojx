@@ -611,6 +611,11 @@
               <FilePath>..\User\interrupts_hc32l19x.c</FilePath>
             </File>
             <File>
+              <FileName>hc32l19x_hal.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\hc32l19x_hal.c</FilePath>
+            </File>
+            <File>
               <FileName>hc32l19x_config.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\User\hc32l19x_config.c</FilePath>

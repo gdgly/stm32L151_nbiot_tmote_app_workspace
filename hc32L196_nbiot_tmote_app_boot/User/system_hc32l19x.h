@@ -39,22 +39,10 @@
 * included with each copy of this software, whether used in part or whole,
 * at all times.
 */
-/******************************************************************************/
-/** \file system_hc32l19x.h
- **
- ** A detailed description is available at
- ** @link SampleGroup Some description @endlink
- **
- **   - 2019-03-01  1.0  Lux First version.
- **
- ******************************************************************************/
 
 #ifndef __SYSTEM_HC32L19X_H__
 #define __SYSTEM_HC32L19X_H__
 
-/******************************************************************************/
-/* Include files                                                              */
-/******************************************************************************/
 #include <stdint.h>
 
 #ifdef __cplusplus
@@ -66,8 +54,6 @@ extern "C" {
 /******************************************************************************/
 #define HWWD_DISABLE        (1)
 
-
-
 /**
  ******************************************************************************
  ** \brief Clock Setup macro definition
@@ -77,7 +63,6 @@ extern "C" {
  ******************************************************************************/
 #define CLOCK_SETTING_NONE  0u
 #define CLOCK_SETTING_CMSIS 1u
-
 
 /******************************************************************************/
 /*                                                                            */
@@ -92,7 +77,6 @@ extern "C" {
 /* Global function prototypes ('extern', definition in C source)              */
 /******************************************************************************/
 
-
 extern uint32_t SystemCoreClock;          // System Clock Frequency (Core Clock)
 extern void SystemInit (void);            // Initialize the system
 extern void SystemCoreClockUpdate (void); // Update SystemCoreClock variable
@@ -102,10 +86,3 @@ extern void SystemCoreClockUpdate (void); // Update SystemCoreClock variable
 #endif
 
 #endif /* __SYSTEM_HC32L19X _H__ */
-
-
-
-
-
-
-

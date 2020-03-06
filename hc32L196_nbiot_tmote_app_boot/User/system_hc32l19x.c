@@ -39,46 +39,34 @@
 * included with each copy of this software, whether used in part or whole,
 * at all times.
 */
-/******************************************************************************/
-/** \file system_hc32l136.c
- **
- ** System clock initialization.
- ** @link SampleGroup Some description @endlink
- **
- **   - 2019-03-01  1.0  Lux First version.
- **
- ******************************************************************************/
 
-/******************************************************************************/
-/* Include files                                                              */
-/******************************************************************************/
 #include "base_types.h"
 #include "hc32l19x.h"
 #include "system_hc32l19x.h"
 #include "sysctrl.h"
 
-/**
- ******************************************************************************
- ** System Clock Frequency (Core Clock) Variable according CMSIS
- ******************************************************************************/
 uint32_t SystemCoreClock = 4000000;
 
-
-//add clock source.
-void SystemCoreClockUpdate (void) // Update SystemCoreClock variable
+/**********************************************************************************************************
+ @Function			void SystemCoreClockUpdate(void)
+ @Description			SystemCoreClockUpdate
+ @Input				void
+ @Return				void
+**********************************************************************************************************/
+void SystemCoreClockUpdate(void)
 {
-    SystemCoreClock = Sysctrl_GetHClkFreq();
+	SystemCoreClock = Sysctrl_GetHClkFreq();
 }
 
-/**
- ******************************************************************************
- ** \brief  Setup the microcontroller system. Initialize the System and update
- ** the SystemCoreClock variable.
- **
- ** \param  none
- ** \return none
- ******************************************************************************/
+/**********************************************************************************************************
+ @Function			void SystemInit(void)
+ @Description			SystemInit
+ @Input				void
+ @Return				void
+**********************************************************************************************************/
 void SystemInit(void)
 {
-    SystemCoreClockUpdate();
+	SystemCoreClockUpdate();
 }
+
+/********************************************** END OF FLEE **********************************************/
