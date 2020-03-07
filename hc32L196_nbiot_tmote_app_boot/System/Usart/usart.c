@@ -104,9 +104,13 @@ void HC32_Uart0_Init(u32 bound)
 	Uart_ClrStatus(M0P_UART0, UartRC);
 	
 	/* UART0 TX IT Config */
+#if UART0_TXD_IRQ
 	Uart_EnableIrq(M0P_UART0, UartTxIrq);
+#endif
 	/* UART0 RX IT Config */
+#if UART0_RXD_IRQ
 	Uart_EnableIrq(M0P_UART0, UartRxIrq);
+#endif
 	
 	/* Enable UART0 IRQn */
 	EnableNvic(UART0_2_IRQn, IrqLevel1, TRUE);
@@ -141,9 +145,13 @@ void HC32_Uart1_Init(u32 bound)
 	Uart_ClrStatus(M0P_UART1, UartRC);
 	
 	/* UART1 TX IT Config */
+#if UART1_TXD_IRQ
 	Uart_EnableIrq(M0P_UART1, UartTxIrq);
+#endif
 	/* UART1 RX IT Config */
+#if UART1_RXD_IRQ
 	Uart_EnableIrq(M0P_UART1, UartRxIrq);
+#endif
 	
 	/* Enable UART1 IRQn */
 	EnableNvic(UART1_3_IRQn, IrqLevel1, TRUE);
@@ -189,6 +197,23 @@ void HC32_Uart1_Init(u32 bound)
 
 
 
+
+/**********************************************************************************************************
+ @Function			int fputc(int ch, FILE *f)
+ @Description			fputc									: Re-target putchar function
+ @Input				ch
+					FILE
+ @Return				ch
+**********************************************************************************************************/
+int fputc(int ch, FILE *f)
+{
+	while (FALSE == Uart_GetStatus(PRINTF_USART, UartTxe));
+	PRINTF_USART->SBUF_f.DATA = (u8) ch;
+	while (FALSE == Uart_GetStatus(PRINTF_USART, UartTC));
+	Uart_ClrStatus(PRINTF_USART, UartTC);
+	return ch;
+}
+
 /**********************************************************************************************************
  @Function			void Uart0_IRQHandler(void)
  @Description			Uart0_IRQHandler							: HC32 UART0中断处理
@@ -198,14 +223,18 @@ void HC32_Uart1_Init(u32 bound)
 void Uart0_IRQHandler(void)
 {
 	/* 发送数据完成标记 */
+#if UART0_TXD_IRQ
 	if (Uart_GetStatus(M0P_UART0, UartTC)) {
 		Uart_ClrStatus(M0P_UART0, UartTC);
 	}
+#endif
 	
 	/* 接收数据完成标记 */
+#if UART0_RXD_IRQ
 	if (Uart_GetStatus(M0P_UART0, UartRC)) {
 		Uart_ClrStatus(M0P_UART0, UartRC);
 	}
+#endif
 }
 
 /**********************************************************************************************************
@@ -217,14 +246,18 @@ void Uart0_IRQHandler(void)
 void Uart1_IRQHandler(void)
 {
 	/* 发送数据完成标记 */
+#if UART1_TXD_IRQ
 	if (Uart_GetStatus(M0P_UART1, UartTC)) {
 		Uart_ClrStatus(M0P_UART1, UartTC);
 	}
+#endif
 	
 	/* 接收数据完成标记 */
+#if UART1_RXD_IRQ
 	if (Uart_GetStatus(M0P_UART1, UartRC)) {
 		Uart_ClrStatus(M0P_UART1, UartRC);
 	}
+#endif
 }
 
 /********************************************** END OF FLEE **********************************************/

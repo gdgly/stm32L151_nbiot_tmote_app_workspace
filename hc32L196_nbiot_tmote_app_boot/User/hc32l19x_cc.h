@@ -35,4 +35,7 @@ typedef __I uint32_t			vuc32;
 typedef __I uint16_t			vuc16;
 typedef __I uint8_t				vuc8;
 
+#define DISABLE				(0)
+#define ENABLE					(1)
+
 #endif /* __HC32L19X_CC_H */

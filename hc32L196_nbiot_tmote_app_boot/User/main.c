@@ -22,6 +22,7 @@
 #include "platform_map.h"
 #include "hal_beep.h"
 #include "hal_iwdg.h"
+#include "hal_rtc.h"
 
 /****************************************** Select DEBUG *************************************************/
 //#define	DEVICE_DEBUG																	//定义开启设备调试
@@ -48,11 +49,18 @@ int main(void)
 	HC32_XTHClock_Init();																//HC32XTH时钟初始化32MHz
 #endif
 	
-	HC32_IWDG_Init(WdtT52s4);															//HC32看门狗初始化
+	HC32_IWDG_Init(WdtT3s28);															//HC32看门狗初始化
 	
 	HC32_Delay_Init(Sysctrl_GetHClkFreq());													//HC32系统延时初始化
 	
 	HC32_SysTick_Init();																//HC32系统嘀嗒定时器初始化
+	
+	HC32_RTC_Init();																	//HC32实时时钟初始化
+	
+	
+	
+	
+	
 	
 	
 	
@@ -85,6 +93,13 @@ int main(void)
 	
 	
 	
+	stc_rtc_time_t readTime;
+	
+	
+	
+	
+	
+	
 	while (true) {
 		
 #ifdef	DEVICE_DEBUG
@@ -95,7 +110,16 @@ int main(void)
 		
 		Delay_MS(1000);
 		
-		Uart_SendDataIt(M0P_UART1, 'A');
+		
+		
+		Rtc_ReadDateTime(&readTime);
+		
+		
+		printf("%X-%X-%X %X:%X:%X week: %X\r\n", readTime.u8Year, readTime.u8Month, readTime.u8Day, readTime.u8Hour, readTime.u8Minute, readTime.u8Second, readTime.u8DayOfWeek);
+		
+		
+		
+		
 	}
 }
 

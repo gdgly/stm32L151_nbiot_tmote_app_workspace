@@ -35,6 +35,9 @@ void HC32_PeripheralClockGate_Init(void)
 	/* -使能FLASH外设时钟门控- */
 	Sysctrl_SetPeripheralGate(SysctrlPeripheralFlash, TRUE);
 	
+	/* -使能RTC外设时钟门控- */
+	Sysctrl_SetPeripheralGate(SysctrlPeripheralRtc, TRUE);
+	
 	/* -使能GPIO外设时钟门控- */
 	Sysctrl_SetPeripheralGate(SysctrlPeripheralGpio, TRUE);
 	
@@ -209,6 +212,95 @@ void HC32_SysTick_Init(void)
 
 
 
+/**********************************************************************************************************
+ @Function			void HC32_TimeMeter_CountdownMS(timeMeterTypeDef* timer, u32 timeout)
+ @Description			HC32_TimeMeter_CountdownMS					: HC32配置计时器倒数时间(MS)
+ @Input				timeMeterTypeDef*							: 计时器结构体指针
+					timeout									: 倒计时时间(MS)
+ @Return				void
+**********************************************************************************************************/
+void HC32_TimeMeter_CountdownMS(timeMeterTypeDef* timer, u32 timeout)
+{
+	timer->xTicksToWait = timeout;
+	timer->xTicksToOut  = HAL_GetTick() + timeout;
+}
+
+/**********************************************************************************************************
+ @Function			bool HC32_TimeMeter_IsExpiredMS(timeMeterTypeDef* timer)
+ @Description			HC32_TimeMeter_IsExpiredMS					: HC32查询是否到达计时器计时时间(MS)
+ @Input				timeMeterTypeDef*							: 计时器结构体指针
+ @Return				true										: 到达
+					false									: 未到达
+**********************************************************************************************************/
+bool HC32_TimeMeter_IsExpiredMS(timeMeterTypeDef* timer)
+{
+	u32 tickNow, tickOld, tickCnt;
+	
+	tickOld = (timer->xTicksToOut - timer->xTicksToWait);
+	tickNow = HAL_GetTick();
+	
+	if (tickNow > tickOld)
+		tickCnt = (tickNow - tickOld);
+	else
+		tickCnt = (0xFFFFFFFF - tickOld + tickNow + 1);
+	
+	if (tickCnt > timer->xTicksToWait)
+		return true;
+	else
+		return false;
+}
+
+/**********************************************************************************************************
+ @Function			void HC32_TimeMeter_CountdownSS(timeMeterTypeDef* timer, u32 timeout)
+ @Description			HC32_TimeMeter_CountdownSS					: HC32配置计时器倒数时间(SS)
+ @Input				timeMeterTypeDef*							: 计时器结构体指针
+					timeout									: 倒计时时间(SS)
+ @Return				void
+**********************************************************************************************************/
+void HC32_TimeMeter_CountdownSS(timeMeterTypeDef* timer, u32 timeout)
+{
+	timer->xTicksToWait = timeout;
+	timer->xTicksToOut  = HAL_GetSecTick() + timeout;
+}
+
+/**********************************************************************************************************
+ @Function			bool HC32_TimeMeter_IsExpiredSS(timeMeterTypeDef* timer)
+ @Description			HC32_TimeMeter_IsExpiredSS					: HC32查询是否到达计时器计时时间(SS)
+ @Input				timeMeterTypeDef*							: 计时器结构体指针
+ @Return				true										: 到达
+					false									: 未到达
+**********************************************************************************************************/
+bool HC32_TimeMeter_IsExpiredSS(timeMeterTypeDef* timer)
+{
+	u32 tickNow, tickOld, tickCnt;
+	
+	tickOld = (timer->xTicksToOut - timer->xTicksToWait);
+	tickNow = HAL_GetSecTick();
+	
+	if (tickNow > tickOld)
+		tickCnt = (tickNow - tickOld);
+	else
+		tickCnt = (0xFFFFFFFF - tickOld + tickNow + 1);
+	
+	if (tickCnt > timer->xTicksToWait)
+		return true;
+	else
+		return false;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -230,6 +322,7 @@ void HC32_SysTick_Init(void)
 void SysTick_IRQHandler(void)
 {
 	HAL_IncTick();
+	HAL_IncSecTick();
 }
 
 /********************************************** END OF FLEE **********************************************/
