@@ -56,6 +56,14 @@ int main(void)
 	
 	
 	
+	HC32_Uart0_Init(9600);
+	HC32_Uart1_Init(9600);
+	
+	
+	
+	
+	
+	
 	
 	
 #if 1
@@ -87,6 +95,7 @@ int main(void)
 		
 		Delay_MS(1000);
 		
+		Uart_SendDataIt(M0P_UART1, 'A');
 	}
 }
 

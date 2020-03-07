@@ -13,6 +13,8 @@
   *********************************************************************************************************
   */
 
+#include "platform_config.h"
+#include "platform_map.h"
 #include "hal_iwdg.h"
 #include "delay.h"
 #include "usart.h"

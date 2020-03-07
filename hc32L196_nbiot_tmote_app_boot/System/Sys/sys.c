@@ -13,6 +13,8 @@
   *********************************************************************************************************
   */
 
+#include "platform_config.h"
+#include "platform_map.h"
 #include "sys.h"
 #include "flash.h"
 
@@ -35,6 +37,20 @@ void HC32_PeripheralClockGate_Init(void)
 	
 	/* -使能GPIO外设时钟门控- */
 	Sysctrl_SetPeripheralGate(SysctrlPeripheralGpio, TRUE);
+	
+	/* -使能UART0外设时钟门控- */
+	Sysctrl_SetPeripheralGate(SysctrlPeripheralUart0, TRUE);
+	
+	/* -使能UART1外设时钟门控- */
+	Sysctrl_SetPeripheralGate(SysctrlPeripheralUart1, TRUE);
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	

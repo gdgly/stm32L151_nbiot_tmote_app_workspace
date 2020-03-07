@@ -13,6 +13,8 @@
   *********************************************************************************************************
   */
 
+#include "platform_config.h"
+#include "platform_map.h"
 #include "hal_beep.h"
 #include "delay.h"
 #include "usart.h"
@@ -26,6 +28,8 @@
 void BEEP_GPIO_InitControl(bool ctrl)
 {
 	stc_gpio_cfg_t GPIO_Initure;
+	
+	DDL_ZERO_STRUCT(GPIO_Initure);
 	
 	GPIO_Initure.enDir			= GpioDirOut;
 	GPIO_Initure.enDrv			= GpioDrvH;

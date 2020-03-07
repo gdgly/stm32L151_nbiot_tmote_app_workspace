@@ -13,6 +13,8 @@
   *********************************************************************************************************
   */
 
+#include "platform_config.h"
+#include "platform_map.h"
 #include "delay.h"
 
 static __IO u32 fac_us = 0;

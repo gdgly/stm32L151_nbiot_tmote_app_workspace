@@ -1,10 +1,26 @@
 # stm32L151_nbiot_tmote_app_spot_lockctrl
-> ##### Copyright (C) 2020 Movebroad Version:20.152 Design by Movebroad
+> ##### Copyright (C) 2020 Movebroad Version:20.153 Design by Movebroad
 > ##### movebroad Kangkang ps: 版本号以下为此版本修改、增加、去除等内容记录！
 
+* 2020-03-06 :
+	* 发布153固件。
+* 2020-03-06 :
+	* 修复重启后有车时可能不再发数据的问题, 具体表现设备状态数据不再发送。
+	* 复现操作: 设备上电或重启一瞬间改变车位状态将复现。
+	* 修复改动: inspectconfig.c
+	* ---if ((SpotStatus == SPOT_OCCUPY2FREE) || (SpotStatus == SPOT_FREE2OCCUPY)) {
+	* +++if (((SpotStatus == SPOT_OCCUPY2FREE) || (SpotStatus == SPOT_FREE2OCCUPY)) && !noStatusSent) {
+* 2020-03-06 :
+	* 版本号修改为153。
+* 2020-03-06 :
+	* 发布152固件。
+* 2020-02-29 :
+	* 开启CoAP消息队列调试信息。
 * 2020-02-29 :
 	* 车位锁修改。
 	* 适配车位锁遥控器新款ev1527编码芯片, 200K震荡电阻, k0=上锁, k1=开锁, 0xE631F40B 降锁, 0xE631F80F 升锁。
+* 2020-02-28 :
+	* 修复各个数据包写入队列判断隐患, 可能导致数据包无法写入队列, 导致数据无法发送。
 * 2020-02-25 :
 	* 车位锁修改。
 	* 增加新钥匙写入方式, 每次上电前20秒进行记录, 钥匙需两个键同时按下。
