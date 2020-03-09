@@ -35,13 +35,29 @@ void HC32_RTC_Init(void)
 	Sysctrl_SetRTCAdjustClkFreq(SysctrlRTC24MHz);
 	
 	/* 设定内部低速时钟RCL频率: 32.768KHz */
+#if (SYSTEM_RTCCLOCK_TYPE == SYSTEM_RTCCLOCK_RCL_32000)
 	Sysctrl_SetRCLTrim(SysctrlRclFreq32768);
+#endif
+#if (SYSTEM_RTCCLOCK_TYPE == SYSTEM_RTCCLOCK_RCL_38400)
+	Sysctrl_SetRCLTrim(SysctrlRclFreq38400);
+#endif
 	
-	/* 开启外部低速时钟XTL */
+	/* 开启内部低速时钟RCL */
+#if (SYSTEM_RTCCLOCK_TYPE == SYSTEM_RTCCLOCK_RCL_32000 || SYSTEM_RTCCLOCK_TYPE == SYSTEM_RTCCLOCK_RCL_38400)
 	Sysctrl_ClkSourceEnable(SysctrlClkRCL, TRUE);
+#endif
+	/* 开启外部低速时钟XTL */
+#if (SYSTEM_RTCCLOCK_TYPE == SYSTEM_RTCCLOCK_XTL_32768)
+	Sysctrl_ClkSourceEnable(SysctrlClkXTL, TRUE);
+#endif
 	
 	RTC_Initure.rtcAmpm				= RtcPm;
+#if (SYSTEM_RTCCLOCK_TYPE == SYSTEM_RTCCLOCK_RCL_32000 || SYSTEM_RTCCLOCK_TYPE == SYSTEM_RTCCLOCK_RCL_38400)
 	RTC_Initure.rtcClksrc			= RtcClkRcl;
+#endif
+#if (SYSTEM_RTCCLOCK_TYPE == SYSTEM_RTCCLOCK_XTL_32768)
+	RTC_Initure.rtcClksrc			= RtcClkXtl;
+#endif
 	
 	RTC_Initure.rtcTime.u8Year		= RTC_DEFAULT_YEAR;
 	RTC_Initure.rtcTime.u8Month		= RTC_DEFAULT_MONTH;
@@ -49,7 +65,7 @@ void HC32_RTC_Init(void)
 	RTC_Initure.rtcTime.u8Hour		= RTC_DEFAULT_HOUR;
 	RTC_Initure.rtcTime.u8Minute		= RTC_DEFAULT_MINUTE;
 	RTC_Initure.rtcTime.u8Second		= RTC_DEFAULT_SECOND;
-	RTC_Initure.rtcTime.u8DayOfWeek	= RTC_ByteToBcd2(RTC_WeekDayNum(RTC_DEFAULT_YEAR, RTC_DEFAULT_MONTH, RTC_DEFAULT_DAY) + 1);
+	RTC_Initure.rtcTime.u8DayOfWeek	= RTC_ByteToBcd2(RTC_WeekDayNum(RTC_Bcd2ToByte(RTC_DEFAULT_YEAR), RTC_Bcd2ToByte(RTC_DEFAULT_MONTH), RTC_Bcd2ToByte(RTC_DEFAULT_DAY)));
 	
 	RTC_Initure.rtcCompen			= RtcCompenEnable;
 	RTC_Initure.rtcCompValue			= 0;
@@ -57,6 +73,28 @@ void HC32_RTC_Init(void)
 	Rtc_Init(&RTC_Initure);
 	
 	Rtc_Cmd(TRUE);
+}
+
+/**********************************************************************************************************
+ @Function			void HC32_RTC_SetTime(u8 year, u8 month, u8 day, u8 hour, u8 min, u8 sec)
+ @Description			HC32_RTC_SetTime							: HC32实时时钟设置时间
+ @Input				year, month, day							: 年(0~99), 月(1~12), 日(0~31)
+					hour, min, sec								: 小时, 分钟, 秒钟
+ @Return				void
+**********************************************************************************************************/
+void HC32_RTC_SetTime(u8 year, u8 month, u8 day, u8 hour, u8 min, u8 sec)
+{
+	stc_rtc_time_t RTC_Time;
+	
+	RTC_Time.u8Year				= RTC_ByteToBcd2(year);
+	RTC_Time.u8Month				= RTC_ByteToBcd2(month);
+	RTC_Time.u8Day					= RTC_ByteToBcd2(day);
+	RTC_Time.u8Hour				= RTC_ByteToBcd2(hour);
+	RTC_Time.u8Minute				= RTC_ByteToBcd2(min);
+	RTC_Time.u8Second				= RTC_ByteToBcd2(sec);
+	RTC_Time.u8DayOfWeek			= RTC_ByteToBcd2(RTC_WeekDayNum(year, month, day));
+	
+	Rtc_SetTime(&RTC_Time);
 }
 
 /**********************************************************************************************************
@@ -118,33 +156,72 @@ u8 RTC_WeekDayNum(u8 nYear, u8 nMonth, u8 nDay)
 	return (u8)weekday;
 }
 
+/**********************************************************************************************************
+ @Function			time_t HC32_RTC_GetUnixTimeToStamp(void)
+ @Description			HC32_RTC_GetUnixTimeToStamp					: HC32实时时钟获取当前时间戳
+ @Input				void
+ @Return				当前时间时间戳
+**********************************************************************************************************/
+time_t HC32_RTC_GetUnixTimeToStamp(void)
+{
+	stc_rtc_time_t readTime;
+	
+	Rtc_ReadDateTime(&readTime);
+	
+	return HC32_RTC_TimeToStamp(RTC_Bcd2ToByte(readTime.u8Year), RTC_Bcd2ToByte(readTime.u8Month), RTC_Bcd2ToByte(readTime.u8Day), RTC_Bcd2ToByte(readTime.u8Hour), RTC_Bcd2ToByte(readTime.u8Minute), RTC_Bcd2ToByte(readTime.u8Second));
+}
 
+/**********************************************************************************************************
+ @Function			struct tm HC32_RTC_GetUnixTimeToCalendar(void)
+ @Description			HC32_RTC_GetUnixTimeToCalendar				: HC32实时时钟获取当前时间体
+ @Input				void
+ @Return				当前时间日历时间
+**********************************************************************************************************/
+struct tm HC32_RTC_GetUnixTimeToCalendar(void)
+{
+	stc_rtc_time_t readTime;
+	
+	Rtc_ReadDateTime(&readTime);
+	
+	return HC32_RTC_TimeToCalendar(RTC_Bcd2ToByte(readTime.u8Year), RTC_Bcd2ToByte(readTime.u8Month), RTC_Bcd2ToByte(readTime.u8Day), RTC_Bcd2ToByte(readTime.u8Hour), RTC_Bcd2ToByte(readTime.u8Minute), RTC_Bcd2ToByte(readTime.u8Second));
+}
 
+/**********************************************************************************************************
+ @Function			time_t HC32_RTC_TimeToStamp(u8 year, u8 month, u8 day, u8 hour, u8 min, u8 sec)
+ @Description			HC32_RTC_TimeToStamp						: HC32实时时钟时间转换时间戳
+ @Input				void
+ @Return				时间戳
+**********************************************************************************************************/
+time_t HC32_RTC_TimeToStamp(u8 year, u8 month, u8 day, u8 hour, u8 min, u8 sec)
+{
+	struct tm time;
+	
+	time.tm_year	= 100 + year;
+	time.tm_mon	= month - 1;
+	time.tm_mday	= day;
+	time.tm_hour	= hour;
+	time.tm_min	= min;
+	time.tm_sec	= sec;
+	
+	return mktime(&time);
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+/**********************************************************************************************************
+ @Function			struct tm HC32_RTC_TimeToCalendar(u8 year, u8 month, u8 day, u8 hour, u8 min, u8 sec)
+ @Description			HC32_RTC_TimeToCalendar						: HC32实时时钟时间转换时间体
+ @Input				void
+ @Return				日历时间
+**********************************************************************************************************/
+struct tm HC32_RTC_TimeToCalendar(u8 year, u8 month, u8 day, u8 hour, u8 min, u8 sec)
+{
+	struct tm *t_time;
+	time_t t = HC32_RTC_TimeToStamp(year, month, day, hour, min, sec);
+	
+	t_time = localtime(&t);
+	t_time->tm_year	-= 100;
+	t_time->tm_mon		+= 1;
+	
+	return *t_time;
+}
 
 /********************************************** END OF FLEE **********************************************/

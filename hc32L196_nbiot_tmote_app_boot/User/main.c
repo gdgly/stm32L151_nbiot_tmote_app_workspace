@@ -49,7 +49,11 @@ int main(void)
 	HC32_XTHClock_Init();																//HC32XTH时钟初始化32MHz
 #endif
 	
-	HC32_IWDG_Init(WdtT3s28);															//HC32看门狗初始化
+#if SYSTEM_RESETFLAG_TYPE
+	HC32_Reset_Flag = HC32_SystemReset_GetStatus();											//HC32获取复位标志位
+#endif
+	
+	HC32_IWDG_Init(WdtT52s4);															//HC32看门狗初始化
 	
 	HC32_Delay_Init(Sysctrl_GetHClkFreq());													//HC32系统延时初始化
 	
@@ -66,8 +70,6 @@ int main(void)
 	
 	HC32_Uart0_Init(9600);
 	HC32_Uart1_Init(9600);
-	
-	
 	
 	
 	
@@ -93,11 +95,6 @@ int main(void)
 	
 	
 	
-	stc_rtc_time_t readTime;
-	
-	
-	
-	
 	
 	
 	while (true) {
@@ -112,10 +109,6 @@ int main(void)
 		
 		
 		
-		Rtc_ReadDateTime(&readTime);
-		
-		
-		printf("%X-%X-%X %X:%X:%X week: %X\r\n", readTime.u8Year, readTime.u8Month, readTime.u8Day, readTime.u8Hour, readTime.u8Minute, readTime.u8Second, readTime.u8DayOfWeek);
 		
 		
 		

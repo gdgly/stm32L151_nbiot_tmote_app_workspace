@@ -3,6 +3,7 @@
 
 #include "sys.h"
 #include "rtc.h"
+#include <time.h>
 
 #define RTC_DEFAULT_YEAR			0x20
 #define RTC_DEFAULT_MONTH		0x03
@@ -18,27 +19,12 @@ u8 RTC_WeekDayNum(u8 nYear, u8 nMonth, u8 nDay);
 
 void HC32_RTC_Init(void);																//HC32实时时钟初始化
 
+void HC32_RTC_SetTime(u8 year, u8 month, u8 day, u8 hour, u8 min, u8 sec);							//HC32实时时钟设置时间
 
+time_t    HC32_RTC_GetUnixTimeToStamp(void);													//HC32实时时钟获取当前时间戳
+struct tm HC32_RTC_GetUnixTimeToCalendar(void);												//HC32实时时钟获取当前时间体
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+time_t    HC32_RTC_TimeToStamp(u8 year, u8 month, u8 day, u8 hour, u8 min, u8 sec);					//HC32实时时钟时间转换时间戳
+struct tm HC32_RTC_TimeToCalendar(u8 year, u8 month, u8 day, u8 hour, u8 min, u8 sec);				//HC32实时时钟时间转换时间体
 
 #endif /* __HAL_RTC_H */

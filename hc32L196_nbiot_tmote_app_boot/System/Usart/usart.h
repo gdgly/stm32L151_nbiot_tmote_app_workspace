@@ -25,25 +25,16 @@
 #define UART1_RXD_GPIOx			GpioPortA
 #define UART1_RXD_PIN			GpioPin3
 
-#define UART0_TXD_IRQ			DISABLE
-#define UART0_RXD_IRQ			ENABLE
+#define UARTX_IRQ_DISABLE		(0)
+#define UARTX_IRQ_ENABLE			(1)
 
-#define UART1_TXD_IRQ			DISABLE
-#define UART1_RXD_IRQ			ENABLE
+#define UART0_TXD_IRQ			UARTX_IRQ_DISABLE
+#define UART0_RXD_IRQ			UARTX_IRQ_ENABLE
+
+#define UART1_TXD_IRQ			UARTX_IRQ_DISABLE
+#define UART1_RXD_IRQ			UARTX_IRQ_ENABLE
 
 void HC32_Uart0_Init(u32 bound);															//HC32 UART0初始化
 void HC32_Uart1_Init(u32 bound);															//HC32 UART1初始化
-
-
-
-
-
-
-
-
-
-
-
-
 
 #endif

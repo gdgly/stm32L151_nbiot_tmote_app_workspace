@@ -4,7 +4,7 @@
 #include "sys.h"
 
 //#define	MVB_SUBSN						0x81011000										//设备号
-//#define	MVB_BRAND						"mvb"											//厂牌
+//#define	MVB_BRAND						"mvb"											//厂牌名
 
 #define	CPUVERSION					"HC32L196JC"										//处理器型号
 
@@ -18,10 +18,15 @@
 #define	SYSTEM_CLOCK_RCH				48000000
 #define	SYSTEM_CLOCK_TYPE				SYSTEM_CLOCK_RCH									//系统时钟
 
-#define	SYSTEM_RTCCLOCK_RCL_32000		32000
-#define	SYSTEM_RTCCLOCK_RCL_38000		38000
 #define	SYSTEM_RTCCLOCK_XTL_32768		32768
-#define	SYSTEM_RTCCLOCK_TYPE			SYSTEM_RTCCLOCK_XTL_32768							//RTC时钟
+#define	SYSTEM_RTCCLOCK_RCL_32000		32000
+#define	SYSTEM_RTCCLOCK_RCL_38400		38400
+#define	SYSTEM_RTCCLOCK_TYPE			SYSTEM_RTCCLOCK_RCL_32000							//实时时钟
+
+#define	SYSTEM_RESETFLAG_DISABLE			0
+#define	SYSTEM_RESETFLAG_ENABLE			1
+#define	SYSTEM_RESETFLAG_TYPE			SYSTEM_RESETFLAG_DISABLE								//系统复位获取
+
 
 
 

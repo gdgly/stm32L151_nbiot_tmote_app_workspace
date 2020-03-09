@@ -157,47 +157,6 @@ void HC32_Uart1_Init(u32 bound)
 	EnableNvic(UART1_3_IRQn, IrqLevel1, TRUE);
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /**********************************************************************************************************
  @Function			int fputc(int ch, FILE *f)
  @Description			fputc									: Re-target putchar function

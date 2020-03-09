@@ -35,7 +35,16 @@ typedef __I uint32_t			vuc32;
 typedef __I uint16_t			vuc16;
 typedef __I uint8_t				vuc8;
 
-#define DISABLE				(0)
-#define ENABLE					(1)
+typedef enum
+{
+	RESET		= 0,
+	SET			= !RESET
+} FlagStatus, ITStatus;
+
+typedef enum
+{
+	DISABLE		= 0,
+	ENABLE		= !DISABLE
+} FunctionalState;
 
 #endif /* __HC32L19X_CC_H */
