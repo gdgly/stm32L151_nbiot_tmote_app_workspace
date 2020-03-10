@@ -47,4 +47,10 @@ typedef enum
 	ENABLE		= !DISABLE
 } FunctionalState;
 
+typedef enum
+{
+	OFF			= 0,
+	ON			= !OFF
+} PowerState;
+
 #endif /* __HC32L19X_CC_H */

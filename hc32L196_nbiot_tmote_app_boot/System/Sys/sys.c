@@ -38,6 +38,9 @@ void HC32_PeripheralClockGate_Init(void)
 	/* -使能RTC外设时钟门控- */
 	Sysctrl_SetPeripheralGate(SysctrlPeripheralRtc, TRUE);
 	
+	/* -使能Trim外设时钟门控- */
+	Sysctrl_SetPeripheralGate(SysctrlPeripheralTrim, TRUE);
+	
 	/* -使能GPIO外设时钟门控- */
 	Sysctrl_SetPeripheralGate(SysctrlPeripheralGpio, TRUE);
 	
@@ -47,8 +50,8 @@ void HC32_PeripheralClockGate_Init(void)
 	/* -使能UART1外设时钟门控- */
 	Sysctrl_SetPeripheralGate(SysctrlPeripheralUart1, TRUE);
 	
-	
-	
+	/* -使能ADC/BGR外设时钟门控- */
+	Sysctrl_SetPeripheralGate(SysctrlPeripheralAdcBgr, TRUE);
 	
 	
 	
@@ -313,16 +316,7 @@ bool HC32_TimeMeter_IsExpiredSS(timeMeterTypeDef* timer)
 
 
 
-/**********************************************************************************************************
- @Function			void SysTick_IRQHandler(void)
- @Description			SysTick_IRQHandler							: HC32系统嘀嗒定时器中断处理
- @Input				void
- @Return				void
-**********************************************************************************************************/
-void SysTick_IRQHandler(void)
-{
-	HAL_IncTick();
-	HAL_IncSecTick();
-}
+
+
 
 /********************************************** END OF FLEE **********************************************/

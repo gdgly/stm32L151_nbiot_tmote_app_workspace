@@ -13,6 +13,7 @@
   *********************************************************************************************************
   */
 
+#include "hc32l19x_config.h"
 #include "platform_config.h"
 #include "platform_map.h"
 #include "hal_beep.h"
