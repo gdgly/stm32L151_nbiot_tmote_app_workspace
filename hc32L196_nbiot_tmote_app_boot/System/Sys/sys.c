@@ -38,9 +38,6 @@ void HC32_PeripheralClockGate_Init(void)
 	/* -使能RTC外设时钟门控- */
 	Sysctrl_SetPeripheralGate(SysctrlPeripheralRtc, TRUE);
 	
-	/* -使能Trim外设时钟门控- */
-	Sysctrl_SetPeripheralGate(SysctrlPeripheralTrim, TRUE);
-	
 	/* -使能GPIO外设时钟门控- */
 	Sysctrl_SetPeripheralGate(SysctrlPeripheralGpio, TRUE);
 	
@@ -49,6 +46,12 @@ void HC32_PeripheralClockGate_Init(void)
 	
 	/* -使能UART1外设时钟门控- */
 	Sysctrl_SetPeripheralGate(SysctrlPeripheralUart1, TRUE);
+	
+	/* -使能I2C0外设时钟门控- */
+	Sysctrl_SetPeripheralGate(SysctrlPeripheralI2c0, TRUE);
+	
+	/* -使能I2C1外设时钟门控- */
+	Sysctrl_SetPeripheralGate(SysctrlPeripheralI2c1, TRUE);
 	
 	/* -使能ADC/BGR外设时钟门控- */
 	Sysctrl_SetPeripheralGate(SysctrlPeripheralAdcBgr, TRUE);

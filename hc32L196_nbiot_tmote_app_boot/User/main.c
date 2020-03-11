@@ -24,6 +24,9 @@
 #include "hal_iwdg.h"
 #include "hal_rtc.h"
 #include "hal_vbat.h"
+#include "hal_vptat.h"
+#include "hal_vtemp.h"
+#include "hal_i2c.h"
 
 /****************************************** Select DEBUG *************************************************/
 //#define	DEVICE_DEBUG																	//定义开启设备调试
@@ -62,39 +65,30 @@ int main(void)
 	
 	HC32_RTC_Init();																	//HC32实时时钟初始化
 	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	BEEP_Repeat_Control(5, 50, 25);														//蜂鸣器
 	HC32_IWDG_Feed();																	//喂狗
 	
+#if 1
 	HC32_LowPowerIO_Init();																//HC32低功耗IO初始化
 	HC32_RstPowerIO_Init();																//HC32复位电源初始化
 	HC32_CtrPowerIO_Init();																//HC32控制电源初始化
-	
-	
-	
-	
-	
-	
-	
+#endif
 	
 	HC32_Uart0_Init(9600);
 	HC32_Uart1_Init(9600);
 	
-	
-	
-	
-	
-	
-	
 	BEEP_Repeat_Control(10, 50, 25);														//蜂鸣器
 	HC32_IWDG_Feed();																	//喂狗
-	
-	
-	
-	
-	
-	
-	
-	
 	
 #if 0
 	BEEP_Repeat_Control(1, 150, 0);
@@ -112,19 +106,27 @@ int main(void)
 	BEEP_Repeat_Control(10, 50, 25);
 #endif
 	
+#if 0
 	printf("Init OK\r\n");
 	
 	printf("Modul : %d\r\n", MODEL_POWER_IO_GET());
 	printf("Radar : %d\r\n", RADAR_POWER_IO_GET());
 	printf("NBIot : %d\r\n", NBIOT_POWER_IO_GET());
 	printf("VBate : %d\r\n", VBATE_POWER_IO_GET());
+#endif
+	
+	printf("Debug OK\r\n");
 	
 	
 	
 	
 	
 	
-	struct tm date;
+	
+	
+	
+	
+	
 	
 	
 	while (true) {
@@ -137,9 +139,12 @@ int main(void)
 		
 		Delay_MS(1000);
 		
-		date = HC32_RTC_GetUnixTimeToCalendar();
 		
-		printf("%02d-%02d-%02d %02d:%02d:%02d\r\n", date.tm_year, date.tm_mon, date.tm_mday, date.tm_hour, date.tm_min, date.tm_sec);
+		
+		
+		
+		
+		
 		
 		
 		

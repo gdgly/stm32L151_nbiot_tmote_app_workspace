@@ -3,6 +3,7 @@
 
 #include "sys.h"
 #include "gpio.h"
+#include "reset.h"
 
 #define MODEL_POWER_GPIOx		GpioPortA
 #define MODEL_POWER_PIN			GpioPin8

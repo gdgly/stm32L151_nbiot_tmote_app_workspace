@@ -1,9 +1,9 @@
 /**
   *********************************************************************************************************
-  * @file    hal_vbat.c
+  * @file    hal_vtemp.c
   * @author  Movebroad -- KK
   * @version V1.0
-  * @date    2020-03-10
+  * @date    2020-03-11
   * @brief   
   *********************************************************************************************************
   * @attention
@@ -16,28 +16,17 @@
 #include "hc32l19x_config.h"
 #include "platform_config.h"
 #include "platform_map.h"
-#include "hal_vbat.h"
+#include "hal_vtemp.h"
 #include "delay.h"
 #include "usart.h"
 
 /**********************************************************************************************************
- @Function			static void VBate_Prot_Init(void)
- @Description			VBate_Prot_Init							: VBate ADC 端口配置
+ @Function			static void VTemp_ADC_Init(void)
+ @Description			VTemp_ADC_Init								: VTemp ADC 模块配置
  @Input				void
  @Return				void
 **********************************************************************************************************/
-static void VBate_Prot_Init(void)
-{
-	Gpio_SetAnalogMode(VBATE_ADC_GPIOx, VBATE_ADC_PIN);
-}
-
-/**********************************************************************************************************
- @Function			static void VBate_ADC_Init(void)
- @Description			VBate_ADC_Init								: VBate ADC 模块配置
- @Input				void
- @Return				void
-**********************************************************************************************************/
-static void VBate_ADC_Init(void)
+static void VTemp_ADC_Init(void)
 {
 	stc_adc_cfg_t ADC_Initure;
 	
@@ -46,63 +35,50 @@ static void VBate_ADC_Init(void)
 	ADC_Initure.enAdcMode		= AdcSglMode;
 	ADC_Initure.enAdcClkDiv		= AdcMskClkDiv1;
 	ADC_Initure.enAdcSampCycleSel	= AdcMskSampCycle12Clk;
-	ADC_Initure.enAdcRefVolSel	= AdcMskRefVolSelAVDD;
-	ADC_Initure.enAdcOpBuf		= AdcMskBufDisable;
-	ADC_Initure.enInRef			= AdcMskInRefDisable;
+	ADC_Initure.enAdcRefVolSel	= AdcMskRefVolSelInBgr2p5;
+	ADC_Initure.enAdcOpBuf		= AdcMskBufEnable;
+	ADC_Initure.enInRef			= AdcMskInRefEnable;
 	ADC_Initure.enAdcAlign		= AdcAlignRight;
 	Adc_Init(&ADC_Initure);
 }
 
 /**********************************************************************************************************
- @Function			static void VBate_Channel_Init(void)
- @Description			VBate_Channel_Init							: VBate ADC 通道配置
+ @Function			static void VTemp_Channel_Init(void)
+ @Description			VTemp_Channel_Init							: VTemp ADC 通道配置
  @Input				void
  @Return				void
 **********************************************************************************************************/
-static void VBate_Channel_Init(void)
+static void VTemp_Channel_Init(void)
 {
-	Adc_CfgSglChannel(VBATE_ADC_CHANNEL);
+	Adc_CfgSglChannel(VTEMP_ADC_CHANNEL);
 }
 
 /**********************************************************************************************************
- @Function			u32 HC32_VBate_Read(u32 timeoutMS)
- @Description			HC32_VBate_Read							: HC32电池电压读取
+ @Function			s16 HC32_VTemp_Read(u32 timeoutMS)
+ @Description			HC32_VTemp_Read							: HC32VTEMP温度读取
  @Input				timeoutMS									: 超时时间MS
- @Return				电压值
+ @Return				温度值
 **********************************************************************************************************/
-u32 HC32_VBate_Read(u32 timeoutMS)
+s32 HC32_VTemp_Read(u32 timeoutMS)
 {
 	u32 pwr_vol = 0;
+	u16 trim_val = 0;
+	s32 temp_val = 0;
 	
 	timeMeterTypeDef ADCtimerMS;
 	
-	stc_gpio_cfg_t GPIO_Initure;
-	
-	DDL_ZERO_STRUCT(GPIO_Initure);
-	
-	GPIO_Initure.enDir			= GpioDirOut;
-	GPIO_Initure.enDrv			= GpioDrvH;
-	GPIO_Initure.enPu			= GpioPuDisable;
-	GPIO_Initure.enPd			= GpioPdDisable;
-	GPIO_Initure.enOD			= GpioOdDisable;
-	GPIO_Initure.enCtrlMode		= GpioFastIO;
-	Gpio_Init(VBATE_POWER_GPIOx, VBATE_POWER_PIN, &GPIO_Initure);
-	
-	VBATE_POWER_IO_SET(ON);
-	
-	VBate_Prot_Init();
-	
-	Delay_MS(10);
-	
 	HC32_TimeMeter_CountdownMS(&ADCtimerMS, timeoutMS);
+	
+	Bgr_BgrEnable();
+	Bgr_TempSensorEnable();
 	
 	Adc_Enable();
 	
 	Delay_US(20);
 	
-	VBate_ADC_Init();
+	VTemp_ADC_Init();
 	
-	VBate_Channel_Init();
+	VTemp_Channel_Init();
 	
 	M0P_ADC->ICR_f.SGLIC = 0u;
 	
@@ -116,9 +92,14 @@ u32 HC32_VBate_Read(u32 timeoutMS)
 	
 	Adc_Disable();
 	
-	VBATE_POWER_IO_SET(OFF);
+	Bgr_TempSensorDisable();
+	Bgr_BgrDisable();
 	
-	return pwr_vol * 200 * 2.8 / 4096.0;
+	trim_val = (u16) *VTEMP_TRIM2V5_ADDR;
+	
+	temp_val = 25 + 0.0795 * 2.5 * ( pwr_vol - trim_val );
+	
+	return temp_val;
 }
 
 /********************************************** END OF FLEE **********************************************/

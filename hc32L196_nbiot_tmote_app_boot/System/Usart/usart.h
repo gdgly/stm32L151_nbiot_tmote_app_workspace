@@ -15,15 +15,19 @@
 
 #define UART0_TXD_GPIOx			GpioPortA
 #define UART0_TXD_PIN			GpioPin9
+#define UART0_TXD_AF			GpioAf1
 
 #define UART0_RXD_GPIOx			GpioPortA
 #define UART0_RXD_PIN			GpioPin10
+#define UART0_RXD_AF			GpioAf1
 
 #define UART1_TXD_GPIOx			GpioPortA
 #define UART1_TXD_PIN			GpioPin2
+#define UART1_TXD_AF			GpioAf1
 
 #define UART1_RXD_GPIOx			GpioPortA
 #define UART1_RXD_PIN			GpioPin3
+#define UART1_RXD_AF			GpioAf1
 
 #define UARTX_IRQ_DISABLE		(0)
 #define UARTX_IRQ_ENABLE			(1)

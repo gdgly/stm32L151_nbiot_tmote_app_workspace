@@ -36,14 +36,14 @@ static void UART0_Port_Init(void)
 	GPIO_Initure.enDrv			= GpioDrvH;
 	GPIO_Initure.enCtrlMode		= GpioFastIO;
 	Gpio_Init(UART0_TXD_GPIOx, UART0_TXD_PIN, &GPIO_Initure);
-	Gpio_SetAfMode(UART0_TXD_GPIOx, UART0_TXD_PIN, GpioAf1);
+	Gpio_SetAfMode(UART0_TXD_GPIOx, UART0_TXD_PIN, UART0_TXD_AF);
 	
 	/* UART0_RXD => PA10 */
 	GPIO_Initure.enDir			= GpioDirIn;
 	GPIO_Initure.enDrv			= GpioDrvH;
 	GPIO_Initure.enCtrlMode		= GpioFastIO;
 	Gpio_Init(UART0_RXD_GPIOx, UART0_RXD_PIN, &GPIO_Initure);
-	Gpio_SetAfMode(UART0_RXD_GPIOx, UART0_RXD_PIN, GpioAf1);
+	Gpio_SetAfMode(UART0_RXD_GPIOx, UART0_RXD_PIN, UART0_RXD_AF);
 }
 
 /**********************************************************************************************************
@@ -65,14 +65,14 @@ static void UART1_Port_Init(void)
 	GPIO_Initure.enDrv			= GpioDrvH;
 	GPIO_Initure.enCtrlMode		= GpioFastIO;
 	Gpio_Init(UART1_TXD_GPIOx, UART1_TXD_PIN, &GPIO_Initure);
-	Gpio_SetAfMode(UART1_TXD_GPIOx, UART1_TXD_PIN, GpioAf1);
+	Gpio_SetAfMode(UART1_TXD_GPIOx, UART1_TXD_PIN, UART1_TXD_AF);
 	
 	/* UART1_RXD => PA03 */
 	GPIO_Initure.enDir			= GpioDirIn;
 	GPIO_Initure.enDrv			= GpioDrvH;
 	GPIO_Initure.enCtrlMode		= GpioFastIO;
 	Gpio_Init(UART1_RXD_GPIOx, UART1_RXD_PIN, &GPIO_Initure);
-	Gpio_SetAfMode(UART1_RXD_GPIOx, UART1_RXD_PIN, GpioAf1);
+	Gpio_SetAfMode(UART1_RXD_GPIOx, UART1_RXD_PIN, UART1_RXD_AF);
 }
 
 /**********************************************************************************************************
