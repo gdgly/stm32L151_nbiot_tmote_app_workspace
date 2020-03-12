@@ -27,16 +27,16 @@
 #define	SYSTEM_RESETFLAG_ENABLE			1
 #define	SYSTEM_RESETFLAG_TYPE			SYSTEM_RESETFLAG_DISABLE								//系统复位获取
 
-
-
-
-
-
-
-
-
-
-
+#define	SYSTEM_PERIPHERAL_GATE_WDT		1												//Wdt
+#define	SYSTEM_PERIPHERAL_GATE_TICK		1												//SysTick
+#define	SYSTEM_PERIPHERAL_GATE_FLASH		1												//Flash
+#define	SYSTEM_PERIPHERAL_GATE_RTC		1												//RTC
+#define	SYSTEM_PERIPHERAL_GATE_GPIO		1												//GPIO
+#define	SYSTEM_PERIPHERAL_GATE_UART0		1												//Uart0
+#define	SYSTEM_PERIPHERAL_GATE_UART1		1												//Uart1
+#define	SYSTEM_PERIPHERAL_GATE_I2C0		1												//I2C0
+#define	SYSTEM_PERIPHERAL_GATE_I2C1		1												//I2C1
+#define	SYSTEM_PERIPHERAL_GATE_ADC		1												//ADC
 
 
 

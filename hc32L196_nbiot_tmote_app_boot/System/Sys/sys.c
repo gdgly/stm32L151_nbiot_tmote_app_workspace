@@ -27,44 +27,54 @@
 void HC32_PeripheralClockGate_Init(void)
 {
 	/* -使能WDT外设时钟门控- */
+#if SYSTEM_PERIPHERAL_GATE_WDT
 	Sysctrl_SetPeripheralGate(SysctrlPeripheralWdt, TRUE);
+#endif
 	
 	/* -使能SysTick外设时钟门控- */
+#if SYSTEM_PERIPHERAL_GATE_TICK
 	Sysctrl_SetPeripheralGate(SysctrlPeripheralTick, TRUE);
+#endif
 	
 	/* -使能FLASH外设时钟门控- */
+#if SYSTEM_PERIPHERAL_GATE_FLASH
 	Sysctrl_SetPeripheralGate(SysctrlPeripheralFlash, TRUE);
+#endif
 	
 	/* -使能RTC外设时钟门控- */
+#if SYSTEM_PERIPHERAL_GATE_RTC
 	Sysctrl_SetPeripheralGate(SysctrlPeripheralRtc, TRUE);
+#endif
 	
 	/* -使能GPIO外设时钟门控- */
+#if SYSTEM_PERIPHERAL_GATE_GPIO
 	Sysctrl_SetPeripheralGate(SysctrlPeripheralGpio, TRUE);
+#endif
 	
 	/* -使能UART0外设时钟门控- */
+#if SYSTEM_PERIPHERAL_GATE_UART0
 	Sysctrl_SetPeripheralGate(SysctrlPeripheralUart0, TRUE);
+#endif
 	
 	/* -使能UART1外设时钟门控- */
+#if SYSTEM_PERIPHERAL_GATE_UART1
 	Sysctrl_SetPeripheralGate(SysctrlPeripheralUart1, TRUE);
+#endif
 	
 	/* -使能I2C0外设时钟门控- */
+#if SYSTEM_PERIPHERAL_GATE_I2C0
 	Sysctrl_SetPeripheralGate(SysctrlPeripheralI2c0, TRUE);
+#endif
 	
 	/* -使能I2C1外设时钟门控- */
+#if SYSTEM_PERIPHERAL_GATE_I2C1
 	Sysctrl_SetPeripheralGate(SysctrlPeripheralI2c1, TRUE);
+#endif
 	
 	/* -使能ADC/BGR外设时钟门控- */
+#if SYSTEM_PERIPHERAL_GATE_ADC
 	Sysctrl_SetPeripheralGate(SysctrlPeripheralAdcBgr, TRUE);
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+#endif
 }
 
 /**********************************************************************************************************

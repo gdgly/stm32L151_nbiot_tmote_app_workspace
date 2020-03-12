@@ -27,6 +27,8 @@
 #include "hal_vptat.h"
 #include "hal_vtemp.h"
 #include "hal_i2c.h"
+#include "hal_iic.h"
+#include "hal_qmc5883l.h"
 
 /****************************************** Select DEBUG *************************************************/
 //#define	DEVICE_DEBUG																	//定义开启设备调试
@@ -64,6 +66,13 @@ int main(void)
 	HC32_SysTick_Init();																//HC32系统嘀嗒定时器初始化
 	
 	HC32_RTC_Init();																	//HC32实时时钟初始化
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	

@@ -13,7 +13,7 @@
 
 #define MOTOR_BUZZER_ERR_ON				1																														//外部BUZZER
 #define MOTOR_BUZZER_ERR_OFF				0																														//内部BEEP
-#define MOTOR_BUZZER_ERR					MOTOR_BUZZER_ERR_OFF																										//选择使用外部BUZZER警报器警报
+#define MOTOR_BUZZER_ERR					MOTOR_BUZZER_ERR_ON																											//选择使用外部BUZZER警报器警报
 
 #define MOTOR_ERROR_DELAY_MS				8000																														//单次电机控制超时时间(该时间内电机状态转变未完成将退出)
 

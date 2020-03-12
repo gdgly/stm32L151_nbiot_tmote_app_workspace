@@ -26,6 +26,8 @@
 #include "hal_vptat.h"
 #include "hal_vtemp.h"
 #include "hal_i2c.h"
+#include "hal_iic.h"
+#include "hal_qmc5883l.h"
 
 /**********************************************************************************************************
  @Function			void Uart0_IRQHandler(void)

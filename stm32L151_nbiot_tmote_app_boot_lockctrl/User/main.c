@@ -444,14 +444,14 @@ int main(void)
 	trf_do_rfpintf(printfbuf);
 	__NOP();
 	
-	if(i > 7) // fail to boot app several times
+	if(i > 29) // fail to boot app several times
 	{
 		if(i%2 == 0)
 			g_bootmode = TCFG_ENV_BOOTMODE_UPDATING;
 		else
 			g_bootmode = TCFG_ENV_BOOTMODE_SPIFLASH_UPGRADE;
 		if(i>100)
-			i = 7;
+			i = 29;
 	}
 	tcfg_SetBootCount(i+1);
 	IWDG_Feed();														//Î¹¹·
