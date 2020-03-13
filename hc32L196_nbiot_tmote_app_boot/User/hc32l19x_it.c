@@ -28,6 +28,7 @@
 #include "hal_i2c.h"
 #include "hal_iic.h"
 #include "hal_qmc5883l.h"
+#include "hal_bl24cxxp.h"
 
 /**********************************************************************************************************
  @Function			void Uart0_IRQHandler(void)

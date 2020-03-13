@@ -3,7 +3,6 @@
 
 #include "sys.h"
 #include "gpio.h"
-#include "hal_i2c.h"
 #include "hal_iic.h"
 
 #define QMC_DRDY_GPIOx			GpioPortA
@@ -72,6 +71,7 @@ void QMC5883L_Softwart_Reset(void);														//QMC5883L软复位
 void QMC5883L_ReadData_Simplify(short* x, short* y, short* z);									//QMC5883L读取数据
 void QMC5883L_ReadData_Extended(short* x, short* y, short* z);									//QMC5883L读取数据
 void QMC5883L_ReadData_Stronges(short* x, short* y, short* z);									//QMC5883L读取数据
+
 
 
 

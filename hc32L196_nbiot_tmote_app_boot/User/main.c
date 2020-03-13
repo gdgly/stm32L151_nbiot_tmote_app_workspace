@@ -29,6 +29,7 @@
 #include "hal_i2c.h"
 #include "hal_iic.h"
 #include "hal_qmc5883l.h"
+#include "hal_bl24cxxp.h"
 
 /****************************************** Select DEBUG *************************************************/
 //#define	DEVICE_DEBUG																	//定义开启设备调试
