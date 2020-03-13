@@ -34,8 +34,8 @@
 #define	SYSTEM_PERIPHERAL_GATE_GPIO		1												//GPIO
 #define	SYSTEM_PERIPHERAL_GATE_UART0		1												//Uart0
 #define	SYSTEM_PERIPHERAL_GATE_UART1		1												//Uart1
-#define	SYSTEM_PERIPHERAL_GATE_I2C0		1												//I2C0
-#define	SYSTEM_PERIPHERAL_GATE_I2C1		1												//I2C1
+#define	SYSTEM_PERIPHERAL_GATE_I2C0		0												//I2C0
+#define	SYSTEM_PERIPHERAL_GATE_I2C1		0												//I2C1
 #define	SYSTEM_PERIPHERAL_GATE_ADC		1												//ADC
 
 

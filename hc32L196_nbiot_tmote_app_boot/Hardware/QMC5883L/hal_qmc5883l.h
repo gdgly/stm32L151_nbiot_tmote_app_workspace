@@ -4,23 +4,11 @@
 #include "sys.h"
 #include "gpio.h"
 #include "hal_i2c.h"
+#include "hal_iic.h"
 
 #define QMC_DRDY_GPIOx			GpioPortA
 #define QMC_DRDY_PIN			GpioPin11
 #define QMC_DRDY_READ()			(Gpio_GetInputIO(QMC_DRDY_GPIOx, QMC_DRDY_PIN))
-
-#define QMC_I2C_INTERFACE0		0
-#define QMC_I2C_INTERFACE1		1
-#define QMC_I2C_INTERFACE		QMC_I2C_INTERFACE0
-
-#define QMC_I2C_0				M0P_I2C0
-#define QMC_I2C_1				M0P_I2C1
-#if QMC_I2C_INTERFACE == QMC_I2C_INTERFACE0
-#define QMC_I2C_TYPE			QMC_I2C_0
-#endif
-#if QMC_I2C_INTERFACE == QMC_I2C_INTERFACE1
-#define QMC_I2C_TYPE			QMC_I2C_1
-#endif
 
 #define QMC5883L_SLAVE_ADDRESS_W	0x1A														//I2C从机地址写
 #define QMC5883L_SLAVE_ADDRESS_R	0x1B														//I2C从机地址读
@@ -59,13 +47,15 @@
 #define QMC_SOFT_REST			(1<<7)													//软件复位
 
 #define QMC_REG_MAG				6														//地磁数据寄存器
+#define QMC_DEVIATION_MAX		900														//最大跳变值
+#define QMC_SAMPLE_TIMES			5														//采样次数
 
-void QMC5883L_Init(void);
+void QMC5883L_Init(void);																//QMC5883L初始化
 
-void QMC5883L_Drdy_Init(void);
-void QMC5883L_Drdy_DeInit(void);
+void QMC5883L_Drdy_Init(void);															//QMC5883L数据读取状态引脚初始化
+void QMC5883L_Drdy_DeInit(void);															//QMC5883L数据读取状态引脚反初始化
 
-void QMC5883L_Discharge(void);
+void QMC5883L_Discharge(void);															//QMC5883L硬复位
 
 void QMC5883L_ClearInsideData(void);														//QMC5883L清除内部待读取数据缓存
 void QMC5883L_Mode_Selection(u8 mode);														//QMC5883L工作模式选择
@@ -74,14 +64,14 @@ void QMC5883L_Rates_Selection_Freq(u8 Freq);													//QMC5883L数据输出�
 void QMC5883L_Range_Selection(u8 range);													//QMC5883L测量范围选择
 void QMC5883L_Osr_Selection(u8 osr);														//QMC5883L内置滤波器带宽选择
 void QMC5883L_Interrupt_Selection(u8 interrupt);												//QMC5883L引脚中断选择
-void QMC5883L_Softwart_Reset(void);														//QMC5883L复位
+void QMC5883L_Softwart_Reset(void);														//QMC5883L软复位
 
 
 
 
-
-
-
+void QMC5883L_ReadData_Simplify(short* x, short* y, short* z);									//QMC5883L读取数据
+void QMC5883L_ReadData_Extended(short* x, short* y, short* z);									//QMC5883L读取数据
+void QMC5883L_ReadData_Stronges(short* x, short* y, short* z);									//QMC5883L读取数据
 
 
 

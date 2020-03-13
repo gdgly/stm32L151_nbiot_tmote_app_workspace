@@ -19,78 +19,30 @@
 #include "hal_qmc5883l.h"
 #include "delay.h"
 #include "usart.h"
+#include <stdlib.h>
 
 /**********************************************************************************************************
  @Function			static u8 QMC5883L_WriteByte(u8 ucRegAddr, u8 ucRegData)
- @Description			QMC5883L写入1Byte数据到寄存器( 内部调用 )
- @Input				ucRegAddr									: 写入地址
-					ucRegData									: 写入数据
+ @Description			QMC5883L写入1Byte数据( 内部调用 )
+ @Input				ucRegAddr : 写入地址
+					ucRegData : 写入数据
  @Return				0
 					Err
 **********************************************************************************************************/
 static u8 QMC5883L_WriteByte(u8 ucRegAddr, u8 ucRegData)
 {
-	timeMeterTypeDef Qmctimer;
+	HC32_IIC0_Start();																	//发送起始信号
 	
-	HC32_TimeMeter_CountdownMS(&Qmctimer, 1000);
+	HC32_IIC0_Send_Byte(QMC5883L_SLAVE_ADDRESS_W);											//发送I2C从机地址写
+	HC32_IIC0_Wait_Ack();																//等待应答
 	
-	/* Send Start Signal */
-	I2C_SetFunc(QMC_I2C_TYPE, I2cStart_En);
-	while (0 == I2C_GetIrq(QMC_I2C_TYPE)) {
-		if (HC32_TimeMeter_IsExpiredMS(&Qmctimer) != false) {
-			return ErrorTimeout;
-		}
-	}
-	if (0x08 != I2C_GetState(QMC_I2C_TYPE)) {
-		return Error;
-	}
-	I2C_ClearFunc(QMC_I2C_TYPE, I2cStart_En);
+	HC32_IIC0_Send_Byte(ucRegAddr);														//发送待写入数据地址
+	HC32_IIC0_Wait_Ack();																//等待应答
 	
-	/* Send I2C Slave Addr Write */
-	I2C_WriteByte(QMC_I2C_TYPE, QMC5883L_SLAVE_ADDRESS_W);
-	I2C_ClearIrq(QMC_I2C_TYPE);
-	while (0 == I2C_GetIrq(QMC_I2C_TYPE)) {
-		if (HC32_TimeMeter_IsExpiredMS(&Qmctimer) != false) {
-			return ErrorTimeout;
-		}
-	}
-	if (0x18 != I2C_GetState(QMC_I2C_TYPE)) {
-		return Error;
-	}
+	HC32_IIC0_Send_Byte(ucRegData);														//发送需写入数据数据
+	HC32_IIC0_Wait_Ack();																//等待应答
 	
-	/* Send Register Addr */
-	I2C_WriteByte(QMC_I2C_TYPE, ucRegAddr);
-	I2C_ClearIrq(QMC_I2C_TYPE);
-	while (0 == I2C_GetIrq(QMC_I2C_TYPE)) {
-		if (HC32_TimeMeter_IsExpiredMS(&Qmctimer) != false) {
-			return ErrorTimeout;
-		}
-	}
-	if (0x28 != I2C_GetState(QMC_I2C_TYPE)) {
-		return Error;
-	}
-	
-	/* Send Register Data */
-	I2C_WriteByte(QMC_I2C_TYPE, ucRegData);
-	I2C_ClearIrq(QMC_I2C_TYPE);
-	while (0 == I2C_GetIrq(QMC_I2C_TYPE)) {
-		if (HC32_TimeMeter_IsExpiredMS(&Qmctimer) != false) {
-			return ErrorTimeout;
-		}
-	}
-	if (0x28 != I2C_GetState(QMC_I2C_TYPE)) {
-		return Error;
-	}
-	
-	/* Send Stop Signal */
-	I2C_SetFunc(QMC_I2C_TYPE, I2cStop_En);
-	I2C_ClearIrq(QMC_I2C_TYPE);
-	while (0 == I2C_GetIrq(QMC_I2C_TYPE)) {
-		if (HC32_TimeMeter_IsExpiredMS(&Qmctimer) != false) {
-			return ErrorTimeout;
-		}
-	}
-	I2C_ClearFunc(QMC_I2C_TYPE, I2cStop_En);
+	HC32_IIC0_Stop();																	//发送停止信号
 	
 	return 0;
 }
@@ -98,98 +50,29 @@ static u8 QMC5883L_WriteByte(u8 ucRegAddr, u8 ucRegData)
 /**********************************************************************************************************
  @Function			static u8 QMC5883L_ReadByte(u8 ucRegAddr)
  @Description			QMC5883L读取1Byte数据( 内部调用 )
- @Input				ucRegAddr									: 读取数据地址
- @Return				ucRegAddr									: 读取数据
+ @Input				ucRegAddr : 读取数据地址
+ @Return				ucRegAddr : 读取数据
 **********************************************************************************************************/
 static u8 QMC5883L_ReadByte(u8 ucRegAddr)
 {
 	u8 ucData;
 	
-	timeMeterTypeDef Qmctimer;
+	HC32_IIC0_Start();																	//发送起始信号
 	
-	HC32_TimeMeter_CountdownMS(&Qmctimer, 1000);
+	HC32_IIC0_Send_Byte(QMC5883L_SLAVE_ADDRESS_W);											//发送I2C从机地址写
+	HC32_IIC0_Wait_Ack();																//等待应答
 	
-	/* Send Start Signal */
-	I2C_SetFunc(QMC_I2C_TYPE, I2cStart_En);
-	while (0 == I2C_GetIrq(QMC_I2C_TYPE)) {
-		if (HC32_TimeMeter_IsExpiredMS(&Qmctimer) != false) {
-			return ErrorTimeout;
-		}
-	}
-	if (0x08 != I2C_GetState(QMC_I2C_TYPE)) {
-		return Error;
-	}
-	I2C_ClearFunc(QMC_I2C_TYPE, I2cStart_En);
+	HC32_IIC0_Send_Byte(ucRegAddr);														//发送待读取数据地址
+	HC32_IIC0_Wait_Ack();																//等待应答
 	
-	/* Send I2C Slave Addr Write */
-	I2C_WriteByte(QMC_I2C_TYPE, QMC5883L_SLAVE_ADDRESS_W);
-	I2C_ClearIrq(QMC_I2C_TYPE);
-	while (0 == I2C_GetIrq(QMC_I2C_TYPE)) {
-		if (HC32_TimeMeter_IsExpiredMS(&Qmctimer) != false) {
-			return ErrorTimeout;
-		}
-	}
-	if (0x18 != I2C_GetState(QMC_I2C_TYPE)) {
-		return Error;
-	}
+	HC32_IIC0_Start();																	//发送起始信号
 	
-	/* Send Register Addr */
-	I2C_WriteByte(QMC_I2C_TYPE, ucRegAddr);
-	I2C_ClearIrq(QMC_I2C_TYPE);
-	while (0 == I2C_GetIrq(QMC_I2C_TYPE)) {
-		if (HC32_TimeMeter_IsExpiredMS(&Qmctimer) != false) {
-			return ErrorTimeout;
-		}
-	}
-	if (0x28 != I2C_GetState(QMC_I2C_TYPE)) {
-		return Error;
-	}
+	HC32_IIC0_Send_Byte(QMC5883L_SLAVE_ADDRESS_R);											//发送I2C从机地址读
+	HC32_IIC0_Wait_Ack();																//等待应答
 	
-	/* Send Start Signal */
-	I2C_SetFunc(QMC_I2C_TYPE, I2cStart_En);
-	while (0 == I2C_GetIrq(QMC_I2C_TYPE)) {
-		if (HC32_TimeMeter_IsExpiredMS(&Qmctimer) != false) {
-			return ErrorTimeout;
-		}
-	}
-	if (0x10 != I2C_GetState(QMC_I2C_TYPE)) {
-		return Error;
-	}
-	I2C_ClearFunc(QMC_I2C_TYPE, I2cStart_En);
+	ucData = HC32_IIC0_Read_Byte(0);														//读取数据
 	
-	/* Send I2C Slave Addr Read */
-	I2C_WriteByte(QMC_I2C_TYPE, QMC5883L_SLAVE_ADDRESS_R);
-	I2C_ClearIrq(QMC_I2C_TYPE);
-	while (0 == I2C_GetIrq(QMC_I2C_TYPE)) {
-		if (HC32_TimeMeter_IsExpiredMS(&Qmctimer) != false) {
-			return ErrorTimeout;
-		}
-	}
-	if (0x40 != I2C_GetState(QMC_I2C_TYPE)) {
-		return Error;
-	}
-	
-	/* Read Data */
-	I2C_ClearIrq(QMC_I2C_TYPE);
-	while (0 == I2C_GetIrq(QMC_I2C_TYPE)) {
-		if (HC32_TimeMeter_IsExpiredMS(&Qmctimer) != false) {
-			return ErrorTimeout;
-		}
-	}
-	if (0x58 != I2C_GetState(QMC_I2C_TYPE)) {
-		return Error;
-	}
-	ucData = I2C_ReadByte(QMC_I2C_TYPE);
-	
-	/* Send Stop Signal */
-	I2C_SetFunc(QMC_I2C_TYPE, I2cStop_En);
-	I2C_ClearIrq(QMC_I2C_TYPE);
-	while (0 == I2C_GetIrq(QMC_I2C_TYPE)) {
-		if (HC32_TimeMeter_IsExpiredMS(&Qmctimer) != false) {
-			return ErrorTimeout;
-		}
-	}
-	I2C_ClearFunc(QMC_I2C_TYPE, I2cStop_En);
+	HC32_IIC0_Stop();																	//发送停止信号
 	
 	return ucData;
 }
@@ -238,13 +121,12 @@ void QMC5883L_Drdy_DeInit(void)
 
 /**********************************************************************************************************
  @Function			void QMC5883L_Discharge(void)
- @Description			QMC5883L复位
+ @Description			QMC5883L硬复位
  @Input				void
  @Return				void
 **********************************************************************************************************/
 void QMC5883L_Discharge(void)
 {
-#if QMC_I2C_INTERFACE == QMC_I2C_INTERFACE0
 	stc_gpio_cfg_t GPIO_Initure;
 	
 	DDL_ZERO_STRUCT(GPIO_Initure);
@@ -255,42 +137,17 @@ void QMC5883L_Discharge(void)
 	GPIO_Initure.enPd			= GpioPdDisable;
 	GPIO_Initure.enOD			= GpioOdDisable;
 	
-	Gpio_Init(I2C0_SCL_GPIOx, I2C0_SCL_PIN, &GPIO_Initure);
-	Gpio_Init(I2C0_SDA_GPIOx, I2C0_SDA_PIN, &GPIO_Initure);
+	Gpio_Init(IIC0_SCL_GPIOx, IIC0_SCL_PIN, &GPIO_Initure);
+	Gpio_Init(IIC0_SDA_GPIOx, IIC0_SDA_PIN, &GPIO_Initure);
 	
-	Gpio_SetAfMode(I2C0_SCL_GPIOx, I2C0_SCL_PIN, GpioAf0);
-	Gpio_SetAfMode(I2C0_SDA_GPIOx, I2C0_SDA_PIN, GpioAf0);
+	Gpio_SetAfMode(IIC0_SCL_GPIOx, IIC0_SCL_PIN, IIC0_SCL_AF);
+	Gpio_SetAfMode(IIC0_SDA_GPIOx, IIC0_SDA_PIN, IIC0_SDA_AF);
 	
-	Gpio_ClrIO(I2C0_SCL_GPIOx, I2C0_SCL_PIN);
-	Gpio_ClrIO(I2C0_SDA_GPIOx, I2C0_SDA_PIN);
+	Gpio_ClrIO(IIC0_SCL_GPIOx, IIC0_SCL_PIN);
+	Gpio_ClrIO(IIC0_SDA_GPIOx, IIC0_SDA_PIN);
 	Delay_MS(3000);
-	Gpio_SetIO(I2C0_SCL_GPIOx, I2C0_SCL_PIN);
-	Gpio_SetIO(I2C0_SDA_GPIOx, I2C0_SDA_PIN);
-#endif
-	
-#if QMC_I2C_INTERFACE == QMC_I2C_INTERFACE1
-	stc_gpio_cfg_t GPIO_Initure;
-	
-	DDL_ZERO_STRUCT(GPIO_Initure);
-	
-	GPIO_Initure.enDir			= GpioDirOut;
-	GPIO_Initure.enDrv			= GpioDrvH;
-	GPIO_Initure.enPu			= GpioPuDisable;
-	GPIO_Initure.enPd			= GpioPdDisable;
-	GPIO_Initure.enOD			= GpioOdDisable;
-	
-	Gpio_Init(I2C1_SCL_GPIOx, I2C1_SCL_PIN, &GPIO_Initure);
-	Gpio_Init(I2C1_SDA_GPIOx, I2C1_SDA_PIN, &GPIO_Initure);
-	
-	Gpio_SetAfMode(I2C1_SCL_GPIOx, I2C1_SCL_PIN, GpioAf0);
-	Gpio_SetAfMode(I2C1_SDA_GPIOx, I2C1_SDA_PIN, GpioAf0);
-	
-	Gpio_ClrIO(I2C1_SCL_GPIOx, I2C1_SCL_PIN);
-	Gpio_ClrIO(I2C1_SDA_GPIOx, I2C1_SDA_PIN);
-	Delay_MS(3000);
-	Gpio_SetIO(I2C1_SCL_GPIOx, I2C1_SCL_PIN);
-	Gpio_SetIO(I2C1_SDA_GPIOx, I2C1_SDA_PIN);
-#endif
+	Gpio_SetIO(IIC0_SCL_GPIOx, IIC0_SCL_PIN);
+	Gpio_SetIO(IIC0_SDA_GPIOx, IIC0_SDA_PIN);
 }
 
 /**********************************************************************************************************
@@ -301,12 +158,7 @@ void QMC5883L_Discharge(void)
 **********************************************************************************************************/
 void QMC5883L_Init(void)
 {
-#if QMC_I2C_INTERFACE == QMC_I2C_INTERFACE0
-	HC32_I2C0_Init(100000);
-#endif
-#if QMC_I2C_INTERFACE == QMC_I2C_INTERFACE1
-	HC32_I2C1_Init(100000);
-#endif
+	HC32_IIC0_Init();
 	
 	QMC5883L_WriteByte(QMC5883L_CR2, QMC_SOFT_REST);
 	
@@ -322,56 +174,163 @@ void QMC5883L_Init(void)
 	QMC5883L_Drdy_Init();
 }
 
+/**********************************************************************************************************
+ @Function			void QMC5883L_ReadData_Simplify(short* x, short* y, short* z)
+ @Description			QMC5883L读取数据
+ @Input				&x &y &z
+ @Return				void
+**********************************************************************************************************/
+void QMC5883L_ReadData_Simplify(short* x, short* y, short* z)
+{
+	u8 ucReadBuf[QMC_REG_MAG];
+	
+	timeMeterTypeDef qmcTimer;
+	
+	HC32_TimeMeter_CountdownMS(&qmcTimer, 100);
+	
+	QMC5883L_Mode_Selection(QMC_MODE_CONTINOUS);
+	
+	while (HC32_TimeMeter_IsExpiredMS(&qmcTimer) != true) {
+		if (QMC_DRDY_READ() == HIGH) {
+			for (int index = 0; index < QMC_REG_MAG; index++) {
+				ucReadBuf[index] = QMC5883L_ReadByte(QMC_DATA_OUT_X_L + index);
+			}
+			break;
+		}
+	}
+	
+	*x = (int16_t)(ucReadBuf[1] << 8) | ucReadBuf[0];
+	*y = (int16_t)(ucReadBuf[3] << 8) | ucReadBuf[2];
+	*z = (int16_t)(ucReadBuf[5] << 8) | ucReadBuf[4];
+	
+	QMC5883L_Mode_Selection(QMC_MODE_STANDBY);
+}
 
+/**********************************************************************************************************
+ @Function			void QMC5883L_ReadData_Extended(short* x, short* y, short* z)
+ @Description			QMC5883L读取数据
+ @Input				&x &y &z
+ @Return				void
+**********************************************************************************************************/
+void QMC5883L_ReadData_Extended(short* x, short* y, short* z)
+{
+	u8  ucReadBuf[QMC_SAMPLE_TIMES][QMC_REG_MAG];
+	s16 magdata_x[QMC_SAMPLE_TIMES], magdata_y[QMC_SAMPLE_TIMES], magdata_z[QMC_SAMPLE_TIMES];
+	s16 sample_times = 0;
+	
+	timeMeterTypeDef qmcTimer;
+	
+	HC32_TimeMeter_CountdownMS(&qmcTimer, (100 * QMC_SAMPLE_TIMES));
+	
+	QMC5883L_Mode_Selection(QMC_MODE_CONTINOUS);
+	
+	while (HC32_TimeMeter_IsExpiredMS(&qmcTimer) != true) {
+		if (QMC_DRDY_READ() == HIGH) {
+			for (int index = 0; index < QMC_REG_MAG; index++) {
+				ucReadBuf[sample_times][index] = QMC5883L_ReadByte(QMC_DATA_OUT_X_L + index);
+			}
+			sample_times++;
+		}
+		
+		if (sample_times >= QMC_SAMPLE_TIMES) {
+			for (int index = 0; index < QMC_SAMPLE_TIMES; index++) {
+				magdata_x[index] = (int16_t)(ucReadBuf[index][1] << 8) | ucReadBuf[index][0];
+				magdata_y[index] = (int16_t)(ucReadBuf[index][3] << 8) | ucReadBuf[index][2];
+				magdata_z[index] = (int16_t)(ucReadBuf[index][5] << 8) | ucReadBuf[index][4];
+			}
+			
+			for (int index = 1; index < QMC_SAMPLE_TIMES; index++) {
+				if (abs(magdata_x[0] - magdata_x[index]) > QMC_DEVIATION_MAX) {
+					sample_times = 0;
+					break;
+				}
+				if (abs(magdata_y[0] - magdata_y[index]) > QMC_DEVIATION_MAX) {
+					sample_times = 0;
+					break;
+				}
+				if (abs(magdata_z[0] - magdata_z[index]) > QMC_DEVIATION_MAX) {
+					sample_times = 0;
+					break;
+				}
+			}
+			
+			break;
+		}
+	}
+	
+	*x = 0;
+	*y = 0;
+	*z = 0;
+	
+	if (sample_times >= QMC_SAMPLE_TIMES) {
+		for (int index = 0; index < QMC_SAMPLE_TIMES; index++) {
+			*x += (((int16_t)(ucReadBuf[index][1] << 8) | ucReadBuf[index][0]) + QMC_SAMPLE_TIMES/2) / QMC_SAMPLE_TIMES;
+			*y += (((int16_t)(ucReadBuf[index][3] << 8) | ucReadBuf[index][2]) + QMC_SAMPLE_TIMES/2) / QMC_SAMPLE_TIMES;
+			*z += (((int16_t)(ucReadBuf[index][5] << 8) | ucReadBuf[index][4]) + QMC_SAMPLE_TIMES/2) / QMC_SAMPLE_TIMES;
+		}
+	}
+	
+	QMC5883L_Mode_Selection(QMC_MODE_STANDBY);
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+/**********************************************************************************************************
+ @Function			void QMC5883L_ReadData_Stronges(short* x, short* y, short* z)
+ @Description			QMC5883L读取数据
+ @Input				&x &y &z
+ @Return				void
+**********************************************************************************************************/
+void QMC5883L_ReadData_Stronges(short* x, short* y, short* z)
+{
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+}
 
 /**********************************************************************************************************
  @Function			void QMC5883L_ClearInsideData(void)
@@ -524,7 +483,7 @@ void QMC5883L_Interrupt_Selection(u8 interrupt)
 
 /**********************************************************************************************************
  @Function			void QMC5883L_Softwart_Reset(void)
- @Description			QMC5883L复位
+ @Description			QMC5883L软复位
  @Input				void
  @Return				void
 **********************************************************************************************************/
@@ -541,6 +500,7 @@ void QMC5883L_Softwart_Reset(void)
 	/* 引脚中断使能, 数据读取完指针自动偏转失能 */
 	QMC5883L_WriteByte(QMC5883L_CR2, QMC_INT_ENABLE | QMC_POINT_ROLL_DISABLE);
 }
+
 
 
 

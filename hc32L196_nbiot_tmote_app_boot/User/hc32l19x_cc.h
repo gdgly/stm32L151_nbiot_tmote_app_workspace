@@ -53,4 +53,10 @@ typedef enum
 	ON			= !OFF
 } PowerState;
 
+typedef enum
+{
+	LOW			= 0,
+	HIGH			= !LOW
+} LevelState;
+
 #endif /* __HC32L19X_CC_H */
