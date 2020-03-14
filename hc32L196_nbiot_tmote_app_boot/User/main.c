@@ -30,6 +30,7 @@
 #include "hal_iic.h"
 #include "hal_qmc5883l.h"
 #include "hal_bl24cxxp.h"
+#include "hal_eeprom.h"
 
 /****************************************** Select DEBUG *************************************************/
 //#define	DEVICE_DEBUG																	//定义开启设备调试

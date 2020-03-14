@@ -338,7 +338,7 @@
               <MiscControls></MiscControls>
               <Define></Define>
               <Undefine></Undefine>
-              <IncludePath>..\Core;..\HALLibraries\inc;..\HALLibraries\src;..\User;..\System\Sys;..\System\Delay;..\System\Usart;..\Hardware\BEEP;..\Hardware\IWDG;..\Hardware\RTC;..\Hardware\VBAT;..\Hardware\VPTAT;..\Hardware\VTEMP;..\Hardware\I2C;..\Hardware\IIC;..\Hardware\QMC5883L;..\Hardware\BL24CXXP</IncludePath>
+              <IncludePath>..\Core;..\HALLibraries\inc;..\HALLibraries\src;..\User;..\System\Sys;..\System\Delay;..\System\Usart;..\Hardware\BEEP;..\Hardware\IWDG;..\Hardware\RTC;..\Hardware\VBAT;..\Hardware\VPTAT;..\Hardware\VTEMP;..\Hardware\I2C;..\Hardware\IIC;..\Hardware\QMC5883L;..\Hardware\BL24CXXP;..\Hardware\EEPROM</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -609,6 +609,11 @@
               <FileName>hal_bl24cxxp.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Hardware\BL24CXXP\hal_bl24cxxp.c</FilePath>
+            </File>
+            <File>
+              <FileName>hal_eeprom.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Hardware\EEPROM\hal_eeprom.c</FilePath>
             </File>
           </Files>
         </Group>
