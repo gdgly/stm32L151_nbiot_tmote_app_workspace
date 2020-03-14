@@ -27,54 +27,40 @@
 void HC32_PeripheralClockGate_Init(void)
 {
 	/* -使能WDT外设时钟门控- */
-#if SYSTEM_PERIPHERAL_GATE_WDT
-	Sysctrl_SetPeripheralGate(SysctrlPeripheralWdt, TRUE);
-#endif
+	Sysctrl_SetPeripheralGate(SysctrlPeripheralWdt, SYSTEM_PERIPHERAL_GATE_WDT);
 	
 	/* -使能SysTick外设时钟门控- */
-#if SYSTEM_PERIPHERAL_GATE_TICK
-	Sysctrl_SetPeripheralGate(SysctrlPeripheralTick, TRUE);
-#endif
+	Sysctrl_SetPeripheralGate(SysctrlPeripheralTick, SYSTEM_PERIPHERAL_GATE_TICK);
 	
 	/* -使能FLASH外设时钟门控- */
-#if SYSTEM_PERIPHERAL_GATE_FLASH
-	Sysctrl_SetPeripheralGate(SysctrlPeripheralFlash, TRUE);
-#endif
+	Sysctrl_SetPeripheralGate(SysctrlPeripheralFlash, SYSTEM_PERIPHERAL_GATE_FLASH);
 	
 	/* -使能RTC外设时钟门控- */
-#if SYSTEM_PERIPHERAL_GATE_RTC
-	Sysctrl_SetPeripheralGate(SysctrlPeripheralRtc, TRUE);
-#endif
+	Sysctrl_SetPeripheralGate(SysctrlPeripheralRtc, SYSTEM_PERIPHERAL_GATE_RTC);
 	
 	/* -使能GPIO外设时钟门控- */
-#if SYSTEM_PERIPHERAL_GATE_GPIO
-	Sysctrl_SetPeripheralGate(SysctrlPeripheralGpio, TRUE);
-#endif
+	Sysctrl_SetPeripheralGate(SysctrlPeripheralGpio, SYSTEM_PERIPHERAL_GATE_GPIO);
 	
 	/* -使能UART0外设时钟门控- */
-#if SYSTEM_PERIPHERAL_GATE_UART0
-	Sysctrl_SetPeripheralGate(SysctrlPeripheralUart0, TRUE);
-#endif
+	Sysctrl_SetPeripheralGate(SysctrlPeripheralUart0, SYSTEM_PERIPHERAL_GATE_UART0);
 	
 	/* -使能UART1外设时钟门控- */
-#if SYSTEM_PERIPHERAL_GATE_UART1
-	Sysctrl_SetPeripheralGate(SysctrlPeripheralUart1, TRUE);
-#endif
+	Sysctrl_SetPeripheralGate(SysctrlPeripheralUart1, SYSTEM_PERIPHERAL_GATE_UART1);
 	
 	/* -使能I2C0外设时钟门控- */
-#if SYSTEM_PERIPHERAL_GATE_I2C0
-	Sysctrl_SetPeripheralGate(SysctrlPeripheralI2c0, TRUE);
-#endif
+	Sysctrl_SetPeripheralGate(SysctrlPeripheralI2c0, SYSTEM_PERIPHERAL_GATE_I2C0);
 	
 	/* -使能I2C1外设时钟门控- */
-#if SYSTEM_PERIPHERAL_GATE_I2C1
-	Sysctrl_SetPeripheralGate(SysctrlPeripheralI2c1, TRUE);
-#endif
+	Sysctrl_SetPeripheralGate(SysctrlPeripheralI2c1, SYSTEM_PERIPHERAL_GATE_I2C1);
+	
+	/* -使能SPI0外设时钟门控- */
+	Sysctrl_SetPeripheralGate(SysctrlPeripheralSpi0, SYSTEM_PERIPHERAL_GATE_SPI0);
+	
+	/* -使能SPI1外设时钟门控- */
+	Sysctrl_SetPeripheralGate(SysctrlPeripheralSpi1, SYSTEM_PERIPHERAL_GATE_SPI1);
 	
 	/* -使能ADC/BGR外设时钟门控- */
-#if SYSTEM_PERIPHERAL_GATE_ADC
-	Sysctrl_SetPeripheralGate(SysctrlPeripheralAdcBgr, TRUE);
-#endif
+	Sysctrl_SetPeripheralGate(SysctrlPeripheralAdcBgr, SYSTEM_PERIPHERAL_GATE_ADC);
 }
 
 /**********************************************************************************************************

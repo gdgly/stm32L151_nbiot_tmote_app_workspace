@@ -27,16 +27,41 @@
 #define	SYSTEM_RESETFLAG_ENABLE			1
 #define	SYSTEM_RESETFLAG_TYPE			SYSTEM_RESETFLAG_DISABLE								//系统复位获取
 
-#define	SYSTEM_PERIPHERAL_GATE_WDT		1												//Wdt
-#define	SYSTEM_PERIPHERAL_GATE_TICK		1												//SysTick
-#define	SYSTEM_PERIPHERAL_GATE_FLASH		1												//Flash
-#define	SYSTEM_PERIPHERAL_GATE_RTC		1												//RTC
-#define	SYSTEM_PERIPHERAL_GATE_GPIO		1												//GPIO
-#define	SYSTEM_PERIPHERAL_GATE_UART0		1												//Uart0
-#define	SYSTEM_PERIPHERAL_GATE_UART1		1												//Uart1
-#define	SYSTEM_PERIPHERAL_GATE_I2C0		0												//I2C0
-#define	SYSTEM_PERIPHERAL_GATE_I2C1		0												//I2C1
-#define	SYSTEM_PERIPHERAL_GATE_ADC		1												//ADC
+#define	SYSTEM_PERIPHERAL_GATE_WDT		TRUE												//Wdt
+#define	SYSTEM_PERIPHERAL_GATE_TICK		TRUE												//SysTick
+#define	SYSTEM_PERIPHERAL_GATE_FLASH		TRUE												//Flash
+#define	SYSTEM_PERIPHERAL_GATE_RTC		TRUE												//RTC
+#define	SYSTEM_PERIPHERAL_GATE_GPIO		TRUE												//GPIO
+#define	SYSTEM_PERIPHERAL_GATE_UART0		TRUE												//Uart0
+#define	SYSTEM_PERIPHERAL_GATE_UART1		TRUE												//Uart1
+#define	SYSTEM_PERIPHERAL_GATE_I2C0		FALSE											//I2C0
+#define	SYSTEM_PERIPHERAL_GATE_I2C1		FALSE											//I2C1
+#define	SYSTEM_PERIPHERAL_GATE_SPI0		TRUE												//SPI0
+#define	SYSTEM_PERIPHERAL_GATE_SPI1		TRUE												//SPI1
+#define	SYSTEM_PERIPHERAL_GATE_ADC		FALSE											//ADC
+
+
+
+
+
+
+#define	EPROM_BL24CXX																	//定义开启 EPROM BL24CXX
+#define	FLASH_P25QXXH																	//定义开启 FLASH P25QXXH
+#define	RADIO_SI4438A																	//定义开启 RADIO SI4438A
+
+
+
+
+
+
+
+#define	USART1_DISABLE					0
+#define	USART1_ENABLE					1
+#define	USART1_TYPE					USART1_ENABLE										//串口1状态
+
+#define	USART2_DISABLE					0
+#define	USART2_ENABLE					1
+#define	USART2_TYPE					USART2_ENABLE										//串口2状态
 
 
 
