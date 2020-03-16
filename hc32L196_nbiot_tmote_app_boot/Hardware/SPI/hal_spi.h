@@ -29,6 +29,12 @@
 #define SPI1_MOSI_PIN			GpioPin15
 #define SPI1_MOSI_AF			GpioAf1
 
+#define SPI0_NSS_ENABLE()		Spi_SetCS(M0P_SPI0, FALSE)
+#define SPI0_NSS_DISABLE()		Spi_SetCS(M0P_SPI0, TRUE)
+
+#define SPI1_NSS_ENABLE()		Spi_SetCS(M0P_SPI1, FALSE)
+#define SPI1_NSS_DISABLE()		Spi_SetCS(M0P_SPI1, TRUE)
+
 void HC32_SPI0_Init(void);																//HC32 SPI0初始化
 u8   HC32_SPI0_SendByte(u8 byte, u32 timeout);												//HC32 SPI0发送一个字节数据
 u8   HC32_SPI0_ReadByte(u8 byte, u32 timeout);												//HC32 SPI0读取一个字节数据

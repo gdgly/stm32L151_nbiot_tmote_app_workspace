@@ -26,7 +26,6 @@
 #include "hal_vbat.h"
 #include "hal_vptat.h"
 #include "hal_vtemp.h"
-#include "hal_i2c.h"
 #include "hal_iic.h"
 #include "hal_bl24cxxp.h"
 #include "hal_eeprom.h"
@@ -132,11 +131,13 @@ int main(void)
 	
 	
 	
+	P25QXXH_Init();
 	
-	
-	
-	
-	
+	printf("Start Erase\r\n");
+	P25QXXH_EraseBlock(P25QXXH_CMD_BE64, P25Q40H_BLOCK64K_ADDR_0);
+	printf("End Erase\r\n");
+	printf("Reg1 : 0x%x\r\n", P25QXXH_ReadStatusRegister1());
+	printf("Reg2 : 0x%x\r\n", P25QXXH_ReadStatusRegister2());
 	
 	
 	

@@ -338,7 +338,7 @@
               <MiscControls></MiscControls>
               <Define></Define>
               <Undefine></Undefine>
-              <IncludePath>..\Core;..\HALLibraries\inc;..\HALLibraries\src;..\User;..\System\Sys;..\System\Delay;..\System\Usart;..\Hardware\BEEP;..\Hardware\IWDG;..\Hardware\RTC;..\Hardware\VBAT;..\Hardware\VPTAT;..\Hardware\VTEMP;..\Hardware\I2C;..\Hardware\IIC;..\Hardware\BL24CXXP;..\Hardware\EEPROM;..\Hardware\QMC5883L;..\Hardware\SPI;..\Hardware\P25QXXH</IncludePath>
+              <IncludePath>..\Core;..\HALLibraries\inc;..\HALLibraries\src;..\User;..\System\Sys;..\System\Delay;..\System\Usart;..\Hardware\BEEP;..\Hardware\IWDG;..\Hardware\RTC;..\Hardware\VBAT;..\Hardware\VPTAT;..\Hardware\VTEMP;..\Hardware\IIC;..\Hardware\BL24CXXP;..\Hardware\EEPROM;..\Hardware\QMC5883L;..\Hardware\SPI;..\Hardware\P25QXXH</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -589,11 +589,6 @@
               <FileName>hal_vtemp.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Hardware\VTEMP\hal_vtemp.c</FilePath>
-            </File>
-            <File>
-              <FileName>hal_i2c.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Hardware\I2C\hal_i2c.c</FilePath>
             </File>
             <File>
               <FileName>hal_iic.c</FileName>

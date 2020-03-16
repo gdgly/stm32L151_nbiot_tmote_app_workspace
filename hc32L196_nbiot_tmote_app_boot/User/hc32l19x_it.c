@@ -25,7 +25,6 @@
 #include "hal_vbat.h"
 #include "hal_vptat.h"
 #include "hal_vtemp.h"
-#include "hal_i2c.h"
 #include "hal_iic.h"
 #include "hal_bl24cxxp.h"
 #include "hal_eeprom.h"
