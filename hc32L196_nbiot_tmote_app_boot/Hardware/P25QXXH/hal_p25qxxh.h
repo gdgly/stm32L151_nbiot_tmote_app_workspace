@@ -10,6 +10,7 @@
 #define P25QXXH_SPIx_TYPE		SPI0_TYPE
 
 #define P25QXXH_TRANSMIT_TIMEOUT	500
+#define P25QXXH_EXECUTED_TIMEOUT	500
 
 #define P25QXXH_SPIx_NSS_GPIOx	GpioPortB
 #define P25QXXH_SPIx_NSS_PIN		GpioPin12
@@ -23,10 +24,6 @@
 #define P25QXXH_SPIx_NSS_ENABLE()	{Gpio_ClrIO(P25QXXH_SPIx_NSS_GPIOx, P25QXXH_SPIx_NSS_PIN); SPI1_NSS_ENABLE();}
 #define P25QXXH_SPIx_NSS_DISABLE()	{SPI1_NSS_DISABLE(); Gpio_SetIO(P25QXXH_SPIx_NSS_GPIOx, P25QXXH_SPIx_NSS_PIN);}
 #endif
-
-
-
-
 
 #define P25Q40H_BASE_ADDR		0x00000000U												//P25Q40H Base Addr
 #define P25Q40H_CHIP512K_BYTE_SIZE	0x00080000U												//P25Q40H Chip512K Byte Size
@@ -61,20 +58,20 @@
 #define P25Q40H_BLOCK32K_ADDR_14	((u32)(14 * P25Q40H_BLOCK32K_BYTE_SIZE) + P25Q40H_BASE_ADDR)
 #define P25Q40H_BLOCK32K_ADDR_15	((u32)(15 * P25Q40H_BLOCK32K_BYTE_SIZE) + P25Q40H_BASE_ADDR)
 
-
-
-
-
-
-
-
-
-
-
+#define P25Q40H_SECTOR4K_ADDR(n)	((u32)(n  * P25Q40H_SECTOR4K_BYTE_SIZE) + P25Q40H_BASE_ADDR)
+#define P25Q40H_PAGE256B_ADDR(n)	((u32)(n  * P25Q40H_PAGE256B_BYTE_SIZE) + P25Q40H_BASE_ADDR)
 
 #define P25Q40H_ELECTRONIC_ID		0x00000012U												//P25Q40H ElectronicID
 #define P25Q40H_MDEVICE_ID		0x00008512U												//P25Q40H MDeviceID
 #define P25Q40H_JEDEC_ID			0x00856013U												//P25Q40H JedecID
+
+#define GD25Q80_ELECTRONIC_ID		0x00000013U												//GD25Q80 ElectronicID
+#define GD25Q80_MDEVICE_ID		0x0000C813U												//GD25Q80 MDeviceID
+#define GD25Q80_JEDEC_ID			0x00C84014U												//GD25Q80 JedecID
+
+#define GD25Q40_ELECTRONIC_ID		0x00000012U												//GD25Q40 ElectronicID
+#define GD25Q40_MDEVICE_ID		0x0000C812U												//GD25Q40 MDeviceID
+#define GD25Q40_JEDEC_ID			0x00C84013U												//GD25Q40 JedecID
 
 #define P25QXXH_CMD_DUMMY_BYTE	0xFF														//Dymmy Byte
 #define P25QXXH_CMD_ELECTRONIC_ID	0xAB														//Electronic ID
@@ -91,26 +88,16 @@
 #define P25QXXH_CMD_CE			0xC7														//Erase whole chip
 #define P25QXXH_CMD_BE64			0xD8														//Erase selected 64K block
 #define P25QXXH_CMD_BE32			0x52														//Erase selected 32K block
-
-
-
-
-
-
-
-
+#define P25QXXH_CMD_SE			0x20														//Erase selected  4K sector
+#define P25QXXH_CMD_PE			0x81														//Erase selected 256 Byte
+#define P25QXXH_CMD_READ			0x03														//Read Array (low power) n bytes read out until
+#define P25QXXH_CMD_FREAD		0x0B														//Read Array (fast) n bytes read out until
+#define P25QXXH_CMD_PP			0x02														//Program selected page
+#define P25QXXH_CMD_RSTEN		0x66														//Enable reset
+#define P25QXXH_CMD_RST			0x99														//Reset
 
 #define P25QXXH_REG_WIP			(1<<0)													//When WIP bit sets to 1, means the device is busy
 #define P25QXXH_REG_WEL			(1<<1)													//When WEL bit sets to 1, the internal Write Enable Latch is set
-
-#define P25QXXH_MAX_CHIP_ERASE_T	1000														//Chip Erase Time MS Type 12MS
-#define P25QXXH_MAX_BLOCK_ERASE_T	1000														//Block Erase Time MS Type 12MS
-
-
-
-
-
-
 
 void P25QXXH_Init(void);																	//P25QXXH初始化
 u8   P25QXXH_SendByte(u8 byte);															//P25QXXH发送1字节
@@ -132,29 +119,24 @@ void P25QXXH_WriteStatusRegisterIsVolatile(u16 dat);											//P25QXXH写入�
 
 void P25QXXH_WaitForBusy(u32 timeout);														//P25QXXH等待设备空闲
 
+void P25QXXH_SendForAddress(u32 addr);														//P25QXXH发送地址值
+
 void P25QXXH_EnterDeepPowerDownMode(void);													//P25QXXH进入深度休眠模式
 void P25QXXH_ReleaseDeepPowerDownMode(void);													//P25QXXH退出深度休眠模式
 
 void P25QXXH_EraseChip(void);																//P25QXXH全片擦除
 void P25QXXH_EraseBlock(u8 blockType, u32 blockAddr);											//P25QXXH区块擦除
+void P25QXXH_EraseSector(u32 sectorAddr);													//P25QXXH扇区擦除
+void P25QXXH_ErasePage(u32 pageAddr);														//P25QXXH页区擦除
 
+void P25QXXH_ReadBufferNormal(u8* pBuf, u32 readAddr, u32 numByte);								//P25QXXH读取数据(普通)
+void P25QXXH_ReadBufferFast(u8* pBuf, u32 readAddr, u32 numByte);								//P25QXXH读取数据(快速)
 
+void P25QXXH_WritePage(u8* pBuf, u32 writeAddr, u32 numByte);									//P25QXXH写入数据(页写)
+void P25QXXH_WriteBuffer(u8* pBuf, u32 writeAddr, u32 numByte);									//P25QXXH写入数据(片写)
 
+void P25QXXH_SoftwareReset(void);															//P25QXXH软件复位
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+u32  P25QXXH_GetNumByteOfThisData(u32 readAddr, u32 numByte, u8 thisData);							//P25QXXH读取指定地址中指定数据中有该值的个数
 
 #endif /* __HAL_P25QXXH_H */

@@ -32,6 +32,7 @@
 #include "hal_qmc5883l.h"
 #include "hal_spi.h"
 #include "hal_p25qxxh.h"
+#include "hal_norflash.h"
 
 /****************************************** Select DEBUG *************************************************/
 //#define	DEVICE_DEBUG																	//定义开启设备调试
@@ -129,15 +130,6 @@ int main(void)
 	
 	printf("Debug OK\r\n");
 	
-	
-	
-	P25QXXH_Init();
-	
-	printf("Start Erase\r\n");
-	P25QXXH_EraseBlock(P25QXXH_CMD_BE64, P25Q40H_BLOCK64K_ADDR_0);
-	printf("End Erase\r\n");
-	printf("Reg1 : 0x%x\r\n", P25QXXH_ReadStatusRegister1());
-	printf("Reg2 : 0x%x\r\n", P25QXXH_ReadStatusRegister2());
 	
 	
 	

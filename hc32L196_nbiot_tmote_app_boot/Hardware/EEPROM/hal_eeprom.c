@@ -21,7 +21,7 @@
 #include "delay.h"
 #include "usart.h"
 
-static __IO u8 EEPROM_Status = 1;
+static __IO en_result_t EEPROM_Status = Error;
 
 /**********************************************************************************************************
  @Function			void FLASH_EEPROM_Init(void)
@@ -34,7 +34,10 @@ void FLASH_EEPROM_Init(void)
 #ifdef EPROM_BL24CXX
 	BL24CXX_Init();
 	
-	EEPROM_Status = BL24CXX_Check();
+	if (BL24CXX_Check())
+		EEPROM_Status = Error;
+	else
+		EEPROM_Status = Ok;
 #endif
 }
 
@@ -43,11 +46,11 @@ void FLASH_EEPROM_Init(void)
  @Description			FLASH_EEPROM_Status
  @Input				void
  @Return				0 OK
-					1 Err
+					1 Error
 **********************************************************************************************************/
 u8 FLASH_EEPROM_Status(void)
 {
-	return EEPROM_Status;
+	return (u8)EEPROM_Status;
 }
 
 /**********************************************************************************************************

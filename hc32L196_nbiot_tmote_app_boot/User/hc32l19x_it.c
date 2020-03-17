@@ -31,6 +31,7 @@
 #include "hal_qmc5883l.h"
 #include "hal_spi.h"
 #include "hal_p25qxxh.h"
+#include "hal_norflash.h"
 
 /**********************************************************************************************************
  @Function			void Uart0_IRQHandler(void)

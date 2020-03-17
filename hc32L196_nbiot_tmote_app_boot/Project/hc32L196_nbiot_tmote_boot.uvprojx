@@ -338,7 +338,7 @@
               <MiscControls></MiscControls>
               <Define></Define>
               <Undefine></Undefine>
-              <IncludePath>..\Core;..\HALLibraries\inc;..\HALLibraries\src;..\User;..\System\Sys;..\System\Delay;..\System\Usart;..\Hardware\BEEP;..\Hardware\IWDG;..\Hardware\RTC;..\Hardware\VBAT;..\Hardware\VPTAT;..\Hardware\VTEMP;..\Hardware\IIC;..\Hardware\BL24CXXP;..\Hardware\EEPROM;..\Hardware\QMC5883L;..\Hardware\SPI;..\Hardware\P25QXXH</IncludePath>
+              <IncludePath>..\Core;..\HALLibraries\inc;..\HALLibraries\src;..\User;..\System\Sys;..\System\Delay;..\System\Usart;..\Hardware\BEEP;..\Hardware\IWDG;..\Hardware\RTC;..\Hardware\VBAT;..\Hardware\VPTAT;..\Hardware\VTEMP;..\Hardware\IIC;..\Hardware\BL24CXXP;..\Hardware\EEPROM;..\Hardware\QMC5883L;..\Hardware\SPI;..\Hardware\P25QXXH;..\Hardware\NORFLASH</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -619,6 +619,11 @@
               <FileName>hal_p25qxxh.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Hardware\P25QXXH\hal_p25qxxh.c</FilePath>
+            </File>
+            <File>
+              <FileName>hal_norflash.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Hardware\NORFLASH\hal_norflash.c</FilePath>
             </File>
           </Files>
         </Group>
