@@ -1,7 +1,7 @@
 #ifndef __RADIO_COMM_H
 #define   __RADIO_COMM_H
 
-#include "sys.h"
+#include "platform_config.h"
 #include "radio_compiler_defs.h"
 
 #define RADIO_CTS_TIMEOUT		15000

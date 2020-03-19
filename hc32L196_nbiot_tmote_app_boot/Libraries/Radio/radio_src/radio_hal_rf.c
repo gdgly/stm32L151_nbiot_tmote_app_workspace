@@ -20,6 +20,7 @@
 #include "radio_hal_rf.h"
 #include "radio_core.h"
 #include "si446x_api_lib.h"
+#include "si446x_defs.h"
 #include "si446x_cmd.h"
 #include "delay.h"
 #include "usart.h"
@@ -35,6 +36,8 @@ radioClientsTypeDef si4438Client = {
 	.rf_status				= rTRF_OK,
 	.rf_inited				= rTRF_Uninited,
 	.rf_channel1				= RADIO_RF_CHANNEL1,
+	.rf_corestate				= RF_STATE_SLEEP,
+	.rf_ctsWentHigh			= 0,
 };
 
 static const U8 Radio_Configuration_Data_Array[] = RADIO_CONFIGURATION_DATA_ARRAY;

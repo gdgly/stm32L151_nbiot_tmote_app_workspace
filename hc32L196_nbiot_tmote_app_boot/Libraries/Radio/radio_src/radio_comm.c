@@ -18,11 +18,10 @@
 #include "platform_config.h"
 #include "platform_map.h"
 #include "radio_comm.h"
+#include "radio_hal_rf.h"
 #include "radio_hal_wrap.h"
 #include "delay.h"
 #include "usart.h"
-
-static __IO u8 ctsWentHigh = 0;
 
 /**********************************************************************************************************
  @Function			void Radio_Comm_ClearsCTS(void)
@@ -32,7 +31,7 @@ static __IO u8 ctsWentHigh = 0;
 **********************************************************************************************************/
 void Radio_Comm_ClearsCTS(void)
 {
-	ctsWentHigh = 0;
+	si4438Client.rf_ctsWentHigh = 0;
 }
 
 /**********************************************************************************************************
@@ -43,7 +42,7 @@ void Radio_Comm_ClearsCTS(void)
 **********************************************************************************************************/
 void Radio_Comm_AssertCTS(void)
 {
-	ctsWentHigh = 1;
+	si4438Client.rf_ctsWentHigh = 1;
 }
 
 /**********************************************************************************************************
@@ -122,7 +121,7 @@ void Radio_Comm_SendCmd(u8 cmdByteCount, u8* pCmdData)
 {
 	s8 count = RADIO_COM_SENDCMD_CNT;
 	
-	while (!ctsWentHigh) {
+	while (!si4438Client.rf_ctsWentHigh) {
 		Radio_Comm_PollCTS();
 		count--;
 		if (count == 0) break;
@@ -148,7 +147,7 @@ void Radio_Comm_ReadData(u8 cmd, u8 pollCts, u8 byteCount, u8* pData)
 	s8 count = RADIO_COM_READ_CNT;
 	
 	if (pollCts) {
-		while (!ctsWentHigh) {
+		while (!si4438Client.rf_ctsWentHigh) {
 			Radio_Comm_PollCTS();
 			count--;
 			if (count == 0) break;
@@ -176,7 +175,7 @@ void Radio_Comm_WriteData(u8 cmd, u8 pollCts, u8 byteCount, u8* pData)
 	s8 count = RADIO_COM_WRITE_CNT;
 	
 	if (pollCts) {
-		while (!ctsWentHigh) {
+		while (!si4438Client.rf_ctsWentHigh) {
 			Radio_Comm_PollCTS();
 			count--;
 			if (count == 0) break;

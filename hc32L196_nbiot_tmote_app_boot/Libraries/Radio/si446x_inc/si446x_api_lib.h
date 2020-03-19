@@ -1,7 +1,7 @@
 #ifndef __SI446X_API_LIB_H
 #define   __SI446X_API_LIB_H
 
-#include "sys.h"
+#include "platform_config.h"
 #include "radio_compiler_defs.h"
 
 #define SI466X_FIFO_SIZE			64
@@ -16,11 +16,6 @@ typedef enum _si446x_errcode
 } si446x_errcode;
 
 extern union si446x_cmd_reply_union Si446xCmd;
-
-
-
-
-
 
 void si446x_reset(void);
 
@@ -50,8 +45,53 @@ void si446x_write_tx_fifo(u8 numBytes, u8* pTxData);
 
 void si446x_read_rx_fifo(u8 numBytes, u8* pRxData);
 
+void si446x_get_property(u8 GROUP, u8 NUM_PROPS, u8 START_PROP);
 
+void si446x_func_info(void);
 
+void si446x_frr_a_read(u8 respByteCount);
+void si446x_frr_b_read(u8 respByteCount);
+void si446x_frr_c_read(u8 respByteCount);
+void si446x_frr_d_read(u8 respByteCount);
 
+void si446x_get_adc_reading(u8 ADC_EN);
+
+void si446x_get_packet_info(u8 FIELD_NUMBER_MASK, u16 LEN, s16 DIFF_LEN);
+
+void si446x_get_ph_status(u8 PH_CLR_PEND);
+
+void si446x_get_modem_status(u8 MODEM_CLR_PEND);
+
+void si446x_get_chip_status(u8 CHIP_CLR_PEND);
+
+void si446x_ircal(u8 SEARCHING_STEP_SIZE, u8 SEARCHING_RSSI_AVG, u8 RX_CHAIN_SETTING1, u8 RX_CHAIN_SETTING2);
+
+void si446x_ircal_manual(u8 IRCAL_AMP, u8 IRCAL_PH);
+
+void si446x_request_device_state(void);
+
+void si446x_tx_hop(u8 INTE, u8 FRAC2, u8 FRAC1, u8 FRAC0, u8 VCO_CNT1, u8 VCO_CNT0, u8 PLL_SETTLE_TIME1, u8 PLL_SETTLE_TIME0);
+void si446x_rx_hop(u8 INTE, u8 FRAC2, u8 FRAC1, u8 FRAC0, u8 VCO_CNT1, u8 VCO_CNT0);
+
+void si446x_start_tx_fast(void);
+void si446x_start_rx_fast(void);
+
+void si446x_get_int_status_fast_clear(void);
+void si446x_get_int_status_fast_clear_read(void);
+
+void si446x_gpio_pin_cfg_fast(void);
+
+void si446x_get_ph_status_fast_clear(void);
+void si446x_get_ph_status_fast_clear_read(void);
+
+void si446x_get_modem_status_fast_clear(void);
+void si446x_get_modem_status_fast_clear_read(void);
+
+void si446x_get_chip_status_fast_clear(void);
+void si446x_get_chip_status_fast_clear_read(void);
+
+void si446x_fifo_info_fast_reset(U8 FIFO);
+
+void si446x_fifo_info_fast_read(void);
 
 #endif /* __SI446X_API_LIB_H */

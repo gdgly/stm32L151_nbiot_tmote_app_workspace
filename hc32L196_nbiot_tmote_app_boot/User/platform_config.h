@@ -51,6 +51,16 @@
 
 #define	RADIO_RF_CHANNEL1				36												//小无线默认通道
 
+#define	RADIO_IS_BOOT					0
+#define	RADIO_IS_APP					1
+#define	RADIO_IS_TYPE					RADIO_IS_BOOT										//小无线应用
+
+
+
+
+
+
+
 
 
 

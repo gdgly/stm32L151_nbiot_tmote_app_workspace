@@ -38,11 +38,11 @@ typedef enum _radio_trf_initede
 
 typedef struct _radio_client
 {
-	s8		rf_status;
-	s8		rf_inited;
-	u8		rf_channel1;
-	
-	
+	__IO s8	rf_status;
+	__IO s8	rf_inited;
+	__IO u8	rf_channel1;
+	__IO s8	rf_corestate;
+	__IO u8	rf_ctsWentHigh;
 	
 	
 	
