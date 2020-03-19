@@ -45,6 +45,7 @@ void BEEP_GPIO_InitControl(bool ctrl)
 		Gpio_ClrIO(BEEP_GPIOx, BEEP_PIN);
 	
 	Gpio_Init(BEEP_GPIOx, BEEP_PIN, &GPIO_Initure);
+	Gpio_SetAfMode(BEEP_GPIOx, BEEP_PIN, BEEP_AF);
 }
 
 /**********************************************************************************************************

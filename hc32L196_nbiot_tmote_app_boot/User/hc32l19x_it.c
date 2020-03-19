@@ -32,6 +32,7 @@
 #include "hal_spi.h"
 #include "hal_p25qxxh.h"
 #include "hal_norflash.h"
+#include "radio_hal_rf.h"
 
 /**********************************************************************************************************
  @Function			void Uart0_IRQHandler(void)
@@ -106,8 +107,19 @@ void Uart1_IRQHandler(void)
 
 
 
-
-
+/**********************************************************************************************************
+ @Function			void PortB_IRQHandler(void)
+ @Description			PortB_IRQHandler							: HC32 PortB中断服务函数
+ @Input				void
+ @Return				void
+**********************************************************************************************************/
+void PortB_IRQHandler(void)
+{
+	/* Radio RF IRQn */
+	if (Gpio_GetIrqStatus(RADIO_SI4438_IRQ_GPIOx, RADIO_SI4438_IRQ_PIN)) {
+		Gpio_ClearIrq(RADIO_SI4438_IRQ_GPIOx, RADIO_SI4438_IRQ_PIN);
+	}
+}
 
 
 

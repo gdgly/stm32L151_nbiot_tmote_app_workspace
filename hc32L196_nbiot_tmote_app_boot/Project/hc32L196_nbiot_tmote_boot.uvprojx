@@ -338,7 +338,7 @@
               <MiscControls></MiscControls>
               <Define></Define>
               <Undefine></Undefine>
-              <IncludePath>..\Core;..\HALLibraries\inc;..\HALLibraries\src;..\User;..\System\Sys;..\System\Delay;..\System\Usart;..\Hardware\BEEP;..\Hardware\IWDG;..\Hardware\RTC;..\Hardware\VBAT;..\Hardware\VPTAT;..\Hardware\VTEMP;..\Hardware\IIC;..\Hardware\BL24CXXP;..\Hardware\EEPROM;..\Hardware\QMC5883L;..\Hardware\SPI;..\Hardware\P25QXXH;..\Hardware\NORFLASH</IncludePath>
+              <IncludePath>..\Core;..\HALLibraries\inc;..\HALLibraries\src;..\User;..\System\Sys;..\System\Delay;..\System\Usart;..\Hardware\BEEP;..\Hardware\IWDG;..\Hardware\RTC;..\Hardware\VBAT;..\Hardware\VPTAT;..\Hardware\VTEMP;..\Hardware\IIC;..\Hardware\BL24CXXP;..\Hardware\EEPROM;..\Hardware\QMC5883L;..\Hardware\SPI;..\Hardware\P25QXXH;..\Hardware\NORFLASH;..\Libraries\Radio;..\Libraries\Radio\radio_inc;..\Libraries\Radio\radio_src;..\Libraries\Radio\si446x_inc;..\Libraries\Radio\si446x_src</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -699,6 +699,41 @@
               <FileName>platform_config.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\User\platform_config.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Radio</GroupName>
+          <Files>
+            <File>
+              <FileName>radio_hal_spi.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Libraries\Radio\radio_src\radio_hal_spi.c</FilePath>
+            </File>
+            <File>
+              <FileName>radio_hal_wrap.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Libraries\Radio\radio_src\radio_hal_wrap.c</FilePath>
+            </File>
+            <File>
+              <FileName>radio_hal_rf.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Libraries\Radio\radio_src\radio_hal_rf.c</FilePath>
+            </File>
+            <File>
+              <FileName>radio_core.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Libraries\Radio\radio_src\radio_core.c</FilePath>
+            </File>
+            <File>
+              <FileName>radio_comm.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Libraries\Radio\radio_src\radio_comm.c</FilePath>
+            </File>
+            <File>
+              <FileName>si446x_api_lib.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Libraries\Radio\si446x_src\si446x_api_lib.c</FilePath>
             </File>
           </Files>
         </Group>

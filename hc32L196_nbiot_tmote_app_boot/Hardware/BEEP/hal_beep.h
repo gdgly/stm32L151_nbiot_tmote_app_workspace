@@ -6,6 +6,7 @@
 
 #define BEEP_GPIOx				GpioPortB
 #define BEEP_PIN				GpioPin8
+#define BEEP_AF				GpioAf0
 
 #define BEEP_OUTPUT_FAST			0
 #define BEEP_OUTPUT_AHB			1

@@ -49,7 +49,7 @@
 #define	FLASH_P25QXXH																	//定义开启 FLASH P25QXXH
 #define	RADIO_SI4438A																	//定义开启 RADIO SI4438A
 
-
+#define	RADIO_RF_CHANNEL1				36												//小无线默认通道
 
 
 

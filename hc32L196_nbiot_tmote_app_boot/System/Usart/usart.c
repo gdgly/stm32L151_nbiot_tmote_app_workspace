@@ -113,7 +113,7 @@ void HC32_Uart0_Init(u32 bound)
 #endif
 	
 	/* Enable UART0 IRQn */
-	EnableNvic(UART0_2_IRQn, IrqLevel1, TRUE);
+	EnableNvic(UART0_IRQn, UART0_IRQLevel, TRUE);
 }
 
 /**********************************************************************************************************
@@ -154,7 +154,7 @@ void HC32_Uart1_Init(u32 bound)
 #endif
 	
 	/* Enable UART1 IRQn */
-	EnableNvic(UART1_3_IRQn, IrqLevel1, TRUE);
+	EnableNvic(UART1_IRQn, UART1_IRQLevel, TRUE);
 }
 
 /**********************************************************************************************************
