@@ -161,6 +161,11 @@ u8 Radio_Core_StartTx_Variable_Packet(u8 channel, u8* pioRadioPacket, u8 length)
 		/* Data to be sent is more than the size of TX FIFO */
 		si446x_write_tx_fifo(RADIO_TX_ALMOST_EMPTY_THRESHOLD, pioRadioPacket);
 		len_sent = RADIO_TX_ALMOST_EMPTY_THRESHOLD;
+#if RADIO_IS_TYPE == RADIO_IS_APP
+		si4438Client.rf_g_Poin_frame += RADIO_TX_ALMOST_EMPTY_THRESHOLD;
+		si4438Client.rf_g_Send_Num = RADIO_TX_ALMOST_EMPTY_THRESHOLD;
+		si4438Client.rf_g_Rest_Num = length + 1 - RADIO_TX_ALMOST_EMPTY_THRESHOLD;
+#endif
 	}
 	else {
 		si446x_write_tx_fifo(length + 1, pioRadioPacket);

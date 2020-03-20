@@ -4,12 +4,23 @@
 #include "platform_config.h"
 #include "radio_compiler_defs.h"
 
+#if RADIO_IS_TYPE == RADIO_IS_BOOT
 #define RADIO_CTS_TIMEOUT		15000
 #define RADIO_CTS_LOOPCNT		150
 
 #define RADIO_COM_SENDCMD_CNT		10
 #define RADIO_COM_WRITE_CNT		10
 #define RADIO_COM_READ_CNT		10
+#endif
+
+#if RADIO_IS_TYPE == RADIO_IS_APP
+#define RADIO_CTS_TIMEOUT		200
+#define RADIO_CTS_LOOPCNT		5
+
+#define RADIO_COM_SENDCMD_CNT		3
+#define RADIO_COM_WRITE_CNT		6
+#define RADIO_COM_READ_CNT		6
+#endif
 
 void Radio_Comm_ClearsCTS(void);															//Clears the CTS state variable
 void Radio_Comm_AssertCTS(void);															//Assert the CTS state variable

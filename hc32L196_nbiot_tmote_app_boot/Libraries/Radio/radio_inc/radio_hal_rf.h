@@ -36,6 +36,24 @@ typedef enum _radio_trf_initede
 	rTRF_Isinited				= 1U
 } radio_trf_initede;
 
+typedef enum _radio_trf_sendcode
+{
+	rTRF_Sendover				= 0U,
+	rTRF_Sending				= 1U
+} radio_trf_sendcode;
+
+typedef enum _radio_trf_sendtype
+{
+	rTRF_WaitNo				= 0U,
+	rTRF_WaitOver				= 1U
+} radio_trf_sendtype;
+
+typedef enum _radio_trf_check
+{
+	rTRF_Check_Fail			= 0U,
+	rTRF_Check_Success			= 1U
+} radio_trf_check;
+
 typedef struct _radio_client
 {
 	__IO s8	rf_status;
@@ -44,14 +62,19 @@ typedef struct _radio_client
 	__IO s8	rf_corestate;
 	__IO u8	rf_ctsWentHigh;
 	
+	u8*		rf_g_Poin_frame;
+	__IO u8	rf_g_Send_Num;
+	__IO u8	rf_g_Rest_Num;
+	__IO u8	rf_g_Pack_Len;
+	
+	__IO u8	rf_g_Data_sending;
+	__IO u8	rf_g_Wait_enable;
+	
 	
 	
 } radioClientsTypeDef;
 
 extern radioClientsTypeDef si4438Client;
-
-
-
 
 
 
@@ -69,16 +92,11 @@ void Radio_Hal_RF_Interrupt_Enable(void);													//Radio RF 中断引脚使
 void Radio_Hal_RF_Interrupt_Disable(void);													//Radio RF 中断引脚失能
 
 
+radio_trf_errcode Radio_Hal_RF_PrepareToTx(u8* pPacket, u8 len);									//Radio RF 发送数据包
 
+void Radio_Hal_RF_TxISR(void);															//Radio RF 发送数据中断
 
-
-
-
-
-
-
-
-
+void Radio_Hal_RF_TxOverISR(void);															//Radio RF 发送结束中断
 
 
 

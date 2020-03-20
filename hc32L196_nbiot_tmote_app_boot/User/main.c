@@ -34,6 +34,8 @@
 #include "hal_p25qxxh.h"
 #include "hal_norflash.h"
 #include "radio_hal_rf.h"
+#include "radio_rfa_boot.h"
+#include "radio_rfa_app.h"
 
 /****************************************** Select DEBUG *************************************************/
 //#define	DEVICE_DEBUG																	//定义开启设备调试

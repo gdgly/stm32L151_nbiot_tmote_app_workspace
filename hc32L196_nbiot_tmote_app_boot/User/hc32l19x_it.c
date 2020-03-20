@@ -33,6 +33,8 @@
 #include "hal_p25qxxh.h"
 #include "hal_norflash.h"
 #include "radio_hal_rf.h"
+#include "radio_rfa_boot.h"
+#include "radio_rfa_app.h"
 
 /**********************************************************************************************************
  @Function			void Uart0_IRQHandler(void)

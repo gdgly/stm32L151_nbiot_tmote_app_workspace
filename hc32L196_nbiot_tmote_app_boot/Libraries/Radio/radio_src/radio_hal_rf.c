@@ -18,6 +18,8 @@
 #include "platform_config.h"
 #include "platform_map.h"
 #include "radio_hal_rf.h"
+#include "radio_rfa_boot.h"
+#include "radio_rfa_app.h"
 #include "radio_core.h"
 #include "si446x_api_lib.h"
 #include "si446x_defs.h"
@@ -38,6 +40,11 @@ radioClientsTypeDef si4438Client = {
 	.rf_channel1				= RADIO_RF_CHANNEL1,
 	.rf_corestate				= RF_STATE_SLEEP,
 	.rf_ctsWentHigh			= 0,
+	.rf_g_Send_Num				= 0,
+	.rf_g_Rest_Num				= 0,
+	.rf_g_Pack_Len				= 0,
+	.rf_g_Data_sending			= rTRF_Sending,
+	.rf_g_Wait_enable			= rTRF_WaitOver,
 };
 
 static const U8 Radio_Configuration_Data_Array[] = RADIO_CONFIGURATION_DATA_ARRAY;
@@ -203,6 +210,166 @@ void Radio_Hal_RF_Interrupt_Disable(void)
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+#if RADIO_IS_TYPE == RADIO_IS_BOOT
+/**********************************************************************************************************
+ @Function			radio_trf_errcode Radio_Hal_RF_PrepareToTx(u8* pPacket, u8 len)
+ @Description			Radio_Hal_RF_PrepareToTx						: Radio RF 发送数据包
+ @Input				pPacket									: pointer of pPacket to be sent
+					len										: length of pPacket to be sent
+ @Return				errcode
+**********************************************************************************************************/
+radio_trf_errcode Radio_Hal_RF_PrepareToTx(u8* pPacket, u8 len)
+{
+	timeMeterTypeDef radioRFToTxTimer;
+	
+	HC32_TimeMeter_CountdownMS(&radioRFToTxTimer, len + 5);
+	
+	si4438Client.rf_g_Poin_frame = pPacket;
+	si4438Client.rf_g_Data_sending = rTRF_Sending;
+	si4438Client.rf_g_Pack_Len = len + 1;
+	si4438Client.rf_g_Send_Num = 0;
+	
+	if (si4438Client.rf_g_Pack_Len > si4438Client.rf_g_Send_Num) {
+		si4438Client.rf_g_Send_Num += Radio_Core_StartTx_Variable_Packet(si4438Client.rf_channel1, si4438Client.rf_g_Poin_frame + si4438Client.rf_g_Send_Num, si4438Client.rf_g_Pack_Len - si4438Client.rf_g_Send_Num);
+	}
+	
+	if (si4438Client.rf_g_Wait_enable == rTRF_WaitOver) {
+		while (si4438Client.rf_g_Data_sending == rTRF_Sending) {
+			if (HC32_TimeMeter_IsExpiredMS(&radioRFToTxTimer)) return rTRF_ERROR;
+		}
+	}
+	
+	return rTRF_OK;
+}
+#endif
+
+#if RADIO_IS_TYPE == RADIO_IS_APP
+/**********************************************************************************************************
+ @Function			radio_trf_errcode Radio_Hal_RF_PrepareToTx(u8* pPacket, u8 len)
+ @Description			Radio_Hal_RF_PrepareToTx						: Radio RF 发送数据包
+ @Input				pPacket									: pointer of pPacket to be sent
+					len										: length of pPacket to be sent
+ @Return				errcode
+**********************************************************************************************************/
+radio_trf_errcode Radio_Hal_RF_PrepareToTx(u8* pPacket, u8 len)
+{
+	timeMeterTypeDef radioRFToTxTimer;
+	
+	HC32_TimeMeter_CountdownMS(&radioRFToTxTimer, len + 5);
+	
+	si4438Client.rf_g_Poin_frame = pPacket;
+	si4438Client.rf_g_Data_sending = rTRF_Sending;
+	
+	Radio_Core_StartTx_Variable_Packet(si4438Client.rf_channel1, si4438Client.rf_g_Poin_frame, len);
+	
+	si4438Client.rf_g_Pack_Len = len + 1;
+	
+	if (si4438Client.rf_g_Wait_enable == rTRF_WaitOver) {
+		while (si4438Client.rf_g_Data_sending == rTRF_Sending) {
+			if (HC32_TimeMeter_IsExpiredMS(&radioRFToTxTimer)) return rTRF_ERROR;
+		}
+	}
+	
+	return rTRF_OK;
+}
+#endif
+
+#if RADIO_IS_TYPE == RADIO_IS_BOOT
+/**********************************************************************************************************
+ @Function			void Radio_Hal_RF_TxISR(void)
+ @Description			Radio_Hal_RF_TxISR							: Radio RF 发送数据中断
+ @Input				void
+ @Return				void
+**********************************************************************************************************/
+void Radio_Hal_RF_TxISR(void)
+{
+	if (si4438Client.rf_g_Pack_Len > si4438Client.rf_g_Send_Num) {
+		si4438Client.rf_g_Send_Num += Radio_Core_StartTx_Variable_Packet(si4438Client.rf_channel1, si4438Client.rf_g_Poin_frame + si4438Client.rf_g_Send_Num, si4438Client.rf_g_Pack_Len - si4438Client.rf_g_Send_Num);
+	}
+}
+#endif
+
+#if RADIO_IS_TYPE == RADIO_IS_APP
+/**********************************************************************************************************
+ @Function			void Radio_Hal_RF_TxISR(void)
+ @Description			Radio_Hal_RF_TxISR							: Radio RF 发送数据中断
+ @Input				void
+ @Return				void
+**********************************************************************************************************/
+void Radio_Hal_RF_TxISR(void)
+{
+	if (si4438Client.rf_g_Rest_Num > RADIO_TX_ALMOST_EMPTY_THRESHOLD) {
+		si446x_write_tx_fifo(RADIO_TX_ALMOST_EMPTY_THRESHOLD, si4438Client.rf_g_Poin_frame);
+		si4438Client.rf_g_Poin_frame += RADIO_TX_ALMOST_EMPTY_THRESHOLD;
+		si4438Client.rf_g_Send_Num += RADIO_TX_ALMOST_EMPTY_THRESHOLD;
+		si4438Client.rf_g_Rest_Num = si4438Client.rf_g_Pack_Len - si4438Client.rf_g_Send_Num;
+	}
+	else if (si4438Client.rf_g_Rest_Num > 0) {
+		si446x_write_tx_fifo(si4438Client.rf_g_Rest_Num, si4438Client.rf_g_Poin_frame);
+	}
+}
+#endif
+
+#if RADIO_IS_TYPE == RADIO_IS_BOOT
+/**********************************************************************************************************
+ @Function			void Radio_Hal_RF_TxOverISR(void)
+ @Description			Radio_Hal_RF_TxOverISR						: Radio RF 发送结束中断
+ @Input				void
+ @Return				void
+**********************************************************************************************************/
+void Radio_Hal_RF_TxOverISR(void)
+{
+	if (si4438Client.rf_g_Data_sending != rTRF_Sendover) {
+		si4438Client.rf_g_Send_Num = 0;
+		si4438Client.rf_g_Data_sending = rTRF_Sendover;
+		si446x_set_property(0x12, 0x02, 0x11, 0x00, 255);
+		Radio_Core_StartRX(si4438Client.rf_channel1, 0);
+	}
+}
+#endif
+
+#if RADIO_IS_TYPE == RADIO_IS_APP
+/**********************************************************************************************************
+ @Function			void Radio_Hal_RF_TxOverISR(void)
+ @Description			Radio_Hal_RF_TxOverISR						: Radio RF 发送结束中断
+ @Input				void
+ @Return				void
+**********************************************************************************************************/
+void Radio_Hal_RF_TxOverISR(void)
+{
+	si4438Client.rf_g_Send_Num = 0;
+	si4438Client.rf_g_Rest_Num = 0;
+	si4438Client.rf_g_Data_sending = rTRF_Sendover;
+	si446x_set_property(0x12, 0x02, 0x11, 0x00, 255);
+}
+#endif
+
+static radio_trf_check xm_CheckSum(u8* recv_data)
+{
+	u16 check_sum = 0, i, len;
+	
+	len  = *recv_data;
+	for (i = 1; i < len - 1; i++) {
+		check_sum += recv_data[i];
+	}
+	*recv_data -= 2;
+	
+	if (check_sum == (recv_data[i] * 0x100 + recv_data[i+1]))
+		return rTRF_Check_Success;
+	else
+		return rTRF_Check_Fail;
+}
 
 
 
