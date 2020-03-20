@@ -711,11 +711,6 @@
               <FilePath>..\Libraries\Radio\radio_src\radio_rfa_boot.c</FilePath>
             </File>
             <File>
-              <FileName>radio_rfa_app.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Libraries\Radio\radio_src\radio_rfa_app.c</FilePath>
-            </File>
-            <File>
               <FileName>radio_hal_spi.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Libraries\Radio\radio_src\radio_hal_spi.c</FilePath>

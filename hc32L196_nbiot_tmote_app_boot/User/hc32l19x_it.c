@@ -120,6 +120,7 @@ void PortB_IRQHandler(void)
 	/* Radio RF IRQn */
 	if (Gpio_GetIrqStatus(RADIO_SI4438_IRQ_GPIOx, RADIO_SI4438_IRQ_PIN)) {
 		Gpio_ClearIrq(RADIO_SI4438_IRQ_GPIOx, RADIO_SI4438_IRQ_PIN);
+		Radio_Hal_RF_ISR();
 	}
 }
 

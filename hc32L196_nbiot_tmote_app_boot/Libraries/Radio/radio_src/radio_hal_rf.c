@@ -45,6 +45,9 @@ radioClientsTypeDef si4438Client = {
 	.rf_g_Pack_Len				= 0,
 	.rf_g_Data_sending			= rTRF_Sending,
 	.rf_g_Wait_enable			= rTRF_WaitOver,
+	.rf_recv_len				= 0,
+	.rf_current_num			= 0,
+	.rf_LT_int				= 0,
 };
 
 static const U8 Radio_Configuration_Data_Array[] = RADIO_CONFIGURATION_DATA_ARRAY;
@@ -198,6 +201,44 @@ void Radio_Hal_RF_Interrupt_Disable(void)
 {
 	Gpio_DisableIrq(RADIO_SI4438_IRQ_GPIOx, RADIO_SI4438_IRQ_PIN, RADIO_SI4438_IRQMode);
 }
+
+/**********************************************************************************************************
+ @Function		void Radio_Hal_RF_Set_Sleep(void)
+ @Description 		Radio_Hal_RF_Set_Sleep							: Radio RF 设置Sleep模式
+ @Input			void
+ @Return		  	void
+**********************************************************************************************************/
+void Radio_Hal_RF_Set_Sleep(void)
+{
+	Radio_Core_Sleep();
+}
+
+/**********************************************************************************************************
+ @Function		char Radio_Hal_RF_Get_Sleep(void)
+ @Description 		Radio_Hal_RF_Get_Sleep							: Radio RF 获取Sleep模式
+ @Input			void
+ @Return		  	void
+**********************************************************************************************************/
+char Radio_Hal_RF_Get_Sleep(void)
+{
+	return (RF_STATE_SLEEP == Radio_Core_Get_State());
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -371,44 +412,154 @@ static radio_trf_check xm_CheckSum(u8* recv_data)
 		return rTRF_Check_Fail;
 }
 
+#if RADIO_IS_TYPE == RADIO_IS_BOOT
+/**********************************************************************************************************
+ @Function			void Radio_Hal_RF_ISR(void)
+ @Description			Radio_Hal_RF_ISR							: Radio RF 中断处理
+ @Input				void
+ @Return				void
+**********************************************************************************************************/
+void Radio_Hal_RF_ISR(void)
+{
+	u8 s_numOfRecvBytes = 0;
+	u8 framelen;
+	u8 tmp;
+	
+	u8* g_Recvlong = si4438Client.mrfiIncomingPacket.frame;
+	
+	tmp = Radio_Core_Check();
+	if (tmp == SI446X_CMD_GET_INT_STATUS_REP_PH_PEND_PACKET_SENT_PEND_BIT) {
+		Radio_Hal_RF_TxOverISR();
+	}
+	else if (tmp == SI446X_CMD_GET_INT_STATUS_REP_PH_PEND_TX_FIFO_ALMOST_EMPTY_PEND_BIT) {
+		Radio_Hal_RF_TxISR();
+	}
+	else if (tmp == SI446X_CMD_GET_INT_STATUS_REP_PH_PEND_PACKET_RX_PEND_BIT) {
+		s_numOfRecvBytes = si4438Client.rf_recv_len + 1 - si4438Client.rf_current_num;
+		
+		if (!si4438Client.rf_LT_int) {
+			si446x_read_rx_fifo(1, (u8*)&si4438Client.rf_recv_len);
+			si446x_read_rx_fifo(si4438Client.rf_recv_len, &g_Recvlong[1]);
+			g_Recvlong[0] = si4438Client.rf_recv_len;
+		}
+		else {
+			si446x_read_rx_fifo(s_numOfRecvBytes, &g_Recvlong[si4438Client.rf_current_num]);
+			si4438Client.rf_current_num += s_numOfRecvBytes;
+		}
+		
+		si4438Client.rf_g_Wait_enable = rTRF_WaitNo;
+		
+		framelen = g_Recvlong[0] - MMESH_CHECKSUM_SIZE;
+		si4438Client.rf_current_num = 0;
+		si4438Client.rf_LT_int = 0;
+		
+		si446x_set_property(0x12, 0x02, 0x11, 0x00, 255);
+		Radio_Core_StartRX(si4438Client.rf_channel1, 0);
+		
+		if (xm_CheckSum(g_Recvlong)) {
+			/* TODO: handle the data received */
+			Radio_RFA_Boot_Data_Handle_ISR(&si4438Client.mrfiIncomingPacket);
+		}
+		memset(g_Recvlong, 0x00, sizeof(si4438Client.mrfiIncomingPacket.frame));
+		
+		si4438Client.rf_g_Wait_enable = rTRF_WaitOver;
+	}
+	else if (tmp == SI446X_CMD_GET_INT_STATUS_REP_PH_STATUS_RX_FIFO_ALMOST_FULL_BIT) {
+		
+		if (!si4438Client.rf_LT_int) {
+			si446x_read_rx_fifo(1, g_Recvlong);
+			si4438Client.rf_recv_len = g_Recvlong[0];
+			si4438Client.rf_current_num = 0;
+		}
+		
+		s_numOfRecvBytes = si4438Client.rf_recv_len + 1 - si4438Client.rf_current_num;
+		if (s_numOfRecvBytes >= RADIO_RX_ALMOST_FULL_THRESHOLD) {
+			if (!si4438Client.rf_LT_int)
+				si446x_read_rx_fifo(RADIO_RX_ALMOST_FULL_THRESHOLD - 1, &g_Recvlong[1]);
+			else
+				si446x_read_rx_fifo(RADIO_RX_ALMOST_FULL_THRESHOLD, &g_Recvlong[si4438Client.rf_current_num]);
+			
+			si4438Client.rf_current_num += RADIO_RX_ALMOST_FULL_THRESHOLD;
+			
+			if (!si4438Client.rf_LT_int) si4438Client.rf_LT_int++;
+		}
+	}
+}
+#endif
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#if RADIO_IS_TYPE == RADIO_IS_APP
+/**********************************************************************************************************
+ @Function			void Radio_Hal_RF_ISR(void)
+ @Description			Radio_Hal_RF_ISR							: Radio RF 中断处理
+ @Input				void
+ @Return				void
+**********************************************************************************************************/
+void Radio_Hal_RF_ISR(void)
+{
+	u8 s_numOfRecvBytes = 0;
+	u8 tmp;
+	
+	u8* g_Recvlong = si4438Client.mrfiIncomingPacket.frame;
+	
+	if ((si4438Client.rf_inited == rTRF_Uninited) || (Radio_Hal_RF_Get_Sleep())) return;
+	
+	tmp = Radio_Core_Check();
+	if (tmp == SI446X_CMD_GET_INT_STATUS_REP_PH_PEND_PACKET_SENT_PEND_BIT) {
+		Radio_Hal_RF_TxOverISR();
+	}
+	else if (tmp == SI446X_CMD_GET_INT_STATUS_REP_PH_PEND_TX_FIFO_ALMOST_EMPTY_PEND_BIT) {
+		Radio_Hal_RF_TxISR();
+	}
+	else if (tmp == SI446X_CMD_GET_INT_STATUS_REP_PH_PEND_PACKET_RX_PEND_BIT) {
+		s_numOfRecvBytes = si4438Client.rf_recv_len + 1 - si4438Client.rf_current_num;
+		
+		if (!si4438Client.rf_LT_int) {
+			si446x_read_rx_fifo(1, (u8*)&si4438Client.rf_recv_len);
+			si446x_read_rx_fifo(si4438Client.rf_recv_len, &g_Recvlong[1]);
+			g_Recvlong[0] = si4438Client.rf_recv_len;
+		}
+		else {
+			si446x_read_rx_fifo(s_numOfRecvBytes, &g_Recvlong[si4438Client.rf_current_num]);
+			si4438Client.rf_current_num += s_numOfRecvBytes;
+		}
+		
+		si4438Client.rf_g_Wait_enable = rTRF_WaitNo;
+		
+		si4438Client.rf_current_num = 0;
+		si4438Client.rf_LT_int = 0;
+		
+		si446x_set_property(0x12, 0x02, 0x11, 0x00, 255);
+		Radio_Core_StartRX(si4438Client.rf_channel1, 0);
+		
+		if (xm_CheckSum(g_Recvlong)) {
+			/* TODO: handle the data received */
+			
+		}
+		memset(g_Recvlong, 0x00, sizeof(si4438Client.mrfiIncomingPacket.frame));
+		
+		si4438Client.rf_g_Wait_enable = rTRF_WaitOver;
+	}
+	else if (tmp == SI446X_CMD_GET_INT_STATUS_REP_PH_STATUS_RX_FIFO_ALMOST_FULL_BIT) {
+		
+		if (!si4438Client.rf_LT_int) {
+			si446x_read_rx_fifo(1, g_Recvlong);
+			si4438Client.rf_recv_len = g_Recvlong[0];
+			si4438Client.rf_current_num = 0;
+		}
+		
+		s_numOfRecvBytes = si4438Client.rf_recv_len + 1 - si4438Client.rf_current_num;
+		if (s_numOfRecvBytes >= RADIO_RX_ALMOST_FULL_THRESHOLD) {
+			if (!si4438Client.rf_LT_int)
+				si446x_read_rx_fifo(RADIO_RX_ALMOST_FULL_THRESHOLD - 1, &g_Recvlong[1]);
+			else
+				si446x_read_rx_fifo(RADIO_RX_ALMOST_FULL_THRESHOLD, &g_Recvlong[si4438Client.rf_current_num]);
+			
+			si4438Client.rf_current_num += RADIO_RX_ALMOST_FULL_THRESHOLD;
+			
+			if (!si4438Client.rf_LT_int) si4438Client.rf_LT_int++;
+		}
+	}
+}
+#endif
 
 /********************************************** END OF FLEE **********************************************/

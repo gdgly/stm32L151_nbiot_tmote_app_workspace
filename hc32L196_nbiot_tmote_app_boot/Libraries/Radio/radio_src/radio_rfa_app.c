@@ -18,10 +18,10 @@
 #include "platform_config.h"
 #include "platform_map.h"
 #include "radio_rfa_app.h"
+#include "radio_hal_rf.h"
 #include "delay.h"
 #include "usart.h"
-
-
+#include <stdarg.h>
 
 
 
