@@ -19,7 +19,6 @@
 #include "platform_map.h"
 #include "radio_hal_rf.h"
 #include "radio_rfa_boot.h"
-#include "radio_rfa_app.h"
 #include "radio_core.h"
 #include "si446x_api_lib.h"
 #include "si446x_defs.h"
@@ -35,7 +34,7 @@
 #endif
 
 radioClientsTypeDef si4438Client = {
-	.rf_status				= rTRF_OK,
+	.rf_status				= rTRF_ERROR,
 	.rf_inited				= rTRF_Uninited,
 	.rf_channel1				= RADIO_RF_CHANNEL1,
 	.rf_corestate				= RF_STATE_SLEEP,
@@ -224,43 +223,20 @@ char Radio_Hal_RF_Get_Sleep(void)
 	return (RF_STATE_SLEEP == Radio_Core_Get_State());
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+/**********************************************************************************************************
+ @Function		char Radio_Hal_RF_Get_Status(void)
+ @Description 		Radio_Hal_RF_Get_Status							: Radio RF 获取Radio状态
+ @Input			void
+ @Return		  	void
+**********************************************************************************************************/
+char Radio_Hal_RF_Get_Status(void)
+{
+#ifdef RADIO_SI4438A
+	return si4438Client.rf_status;
+#else
+	return rTRF_ERROR;
+#endif
+}
 
 #if RADIO_IS_TYPE == RADIO_IS_BOOT
 /**********************************************************************************************************
@@ -533,7 +509,7 @@ void Radio_Hal_RF_ISR(void)
 		
 		if (xm_CheckSum(g_Recvlong)) {
 			/* TODO: handle the data received */
-			
+			Radio_RFA_App_Data_Handle_ISR(&si4438Client.mrfiIncomingPacket);
 		}
 		memset(g_Recvlong, 0x00, sizeof(si4438Client.mrfiIncomingPacket.frame));
 		

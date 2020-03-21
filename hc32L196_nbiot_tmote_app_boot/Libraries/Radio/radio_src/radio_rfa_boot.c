@@ -23,11 +23,24 @@
 #include "usart.h"
 #include <stdarg.h>
 
+#define RADIO_RFA_BOOT_PAYLOAD_MAC_SN				0x81011000
+
+#define RADIO_RFA_BOOT_HEARTBT_MAJOR_SOFTVER			MVB_BOOT_SOFTWARE_MAJOR
+#define RADIO_RFA_BOOT_HEARTBT_SUB_SOFTVER			MVB_BOOT_SOFTWARE_SUB
+#define RADIO_RFA_BOOT_HEARTBT_SUB_HARDVER			MVB_BOOT_HARDWARE
+#define RADIO_RFA_BOOT_HEARTBT_DEV_TYPE				MVB_MODEL_TYPE
+#define RADIO_RFA_BOOT_HEARTBT_WORK_STATUS			0x01
+
+
+
+
+
+
 static frameInfo_t b_sInFrameQ[SIZE_INFRAME_Q];
 
 u8 b_trf_send_buf[RADIO_RFA_BOOT_SDBUF_SIZE] = {0};
 u8 b_trf_recv_buf[RADIO_RFA_BOOT_RVBUF_SIZE] = {0};
-
+u8 b_trf_prit_buf[RADIO_RFA_BOOT_PTBUF_SIZE] = {0};
 
 
 
@@ -216,6 +229,60 @@ char Radio_RFA_Boot_Operate_Recvmsg(u8 *inmsg, u8 len)
 	return rc;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/**********************************************************************************************************
+ @Function			void Radio_RFA_Boot_Do_Xmit_Heartbeat(void)
+ @Description			Radio_RFA_Boot_Do_Xmit_Heartbeat
+ @Input				void
+ @Return				void
+**********************************************************************************************************/
+void Radio_RFA_Boot_Do_Xmit_Heartbeat(void)
+{
+	radio_boot_trf_heartbeat_s *pHeartBeat = (radio_boot_trf_heartbeat_s*)(b_trf_send_buf + 32);
+	
+	if (rTRF_OK != Radio_Hal_RF_Get_Status()) return;
+	
+	Radio_Hal_RF_Interface_Init();
+	Radio_Hal_RF_Interrupt_Enable();
+	
+	pHeartBeat->head.destSN		= 0xFFFFFFFF;
+	pHeartBeat->head.version		= TRF_MSG_VERSION;
+	pHeartBeat->head.type		= TRF_MSG_HEART_BOOTLOADER;
+	
+	pHeartBeat->MajorSoftver		= RADIO_RFA_BOOT_HEARTBT_MAJOR_SOFTVER;
+	pHeartBeat->SubSoftver		= RADIO_RFA_BOOT_HEARTBT_SUB_SOFTVER;
+	pHeartBeat->SubHardver		= RADIO_RFA_BOOT_HEARTBT_SUB_HARDVER;
+	pHeartBeat->DevType			= RADIO_RFA_BOOT_HEARTBT_DEV_TYPE;
+	pHeartBeat->WorkStatus		= RADIO_RFA_BOOT_HEARTBT_WORK_STATUS;
+	
+	Radio_RFA_Boot_Cfg_Buildframe((u8*)pHeartBeat, TMOTE_PLAIN_PUB, Radio_RFA_Boot_Xmit_Get_Pktnum(), RADIO_RFA_BOOT_PAYLOAD_MAC_SN, b_trf_send_buf, sizeof(radio_boot_trf_heartbeat_s));
+	
+	Radio_RFA_Boot_Send(b_trf_send_buf, b_trf_send_buf[0]);
+}
+
 /**********************************************************************************************************
  @Function			void Radio_RFA_Boot_Xmit_Heartbeat(void)
  @Description			Radio_RFA_Boot_Xmit_Heartbeat
@@ -224,116 +291,57 @@ char Radio_RFA_Boot_Operate_Recvmsg(u8 *inmsg, u8 len)
 **********************************************************************************************************/
 void Radio_RFA_Boot_Xmit_Heartbeat(void)
 {
-	static u32 hearttime_pre = 0;
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	Radio_RFA_Boot_Do_Xmit_Heartbeat();
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /**********************************************************************************************************
- @Function			void Radio_RFA_Boot_Do_Rf_Pintf(s8* info)
- @Description			Radio_RFA_Boot_Do_Rf_Pintf
+ @Function			void Radio_RFA_Boot_Do_RF_Printf(s8* info)
+ @Description			Radio_RFA_Boot_Do_RF_Printf
  @Input				info
  @Return				void
 **********************************************************************************************************/
-void Radio_RFA_Boot_Do_Rf_Pintf(s8* info)
+void Radio_RFA_Boot_Do_RF_Printf(s8* info)
 {
 	u8 infolen;
 	
 	radio_boot_trf_msgdata_s *pMsg = (radio_boot_trf_msgdata_s*)(b_trf_send_buf + 32);
+	
+	if (rTRF_OK != Radio_Hal_RF_Get_Status()) return;
 	
 	infolen = strlen((const char*)info);
 	if (infolen > RADIO_RFA_BOOT_MAX_PRINTF) {
 		infolen = RADIO_RFA_BOOT_MAX_PRINTF;
 	}
 	
-	
-	
-	
-	
-	
 	Radio_Hal_RF_Interface_Init();
 	Radio_Hal_RF_Interrupt_Enable();
-	
-	
-	
-	
-	
 	
 	pMsg->head.destSN			= 0xFFFFFFFF;
 	pMsg->head.version			= TRF_MSG_VERSION;
 	pMsg->head.type			= TRF_MSG_DEBUG_INFO;
+	
 	memcpy(pMsg->pData, info, infolen);
 	
-	Radio_RFA_Boot_Cfg_Buildframe((u8*)pMsg, TMOTE_PLAIN_PUB, Radio_RFA_Boot_Xmit_Get_Pktnum(), 0x81011000, b_trf_send_buf, sizeof(radio_boot_trf_msghead_s) + infolen);
+	Radio_RFA_Boot_Cfg_Buildframe((u8*)pMsg, TMOTE_PLAIN_PUB, Radio_RFA_Boot_Xmit_Get_Pktnum(), RADIO_RFA_BOOT_PAYLOAD_MAC_SN, b_trf_send_buf, sizeof(radio_boot_trf_msghead_s) + infolen);
 	
 	Radio_RFA_Boot_Send(b_trf_send_buf, b_trf_send_buf[0]);
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+/**********************************************************************************************************
+ @Function			void Radio_RFA_Boot_Trf_Printf(const char *fmt, ...)
+ @Description			Radio_RFA_Boot_Trf_Printf
+ @Input				...
+ @Return				void
+**********************************************************************************************************/
+void Radio_RFA_Boot_Trf_Printf(const char *fmt, ...)
+{
+	__va_list args;
+	
+	va_start (args, fmt);
+	memset(b_trf_prit_buf, 0x00, sizeof(b_trf_prit_buf));
+	vsprintf ((char*)b_trf_prit_buf, fmt, args);
+	va_end (args);
+	Radio_RFA_Boot_Do_RF_Printf((s8*)b_trf_prit_buf);
+}
 
 /********************************************** END OF FLEE **********************************************/

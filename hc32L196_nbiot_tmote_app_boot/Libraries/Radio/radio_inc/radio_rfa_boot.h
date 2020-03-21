@@ -9,6 +9,7 @@
 
 #define RADIO_RFA_BOOT_SDBUF_SIZE	256
 #define RADIO_RFA_BOOT_RVBUF_SIZE	256
+#define RADIO_RFA_BOOT_PTBUF_SIZE	128
 
 #define RADIO_RFA_BOOT_MAX_PRINTF	30
 
@@ -45,6 +46,18 @@ typedef struct _radio_boot_trf_heartbeat
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 void Radio_RFA_Boot_Data_Handle_ISR(mrfiPacket_t* rfpacket);
 
 char Radio_RFA_Boot_Receive(u8 *outmsg, u8 *len);
@@ -55,37 +68,21 @@ void Radio_RFA_Boot_Cfg_Buildframe(u8 *inmsg, u8 pkttype, u8 pktnum, u32 sn, u8 
 
 char Radio_RFA_Boot_Operate_Recvmsg(u8 *inmsg, u8 len);
 
+
+
+
+
+
+
+
+
+void Radio_RFA_Boot_Do_Xmit_Heartbeat(void);
+
 void Radio_RFA_Boot_Xmit_Heartbeat(void);
 
+void Radio_RFA_Boot_Do_RF_Printf(s8* info);
 
-
-
-
-
-void Radio_RFA_Boot_Do_Rf_Pintf(s8* info);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+void Radio_RFA_Boot_Trf_Printf(const char *fmt, ...);
 
 
 

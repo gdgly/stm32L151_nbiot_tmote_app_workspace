@@ -33,7 +33,9 @@
 #include "hal_norflash.h"
 #include "radio_hal_rf.h"
 #include "radio_rfa_boot.h"
-#include "radio_rfa_app.h"
+#include "iap_boot.h"
+#include "iap_core.h"
+#include "iap_ugrade.h"
 
 HC32_RESET_FLAG_TypeDef			HC32_Reset_Flag = RCC_RESET_FLAG_NONE;
 
@@ -353,9 +355,40 @@ void HC32_CtrPowerIO_Init(void)
 	VBATE_POWER_IO_SET(OFF);																//外设VBate电源关闭
 }
 
+#define HC32_SYSTEM_CHECK_RF_LOG_PRINT														//定义开启RF输出系统自检信息
+#define HC32_SYSTEM_CHECK_LOG_PRINTF		Radio_RFA_Boot_Trf_Printf							//定义开启RF输出系统自检信息函数
 
-
-
+/**********************************************************************************************************
+ @Function			void HC32_AutomaticSystem_Check(void)
+ @Description			HC32_AutomaticSystem_Check					: HC32系统自检
+ @Input				void
+ @Return				void
+**********************************************************************************************************/
+void HC32_AutomaticSystem_Check(void)
+{
+	/* 0step: Radio Si4438 Check */
+	if (Radio_Hal_RF_Get_Status() != rTRF_OK) {
+		BEEP_Repeat_Control(1, 3000, 100);
+	}
+	
+	/* 1step: Flash EEPROM Check */
+	if (FLASH_EEPROM_Status() != Ok) {
+#ifdef HC32_SYSTEM_CHECK_RF_LOG_PRINT
+		HC32_SYSTEM_CHECK_LOG_PRINTF("Boot: EEPROM Error!!!");
+		HC32_SYSTEM_CHECK_LOG_PRINTF("Boot: EEPROM Error!!!");
+#endif
+		BEEP_Repeat_Control(1, 3000, 100);
+	}
+	
+	/* 2step: Flash NOR Check */
+	if (FLASH_NOR_Status() != Ok) {
+#ifdef HC32_SYSTEM_CHECK_RF_LOG_PRINT
+		HC32_SYSTEM_CHECK_LOG_PRINTF("Boot: NOR Error!!!");
+		HC32_SYSTEM_CHECK_LOG_PRINTF("Boot: NOR Error!!!");
+#endif
+		BEEP_Repeat_Control(1, 3000, 100);
+	}
+}
 
 
 

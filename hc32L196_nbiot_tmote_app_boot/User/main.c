@@ -35,7 +35,9 @@
 #include "hal_norflash.h"
 #include "radio_hal_rf.h"
 #include "radio_rfa_boot.h"
-#include "radio_rfa_app.h"
+#include "iap_boot.h"
+#include "iap_core.h"
+#include "iap_ugrade.h"
 
 /****************************************** Select DEBUG *************************************************/
 //#define	DEVICE_DEBUG																	//定义开启设备调试
@@ -74,64 +76,54 @@ int main(void)
 	
 	HC32_RTC_Init();																	//HC32实时时钟初始化
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	BEEP_Repeat_Control(5, 50, 25);														//蜂鸣器
-	HC32_IWDG_Feed();																	//喂狗
-	
-#if 1
 	HC32_LowPowerIO_Init();																//HC32低功耗IO初始化
 	HC32_RstPowerIO_Init();																//HC32复位电源初始化
 	HC32_CtrPowerIO_Init();																//HC32控制电源初始化
-#endif
 	
-	HC32_Uart0_Init(9600);
-	HC32_Uart1_Init(9600);
+	MODEL_POWER_IO_SET(ON);																//外设模块电源开启(QMC5883L/SI4438)
 	
-	BEEP_Repeat_Control(10, 50, 25);														//蜂鸣器
+	BEEP_GPIO_InitControl(OFF);															//蜂鸣器关闭
+	
+	Delay_MS(100);																		//供电稳定
 	HC32_IWDG_Feed();																	//喂狗
 	
-#if 0
+	FLASH_EEPROM_Init();																//片外EEPROM初始化
+	
+	FLASH_NOR_Init();																	//片外NOR初始化
+	
+	QMC5883L_Init();																	//QMC5883L初始化
+	
+	Radio_Hal_RF_Init(&si4438Client);														//SI44382A初始化
+	
+	HC32_Uart0_Init(9600);																//UART0初始化
+	HC32_Uart1_Init(9600);																//UART1初始化
+	
+	HC32_IWDG_Feed();																	//喂狗
+	
+	HC32_AutomaticSystem_Check();															//HC32系统自检
+	
 	BEEP_Repeat_Control(1, 150, 0);
 	Delay_MS(100);
 	BEEP_Repeat_Control(2, 50, 25);
 	Delay_MS(80);
 	BEEP_Repeat_Control(1, 150, 0);
 	Delay_MS(100);
-	BEEP_Repeat_Control(2, 50, 25);
+	BEEP_Repeat_Control(2, 50, 25);														//di~didi~di~didi
 	
-	Delay_MS(500);
-	
-	BEEP_Repeat_Control(5, 50, 25);
-	Delay_MS(1000);
-	BEEP_Repeat_Control(10, 50, 25);
+#ifdef MVB_SUBSN
+	TCFG_EEPROM_Set_MAC_SN(MVB_SUBSN);														//写入SN
+	TCFG_EEPROM_Set_Vender(MVB_BRAND);														//写入VENDER
 #endif
 	
-#if 0
-	printf("Init OK\r\n");
+	TCFG_EEPROM_Set_BootVersion(MVB_BOOT_SOFTWARE_SUB);										//写入BootVersion
 	
-	printf("Modul : %d\r\n", MODEL_POWER_IO_GET());
-	printf("Radar : %d\r\n", RADAR_POWER_IO_GET());
-	printf("NBIot : %d\r\n", NBIOT_POWER_IO_GET());
-	printf("VBate : %d\r\n", VBATE_POWER_IO_GET());
-#endif
 	
-	printf("Debug OK\r\n");
+	
+	
+	
+	
+	
+	
 	
 	
 	

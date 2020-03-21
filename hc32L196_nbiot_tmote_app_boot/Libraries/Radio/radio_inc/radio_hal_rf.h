@@ -94,11 +94,6 @@ typedef struct _radio_client
 
 extern radioClientsTypeDef si4438Client;
 
-
-
-
-
-
 radio_trf_errcode Radio_Hal_RF_Init(radioClientsTypeDef* pClient);								//Radio RF 初始化
 
 radio_trf_errcode Radio_Hal_RF_ResetChip(radioClientsTypeDef* pClient);							//Radio RF 复位检查芯片
@@ -113,9 +108,7 @@ void Radio_Hal_RF_Set_Sleep(void);															//Radio RF 设置Sleep模式
 
 char Radio_Hal_RF_Get_Sleep(void);															//Radio RF 获取Sleep模式
 
-
-
-
+char Radio_Hal_RF_Get_Status(void);														//Radio RF 获取Radio状态
 
 radio_trf_errcode Radio_Hal_RF_PrepareToTx(u8* pPacket, u8 len);									//Radio RF 发送数据包
 

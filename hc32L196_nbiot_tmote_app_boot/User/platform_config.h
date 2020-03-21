@@ -45,6 +45,8 @@
 
 
 
+
+
 #define	EPROM_BL24CXX																	//定义开启 EPROM BL24CXX
 #define	FLASH_P25QXXH																	//定义开启 FLASH P25QXXH
 #define	RADIO_SI4438A																	//定义开启 RADIO SI4438A
@@ -55,6 +57,24 @@
 #define	RADIO_IS_APP					1
 #define	RADIO_IS_TYPE					RADIO_IS_BOOT										//小无线应用
 
+
+
+
+
+
+
+
+
+
+
+#define	MVB_BOOT_SOFTWARE_MAJOR			0												//Boot 主固件版本
+#define	MVB_BOOT_SOFTWARE_SUB			40												//Boot 从固件版本
+#define	MVB_BOOT_HARDWARE				2												//Boot 主硬件版本
+
+#define	MVB_APPL_SOFTWARE_MAJOR			20												//App  主固件版本
+#define	MVB_APPL_SOFTWARE_SUB			100												//App  从固件版本
+#define	MVB_APPL_HARDWARE_V1			2												//App  主硬件版本
+#define	MVB_APPL_HARDWARE_V2			12												//App  主硬件版本
 
 
 

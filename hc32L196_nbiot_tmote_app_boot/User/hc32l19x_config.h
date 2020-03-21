@@ -53,8 +53,7 @@ void HC32_LowPowerIO_Init(void);															//HC32低功耗IO初始化
 void HC32_RstPowerIO_Init(void);															//HC32复位电源初始化
 void HC32_CtrPowerIO_Init(void);															//HC32控制电源初始化
 
-
-
+void HC32_AutomaticSystem_Check(void);														//HC32系统自检
 
 
 
