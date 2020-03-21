@@ -113,42 +113,89 @@ int main(void)
 #ifdef MVB_SUBSN
 	TCFG_EEPROM_Set_MAC_SN(MVB_SUBSN);														//写入SN
 	TCFG_EEPROM_Set_Vender(MVB_BRAND);														//写入VENDER
+	TCFG_EEPROM_WriteConfigData();														//写入系统配置信息
 #endif
+	
+	TCFG_EEPROM_CheckNewSNBrand();														//检测新设备号信息初始化环境变量
 	
 	TCFG_EEPROM_Set_BootVersion(MVB_BOOT_SOFTWARE_SUB);										//写入BootVersion
 	
+	systemEnvData.BootMode = IAP_Ugrade_GetBootMode();										//获取BootMode
 	
+	systemEnvData.BootCount = TCFG_EEPROM_Get_BootCount();										//获取BootCount
 	
+	Radio_RFA_Boot_Trf_Printf("Boot-%d-mode-%d-count-%d-", MVB_BOOT_SOFTWARE_SUB, systemEnvData.BootMode, systemEnvData.BootCount);
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	while (true) {
-		
 #ifdef	DEVICE_DEBUG
-		DeBugMain();
+	DeBugMain();
 #endif
+	
+	
+	
+	
+	
+	
+	
+	
+	TCFG_EEPROM_Set_BootCount(systemEnvData.BootCount + 1);
+	
+	HC32_IWDG_Feed();																	//喂狗
+	
+	upgradState = NO_APPDOWNLOAD;
+	
+	while (joinState != JOIN_COMPELET) {
+		
+		Delay_MS(10);
 		
 		HC32_IWDG_Feed();
 		
-		Delay_MS(1000);
+		Radio_RFA_Boot_Xmit_Heartbeat();
+		
+		Delay_MS(100 * (HAL_GetTick() % 3));
 		
 		
 		
+		for (int i = 0; i < 900; i++) {
+			
+			Delay_MS(1);
+		}
+		if (HAL_GetSecTick() >= 120) {
+			
+			
+			
+		}
+		if (HAL_GetSecTick() % 10 == 0) {
+			//BEEP_Repeat_Control(1, 50, 0);
+		}
+	}
+	
+start:
+	while (true) {
 		
-		
-		
-		
-		
-		
-		
+		if (systemEnvData.BootMode == TCFG_ENV_BOOTMODE_TOUPDATE) {
+			
+			
+			
+			
+		}
+		else if (systemEnvData.BootMode == TCFG_ENV_BOOTMODE_UPDATING) {
+			
+			
+			
+			
+		}
+		else if (systemEnvData.BootMode == TCFG_ENV_BOOTMODE_REUPDATE) {
+			
+			
+			
+			
+		}
+		else {
+			
+			
+			
+			
+		}
 	}
 }
 

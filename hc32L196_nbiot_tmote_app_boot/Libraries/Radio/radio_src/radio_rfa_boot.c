@@ -19,17 +19,20 @@
 #include "platform_map.h"
 #include "radio_rfa_boot.h"
 #include "radio_hal_rf.h"
+#include "iap_boot.h"
+#include "iap_core.h"
+#include "iap_ugrade.h"
 #include "delay.h"
 #include "usart.h"
 #include <stdarg.h>
 
-#define RADIO_RFA_BOOT_PAYLOAD_MAC_SN				0x81011000
+#define RADIO_RFA_BOOT_PAYLOAD_MAC_SN				TCFG_EEPROM_Get_MAC_SN()
 
 #define RADIO_RFA_BOOT_HEARTBT_MAJOR_SOFTVER			MVB_BOOT_SOFTWARE_MAJOR
 #define RADIO_RFA_BOOT_HEARTBT_SUB_SOFTVER			MVB_BOOT_SOFTWARE_SUB
 #define RADIO_RFA_BOOT_HEARTBT_SUB_HARDVER			MVB_BOOT_HARDWARE
 #define RADIO_RFA_BOOT_HEARTBT_DEV_TYPE				MVB_MODEL_TYPE
-#define RADIO_RFA_BOOT_HEARTBT_WORK_STATUS			0x01
+#define RADIO_RFA_BOOT_HEARTBT_WORK_STATUS			upgradState
 
 
 
