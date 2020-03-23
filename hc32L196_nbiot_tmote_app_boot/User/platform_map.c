@@ -70,29 +70,6 @@ void TCFG_EEPROM_WriteConfigData(void)
 	
 }
 
-/**********************************************************************************************************
- @Function			void TCFG_EEPROM_CheckNewSNBrand(void)
- @Description			TCFG_EEPROM_CheckNewSNBrand					: 检测新设备号信息初始化环境变量
- @Input				void
- @Return				void
-**********************************************************************************************************/
-void TCFG_EEPROM_CheckNewSNBrand(void)
-{
-	u8 checkcode = 0;
-	u32 macsn = 0;
-	
-	macsn = TCFG_EEPROM_Get_MAC_SN();
-	
-	checkcode += ((macsn & 0xFF000000) >> 24);
-	checkcode += ((macsn & 0x00FF0000) >> 16);
-	checkcode += ((macsn & 0x0000FF00) >>  8);
-	checkcode += ((macsn & 0x000000FF) >>  0);
-	
-	if (checkcode != TCFG_EEPROM_Get_MacSNAndVenderCheckCode()) {
-		TCFG_EEPROM_WriteConfigData();
-		TCFG_EEPROM_Set_MacSNAndVenderCheckCode(checkcode);
-	}
-}
 
 
 
@@ -165,7 +142,7 @@ u32  TCFG_EEPROM_Get_VenderCode(void)
 **********************************************************************************************************/
 void TCFG_EEPROM_Set_Vender(char* vender)
 {
-	FLASH_EEPROM_WriteBuffer(TCFG_FACTORY_VENDER_OFFSET, (u8*)vender, (TCFG_FACTORY_VENDER_LENGTH - 1));
+	FLASH_EEPROM_WriteBuffer(TCFG_FACTORY_VENDER_OFFSET, (u8*)vender, TCFG_FACTORY_VENDER_LENGTH);
 }
 
 /**********************************************************************************************************
@@ -176,29 +153,7 @@ void TCFG_EEPROM_Set_Vender(char* vender)
 **********************************************************************************************************/
 void TCFG_EEPROM_Get_Vender(char* vender)
 {
-	FLASH_EEPROM_ReadBuffer(TCFG_FACTORY_VENDER_OFFSET, (u8*)vender, (TCFG_FACTORY_VENDER_LENGTH - 1));
-}
-
-/**********************************************************************************************************
- @Function			void TCFG_EEPROM_Set_MacSNAndVenderCheckCode(u8 checkCode)
- @Description			TCFG_EEPROM_Set_MacSNAndVenderCheckCode			: 保存CheckCode
- @Input				checkCode
- @Return				void
-**********************************************************************************************************/
-void TCFG_EEPROM_Set_MacSNAndVenderCheckCode(u8 checkCode)
-{
-	FLASH_EEPROM_WriteByte((TCFG_FACTORY_VENDER_OFFSET + 3), checkCode);
-}
-
-/**********************************************************************************************************
- @Function			u8   TCFG_EEPROM_Get_MacSNAndVenderCheckCode(void)
- @Description			TCFG_EEPROM_Get_MacSNAndVenderCheckCode			: 读取CheckCode
- @Input				void
- @Return				checkCode
-**********************************************************************************************************/
-u8   TCFG_EEPROM_Get_MacSNAndVenderCheckCode(void)
-{
-	return FLASH_EEPROM_ReadByte(TCFG_FACTORY_VENDER_OFFSET + 3);
+	FLASH_EEPROM_ReadBuffer(TCFG_FACTORY_VENDER_OFFSET, (u8*)vender, TCFG_FACTORY_VENDER_LENGTH);
 }
 
 
@@ -294,6 +249,7 @@ u16  TCFG_EEPROM_Get_BootCount(void)
 {
 	return FLASH_EEPROM_ReadHalfWord(TCFG_BOOT_RECOUNT_OFFSET);
 }
+
 
 
 

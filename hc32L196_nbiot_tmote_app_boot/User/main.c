@@ -47,6 +47,21 @@ void DeBugMain(void);
 #endif
 /****************************************** Debug Ending *************************************************/
 
+static en_result_t IAP_JumpToApp(u32 u32Addr)
+{
+	u32 JumpAddress;
+	func_ptr_t JumpToApplication;
+	
+	JumpAddress = *(__IO u32 *)(u32Addr + 4);
+	JumpToApplication = (func_ptr_t)JumpAddress;
+	
+	//__set_MSP(*(__IO u32 *)u32Addr);
+	
+	JumpToApplication();
+	
+	return Error;
+}
+
 /**********************************************************************************************************
  @Function			int main(void)
  @Description			Main
@@ -82,8 +97,6 @@ int main(void)
 	
 	MODEL_POWER_IO_SET(ON);																//外设模块电源开启(QMC5883L/SI4438)
 	
-	BEEP_GPIO_InitControl(OFF);															//蜂鸣器关闭
-	
 	Delay_MS(100);																		//供电稳定
 	HC32_IWDG_Feed();																	//喂狗
 	
@@ -102,13 +115,13 @@ int main(void)
 	
 	HC32_AutomaticSystem_Check();															//HC32系统自检
 	
-	BEEP_Repeat_Control(1, 150, 0);
+	BEEP_Repeat_Control(1, 150, 20);														//di
 	Delay_MS(100);
-	BEEP_Repeat_Control(2, 50, 25);
-	Delay_MS(80);
-	BEEP_Repeat_Control(1, 150, 0);
+	BEEP_Repeat_Control(2, 70, 25);														//didi
+	Delay_MS(150);
+	BEEP_Repeat_Control(1, 150, 20);														//di
 	Delay_MS(100);
-	BEEP_Repeat_Control(2, 50, 25);														//di~didi~di~didi
+	BEEP_Repeat_Control(2, 70, 25);														//didi
 	
 #ifdef MVB_SUBSN
 	TCFG_EEPROM_Set_MAC_SN(MVB_SUBSN);														//写入SN
@@ -116,15 +129,38 @@ int main(void)
 	TCFG_EEPROM_WriteConfigData();														//写入系统配置信息
 #endif
 	
-	TCFG_EEPROM_CheckNewSNBrand();														//检测新设备号信息初始化环境变量
+	systemEnvData.BootVersion = TCFG_EEPROM_Get_BootVersion();									//获取BootVersion
+	if (systemEnvData.BootVersion != MVB_BOOT_SOFTWARE_SUB) {
+		systemEnvData.BootVersion = MVB_BOOT_SOFTWARE_SUB;
+		TCFG_EEPROM_Set_BootVersion(systemEnvData.BootVersion);								//写入BootVersion
+	}
 	
-	TCFG_EEPROM_Set_BootVersion(MVB_BOOT_SOFTWARE_SUB);										//写入BootVersion
-	
-	systemEnvData.BootMode = IAP_Ugrade_GetBootMode();										//获取BootMode
+	systemEnvData.BootMode = TCFG_EEPROM_Get_BootMode();										//获取BootMode
+	if (systemEnvData.BootMode == TCFG_ENV_BOOTMODE_TOUPDATE) {
+		upgradClient.ug_boot_mode = TCFG_ENV_BOOTMODE_TOUPDATE;
+	}
+	else if (systemEnvData.BootMode == TCFG_ENV_BOOTMODE_UPDATING) {
+		upgradClient.ug_boot_mode = TCFG_ENV_BOOTMODE_UPDATING;
+	}
+	else if (systemEnvData.BootMode == TCFG_ENV_BOOTMODE_REUPDATE) {
+		upgradClient.ug_boot_mode = TCFG_ENV_BOOTMODE_REUPDATE;
+	}
+	else if (systemEnvData.BootMode == TCFG_ENV_BOOTMODE_NORMAL) {
+		upgradClient.ug_boot_mode = TCFG_ENV_BOOTMODE_NORMAL;
+	}
+	else {
+		upgradClient.ug_boot_mode = TCFG_ENV_BOOTMODE_NORMAL;
+		systemEnvData.BootMode = TCFG_ENV_BOOTMODE_NORMAL;
+		TCFG_EEPROM_Set_BootMode(systemEnvData.BootMode);										//写入BootMode
+	}
 	
 	systemEnvData.BootCount = TCFG_EEPROM_Get_BootCount();										//获取BootCount
+	if (systemEnvData.BootCount > 100) {
+		systemEnvData.BootCount = 0;
+		TCFG_EEPROM_Set_BootCount(systemEnvData.BootCount);									//写入BootCount
+	}
 	
-	Radio_RFA_Boot_Trf_Printf("Boot-%d-mode-%d-count-%d-", MVB_BOOT_SOFTWARE_SUB, systemEnvData.BootMode, systemEnvData.BootCount);
+	Radio_RFA_Boot_Trf_Printf("Boot-%d-mode-%d-count-%d-", systemEnvData.BootVersion, systemEnvData.BootMode, systemEnvData.BootCount);
 	
 #ifdef	DEVICE_DEBUG
 	DeBugMain();
@@ -137,13 +173,25 @@ int main(void)
 	
 	
 	
+	
+	
 	TCFG_EEPROM_Set_BootCount(systemEnvData.BootCount + 1);
+	HC32_IWDG_Feed();
 	
-	HC32_IWDG_Feed();																	//喂狗
 	
-	upgradState = NO_APPDOWNLOAD;
 	
-	while (joinState != JOIN_COMPELET) {
+	
+	Radio_RFA_Boot_Trf_Printf("In");
+	
+	IAP_JumpToApp(APP_LOWEST_ADDRESS);
+	
+	Radio_RFA_Boot_Trf_Printf("Err");
+	
+	
+	upgradClient.ug_upgrad_state = NO_APPDOWNLOAD;
+	upgradClient.ug_mac_sn = TCFG_EEPROM_Get_MAC_SN();
+	
+	while (upgradClient.ug_join_state != JOIN_COMPELET) {
 		
 		Delay_MS(10);
 		
@@ -165,7 +213,7 @@ int main(void)
 			
 		}
 		if (HAL_GetSecTick() % 10 == 0) {
-			//BEEP_Repeat_Control(1, 50, 0);
+			//BEEP_Repeat_Control(1, 70, 0);
 		}
 	}
 	

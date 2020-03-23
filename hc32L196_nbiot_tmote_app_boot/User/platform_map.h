@@ -5,7 +5,8 @@
 
 
 
-
+#define APP_LOWEST_ADDRESS						0x00007800
+#define APP_LOWEST_SIZE							0x00038800
 
 
 
@@ -74,7 +75,7 @@ extern systemEnvDataTypeDef systemEnvData;
 
 void TCFG_EEPROM_WriteConfigData(void);																				//写入系统配置信息
 
-void TCFG_EEPROM_CheckNewSNBrand(void);																				//检测新设备号信息初始化环境变量
+
 
 
 
@@ -95,8 +96,7 @@ u32  TCFG_EEPROM_Get_VenderCode(void);																				//读取Vender Code
 void TCFG_EEPROM_Set_Vender(char* vender);																			//保存Vender
 void TCFG_EEPROM_Get_Vender(char* vender);																			//读取Vender
 
-void TCFG_EEPROM_Set_MacSNAndVenderCheckCode(u8 checkCode);																//保存CheckCode
-u8   TCFG_EEPROM_Get_MacSNAndVenderCheckCode(void);																	//读取CheckCode
+
 
 
 

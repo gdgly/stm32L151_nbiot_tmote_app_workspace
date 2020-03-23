@@ -53,6 +53,8 @@
 
 Stack_Size      EQU     0x00000400
 
+Vect_Table      EQU     0x00000000
+
                 AREA    STACK, NOINIT, READWRITE, ALIGN=3
 Stack_Mem       SPACE   Stack_Size
 __initial_sp
@@ -159,7 +161,8 @@ Reset_Handler   PROC
                 ADD     R2, R0,R2
 RAMCODE
               ; reset Vector table address.
-                LDR     R0, =0xE000ED08 
+                LDR     R0, =0xE000ED08
+                LDR     R2, =Vect_Table
                 STR     R2, [R0]
 
                 LDR     R0, =SystemInit

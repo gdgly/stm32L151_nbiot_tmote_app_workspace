@@ -23,15 +23,25 @@
 
 
 
-extern __IO u8 upgradState;
-extern __IO u8 joinState;
 
 
 
 
-u8   IAP_Ugrade_GetBootMode(void);
+typedef struct _upgrad_client
+{
+	__IO u8					ug_boot_mode;
+	__IO u8					ug_upgrad_state;
+	__IO u8					ug_join_state;
+	__IO u32					ug_mac_sn;
+	
+	
+	
+	
+	
+	
+} upgradClientsTypeDef;
 
-
+extern upgradClientsTypeDef upgradClient;
 
 
 

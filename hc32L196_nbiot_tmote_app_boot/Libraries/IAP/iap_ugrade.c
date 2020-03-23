@@ -20,41 +20,18 @@
 #include "delay.h"
 #include "usart.h"
 
-__IO u8 upgradState = READY_TO_JUMP;
-__IO u8 joinState = JOINING;
-
-/**********************************************************************************************************
- @Function			u8 IAP_Ugrade_GetBootMode(void)
- @Description			IAP_Ugrade_GetBootMode
- @Input				void
- @Return				BootMode
-**********************************************************************************************************/
-u8 IAP_Ugrade_GetBootMode(void)
-{
-	u8 bootMode = 0;
+upgradClientsTypeDef upgradClient = {
+	.ug_boot_mode				= TCFG_ENV_BOOTMODE_NORMAL,
+	.ug_upgrad_state			= READY_TO_JUMP,
+	.ug_join_state				= JOINING,
+	.ug_mac_sn				= 0x00000000,
 	
-	bootMode = TCFG_EEPROM_Get_BootMode();
-	switch (bootMode)
-	{
-	case TCFG_ENV_BOOTMODE_TOUPDATE:
-		bootMode = TCFG_ENV_BOOTMODE_TOUPDATE;
-		break;
 	
-	case TCFG_ENV_BOOTMODE_UPDATING:
-		bootMode = TCFG_ENV_BOOTMODE_UPDATING;
-		break;
 	
-	case TCFG_ENV_BOOTMODE_REUPDATE:
-		bootMode = TCFG_ENV_BOOTMODE_REUPDATE;
-		break;
 	
-	default:
-		bootMode = TCFG_ENV_BOOTMODE_NORMAL;
-		break;
-	}
 	
-	return bootMode;
-}
+	
+};
 
 
 
