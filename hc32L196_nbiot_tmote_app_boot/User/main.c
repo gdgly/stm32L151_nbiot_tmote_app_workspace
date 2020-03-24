@@ -47,21 +47,6 @@ void DeBugMain(void);
 #endif
 /****************************************** Debug Ending *************************************************/
 
-static en_result_t IAP_JumpToApp(u32 u32Addr)
-{
-	u32 JumpAddress;
-	func_ptr_t JumpToApplication;
-	
-	JumpAddress = *(__IO u32 *)(u32Addr + 4);
-	JumpToApplication = (func_ptr_t)JumpAddress;
-	
-	//__set_MSP(*(__IO u32 *)u32Addr);
-	
-	JumpToApplication();
-	
-	return Error;
-}
-
 /**********************************************************************************************************
  @Function			int main(void)
  @Description			Main
@@ -123,6 +108,8 @@ int main(void)
 	Delay_MS(100);
 	BEEP_Repeat_Control(2, 70, 25);														//didi
 	
+	upgradClient.ug_app_offset = APP_LOWEST_ADDRESS;
+	
 #ifdef MVB_SUBSN
 	TCFG_EEPROM_Set_MAC_SN(MVB_SUBSN);														//写入SN
 	TCFG_EEPROM_Set_Vender(MVB_BRAND);														//写入VENDER
@@ -160,7 +147,7 @@ int main(void)
 		TCFG_EEPROM_Set_BootCount(systemEnvData.BootCount);									//写入BootCount
 	}
 	
-	Radio_RFA_Boot_Trf_Printf("Boot-%d-mode-%d-count-%d-", systemEnvData.BootVersion, systemEnvData.BootMode, systemEnvData.BootCount);
+	Radio_Trf_Printf("Boot-%d-mode-%d-count-%d-", systemEnvData.BootVersion, systemEnvData.BootMode, systemEnvData.BootCount);
 	
 #ifdef	DEVICE_DEBUG
 	DeBugMain();
@@ -181,15 +168,14 @@ int main(void)
 	
 	
 	
-	Radio_RFA_Boot_Trf_Printf("In");
 	
-	IAP_JumpToApp(APP_LOWEST_ADDRESS);
 	
-	Radio_RFA_Boot_Trf_Printf("Err");
+	
+	
 	
 	
 	upgradClient.ug_upgrad_state = NO_APPDOWNLOAD;
-	upgradClient.ug_mac_sn = TCFG_EEPROM_Get_MAC_SN();
+	*(u32*)upgradClient.ug_mac_sn = TCFG_EEPROM_Get_MAC_SN();
 	
 	while (upgradClient.ug_join_state != JOIN_COMPELET) {
 		
@@ -199,28 +185,21 @@ int main(void)
 		
 		Radio_RFA_Boot_Xmit_Heartbeat();
 		
-		Delay_MS(100 * (HAL_GetTick() % 3));
 		
 		
 		
-		for (int i = 0; i < 900; i++) {
-			
-			Delay_MS(1);
-		}
-		if (HAL_GetSecTick() >= 120) {
-			
-			
-			
-		}
-		if (HAL_GetSecTick() % 10 == 0) {
-			//BEEP_Repeat_Control(1, 70, 0);
-		}
+		
+		
+		
+		
 	}
 	
 start:
 	while (true) {
 		
 		if (systemEnvData.BootMode == TCFG_ENV_BOOTMODE_TOUPDATE) {
+			
+			
 			
 			
 			

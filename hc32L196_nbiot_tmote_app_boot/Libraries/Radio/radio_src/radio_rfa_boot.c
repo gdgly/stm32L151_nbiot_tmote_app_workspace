@@ -34,20 +34,13 @@
 #define RADIO_RFA_BOOT_HEARTBT_DEV_TYPE				MVB_MODEL_TYPE
 #define RADIO_RFA_BOOT_HEARTBT_WORK_STATUS			upgradClient.ug_upgrad_state
 
-
-
-
-
-
 static frameInfo_t b_sInFrameQ[SIZE_INFRAME_Q];
 
 u8 b_trf_send_buf[RADIO_RFA_BOOT_SDBUF_SIZE] = {0};
 u8 b_trf_recv_buf[RADIO_RFA_BOOT_RVBUF_SIZE] = {0};
 u8 b_trf_prit_buf[RADIO_RFA_BOOT_PTBUF_SIZE] = {0};
 
-
-
-
+__IO u32 last_recvtime = 0;
 
 /**********************************************************************************************************
  @Function			void Radio_RFA_Boot_QInit(void)
@@ -222,8 +215,6 @@ char Radio_RFA_Boot_Operate_Recvmsg(u8 *inmsg, u8 len)
 		
 		
 		
-		
-		
 	}
 	else {
 		rc = TRF_BAD_PROTOCAL;
@@ -232,29 +223,30 @@ char Radio_RFA_Boot_Operate_Recvmsg(u8 *inmsg, u8 len)
 	return rc;
 }
 
+u32 Radio_RFA_Boot_Trf_Get_Last_Recvtime(void)
+{
+	return last_recvtime;
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+/**********************************************************************************************************
+ @Function			void Radio_RFA_Boot_Trf_Receive_Task(void)
+ @Description			Radio_RFA_Boot_Trf_Receive_Task
+ @Input				void
+ @Return				void
+**********************************************************************************************************/
+void Radio_RFA_Boot_Trf_Receive_Task(void)
+{
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+}
 
 /**********************************************************************************************************
  @Function			void Radio_RFA_Boot_Do_Xmit_Heartbeat(void)

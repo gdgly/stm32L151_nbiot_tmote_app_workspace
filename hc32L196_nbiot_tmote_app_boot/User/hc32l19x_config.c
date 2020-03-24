@@ -37,7 +37,7 @@
 #include "iap_core.h"
 #include "iap_ugrade.h"
 
-HC32_RESET_FLAG_TypeDef			HC32_Reset_Flag = RCC_RESET_FLAG_NONE;
+HC32_RESET_FLAG_TypeDef HC32_Reset_Flag = RCC_RESET_FLAG_NONE;
 
 /**********************************************************************************************************
  @Function			HC32_RESET_FLAG_TypeDef HC32_SystemReset_GetStatus(void)
@@ -356,7 +356,7 @@ void HC32_CtrPowerIO_Init(void)
 }
 
 #define HC32_SYSTEM_CHECK_RF_LOG_PRINT														//定义开启RF输出系统自检信息
-#define HC32_SYSTEM_CHECK_LOG_PRINTF		Radio_RFA_Boot_Trf_Printf							//定义开启RF输出系统自检信息函数
+#define HC32_SYSTEM_CHECK_LOG_PRINTF		Radio_Trf_Printf									//定义开启RF输出系统自检信息函数
 
 /**********************************************************************************************************
  @Function			void HC32_AutomaticSystem_Check(void)

@@ -17,6 +17,8 @@
 #include "platform_config.h"
 #include "platform_map.h"
 #include "iap_core.h"
+#include "radio_hal_rf.h"
+#include "radio_rfa_boot.h"
 #include "delay.h"
 #include "usart.h"
 

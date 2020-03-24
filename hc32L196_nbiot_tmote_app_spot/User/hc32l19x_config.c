@@ -34,7 +34,7 @@
 #include "radio_hal_rf.h"
 #include "radio_rfa_app.h"
 
-HC32_RESET_FLAG_TypeDef			HC32_Reset_Flag = RCC_RESET_FLAG_NONE;
+HC32_RESET_FLAG_TypeDef HC32_Reset_Flag = RCC_RESET_FLAG_NONE;
 
 /**********************************************************************************************************
  @Function			HC32_RESET_FLAG_TypeDef HC32_SystemReset_GetStatus(void)

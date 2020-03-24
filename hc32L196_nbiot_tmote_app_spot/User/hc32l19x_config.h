@@ -45,7 +45,7 @@ typedef enum
 	RCC_RESET_FLAG_LOCKUP		= 0x09													/*!< CPU Lockup Reset Flag			*/
 }HC32_RESET_FLAG_TypeDef;
 
-extern HC32_RESET_FLAG_TypeDef	HC32_Reset_Flag;											//HC32系统复位标志
+extern HC32_RESET_FLAG_TypeDef HC32_Reset_Flag;												//HC32系统复位标志
 
 HC32_RESET_FLAG_TypeDef HC32_SystemReset_GetStatus(void);										//HC32获取复位标志位
 

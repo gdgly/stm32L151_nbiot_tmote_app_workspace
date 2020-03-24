@@ -19,22 +19,20 @@
 #include "platform_map.h"
 #include "radio_rfa_boot.h"
 #include "radio_hal_rf.h"
+#include "iap_boot.h"
+#include "iap_core.h"
+#include "iap_ugrade.h"
 #include "delay.h"
 #include "usart.h"
 #include <stdarg.h>
 
-#define RADIO_RFA_BOOT_PAYLOAD_MAC_SN				0x81011000
+#define RADIO_RFA_BOOT_PAYLOAD_MAC_SN				TCFG_EEPROM_Get_MAC_SN()
 
-#define RADIO_RFA_BOOT_HEARTBT_MAJOR_SOFTVER			0
-#define RADIO_RFA_BOOT_HEARTBT_SUB_SOFTVER			40
-#define RADIO_RFA_BOOT_HEARTBT_SUB_HARDVER			2
-#define RADIO_RFA_BOOT_HEARTBT_DEV_TYPE				51
-#define RADIO_RFA_BOOT_HEARTBT_WORK_STATUS			0x01
-
-
-
-
-
+#define RADIO_RFA_BOOT_HEARTBT_MAJOR_SOFTVER			MVB_BOOT_SOFTWARE_MAJOR
+#define RADIO_RFA_BOOT_HEARTBT_SUB_SOFTVER			MVB_BOOT_SOFTWARE_SUB
+#define RADIO_RFA_BOOT_HEARTBT_SUB_HARDVER			MVB_BOOT_HARDWARE
+#define RADIO_RFA_BOOT_HEARTBT_DEV_TYPE				MVB_MODEL_TYPE
+#define RADIO_RFA_BOOT_HEARTBT_WORK_STATUS			upgradClient.ug_upgrad_state
 
 static frameInfo_t b_sInFrameQ[SIZE_INFRAME_Q];
 
@@ -42,9 +40,7 @@ u8 b_trf_send_buf[RADIO_RFA_BOOT_SDBUF_SIZE] = {0};
 u8 b_trf_recv_buf[RADIO_RFA_BOOT_RVBUF_SIZE] = {0};
 u8 b_trf_prit_buf[RADIO_RFA_BOOT_PTBUF_SIZE] = {0};
 
-
-
-
+__IO u32 last_recvtime = 0;
 
 /**********************************************************************************************************
  @Function			void Radio_RFA_Boot_QInit(void)
@@ -219,8 +215,6 @@ char Radio_RFA_Boot_Operate_Recvmsg(u8 *inmsg, u8 len)
 		
 		
 		
-		
-		
 	}
 	else {
 		rc = TRF_BAD_PROTOCAL;
@@ -229,29 +223,30 @@ char Radio_RFA_Boot_Operate_Recvmsg(u8 *inmsg, u8 len)
 	return rc;
 }
 
+u32 Radio_RFA_Boot_Trf_Get_Last_Recvtime(void)
+{
+	return last_recvtime;
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+/**********************************************************************************************************
+ @Function			void Radio_RFA_Boot_Trf_Receive_Task(void)
+ @Description			Radio_RFA_Boot_Trf_Receive_Task
+ @Input				void
+ @Return				void
+**********************************************************************************************************/
+void Radio_RFA_Boot_Trf_Receive_Task(void)
+{
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+}
 
 /**********************************************************************************************************
  @Function			void Radio_RFA_Boot_Do_Xmit_Heartbeat(void)
