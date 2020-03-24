@@ -86,51 +86,17 @@ int main(void)
 	
 	
 	
-	
-	
-	
+	HC32_Uart0_Init(9600);
+	HC32_Uart1_Init(9600);
 	
 	BEEP_Repeat_Control(5, 50, 25);														//蜂鸣器
 	HC32_IWDG_Feed();																	//喂狗
 	
-#if 1
-	HC32_LowPowerIO_Init();																//HC32低功耗IO初始化
-	HC32_RstPowerIO_Init();																//HC32复位电源初始化
-	HC32_CtrPowerIO_Init();																//HC32控制电源初始化
-#endif
-	
-	HC32_Uart0_Init(9600);
-	HC32_Uart1_Init(9600);
+	Delay_MS(3000);
 	
 	BEEP_Repeat_Control(10, 50, 25);														//蜂鸣器
 	HC32_IWDG_Feed();																	//喂狗
 	
-#if 0
-	BEEP_Repeat_Control(1, 150, 0);
-	Delay_MS(100);
-	BEEP_Repeat_Control(2, 50, 25);
-	Delay_MS(80);
-	BEEP_Repeat_Control(1, 150, 0);
-	Delay_MS(100);
-	BEEP_Repeat_Control(2, 50, 25);
-	
-	Delay_MS(500);
-	
-	BEEP_Repeat_Control(5, 50, 25);
-	Delay_MS(1000);
-	BEEP_Repeat_Control(10, 50, 25);
-#endif
-	
-#if 0
-	printf("Init OK\r\n");
-	
-	printf("Modul : %d\r\n", MODEL_POWER_IO_GET());
-	printf("Radar : %d\r\n", RADAR_POWER_IO_GET());
-	printf("NBIot : %d\r\n", NBIOT_POWER_IO_GET());
-	printf("VBate : %d\r\n", VBATE_POWER_IO_GET());
-#endif
-	
-	printf("Debug OK\r\n");
 	
 	
 	
