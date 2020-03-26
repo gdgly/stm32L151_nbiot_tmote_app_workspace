@@ -51,7 +51,7 @@
 ; Stack Configuration
 ; Stack Size (in Bytes) <0x0-0xFFFFFFFF:8>
 
-Stack_Size      EQU     0x00000400
+Stack_Size      EQU     0x00000800
 
 Vect_Table      EQU     0x00000000
 

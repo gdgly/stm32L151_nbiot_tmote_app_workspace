@@ -19,24 +19,6 @@
 #include "platform_map.h"
 #include "delay.h"
 #include "usart.h"
-#include "hal_beep.h"
-#include "hal_iwdg.h"
-#include "hal_rtc.h"
-#include "hal_vbat.h"
-#include "hal_vptat.h"
-#include "hal_vtemp.h"
-#include "hal_iic.h"
-#include "hal_bl24cxxp.h"
-#include "hal_eeprom.h"
-#include "hal_qmc5883l.h"
-#include "hal_spi.h"
-#include "hal_p25qxxh.h"
-#include "hal_norflash.h"
-#include "radio_hal_rf.h"
-#include "radio_rfa_boot.h"
-#include "iap_boot.h"
-#include "iap_core.h"
-#include "iap_ugrade.h"
 
 /**********************************************************************************************************
  @Function			void Uart0_IRQHandler(void)
@@ -111,20 +93,6 @@ void Uart1_IRQHandler(void)
 
 
 
-/**********************************************************************************************************
- @Function			void PortB_IRQHandler(void)
- @Description			PortB_IRQHandler							: HC32 PortB中断服务函数
- @Input				void
- @Return				void
-**********************************************************************************************************/
-void PortB_IRQHandler(void)
-{
-	/* Radio RF IRQn */
-	if (Gpio_GetIrqStatus(RADIO_SI4438_IRQ_GPIOx, RADIO_SI4438_IRQ_PIN)) {
-		Gpio_ClearIrq(RADIO_SI4438_IRQ_GPIOx, RADIO_SI4438_IRQ_PIN);
-		Radio_Hal_RF_ISR();
-	}
-}
 
 
 
@@ -161,7 +129,7 @@ void PortB_IRQHandler(void)
 **********************************************************************************************************/
 void SysTick_IRQHandler(void)
 {
-	HAL_IncTick();
+	HAL_IncMecTick();
 	HAL_IncSecTick();
 }
 

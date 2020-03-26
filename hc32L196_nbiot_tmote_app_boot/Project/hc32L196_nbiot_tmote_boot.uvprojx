@@ -10,8 +10,8 @@
       <TargetName>hc32L196_nbiot_tmote_boot</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>6130001::V6.13.1::.\ARMCLANG</pCCUsed>
-      <uAC6>1</uAC6>
+      <pCCUsed>5060750::V5.06 update 6 (build 750)::ARMCC</pCCUsed>
+      <uAC6>0</uAC6>
       <TargetOption>
         <TargetCommonOption>
           <Device>HC32L196JCTA</Device>
@@ -82,7 +82,7 @@
           <AfterMake>
             <RunUserProg1>1</RunUserProg1>
             <RunUserProg2>1</RunUserProg2>
-            <UserProg1Name>fromelf --bin --output "$L@L.bin" "#L"</UserProg1Name>
+            <UserProg1Name>F:\MDK5\ARM\ARMCC\bin\fromelf.exe --bin -o "$L@L.bin" "#L"</UserProg1Name>
             <UserProg2Name>cmd.exe /C copy  ..\Output\hc32L196_nbiot_tmote_boot.bin  F:\Movebroad\stm32L151_nbiot\workspace\JFlash\hc32L196_nbiot_tmote_boot.bin</UserProg2Name>
             <UserProg1Dos16Mode>0</UserProg1Dos16Mode>
             <UserProg2Dos16Mode>0</UserProg2Dos16Mode>
@@ -275,7 +275,7 @@
               <OCR_RVCT4>
                 <Type>1</Type>
                 <StartAddress>0x0</StartAddress>
-                <Size>0x7800</Size>
+                <Size>0x40000</Size>
               </OCR_RVCT4>
               <OCR_RVCT5>
                 <Type>1</Type>
@@ -321,16 +321,16 @@
             <PlainCh>0</PlainCh>
             <Ropi>0</Ropi>
             <Rwpi>0</Rwpi>
-            <wLevel>4</wLevel>
+            <wLevel>2</wLevel>
             <uThumb>0</uThumb>
             <uSurpInc>0</uSurpInc>
             <uC99>1</uC99>
             <uGnu>0</uGnu>
             <useXO>0</useXO>
-            <v6Lang>5</v6Lang>
-            <v6LangP>0</v6LangP>
-            <vShortEn>0</vShortEn>
-            <vShortWch>0</vShortWch>
+            <v6Lang>1</v6Lang>
+            <v6LangP>1</v6LangP>
+            <vShortEn>1</vShortEn>
+            <vShortWch>1</vShortWch>
             <v6Lto>0</v6Lto>
             <v6WtE>0</v6WtE>
             <v6Rtti>0</v6Rtti>
@@ -338,7 +338,7 @@
               <MiscControls></MiscControls>
               <Define></Define>
               <Undefine></Undefine>
-              <IncludePath>..\Core;..\HALLibraries\inc;..\HALLibraries\src;..\User;..\System\Sys;..\System\Delay;..\System\Usart;..\Hardware\BEEP;..\Hardware\IWDG;..\Hardware\RTC;..\Hardware\VBAT;..\Hardware\VPTAT;..\Hardware\VTEMP;..\Hardware\IIC;..\Hardware\BL24CXXP;..\Hardware\EEPROM;..\Hardware\QMC5883L;..\Hardware\SPI;..\Hardware\P25QXXH;..\Hardware\NORFLASH;..\Libraries\Radio;..\Libraries\Radio\radio_inc;..\Libraries\Radio\radio_src;..\Libraries\Radio\si446x_inc;..\Libraries\Radio\si446x_src;..\Libraries\IAP</IncludePath>
+              <IncludePath>..\Core;..\HALLibraries\inc;..\HALLibraries\src;..\User;..\System\Sys;..\System\Delay;..\System\Usart</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -369,7 +369,7 @@
             <TextAddressRange>0x00000000</TextAddressRange>
             <DataAddressRange>0x20000000</DataAddressRange>
             <pXoBase></pXoBase>
-            <ScatterFile>..\Output\hc32L196_nbiot_tmote_boot.sct</ScatterFile>
+            <ScatterFile></ScatterFile>
             <IncludeLibs></IncludeLibs>
             <IncludeLibsPath></IncludeLibsPath>
             <Misc>--keep=*Handler</Misc>
@@ -559,73 +559,6 @@
         </Group>
         <Group>
           <GroupName>Hardware</GroupName>
-          <Files>
-            <File>
-              <FileName>hal_beep.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Hardware\BEEP\hal_beep.c</FilePath>
-            </File>
-            <File>
-              <FileName>hal_iwdg.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Hardware\IWDG\hal_iwdg.c</FilePath>
-            </File>
-            <File>
-              <FileName>hal_rtc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Hardware\RTC\hal_rtc.c</FilePath>
-            </File>
-            <File>
-              <FileName>hal_vbat.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Hardware\VBAT\hal_vbat.c</FilePath>
-            </File>
-            <File>
-              <FileName>hal_vptat.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Hardware\VPTAT\hal_vptat.c</FilePath>
-            </File>
-            <File>
-              <FileName>hal_vtemp.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Hardware\VTEMP\hal_vtemp.c</FilePath>
-            </File>
-            <File>
-              <FileName>hal_iic.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Hardware\IIC\hal_iic.c</FilePath>
-            </File>
-            <File>
-              <FileName>hal_bl24cxxp.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Hardware\BL24CXXP\hal_bl24cxxp.c</FilePath>
-            </File>
-            <File>
-              <FileName>hal_eeprom.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Hardware\EEPROM\hal_eeprom.c</FilePath>
-            </File>
-            <File>
-              <FileName>hal_qmc5883l.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Hardware\QMC5883L\hal_qmc5883l.c</FilePath>
-            </File>
-            <File>
-              <FileName>hal_spi.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Hardware\SPI\hal_spi.c</FilePath>
-            </File>
-            <File>
-              <FileName>hal_p25qxxh.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Hardware\P25QXXH\hal_p25qxxh.c</FilePath>
-            </File>
-            <File>
-              <FileName>hal_norflash.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Hardware\NORFLASH\hal_norflash.c</FilePath>
-            </File>
-          </Files>
         </Group>
         <Group>
           <GroupName>System</GroupName>
@@ -699,66 +632,6 @@
               <FileName>platform_config.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\User\platform_config.h</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>Radio</GroupName>
-          <Files>
-            <File>
-              <FileName>radio_rfa_boot.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Libraries\Radio\radio_src\radio_rfa_boot.c</FilePath>
-            </File>
-            <File>
-              <FileName>radio_hal_spi.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Libraries\Radio\radio_src\radio_hal_spi.c</FilePath>
-            </File>
-            <File>
-              <FileName>radio_hal_wrap.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Libraries\Radio\radio_src\radio_hal_wrap.c</FilePath>
-            </File>
-            <File>
-              <FileName>radio_hal_rf.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Libraries\Radio\radio_src\radio_hal_rf.c</FilePath>
-            </File>
-            <File>
-              <FileName>radio_core.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Libraries\Radio\radio_src\radio_core.c</FilePath>
-            </File>
-            <File>
-              <FileName>radio_comm.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Libraries\Radio\radio_src\radio_comm.c</FilePath>
-            </File>
-            <File>
-              <FileName>si446x_api_lib.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Libraries\Radio\si446x_src\si446x_api_lib.c</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>IAP</GroupName>
-          <Files>
-            <File>
-              <FileName>iap_boot.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Libraries\IAP\iap_boot.c</FilePath>
-            </File>
-            <File>
-              <FileName>iap_core.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Libraries\IAP\iap_core.c</FilePath>
-            </File>
-            <File>
-              <FileName>iap_ugrade.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Libraries\IAP\iap_ugrade.c</FilePath>
             </File>
           </Files>
         </Group>

@@ -157,6 +157,21 @@ void HC32_Uart1_Init(u32 bound)
 	EnableNvic(UART1_IRQn, UART1_IRQLevel, TRUE);
 }
 
+#if 1
+#pragma import(__use_no_semihosting)
+
+struct __FILE
+{
+	int handle;
+};
+
+FILE __stdout;
+
+void _sys_exit(int x)
+{
+	x = x;
+}
+
 /**********************************************************************************************************
  @Function			int fputc(int ch, FILE *f)
  @Description			fputc									: Re-target putchar function
@@ -172,5 +187,6 @@ int fputc(int ch, FILE *f)
 	Uart_ClrStatus(PRINTF_USART, UartTC);
 	return ch;
 }
+#endif
 
 /********************************************** END OF FLEE **********************************************/

@@ -3,8 +3,14 @@
 
 #include "hc32l19x_cc.h"
 
-u32  HAL_IncTick(void);																	//HAL Inc Tick++
-u32  HAL_GetTick(void);																	//HAL Get Tick
+#define HC32_IncMecondTick		HAL_IncMecTick												//System Mecond Add
+#define HC32_GetMecondTick		HAL_GetMecTick												//System Mecond Get
+
+#define HC32_IncSecondTick		HAL_IncSecTick												//System Second Add
+#define HC32_GetSecondTick		HAL_GetSecTick												//System Second Get
+
+u32  HAL_IncMecTick(void);																//HAL Inc Mec Tick++
+u32  HAL_GetMecTick(void);																//HAL Get Mec Tick
 
 u32  HAL_IncSecTick(void);																//HAL Inc Sec Tick++
 u32  HAL_GetSecTick(void);																//HAL Get Sec Tick
