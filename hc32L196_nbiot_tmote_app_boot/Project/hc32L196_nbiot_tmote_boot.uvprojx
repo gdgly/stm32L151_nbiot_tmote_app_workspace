@@ -338,7 +338,7 @@
               <MiscControls></MiscControls>
               <Define></Define>
               <Undefine></Undefine>
-              <IncludePath>..\Core;..\HALLibraries\inc;..\HALLibraries\src;..\User;..\System\Sys;..\System\Delay;..\System\Usart</IncludePath>
+              <IncludePath>..\Core;..\HALLibraries\inc;..\HALLibraries\src;..\User;..\System\Sys;..\System\Delay;..\System\Usart;..\Hardware\IWDG;..\Hardware\RTC</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -559,6 +559,18 @@
         </Group>
         <Group>
           <GroupName>Hardware</GroupName>
+          <Files>
+            <File>
+              <FileName>hal_iwdg.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Hardware\IWDG\hal_iwdg.c</FilePath>
+            </File>
+            <File>
+              <FileName>hal_rtc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Hardware\RTC\hal_rtc.c</FilePath>
+            </File>
+          </Files>
         </Group>
         <Group>
           <GroupName>System</GroupName>

@@ -16,6 +16,7 @@
 #include "platform_config.h"
 #include "platform_map.h"
 #include "sys.h"
+#include "flash.h"
 
 /**********************************************************************************************************
  @Function			void HC32_PeripheralClockGate_Init(void)
@@ -36,6 +37,9 @@ void HC32_PeripheralClockGate_Init(void)
 	
 	/* -使能RTC外设时钟门控- */
 	Sysctrl_SetPeripheralGate(SysctrlPeripheralRtc, SYSTEM_PERIPHERAL_GATE_RTC);
+	
+	/* -使能FLASH外设时钟门控- */
+	Sysctrl_SetPeripheralGate(SysctrlPeripheralFlash, SYSTEM_PERIPHERAL_GATE_FLASH);
 	
 	/* -使能UART0外设时钟门控- */
 	Sysctrl_SetPeripheralGate(SysctrlPeripheralUart0, SYSTEM_PERIPHERAL_GATE_UART0);
@@ -59,45 +63,186 @@ void HC32_PeripheralClockGate_Init(void)
 	Sysctrl_SetPeripheralGate(SysctrlPeripheralAdcBgr, SYSTEM_PERIPHERAL_GATE_ADC);
 }
 
+/**********************************************************************************************************
+ @Function			void HC32_RCHClock48M_Init(void)
+ @Description			HC32_RCHClock48M_Init						: HC32内部RCH高速时钟初始化48MHz
+ @Input				void
+ @Return				void
+**********************************************************************************************************/
+void HC32_RCHClock48M_Init(void)
+{
+	stc_sysctrl_pll_cfg_t stcPLLCfg;
+	stc_sysctrl_clk_cfg_t stcCLKCfg;
+	
+	/* 1.step: RCH时钟不同频率切换, 需先将时钟切换到RCL, 设置好RCH频率后再切回 */
+	
+	/* 设定内部低速时钟RCL频率: 32.768KHz */
+	Sysctrl_SetRCLTrim(SysctrlRclFreq32768);
+	/* 开启内部低速时钟RCL */
+	Sysctrl_ClkSourceEnable(SysctrlClkRCL, TRUE);
+	/* 切换系统时钟为内部低速时钟RCL */
+	Sysctrl_SysClkSwitch(SysctrlClkRCL);
+	
+	/* 2.step: 系统时钟已切换为RCL, 配置内部高速时钟RCH */
+	
+	/* 设定内部高速时钟RCH频率: 16MHz */
+	Sysctrl_SetRCHTrim(SysctrlRchFreq16MHz);
+	/* 开启内部高速时钟RCH */
+	Sysctrl_ClkSourceEnable(SysctrlClkRCH, TRUE);
+	
+	/* 3.step: PLL锁相环配置 */
+	
+	/* PLL输入时钟频率范围: RCH 16MHz */
+	stcPLLCfg.enInFreq			= SysctrlPllInFreq12_20MHz;
+	/* PLL输出时钟频率范围: PLL 48MHz */
+	stcPLLCfg.enOutFreq			= SysctrlPllOutFreq36_48MHz;
+	/* PLL输入时钟源: RCH 16MHz */
+	stcPLLCfg.enPllClkSrc		= SysctrlPllRch;
+	/* PLL倍频系数: X3 */
+	stcPLLCfg.enPllMul			= SysctrlPllMul3;
+	/* PLL配置 */
+	Sysctrl_SetPLLFreq(&stcPLLCfg);
+	/* PLL稳定周期设置: 16384T */
+	Sysctrl_SetPLLStableTime(SysctrlPllStableCycle16384);
+	/* 开启PLL锁相环 */
+	Sysctrl_ClkSourceEnable(SysctrlClkPLL, TRUE);
+	
+	/* 4.step: 当系统时钟HCLK大于48MHz, 需设置FLASH读等待周期至少为 2 cycle */
+	Flash_WaitCycle(FlashWaitCycle2);
+	
+	/* 5.step: 系统时钟配置 */
+	
+	/* 时钟源选择: PLL时钟 */
+	stcCLKCfg.enClkSrc			= SysctrlClkPLL;
+	/* HCLK分频系数 */
+	stcCLKCfg.enHClkDiv			= SysctrlHclkDiv1;
+	/* PCLK分频系数 */
+	stcCLKCfg.enPClkDiv			= SysctrlPclkDiv1;
+	/* 系统时钟配置 */
+	Sysctrl_ClkInit(&stcCLKCfg);
+	
+	/* 6.step: 关闭内部低速时钟RCL */
+	Sysctrl_ClkSourceEnable(SysctrlClkRCL, FALSE);
+}
 
+/**********************************************************************************************************
+ @Function			void HC32_RCHClock32M_Init(void)
+ @Description			HC32_RCHClock32M_Init						: HC32内部RCH高速时钟初始化32MHz
+ @Input				void
+ @Return				void
+**********************************************************************************************************/
+void HC32_RCHClock32M_Init(void)
+{
+	stc_sysctrl_pll_cfg_t stcPLLCfg;
+	stc_sysctrl_clk_cfg_t stcCLKCfg;
+	
+	/* 1.step: RCH时钟不同频率切换, 需先将时钟切换到RCL, 设置好RCH频率后再切回 */
+	
+	/* 设定内部低速时钟RCL频率: 32.768KHz */
+	Sysctrl_SetRCLTrim(SysctrlRclFreq32768);
+	/* 开启内部低速时钟RCL */
+	Sysctrl_ClkSourceEnable(SysctrlClkRCL, TRUE);
+	/* 切换系统时钟为内部低速时钟RCL */
+	Sysctrl_SysClkSwitch(SysctrlClkRCL);
+	
+	/* 2.step: 系统时钟已切换为RCL, 配置内部高速时钟RCH */
+	
+	/* 设定内部高速时钟RCH频率: 8MHz */
+	Sysctrl_SetRCHTrim(SysctrlRchFreq8MHz);
+	/* 开启内部高速时钟RCH */
+	Sysctrl_ClkSourceEnable(SysctrlClkRCH, TRUE);
+	
+	/* 3.step: PLL锁相环配置 */
+	
+	/* PLL输入时钟频率范围: RCH 8MHz */
+	stcPLLCfg.enInFreq			= SysctrlPllInFreq6_12MHz;
+	/* PLL输出时钟频率范围: PLL 32MHz */
+	stcPLLCfg.enOutFreq			= SysctrlPllOutFreq24_36MHz;
+	/* PLL输入时钟源: RCH 8MHz */
+	stcPLLCfg.enPllClkSrc		= SysctrlPllRch;
+	/* PLL倍频系数: X4 */
+	stcPLLCfg.enPllMul			= SysctrlPllMul4;
+	/* PLL配置 */
+	Sysctrl_SetPLLFreq(&stcPLLCfg);
+	/* PLL稳定周期设置: 16384T */
+	Sysctrl_SetPLLStableTime(SysctrlPllStableCycle16384);
+	/* 开启PLL锁相环 */
+	Sysctrl_ClkSourceEnable(SysctrlClkPLL, TRUE);
+	
+	/* 4.step: 当系统时钟HCLK大于24MHz, 需设置FLASH读等待周期至少为 1 cycle */
+	Flash_WaitCycle(FlashWaitCycle1);
+	
+	/* 5.step: 系统时钟配置 */
+	
+	/* 时钟源选择: PLL时钟 */
+	stcCLKCfg.enClkSrc			= SysctrlClkPLL;
+	/* HCLK分频系数 */
+	stcCLKCfg.enHClkDiv			= SysctrlHclkDiv1;
+	/* PCLK分频系数 */
+	stcCLKCfg.enPClkDiv			= SysctrlPclkDiv1;
+	/* 系统时钟配置 */
+	Sysctrl_ClkInit(&stcCLKCfg);
+	
+	/* 6.step: 关闭内部低速时钟RCL */
+	Sysctrl_ClkSourceEnable(SysctrlClkRCL, FALSE);
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+/**********************************************************************************************************
+ @Function			void HC32_XTHClock24M_Init(void)
+ @Description			HC32_XTHClock24M_Init						: HC32外部XTH高速时钟初始化24MHz
+ @Input				void
+ @Return				void
+**********************************************************************************************************/
+void HC32_XTHClock24M_Init(void)
+{
+	stc_sysctrl_pll_cfg_t stcPLLCfg;
+	stc_sysctrl_clk_cfg_t stcCLKCfg;
+	
+	/* 1.step: 外部高速时钟XTH配置 */
+	
+	/* 设定外部高速时钟XTH频率: 8MHz */
+	Sysctrl_SetXTHFreq(SysctrlXthFreq6_12MHz);
+	/* 设定外部高速时钟XTH驱动能力: 最强驱动 */
+	Sysctrl_XTHDriverCfg(SysctrlXtalDriver3);
+	/* 设定外部高速时钟XTH稳定周期: 16384T */
+	Sysctrl_SetXTHStableTime(SysctrlXthStableCycle16384);
+	/* 开启外部高速时钟XTH */
+	Sysctrl_ClkSourceEnable(SysctrlClkXTH, TRUE);
+	
+	/* 2.step: PLL锁相环配置 */
+	
+	/* PLL输入时钟频率范围: XTH 8MHz */
+	stcPLLCfg.enInFreq			= SysctrlPllInFreq6_12MHz;
+	/* PLL输出时钟频率范围: PLL 24MHz */
+	stcPLLCfg.enOutFreq			= SysctrlPllOutFreq24_36MHz;
+	/* PLL输入时钟源: XTH 8MHz */
+	stcPLLCfg.enPllClkSrc		= SysctrlPllXthXtal;
+	/* PLL倍频系数: X3 */
+	stcPLLCfg.enPllMul			= SysctrlPllMul3;
+	/* PLL配置 */
+	Sysctrl_SetPLLFreq(&stcPLLCfg);
+	/* PLL稳定周期设置: 16384T */
+	Sysctrl_SetPLLStableTime(SysctrlPllStableCycle16384);
+	/* 开启PLL锁相环 */
+	Sysctrl_ClkSourceEnable(SysctrlClkPLL, TRUE);
+	
+	/* 3.step: 当系统时钟HCLK大于24MHz, 需设置FLASH读等待周期至少为 1 cycle	*/
+	Flash_WaitCycle(FlashWaitCycle1);
+	
+	/* 4.step: 系统时钟配置 */
+	
+	/* 时钟源选择: PLL时钟 */
+	stcCLKCfg.enClkSrc			= SysctrlClkPLL;
+	/* HCLK分频系数 */
+	stcCLKCfg.enHClkDiv			= SysctrlHclkDiv1;
+	/* PCLK分频系数 */
+	stcCLKCfg.enPClkDiv			= SysctrlPclkDiv1;
+	/* 系统时钟配置 */
+	Sysctrl_ClkInit(&stcCLKCfg);
+	
+	/* 5.step: 关闭内部高速时钟RCH */
+	Sysctrl_ClkSourceEnable(SysctrlClkRCH, FALSE);
+}
 
 /**********************************************************************************************************
  @Function			void HC32_SysTick_Init(void)
@@ -111,6 +256,26 @@ void HC32_SysTick_Init(void)
 	/* 配置系统嘀嗒定时器 */
 	SysTick_Config(SystemCoreClock / 1000);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
