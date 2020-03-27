@@ -8,6 +8,8 @@
 #define BEEP_PIN				GpioPin8
 #define BEEP_AF				GpioAf0
 
+#define BEEP_IO_SET(n)			(n ? (Gpio_SetIO(BEEP_GPIOx, BEEP_PIN)) : (Gpio_ClrIO(BEEP_GPIOx, BEEP_PIN)))
+
 #define BEEP_OUTPUT_FAST			0
 #define BEEP_OUTPUT_AHB			1
 #define BEEP_OUTPUT_TYPE			BEEP_OUTPUT_AHB											//蜂鸣器IO模式

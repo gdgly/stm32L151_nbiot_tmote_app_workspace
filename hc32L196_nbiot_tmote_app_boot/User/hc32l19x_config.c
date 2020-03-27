@@ -20,6 +20,10 @@
 #include "usart.h"
 #include "hal_iwdg.h"
 #include "hal_rtc.h"
+#include "hal_beep.h"
+#include "hal_vbat.h"
+#include "hal_vptat.h"
+#include "hal_vtemp.h"
 
 HC32_RESET_FLAG_TypeDef HC32_Reset_Flag = RCC_RESET_FLAG_NONE;
 
@@ -219,6 +223,8 @@ void HC32_CtrPowerIO_Init(void)
 	NBIOT_POWER_IO_SET(OFF);																//外设NBIoT电源关闭
 	VBATE_POWER_IO_SET(OFF);																//外设VBate电源关闭
 }
+
+
 
 
 

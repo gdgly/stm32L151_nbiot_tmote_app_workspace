@@ -22,6 +22,10 @@
 #include "platform_map.h"
 #include "hal_iwdg.h"
 #include "hal_rtc.h"
+#include "hal_beep.h"
+#include "hal_vbat.h"
+#include "hal_vptat.h"
+#include "hal_vtemp.h"
 
 /****************************************** Select DEBUG *************************************************/
 //#define	DEVICE_DEBUG																	//定义开启设备调试
@@ -51,6 +55,8 @@ int main(void)
 	HC32_XTHClock24M_Init();																//HC32XTH时钟初始化24MHz
 #endif
 	
+	HC32_HPClock_Init(SysctrlClkPLL, SysctrlHclkDiv1, SysctrlPclkDiv8);							//HC32时钟HCLK/PCLK初始化
+	
 #if SYSTEM_RESETFLAG_TYPE
 	HC32_Reset_Flag = HC32_SystemReset_GetStatus();											//HC32获取复位标志位
 #endif
@@ -62,6 +68,8 @@ int main(void)
 	HC32_SysTick_Init();																//HC32系统嘀嗒定时器初始化
 	
 	HC32_RTC_Init();																	//HC32实时时钟初始化
+	
+	BEEP_GPIO_InitControl(OFF);															//蜂鸣器关闭
 	
 	HC32_LowPowerIO_Init();																//HC32低功耗IO初始化
 	HC32_RstPowerIO_Init();																//HC32复位电源初始化
@@ -101,6 +109,22 @@ int main(void)
 	
 	
 	
+	BEEP_Repeat_Control(1, 150, 20);														//di
+	Delay_MS(100);
+	BEEP_Repeat_Control(2, 70, 25);														//didi
+	Delay_MS(150);
+	BEEP_Repeat_Control(1, 150, 20);														//di
+	Delay_MS(100);
+	BEEP_Repeat_Control(2, 70, 25);														//didi
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	
@@ -121,6 +145,9 @@ int main(void)
 		
 		
 		printf("Runing\r\n");
+		
+		
+		
 		
 		
 		

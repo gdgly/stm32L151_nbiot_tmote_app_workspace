@@ -245,6 +245,26 @@ void HC32_XTHClock24M_Init(void)
 }
 
 /**********************************************************************************************************
+ @Function			void HC32_HPClock_Init(en_sysctrl_clk_source_t enClkSrc, en_sysctrl_hclk_div_t enHClkDiv, en_sysctrl_pclk_div_t enPClkDiv)
+ @Description			HC32_HPClock_Init							: HC32时钟HCLK/PCLK初始化
+ @Input				void
+ @Return				void
+**********************************************************************************************************/
+void HC32_HPClock_Init(en_sysctrl_clk_source_t enClkSrc, en_sysctrl_hclk_div_t enHClkDiv, en_sysctrl_pclk_div_t enPClkDiv)
+{
+	stc_sysctrl_clk_cfg_t stcCLKCfg;
+	
+	/* 时钟源选择: PLL时钟 */
+	stcCLKCfg.enClkSrc			= enClkSrc;
+	/* HCLK分频系数 */
+	stcCLKCfg.enHClkDiv			= enHClkDiv;
+	/* PCLK分频系数 */
+	stcCLKCfg.enPClkDiv			= enPClkDiv;
+	/* 系统时钟配置 */
+	Sysctrl_ClkInit(&stcCLKCfg);
+}
+
+/**********************************************************************************************************
  @Function			void HC32_SysTick_Init(void)
  @Description			HC32_SysTick_Init							: HC32系统嘀嗒定时器初始化
  @Input				void
