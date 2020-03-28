@@ -24,6 +24,9 @@
 #include "hal_vbat.h"
 #include "hal_vptat.h"
 #include "hal_vtemp.h"
+#include "hal_aes.h"
+#include "hal_crc.h"
+#include "hal_flash.h"
 
 HC32_RESET_FLAG_TypeDef HC32_Reset_Flag = RCC_RESET_FLAG_NONE;
 

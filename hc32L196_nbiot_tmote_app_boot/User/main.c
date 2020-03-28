@@ -26,6 +26,9 @@
 #include "hal_vbat.h"
 #include "hal_vptat.h"
 #include "hal_vtemp.h"
+#include "hal_aes.h"
+#include "hal_crc.h"
+#include "hal_flash.h"
 
 /****************************************** Select DEBUG *************************************************/
 //#define	DEVICE_DEBUG																	//定义开启设备调试
@@ -93,8 +96,8 @@ int main(void)
 	
 	
 	
-	HC32_Uart0_Init(9600);																//UART0初始化
-	HC32_Uart1_Init(9600);																//UART1初始化
+	HC32_Uart0_Init(UART0_BAUD_RATE);														//UART0初始化
+	HC32_Uart1_Init(UART1_BAUD_RATE);														//UART1初始化
 	
 	
 	

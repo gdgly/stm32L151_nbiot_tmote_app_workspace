@@ -338,7 +338,7 @@
               <MiscControls></MiscControls>
               <Define></Define>
               <Undefine></Undefine>
-              <IncludePath>..\Core;..\HALLibraries\inc;..\HALLibraries\src;..\User;..\System\Sys;..\System\Delay;..\System\Usart;..\Hardware\IWDG;..\Hardware\RTC;..\Hardware\BEEP;..\Hardware\VBAT;..\Hardware\VPTAT;..\Hardware\VTEMP</IncludePath>
+              <IncludePath>..\Core;..\HALLibraries\inc;..\HALLibraries\src;..\User;..\System\Sys;..\System\Delay;..\System\Usart;..\Hardware\IWDG;..\Hardware\RTC;..\Hardware\BEEP;..\Hardware\VBAT;..\Hardware\VPTAT;..\Hardware\VTEMP;..\Hardware\AES;..\Hardware\CRC;..\Hardware\FLASH</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -589,6 +589,21 @@
               <FileName>hal_vtemp.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Hardware\VTEMP\hal_vtemp.c</FilePath>
+            </File>
+            <File>
+              <FileName>hal_aes.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Hardware\AES\hal_aes.c</FilePath>
+            </File>
+            <File>
+              <FileName>hal_crc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Hardware\CRC\hal_crc.c</FilePath>
+            </File>
+            <File>
+              <FileName>hal_flash.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Hardware\FLASH\hal_flash.c</FilePath>
             </File>
           </Files>
         </Group>

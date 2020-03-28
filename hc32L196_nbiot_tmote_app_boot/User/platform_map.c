@@ -24,6 +24,11 @@
 #include "hal_vbat.h"
 #include "hal_vptat.h"
 #include "hal_vtemp.h"
+#include "hal_aes.h"
+#include "hal_crc.h"
+#include "hal_flash.h"
+
+
 
 
 
