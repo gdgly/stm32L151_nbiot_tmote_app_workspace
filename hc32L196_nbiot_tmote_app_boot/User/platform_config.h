@@ -47,6 +47,9 @@
 
 
 
+
+
+#define	FLASH_HC32NOR																	//定义开启 FLASH_HC32NOR
 #define	EPROM_BL24CXX																	//定义开启 EPROM BL24CXX
 #define	FLASH_P25QXXH																	//定义开启 FLASH P25QXXH
 #define	RADIO_SI4438A																	//定义开启 RADIO SI4438A
@@ -92,6 +95,8 @@
 #define	USART2_DISABLE					0
 #define	USART2_ENABLE					1
 #define	USART2_TYPE					USART2_ENABLE										//串口2状态
+
+
 
 
 
