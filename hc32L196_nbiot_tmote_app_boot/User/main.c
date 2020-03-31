@@ -88,7 +88,7 @@ int main(void)
 	HC32_RstPowerIO_Init();																//HC32复位电源初始化
 	HC32_CtrPowerIO_Init();																//HC32控制电源初始化
 	
-	
+	BEEP_GPIO_InitControl(OFF);															//蜂鸣器关闭
 	
 	
 	
@@ -161,7 +161,9 @@ int main(void)
 		
 		
 		
-		
+		HC32_LowPower_SleepBefor_Init();
+		//HC32_LowPower_SleepEnter_Stop();
+		HC32_LowPower_SleepAfter_Init();
 		
 		
 		HC32_IWDG_Feed();

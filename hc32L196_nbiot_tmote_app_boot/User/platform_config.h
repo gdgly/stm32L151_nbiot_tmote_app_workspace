@@ -24,6 +24,10 @@
 #define	SYSTEM_RTCCLOCK_RCL_38400		38400
 #define	SYSTEM_RTCCLOCK_TYPE			SYSTEM_RTCCLOCK_RCL_32000							//实时时钟
 
+#define	SYSTEM_LOWPOWER_DISABLE			0
+#define	SYSTEM_LOWPOWER_ENABLE			1
+#define	SYSTEM_LOWPOWER_TYPE			SYSTEM_LOWPOWER_ENABLE								//低功耗模式
+
 #define	SYSTEM_RESETFLAG_DISABLE			0
 #define	SYSTEM_RESETFLAG_ENABLE			1
 #define	SYSTEM_RESETFLAG_TYPE			SYSTEM_RESETFLAG_ENABLE								//系统复位获取
@@ -56,9 +60,10 @@
 
 #define	RADIO_RF_CHANNEL1				36												//小无线默认通道
 
-#define	RADIO_IS_BOOT					0
-#define	RADIO_IS_APP					1
-#define	RADIO_IS_TYPE					RADIO_IS_BOOT										//小无线应用
+
+
+
+
 
 
 

@@ -39,6 +39,7 @@ void HC32_RTC_Init(void)
 #if (SYSTEM_RTCCLOCK_TYPE == SYSTEM_RTCCLOCK_RCL_32000)
 	Sysctrl_SetRCLTrim(SysctrlRclFreq32768);
 #endif
+	/* 设定内部低速时钟RCL频率: 38.400KHz */
 #if (SYSTEM_RTCCLOCK_TYPE == SYSTEM_RTCCLOCK_RCL_38400)
 	Sysctrl_SetRCLTrim(SysctrlRclFreq38400);
 #endif
@@ -52,7 +53,10 @@ void HC32_RTC_Init(void)
 	Sysctrl_ClkSourceEnable(SysctrlClkXTL, TRUE);
 #endif
 	
+	/* RTC小时制 */
 	RTC_Initure.rtcAmpm				= RtcPm;
+	
+	/* RTC时钟源 */
 #if (SYSTEM_RTCCLOCK_TYPE == SYSTEM_RTCCLOCK_RCL_32000 || SYSTEM_RTCCLOCK_TYPE == SYSTEM_RTCCLOCK_RCL_38400)
 	RTC_Initure.rtcClksrc			= RtcClkRcl;
 #endif
@@ -60,6 +64,7 @@ void HC32_RTC_Init(void)
 	RTC_Initure.rtcClksrc			= RtcClkXtl;
 #endif
 	
+	/* RTC时间设置 */
 	RTC_Initure.rtcTime.u8Year		= RTC_DEFAULT_YEAR;
 	RTC_Initure.rtcTime.u8Month		= RTC_DEFAULT_MONTH;
 	RTC_Initure.rtcTime.u8Day		= RTC_DEFAULT_DAY;
@@ -68,12 +73,18 @@ void HC32_RTC_Init(void)
 	RTC_Initure.rtcTime.u8Second		= RTC_DEFAULT_SECOND;
 	RTC_Initure.rtcTime.u8DayOfWeek	= RTC_ByteToBcd2(RTC_WeekDayNum(RTC_Bcd2ToByte(RTC_DEFAULT_YEAR), RTC_Bcd2ToByte(RTC_DEFAULT_MONTH), RTC_Bcd2ToByte(RTC_DEFAULT_DAY)));
 	
+	/* RTC补偿设置 */
 	RTC_Initure.rtcCompen			= RtcCompenEnable;
 	RTC_Initure.rtcCompValue			= 0;
 	
+	/* RTC初始化 */
 	Rtc_Init(&RTC_Initure);
 	
+	/* RTC启动计数 */
 	Rtc_Cmd(TRUE);
+	
+	/* RTC等待启动 */
+	Rtc_StartWait();
 }
 
 /**********************************************************************************************************

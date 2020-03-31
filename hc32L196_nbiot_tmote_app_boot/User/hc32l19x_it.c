@@ -115,8 +115,24 @@ void Uart1_IRQHandler(void)
 
 
 
-
-
+/**********************************************************************************************************
+ @Function			void Rtc_IRQHandler(void)
+ @Description			Rtc_IRQHandler								: HC32 RTC中断服务函数
+ @Input				void
+ @Return				void
+**********************************************************************************************************/
+void Rtc_IRQHandler(void)
+{
+	/* RTC周期中断产生标记 */
+	if (Rtc_GetPridItStatus()) {
+		Rtc_ClearPrdfItStatus();
+	}
+	
+	/* RTC闹钟中断产生标记 */
+	if (Rtc_GetAlmfItStatus()) {
+		Rtc_ClearAlmfItStatus();
+	}
+}
 
 
 

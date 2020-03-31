@@ -367,14 +367,44 @@ void HC32_CtrPowerIO_Init(void)
 
 
 
+/**********************************************************************************************************
+ @Function			void HC32_LowPower_SleepBefor_Init(void)
+ @Description			HC32_LowPower_SleepBefor_Init					: 进入低功耗stop模式之前初始化
+ @Input				void
+ @Return				void
+**********************************************************************************************************/
+void HC32_LowPower_SleepBefor_Init(void)
+{
+	
+}
 
+/**********************************************************************************************************
+ @Function			void HC32_LowPower_SleepEnter_Stop(void)
+ @Description			HC32_LowPower_SleepEnter_Stop					: 进入低功耗stop模式
+ @Input				void
+ @Return				void
+**********************************************************************************************************/
+void HC32_LowPower_SleepEnter_Stop(void)
+{
+	
+	
+	
+	Lpm_GotoDeepSleep(FALSE);
+	
+	
+	
+}
 
-
-
-
-
-
-
+/**********************************************************************************************************
+ @Function			void HC32_LowPower_SleepAfter_Init(void)
+ @Description			HC32_LowPower_SleepAfter_Init					: 进入低功耗stop模式之后初始化
+ @Input				void
+ @Return				void
+**********************************************************************************************************/
+void HC32_LowPower_SleepAfter_Init(void)
+{
+	
+}
 
 
 

@@ -4,6 +4,7 @@
 #include "sys.h"
 #include "gpio.h"
 #include "reset.h"
+#include "lpm.h"
 
 #define MODEL_POWER_GPIOx		GpioPortA
 #define MODEL_POWER_PIN			GpioPin8
@@ -75,12 +76,9 @@ void HC32_CtrPowerIO_Init(void);															//HC32控制电源初始化
 
 
 
-
-
-
-
-
-
+void HC32_LowPower_SleepBefor_Init(void);													//进入低功耗stop模式之前初始化
+void HC32_LowPower_SleepEnter_Stop(void);													//进入低功耗stop模式
+void HC32_LowPower_SleepAfter_Init(void);													//进入低功耗stop模式之后初始化
 
 
 
