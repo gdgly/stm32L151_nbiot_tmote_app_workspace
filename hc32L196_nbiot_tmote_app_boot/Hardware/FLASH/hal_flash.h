@@ -42,13 +42,7 @@ u8   HC32_FLASH_WriteByte(u32 addr, u8 data);
 u16  HC32_FLASH_WriteHalfWord(u32 addr, u16 data);
 u32  HC32_FLASH_WriteWord(u32 addr, u32 data);
 
-
-
-
-
-
-
-
-
+u8   HC32_FLASH_ReadBuffer(u32 addr, u8* buf, u32 len);
+u8   HC32_FLASH_WriteBuffer(u32 addr, u8* buf, u32 len);
 
 #endif /* __HAL_FLASH_H */

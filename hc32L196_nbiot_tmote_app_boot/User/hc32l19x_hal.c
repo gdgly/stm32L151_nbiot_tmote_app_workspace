@@ -94,4 +94,41 @@ void HAL_Delay(__IO u32 Delay)
 	}
 }
 
+/**********************************************************************************************************
+ @Function			void HAL_IRQ_Disable(void)
+ @Description			HAL_IRQ_Disable							: HAL IRQ Disable
+ @Input				void
+ @Return				void
+**********************************************************************************************************/
+void HAL_IRQ_Disable(void)
+{
+	__disable_irq();
+}
+
+/**********************************************************************************************************
+ @Function			void HAL_IRQ_Enable(void)
+ @Description			HAL_IRQ_Enable								: HAL IRQ Enable
+ @Input				void
+ @Return				void
+**********************************************************************************************************/
+void HAL_IRQ_Enable(void)
+{
+	__enable_irq();
+}
+
+/**********************************************************************************************************
+ @Function			void HAL_SystemReset(void)
+ @Description			HAL_SystemReset							: HAL System Reset
+ @Input				void
+ @Return				void
+**********************************************************************************************************/
+void HAL_SystemReset(void)
+{
+	__disable_irq();
+	
+	NVIC_SystemReset();
+	
+	__NOP();
+}
+
 /********************************************** END OF FLEE **********************************************/

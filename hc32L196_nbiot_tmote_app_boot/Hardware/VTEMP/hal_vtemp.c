@@ -67,6 +67,8 @@ s32 HC32_VTemp_Read(u32 timeoutMS)
 	
 	timeMeterTypeDef ADCtimerMS;
 	
+	HC32_HPClock_Init(SysctrlClkPLL, SysctrlHclkDiv1, SysctrlPclkDiv8);
+	
 	HC32_TimeMeter_CountdownMS(&ADCtimerMS, timeoutMS);
 	
 	Bgr_BgrEnable();
@@ -98,6 +100,8 @@ s32 HC32_VTemp_Read(u32 timeoutMS)
 	trim_val = VTEMP_TRIM2V5_VAL;
 	
 	temp_val = 25 + (0.0795 * 2.5 * ( pwr_vol - trim_val ));
+	
+	HC32_HPClock_Init(SysctrlClkPLL, SysctrlHclkDiv1, SysctrlPclkDiv2);
 	
 	return temp_val;
 }

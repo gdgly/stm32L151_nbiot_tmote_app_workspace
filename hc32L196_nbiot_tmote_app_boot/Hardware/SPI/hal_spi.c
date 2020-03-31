@@ -103,7 +103,7 @@ void HC32_SPI0_Init(void)
 	DDL_ZERO_STRUCT(SPI_Initure);
 	
 	SPI_Initure.enSpiMode		= SpiMskMaster;											//SPI Master
-	SPI_Initure.enPclkDiv		= SpiClkMskDiv16;											//SPI CLK PLCK/DIV16
+	SPI_Initure.enPclkDiv		= SpiClkMskDiv4;											//SPI CLK PLCK/DIV4 Mast 4MHz
 	SPI_Initure.enCPHA			= SpiMskCphafirst;											//SPI CLK Mode 0
 	SPI_Initure.enCPOL			= SpiMskcpollow;											//SPI CLK Mode 0
 	Spi_Init(M0P_SPI0, &SPI_Initure);
@@ -124,7 +124,7 @@ void HC32_SPI1_Init(void)
 	DDL_ZERO_STRUCT(SPI_Initure);
 	
 	SPI_Initure.enSpiMode		= SpiMskMaster;											//SPI Master
-	SPI_Initure.enPclkDiv		= SpiClkMskDiv16;											//SPI CLK PLCK/DIV16
+	SPI_Initure.enPclkDiv		= SpiClkMskDiv4;											//SPI CLK PLCK/DIV4 Mast 4MHz
 	SPI_Initure.enCPHA			= SpiMskCphafirst;											//SPI CLK Mode 0
 	SPI_Initure.enCPOL			= SpiMskcpollow;											//SPI CLK Mode 0
 	Spi_Init(M0P_SPI1, &SPI_Initure);

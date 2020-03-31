@@ -29,6 +29,14 @@
 #include "hal_aes.h"
 #include "hal_crc.h"
 #include "hal_flash.h"
+#include "hal_iic.h"
+#include "hal_bl24cxxp.h"
+#include "hal_eeprom.h"
+#include "hal_qmc5883l.h"
+#include "hal_spi.h"
+#include "hal_p25qxxh.h"
+#include "hal_norflash.h"
+#include "radio_hal_rf.h"
 
 /****************************************** Select DEBUG *************************************************/
 //#define	DEVICE_DEBUG																	//定义开启设备调试
@@ -46,6 +54,8 @@ void DeBugMain(void);
 **********************************************************************************************************/
 int main(void)
 {
+	HC32_PeripheralAll_Reset();															//HC32外设模块复位
+	
 	HC32_PeripheralClockGate_Init();														//HC32外设时钟门控初始化
 	
 #if (SYSTEM_CLOCK_TYPE == SYSTEM_CLOCK_RCH_48M)
@@ -58,7 +68,7 @@ int main(void)
 	HC32_XTHClock24M_Init();																//HC32XTH时钟初始化24MHz
 #endif
 	
-	HC32_HPClock_Init(SysctrlClkPLL, SysctrlHclkDiv1, SysctrlPclkDiv8);							//HC32时钟HCLK/PCLK初始化
+	HC32_HPClock_Init(SysctrlClkPLL, SysctrlHclkDiv1, SysctrlPclkDiv2);							//HC32时钟HCLK/PCLK初始化
 	
 #if SYSTEM_RESETFLAG_TYPE
 	HC32_Reset_Flag = HC32_SystemReset_GetStatus();											//HC32获取复位标志位
@@ -147,7 +157,7 @@ int main(void)
 		
 		
 		
-		printf("Runing\r\n");
+		printf("Reset: %d Runing: %d\r\n", HC32_Reset_Flag, HC32_GetMecondTick());
 		
 		
 		

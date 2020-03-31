@@ -90,6 +90,8 @@ u32 HC32_VBate_Read(u32 timeoutMS)
 	
 	VBATE_POWER_IO_SET(ON);
 	
+	HC32_HPClock_Init(SysctrlClkPLL, SysctrlHclkDiv1, SysctrlPclkDiv8);
+	
 	VBate_Prot_Init();
 	
 	Delay_MS(10);
@@ -121,6 +123,8 @@ u32 HC32_VBate_Read(u32 timeoutMS)
 	Bgr_BgrDisable();
 	
 	VBATE_POWER_IO_SET(OFF);
+	
+	HC32_HPClock_Init(SysctrlClkPLL, SysctrlHclkDiv1, SysctrlPclkDiv2);
 	
 	return pwr_vol * 200 * 28 / 40950;
 }

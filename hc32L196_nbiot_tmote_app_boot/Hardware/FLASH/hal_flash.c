@@ -189,26 +189,48 @@ u32 HC32_FLASH_WriteWord(u32 addr, u32 data)
 	return 0;
 }
 
+/**********************************************************************************************************
+ @Function			u8 HC32_FLASH_ReadBuffer(u32 addr, u8* buf, u32 len)
+ @Description			HC32_FLASH_ReadBuffer
+ @Input				addr
+					buf
+					len
+ @Return				0 OK
+					1 Err
+**********************************************************************************************************/
+u8 HC32_FLASH_ReadBuffer(u32 addr, u8* buf, u32 len)
+{
+	if (HC32_FLASH_Status()) return 1;
+	
+	while (len--) {
+		*buf++ = *(__IO u8 *)addr++;
+	}
+	
+	return 0;
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+/**********************************************************************************************************
+ @Function			u8 HC32_FLASH_WriteBuffer(u32 addr, u8* buf, u32 len)
+ @Description			HC32_FLASH_WriteBuffer
+ @Input				addr
+					buf
+					len
+ @Return				0 OK
+					1 Err
+**********************************************************************************************************/
+u8 HC32_FLASH_WriteBuffer(u32 addr, u8* buf, u32 len)
+{
+	en_result_t enResult = Ok;
+	
+	if (HC32_FLASH_Status()) return 1;
+	
+	while (len--) {
+		enResult = Flash_WriteByte(addr++, *buf++);
+		
+		if (enResult != Ok) return 1;
+	}
+	
+	return 0;
+}
 
 /********************************************** END OF FLEE **********************************************/

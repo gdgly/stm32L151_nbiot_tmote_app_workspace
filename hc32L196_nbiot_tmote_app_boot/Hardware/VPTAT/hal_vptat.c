@@ -76,6 +76,8 @@ u32 HC32_VPtat_Read(u32 timeoutMS)
 	
 	timeMeterTypeDef ADCtimerMS;
 	
+	HC32_HPClock_Init(SysctrlClkPLL, SysctrlHclkDiv1, SysctrlPclkDiv8);
+	
 	VPtat_Prot_Init();
 	
 	HC32_TimeMeter_CountdownMS(&ADCtimerMS, timeoutMS);
@@ -103,6 +105,8 @@ u32 HC32_VPtat_Read(u32 timeoutMS)
 	Adc_Disable();
 	
 	Bgr_BgrDisable();
+	
+	HC32_HPClock_Init(SysctrlClkPLL, SysctrlHclkDiv1, SysctrlPclkDiv2);
 	
 	return pwr_vol * 100 * 28 / 40950;
 }

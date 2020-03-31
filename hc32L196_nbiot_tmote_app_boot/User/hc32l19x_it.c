@@ -28,6 +28,14 @@
 #include "hal_aes.h"
 #include "hal_crc.h"
 #include "hal_flash.h"
+#include "hal_iic.h"
+#include "hal_bl24cxxp.h"
+#include "hal_eeprom.h"
+#include "hal_qmc5883l.h"
+#include "hal_spi.h"
+#include "hal_p25qxxh.h"
+#include "hal_norflash.h"
+#include "radio_hal_rf.h"
 
 /**********************************************************************************************************
  @Function			void Uart0_IRQHandler(void)
