@@ -103,14 +103,12 @@ void HC32_PeripheralAll_Reset(void)
 **********************************************************************************************************/
 void HC32_LowPowerIO_Init(void)
 {
-	
-	
-	
-	
-	
-	
-	
-	
+	M0P_GPIO->PAADS = 0xFFFF;
+	M0P_GPIO->PBADS = 0xFFFF;
+	M0P_GPIO->PCADS = 0xFFFF;
+	M0P_GPIO->PDADS = 0xFFFF;
+	M0P_GPIO->PEADS = 0xFFFF;
+	M0P_GPIO->PFADS = 0xFFFF;
 }
 
 /**********************************************************************************************************
@@ -405,6 +403,13 @@ void HC32_LowPower_SleepAfter_Init(void)
 {
 	
 }
+
+
+
+
+
+
+
 
 
 

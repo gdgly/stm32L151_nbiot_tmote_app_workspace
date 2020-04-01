@@ -161,9 +161,9 @@ int main(void)
 		
 		
 		
-		HC32_LowPower_SleepBefor_Init();
-		//HC32_LowPower_SleepEnter_Stop();
-		HC32_LowPower_SleepAfter_Init();
+		
+		
+		
 		
 		
 		HC32_IWDG_Feed();
