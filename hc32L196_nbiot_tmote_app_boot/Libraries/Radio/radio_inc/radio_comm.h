@@ -1,40 +1,20 @@
 #ifndef __RADIO_COMM_H
 #define   __RADIO_COMM_H
 
-#include "platform_config.h"
-#include "radio_compiler_defs.h"
+#include "sys.h"
 
-#if RADIO_IS_TYPE == RADIO_IS_BOOT
-#define RADIO_CTS_TIMEOUT		15000
-#define RADIO_CTS_LOOPCNT		150
+void radio_comm_ClearCTS(void);
 
-#define RADIO_COM_SENDCMD_CNT		10
-#define RADIO_COM_WRITE_CNT		10
-#define RADIO_COM_READ_CNT		10
-#endif
+u8   radio_comm_PollCTS(void);
 
-#if RADIO_IS_TYPE == RADIO_IS_APP
-#define RADIO_CTS_TIMEOUT		200
-#define RADIO_CTS_LOOPCNT		5
+u8   radio_comm_GetResp(u8 byteCount, u8* pData);
 
-#define RADIO_COM_SENDCMD_CNT		3
-#define RADIO_COM_WRITE_CNT		6
-#define RADIO_COM_READ_CNT		6
-#endif
+void radio_comm_SendCmd(u8 byteCount, u8* pData);
 
-void Radio_Comm_ClearsCTS(void);															//Clears the CTS state variable
-void Radio_Comm_AssertCTS(void);															//Assert the CTS state variable
+void radio_comm_ReadData(u8 cmd, u8 pollCts, u8 byteCount, u8* pData);
 
-u8   Radio_Comm_PollCTS(void);															//Waits for CTS to be high
+void radio_comm_WriteData(u8 cmd, u8 pollCts, u8 byteCount, u8* pData);
 
-void Radio_Comm_WriteData(u8 cmd, u8 pollCts, u8 byteCount, u8* pData);							//Write Data
-
-void Radio_Comm_ReadData(u8 cmd, u8 pollCts, u8 byteCount, u8* pData);							//Read Data
-
-void Radio_Comm_SendCmd(u8 cmdByteCount, u8* pCmdData);										//Send a command to the radio chip
-
-u8   Radio_Comm_GetResp(u8 respByteCount, u8* pRespData);										//Gets a command response from the radio chip
-
-u8   Radio_Comm_SendCmdGetResp(u8 cmdByteCount, u8* pCmdData, u8 respByteCount, u8* pRespData);		//Send a command to the radio chip and gets a response
+u8   radio_comm_SendCmdGetResp(u8 cmdByteCount, u8* pCmdData, u8 respByteCount, u8* pRespData);
 
 #endif /* __RADIO_COMM_H */

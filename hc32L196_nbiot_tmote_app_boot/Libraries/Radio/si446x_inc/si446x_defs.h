@@ -3,5 +3,6 @@
 
 #include "si446x_cmd.h"
 #include "si446x_prop.h"
+#include "si446x_patch.h"
 
 #endif /* _SI446X_DEFS_H_ */
