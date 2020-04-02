@@ -3,7 +3,7 @@
   * @file    radio_core.c
   * @author  Movebroad -- KK
   * @version V1.0
-  * @date    2020-03-18
+  * @date    2020-04-01
   * @brief   
   *********************************************************************************************************
   * @attention
@@ -18,9 +18,9 @@
 #include "platform_config.h"
 #include "platform_map.h"
 #include "radio_core.h"
+#include "radio_hal_wrap.h"
 #include "radio_hal_rf.h"
 #include "si446x_api_lib.h"
-#include "si446x_cmd.h"
 #include "delay.h"
 #include "usart.h"
 
@@ -32,25 +32,27 @@
 #endif
 
 /**********************************************************************************************************
- @Function			void Radio_Core_PowerUp(void)
- @Description			Radio_Core_PowerUp					: Power up the Radio
+ @Function			void radio_core_PowerUp(void)
+ @Description			radio_core_PowerUp					: Power up the Radio
  @Input				void
  @Return				void
 **********************************************************************************************************/
-void Radio_Core_PowerUp(void)
+void radio_core_PowerUp(void)
 {
+	u16 wDelay = 0;
+	
 	si446x_reset();
 	
-	Delay_MS(20);
+	for (wDelay = 0; wDelay < 0x1000; wDelay++);
 }
 
 /**********************************************************************************************************
- @Function			u8 Radio_Core_Check(void)
- @Description			Radio_Core_Check					: Check if Packet sent IT flag or Packet Received IT is pending
+ @Function			u8 radio_core_Check(void)
+ @Description			radio_core_Check					: Check if Packet sent IT flag or Packet Received IT is pending
  @Input				void
  @Return				SI4455_CMD_GET_INT_STATUS_REP_PACKET_SENT_PEND_BIT / SI4455_CMD_GET_INT_STATUS_REP_PACKET_RX_PEND_BIT
 **********************************************************************************************************/
-u8 Radio_Core_Check(void)
+u8 radio_core_Check(void)
 {
 	/* Read ITs, clear pending ones */
 	si446x_get_int_status(0u, 0u, 0u);
@@ -91,13 +93,13 @@ u8 Radio_Core_Check(void)
 }
 
 /**********************************************************************************************************
- @Function			void Radio_Core_StartRX(u8 channel, u8 packetLenght)
- @Description			Radio_Core_StartRX					: Set Radio to RX mode
+ @Function			void radio_core_StartRX(u8 channel, u8 packetLenght)
+ @Description			radio_core_StartRX					: Set Radio to RX mode
  @Input				channel							: Freq. Channel
 					packetLength						: 0 Packet handler fields are used , nonzero: only Field1 is used
  @Return				void
 **********************************************************************************************************/
-void Radio_Core_StartRX(u8 channel, u8 packetLenght)
+void radio_core_StartRX(u8 channel, u8 packetLenght)
 {
 	/* Read ITs, clear pending ones */
 	si446x_get_int_status(0u, 0u, 0u);
@@ -109,18 +111,16 @@ void Radio_Core_StartRX(u8 channel, u8 packetLenght)
 	si446x_start_rx(channel, 0u, packetLenght, SI446X_CMD_START_RX_ARG_NEXT_STATE1_RXTIMEOUT_STATE_ENUM_NOCHANGE,
 									   SI446X_CMD_START_RX_ARG_NEXT_STATE2_RXVALID_STATE_ENUM_READY,
 									   SI446X_CMD_START_RX_ARG_NEXT_STATE3_RXINVALID_STATE_ENUM_RX);
-	
-	si4438Client.rf_corestate = RF_STATE_RX;
 }
 
 /**********************************************************************************************************
- @Function			void Radio_Core_StartRX(u8 channel, u8 packetLenght)
- @Description			Radio_Core_StartRX					: Set Radio to RX mode
+ @Function			void radio_core_StartRX_Tune(u8 channel, u8 packetLenght)
+ @Description			radio_core_StartRX_Tune				: Set Radio to RX mode
  @Input				channel							: Freq. Channel
 					packetLength						: 0 Packet handler fields are used , nonzero: only Field1 is used
  @Return				void
 **********************************************************************************************************/
-void Radio_Core_StartRX_Tune(u8 channel, u8 packetLenght)
+void radio_core_StartRX_Tune(u8 channel, u8 packetLenght)
 {
 	/* Read ITs, clear pending ones */
 	si446x_get_int_status(0u, 0u, 0u);
@@ -132,19 +132,17 @@ void Radio_Core_StartRX_Tune(u8 channel, u8 packetLenght)
 	si446x_start_rx(channel, 0u, packetLenght, SI446X_CMD_START_RX_ARG_NEXT_STATE1_RXTIMEOUT_STATE_ENUM_NOCHANGE,
 									   SI446X_CMD_START_RX_ARG_NEXT_STATE2_RXVALID_STATE_ENUM_READY,
 									   SI446X_CMD_START_RX_ARG_NEXT_STATE3_RXINVALID_STATE_ENUM_RX_TUNE);
-	
-	si4438Client.rf_corestate = RF_STATE_RX;
 }
 
 /**********************************************************************************************************
- @Function			u8 Radio_Core_StartTx_Variable_Packet(u8 channel, u8* pioRadioPacket, u8 length)
- @Description			Radio_Core_StartTx_Variable_Packet		: Set Radio to TX mode, variable packet length
+ @Function			u8 radio_core_StartTx_Variable_Packet(u8 channel, u8* pioRadioPacket, u8 length)
+ @Description			radio_core_StartTx_Variable_Packet		: Set Radio to TX mode, variable packet length
  @Input				channel							: Freq. Channel
 					pioRadioPacket						: Packet data
 					length							: Packet to be sent length of of the packet sent to TXFIFO
  @Return				void
 **********************************************************************************************************/
-u8 Radio_Core_StartTx_Variable_Packet(u8 channel, u8* pioRadioPacket, u8 length)
+u8 radio_core_StartTx_Variable_Packet(u8 channel, u8* pioRadioPacket, u8 length)
 {
 	u8 len_sent = 0;
 	
@@ -161,11 +159,6 @@ u8 Radio_Core_StartTx_Variable_Packet(u8 channel, u8* pioRadioPacket, u8 length)
 		/* Data to be sent is more than the size of TX FIFO */
 		si446x_write_tx_fifo(RADIO_TX_ALMOST_EMPTY_THRESHOLD, pioRadioPacket);
 		len_sent = RADIO_TX_ALMOST_EMPTY_THRESHOLD;
-#if RADIO_IS_TYPE == RADIO_IS_APP
-		si4438Client.rf_g_Poin_frame += RADIO_TX_ALMOST_EMPTY_THRESHOLD;
-		si4438Client.rf_g_Send_Num = RADIO_TX_ALMOST_EMPTY_THRESHOLD;
-		si4438Client.rf_g_Rest_Num = length + 1 - RADIO_TX_ALMOST_EMPTY_THRESHOLD;
-#endif
 	}
 	else {
 		si446x_write_tx_fifo(length + 1, pioRadioPacket);
@@ -178,94 +171,7 @@ u8 Radio_Core_StartTx_Variable_Packet(u8 channel, u8* pioRadioPacket, u8 length)
 	/* Start send data */
 	si446x_start_tx(channel, 0x80, 0x00);
 	
-	si4438Client.rf_corestate = RF_STATE_TX;
-	
 	return len_sent;
-}
-
-/**********************************************************************************************************
- @Function			void Radio_Core_StartTx(u8 channel, u8* pioRadioPacket, u8 length)
- @Description			Radio_Core_StartTx					: Set Radio to TX mode, Start send long package data
- @Input				channel							: Freq. Channel
-					pioRadioPacket						: Packet data
-					length							: Packet to be sent length of of the packet sent to TXFIFO
- @Return				void
-**********************************************************************************************************/
-void Radio_Core_StartTx(u8 channel, u8* pioRadioPacket, u8 length)
-{
-	/* Reset TX FIFO */
-	si446x_fifo_info(SI446X_CMD_FIFO_INFO_ARG_FIFO_TX_BIT);
-	
-	/* Read ITs, clear pending ones */
-	si446x_get_int_status(0u, 0u, 0u);
-	
-	if (length >= RADIO_TX_ALMOST_EMPTY_THRESHOLD) {
-		/* Data to be sent is more than the size of TX FIFO */
-		si446x_write_tx_fifo(RADIO_TX_ALMOST_EMPTY_THRESHOLD, pioRadioPacket);
-	}
-	else {
-		si446x_write_tx_fifo(length + 1, pioRadioPacket);
-	}
-	
-	/* Set send data length */
-	si446x_set_property(0x12, 0x02, 0x11, 0x00, length);
-	
-	/* Start send data */
-	si446x_start_tx(channel, 0x80, 0x00);
-	
-	si4438Client.rf_corestate = RF_STATE_TX;
-}
-
-/**********************************************************************************************************
- @Function			void Radio_Core_StartTx_Dummy(u8 channel)
- @Description			Radio_Core_StartTx_Dummy				: Set Radio to TX mode, Send Dummy
- @Input				channel							: Freq. Channel
- @Return				void
-**********************************************************************************************************/
-void Radio_Core_StartTx_Dummy(u8 channel)
-{
-	/* Leave RX state */
-	si446x_change_state(SI446X_CMD_CHANGE_STATE_ARG_NEXT_STATE1_NEW_STATE_ENUM_READY);
-	
-	/* Reset the Tx Fifo */
-	si446x_fifo_info(SI446X_CMD_FIFO_INFO_ARG_FIFO_TX_BIT);
-	
-	/* Read ITs, clear pending ones */
-	si446x_get_int_status(0u, 0u, 0u);
-	
-	si446x_write_tx_fifo(1, (u8*)"0");
-	
-	/* Set send data length */
-	si446x_set_property(0x12, 0x02, 0x11, 0x00, 1);
-	
-	/* Start send data */
-	si446x_start_tx(channel, 0x80, 0x00);
-	
-	si4438Client.rf_corestate = RF_STATE_TX;
-}
-
-/**********************************************************************************************************
- @Function			void Radio_Core_Sleep(void)
- @Description			Radio_Core_Sleep					: Set the radio to sleep mode
- @Input				void
- @Return				void
-**********************************************************************************************************/
-void Radio_Core_Sleep(void)
-{
-	si446x_change_state(SI446X_CMD_CHANGE_STATE_ARG_NEXT_STATE1_NEW_STATE_ENUM_SLEEP);
-	
-	si4438Client.rf_corestate = RF_STATE_SLEEP;
-}
-
-/**********************************************************************************************************
- @Function			s8 Radio_Core_Get_State(void)
- @Description			Radio_Core_Get_State				: Get the radio state
- @Input				void
- @Return				state
-**********************************************************************************************************/
-s8 Radio_Core_Get_State(void)
-{
-	return si4438Client.rf_corestate;
 }
 
 /********************************************** END OF FLEE **********************************************/
