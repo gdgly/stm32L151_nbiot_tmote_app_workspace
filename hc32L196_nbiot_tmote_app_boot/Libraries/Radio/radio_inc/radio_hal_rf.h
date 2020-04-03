@@ -22,6 +22,9 @@
 
 
 
+
+
+
 typedef enum _radio_trf_errcode
 {
 	rTRF_OK					= 0U,
@@ -31,17 +34,21 @@ typedef enum _radio_trf_errcode
 
 
 
-void Radio_Hal_RF_Init(void);																//Radio RF ³õÊ¼»¯
-
-void Radio_Hal_RF_Interface_Init(void);														//Radio RF ½Ó¿Ú³õÊ¼»¯
-
-void Radio_Hal_RF_Interrupt_Enable(void);													//Radio RF ÖĞ¶ÏÒı½ÅÊ¹ÄÜ
-
-void Radio_Hal_RF_Interrupt_Disable(void);													//Radio RF ÖĞ¶ÏÒı½ÅÊ§ÄÜ
 
 
+void Radio_Hal_RF_Init(void);																//Radio RF åˆå§‹åŒ–
 
+char Radio_Hal_RF_Get_Status(void);														//Radio RF è·å–çŠ¶æ€
 
+void Radio_Hal_RF_Interface_Init(void);														//Radio RF æ¥å£åˆå§‹åŒ–
+
+void Radio_Hal_RF_Interrupt_Enable(void);													//Radio RF ä¸­æ–­å¼•è„šä½¿èƒ½
+
+void Radio_Hal_RF_Interrupt_Disable(void);													//Radio RF ä¸­æ–­å¼•è„šå¤±èƒ½
+
+void Radio_Hal_RF_PrepareToTx(u8* pPacket, u8 len);											//Radio RF å‘é€æ•°æ®åŒ…
+
+void Radio_Hal_RF_ISR(void);																//Radio RF ä¸­æ–­å¤„ç†
 
 
 

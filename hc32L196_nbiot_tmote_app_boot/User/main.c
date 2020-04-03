@@ -82,13 +82,13 @@ int main(void)
 	
 	HC32_RTC_Init();																	//HC32实时时钟初始化
 	
-	BEEP_GPIO_InitControl(OFF);															//蜂鸣器关闭
+	HC32_BEEP_Init(OFF);																//蜂鸣器关闭
 	
 	HC32_LowPowerIO_Init();																//HC32低功耗IO初始化
 	HC32_RstPowerIO_Init();																//HC32复位电源初始化
 	HC32_CtrPowerIO_Init();																//HC32控制电源初始化
 	
-	BEEP_GPIO_InitControl(OFF);															//蜂鸣器关闭
+	HC32_BEEP_Init(OFF);																//蜂鸣器关闭
 	
 	
 	
@@ -122,13 +122,13 @@ int main(void)
 	
 	
 	
-	BEEP_Repeat_Control(1, 150, 20);														//di
+	HC32_BEEP_Repeat(1, 150, 20);															//di
 	Delay_MS(100);
-	BEEP_Repeat_Control(2, 70, 25);														//didi
+	HC32_BEEP_Repeat(2, 70, 25);															//didi
 	Delay_MS(150);
-	BEEP_Repeat_Control(1, 150, 20);														//di
+	HC32_BEEP_Repeat(1, 150, 20);															//di
 	Delay_MS(100);
-	BEEP_Repeat_Control(2, 70, 25);														//didi
+	HC32_BEEP_Repeat(2, 70, 25);															//didi
 	
 	
 	

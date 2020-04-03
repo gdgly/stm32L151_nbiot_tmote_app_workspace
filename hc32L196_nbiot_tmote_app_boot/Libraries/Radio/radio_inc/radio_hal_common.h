@@ -1,12 +1,7 @@
-#ifndef __RADIO_RFA_COMMON_H
-#define   __RADIO_RFA_COMMON_H
+#ifndef __RADIO_HAL_COMMON_H
+#define   __RADIO_HAL_COMMON_H
 
-#include "platform_config.h"
-#include "radio_compiler_defs.h"
-#include "radio_msg_config.h"
-
-
-
+#include "sys.h"
 
 #define SIZE_INFRAME_Q			2
 
@@ -16,6 +11,7 @@
 #define FI_INUSE_UNTIL_DEL		1
 
 #define TRF_MSG_VERSION			0x01
+
 #define TRF_MSG_REBOOT			24
 #define TRF_MSG_HEART			27
 #define TRF_MSG_DEFAULT			49
@@ -43,30 +39,6 @@
 
 
 
-typedef enum _radio_trf_status
-{
-	TRF_SUCCESS				= 0U,
-	TRF_NO_PAYLOAD				= 1U,
-	TRF_BAD_PROTOCAL			= 2U,
-	TRF_BAD_MSGTYPE			= 3U,
-	TRF_NOT_FORME				= 4U
-} radio_trf_status;
-
-
-
-
-typedef struct _mrfiPacket_t
-{
-	u8						frame[255];
-	u8						rxMetrics[MRFI_RX_METRICS_SIZE];
-} mrfiPacket_t;
-
-typedef struct _frameInfo_t
-{
-	__IO u8					fi_usage;
-	__IO u32					orderStamp;
-	mrfiPacket_t				mrfiPkt;
-} frameInfo_t;
 
 
 
@@ -74,6 +46,4 @@ typedef struct _frameInfo_t
 
 
 
-
-
-#endif /* __RADIO_RFA_COMMON_H */
+#endif /* __RADIO_HAL_COMMON_H */

@@ -105,6 +105,96 @@ void Uart1_IRQHandler(void)
 
 
 
+/**********************************************************************************************************
+ @Function			void PortB_IRQHandler(void)
+ @Description			PortB_IRQHandler							: HC32 PortA中断服务函数
+ @Input				void
+ @Return				void
+**********************************************************************************************************/
+void PortA_IRQHandler(void)
+{
+	
+}
+
+/**********************************************************************************************************
+ @Function			void PortB_IRQHandler(void)
+ @Description			PortB_IRQHandler							: HC32 PortB中断服务函数
+ @Input				void
+ @Return				void
+**********************************************************************************************************/
+void PortB_IRQHandler(void)
+{
+	/* Radio RF IRQn */
+	if (Gpio_GetIrqStatus(RADIO_SI4438_IRQ_GPIOx, RADIO_SI4438_IRQ_PIN)) {
+		Gpio_ClearIrq(RADIO_SI4438_IRQ_GPIOx, RADIO_SI4438_IRQ_PIN);
+		
+	}
+}
+
+/**********************************************************************************************************
+ @Function			void PortC_IRQHandler(void)
+ @Description			PortC_IRQHandler							: HC32 PortC中断服务函数
+ @Input				void
+ @Return				void
+**********************************************************************************************************/
+void PortC_IRQHandler(void)
+{
+	
+}
+
+/**********************************************************************************************************
+ @Function			void PortD_IRQHandler(void)
+ @Description			PortD_IRQHandler							: HC32 PortD中断服务函数
+ @Input				void
+ @Return				void
+**********************************************************************************************************/
+void PortD_IRQHandler(void)
+{
+	
+}
+
+/**********************************************************************************************************
+ @Function			void PortE_IRQHandler(void)
+ @Description			PortE_IRQHandler							: HC32 PortE中断服务函数
+ @Input				void
+ @Return				void
+**********************************************************************************************************/
+void PortE_IRQHandler(void)
+{
+	
+}
+
+/**********************************************************************************************************
+ @Function			void PortF_IRQHandler(void)
+ @Description			PortF_IRQHandler							: HC32 PortF中断服务函数
+ @Input				void
+ @Return				void
+**********************************************************************************************************/
+void PortF_IRQHandler(void)
+{
+	
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

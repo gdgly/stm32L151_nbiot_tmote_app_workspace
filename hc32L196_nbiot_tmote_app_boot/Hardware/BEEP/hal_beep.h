@@ -4,6 +4,9 @@
 #include "sys.h"
 #include "gpio.h"
 
+#define HC32_BEEP_Init			BEEP_GPIO_InitControl
+#define HC32_BEEP_Repeat			BEEP_Repeat_Control
+
 #define BEEP_GPIOx				GpioPortB
 #define BEEP_PIN				GpioPin8
 #define BEEP_AF				GpioAf0
