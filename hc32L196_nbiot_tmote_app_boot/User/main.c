@@ -37,6 +37,7 @@
 #include "hal_p25qxxh.h"
 #include "hal_norflash.h"
 #include "radio_hal_rf.h"
+#include "radio_hal_app.h"
 
 /****************************************** Select DEBUG *************************************************/
 //#define	DEVICE_DEBUG																	//定义开启设备调试
@@ -129,7 +130,6 @@ int main(void)
 	HC32_BEEP_Repeat(1, 150, 20);															//di
 	Delay_MS(100);
 	HC32_BEEP_Repeat(2, 70, 25);															//didi
-	
 	
 	
 	

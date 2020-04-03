@@ -35,6 +35,7 @@
 #include "hal_p25qxxh.h"
 #include "hal_norflash.h"
 #include "radio_hal_rf.h"
+#include "radio_hal_app.h"
 
 HC32_RESET_FLAG_TypeDef HC32_Reset_Flag = RCC_RESET_FLAG_NONE;
 
@@ -403,7 +404,6 @@ void HC32_LowPower_SleepAfter_Init(void)
 {
 	
 }
-
 
 
 

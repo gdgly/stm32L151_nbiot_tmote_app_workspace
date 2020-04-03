@@ -36,6 +36,7 @@
 #include "hal_p25qxxh.h"
 #include "hal_norflash.h"
 #include "radio_hal_rf.h"
+#include "radio_hal_app.h"
 
 /**********************************************************************************************************
  @Function			void Uart0_IRQHandler(void)
@@ -127,7 +128,7 @@ void PortB_IRQHandler(void)
 	/* Radio RF IRQn */
 	if (Gpio_GetIrqStatus(RADIO_SI4438_IRQ_GPIOx, RADIO_SI4438_IRQ_PIN)) {
 		Gpio_ClearIrq(RADIO_SI4438_IRQ_GPIOx, RADIO_SI4438_IRQ_PIN);
-		
+		Radio_Hal_RF_ISR();
 	}
 }
 
@@ -223,7 +224,6 @@ void Rtc_IRQHandler(void)
 		Rtc_ClearAlmfItStatus();
 	}
 }
-
 
 
 

@@ -17,9 +17,9 @@
 #include "hc32l19x_config.h"
 #include "platform_config.h"
 #include "platform_map.h"
+#include "radio_hal_app.h"
 #include "radio_hal_rf.h"
 #include "radio_hal_wrap.h"
-#include "radio_hal_common.h"
 #include "radio_core.h"
 #include "radio_comm.h"
 #include "si446x_api_lib.h"
@@ -48,7 +48,7 @@ typedef enum _radio_trf_sendtype
 typedef enum _radio_trf_check
 {
 	rTRF_Check_Fail			= 0U,
-	rTRF_Check_Success			= 1U
+	rTRF_Check_Success			= 1U,
 } radio_trf_check;
 
 static u8 radio_status = rTRF_ERROR;
@@ -289,6 +289,11 @@ static radio_trf_check xm_CheckSum(u8* recv_data)
 		return rTRF_Check_Fail;
 }
 
+static mrfiPacket_t mrfiIncomingPacket;
+static u8 Recv_len = 0;
+static u8 current_num = 0;
+static u8 g_LT_int = 0;
+
 /**********************************************************************************************************
  @Function			void Radio_Hal_RF_ISR(void)
  @Description			Radio_Hal_RF_ISR							: Radio RF 中断处理
@@ -298,52 +303,68 @@ static radio_trf_check xm_CheckSum(u8* recv_data)
 void Radio_Hal_RF_ISR(void)
 {
 	u8 s_numOfRecvBytes = 0;
+	u8 tmp;
 	
+	u8* g_Recvlong = mrfiIncomingPacket.frame;
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	tmp = radio_core_Check();
+	if (tmp == SI446X_CMD_GET_INT_STATUS_REP_PH_PEND_PACKET_SENT_PEND_BIT) {
+		Radio_Hal_RF_TxOverISR();
+	}
+	else if (tmp == SI446X_CMD_GET_INT_STATUS_REP_PH_PEND_TX_FIFO_ALMOST_EMPTY_PEND_BIT) {
+		Radio_Hal_RF_TxISR();
+	}
+	else if (tmp == SI446X_CMD_GET_INT_STATUS_REP_PH_PEND_PACKET_RX_PEND_BIT) {
+		
+		s_numOfRecvBytes = Recv_len + 1 - current_num;
+		
+		if (!g_LT_int) {
+			si446x_read_rx_fifo(1, &Recv_len);
+			si446x_read_rx_fifo(Recv_len, &g_Recvlong[1]);
+			g_Recvlong[0] = Recv_len;
+		}
+		else {
+			si446x_read_rx_fifo(s_numOfRecvBytes, &g_Recvlong[current_num]);
+			current_num += s_numOfRecvBytes;
+		}
+		
+		radio_Wait_enable = rTRF_WaitNo;
+		
+		current_num = 0;
+		g_LT_int = 0;
+		
+		si446x_set_property(0x12, 0x02, 0x11, 0x00, 255);
+		radio_core_StartRX(radio_channel, 0);
+		
+		if (xm_CheckSum(g_Recvlong)) {
+			/* TODO: handle the data received */
+			Radio_RF_Data_Handle_ISR(&mrfiIncomingPacket);
+		}
+		memset(g_Recvlong, 0x00, sizeof(mrfiIncomingPacket.frame));
+		
+		radio_Wait_enable = rTRF_WaitOver;
+	}
+	else if (tmp == SI446X_CMD_GET_INT_STATUS_REP_PH_STATUS_RX_FIFO_ALMOST_FULL_BIT) {
+		
+		if (!g_LT_int) {
+			si446x_read_rx_fifo(1, g_Recvlong);
+			Recv_len = g_Recvlong[0];
+			current_num = 0;
+		}
+		
+		s_numOfRecvBytes = Recv_len + 1 - current_num;
+		
+		if (s_numOfRecvBytes >= RADIO_RX_ALMOST_FULL_THRESHOLD) {
+			if (!g_LT_int)
+				si446x_read_rx_fifo(RADIO_RX_ALMOST_FULL_THRESHOLD - 1, &g_Recvlong[1]);
+			else
+				si446x_read_rx_fifo(RADIO_RX_ALMOST_FULL_THRESHOLD, &g_Recvlong[current_num]);
+			
+			current_num += RADIO_RX_ALMOST_FULL_THRESHOLD;
+			
+			if (!g_LT_int) g_LT_int++;
+		}
+	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /********************************************** END OF FLEE **********************************************/
