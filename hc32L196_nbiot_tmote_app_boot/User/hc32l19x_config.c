@@ -356,6 +356,49 @@ void HC32_CtrPowerIO_Init(void)
 	VBATE_POWER_IO_SET(OFF);																//外设VBate电源关闭
 }
 
+/**********************************************************************************************************
+ @Function			void HC32_AutomaticSystem_Check(void)
+ @Description			HC32_AutomaticSystem_Check					: HC32系统自检
+ @Input				void
+ @Return				void
+**********************************************************************************************************/
+void HC32_AutomaticSystem_Check(void)
+{
+	if (Radio_Hal_RF_Get_Status() != rTRF_OK) {
+		HC32_BEEP_Repeat(1, 3000, 100);
+		Radio_RF_Trf_Printf("Boot: SI4438 Error!!!");
+		Radio_RF_Trf_Printf("Boot: SI4438 Error!!!");
+		return;
+	}
+	
+	if (FLASH_EEPROM_Status() != Ok) {
+		HC32_BEEP_Repeat(1, 3000, 100);
+		Radio_RF_Trf_Printf("Boot: EEPROM Error!!!");
+		Radio_RF_Trf_Printf("Boot: EEPROM Error!!!");
+		return;
+	}
+	
+	if (FLASH_NOR_Status() != Ok) {
+		HC32_BEEP_Repeat(1, 3000, 100);
+		Radio_RF_Trf_Printf("Boot: NORFLH Error!!!");
+		Radio_RF_Trf_Printf("Boot: NORFLH Error!!!");
+		return;
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -404,19 +447,6 @@ void HC32_LowPower_SleepAfter_Init(void)
 {
 	
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

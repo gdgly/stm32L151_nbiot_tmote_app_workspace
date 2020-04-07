@@ -81,34 +81,49 @@ int main(void)
 	
 	HC32_SysTick_Init();																//HC32系统嘀嗒定时器初始化
 	
+#if RTC_TYPE
 	HC32_RTC_Init();																	//HC32实时时钟初始化
+#endif
 	
-	HC32_BEEP_Init(OFF);																//蜂鸣器关闭
+	HC32_BEEP_Init(OFF);																//HC32蜂鸣器关闭
 	
 	HC32_LowPowerIO_Init();																//HC32低功耗IO初始化
 	HC32_RstPowerIO_Init();																//HC32复位电源初始化
 	HC32_CtrPowerIO_Init();																//HC32控制电源初始化
 	
-	HC32_BEEP_Init(OFF);																//蜂鸣器关闭
+	HC32_BEEP_Init(OFF);																//HC32蜂鸣器关闭
+	
+#if USART0_TYPE
+	HC32_Uart0_Init(UART0_BAUD_RATE);														//HC32串口0初始化
+#endif
+#if USART1_TYPE
+	HC32_Uart1_Init(UART1_BAUD_RATE);														//HC32串口1初始化
+#endif
+	
+	HC32_MODEL_POWER_SET(ON);															//HC32外设模块电源开启
+	
+	Delay_MS(100);																		//HC32供电稳定
+	
+	HC32_IWDG_Feed();																	//HC32喂狗
+	
+	FLASH_EEPROM_Init();																//EEPROM初始化
+	
+	FLASH_NOR_Init();																	//NOR初始化
+	
+	QMC5883L_Init();																	//QMC5883L初始化
+	
+	Radio_Hal_RF_Init();																//SI44382A初始化
+	
+	HC32_IWDG_Feed();																	//HC32喂狗
+	
+	HC32_AutomaticSystem_Check();															//HC32系统自检
+	
+	Radio_Hal_RF_Init();																//SI44382A初始化
 	
 	
 	
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	HC32_Uart0_Init(UART0_BAUD_RATE);														//UART0初始化
-	HC32_Uart1_Init(UART1_BAUD_RATE);														//UART1初始化
 	
 	
 	

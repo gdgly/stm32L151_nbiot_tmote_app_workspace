@@ -26,11 +26,11 @@
 
 #define	SYSTEM_LOWPOWER_DISABLE			0
 #define	SYSTEM_LOWPOWER_ENABLE			1
-#define	SYSTEM_LOWPOWER_TYPE			SYSTEM_LOWPOWER_ENABLE								//低功耗模式
+#define	SYSTEM_LOWPOWER_TYPE			SYSTEM_LOWPOWER_DISABLE								//低功耗模式
 
 #define	SYSTEM_RESETFLAG_DISABLE			0
 #define	SYSTEM_RESETFLAG_ENABLE			1
-#define	SYSTEM_RESETFLAG_TYPE			SYSTEM_RESETFLAG_ENABLE								//系统复位获取
+#define	SYSTEM_RESETFLAG_TYPE			SYSTEM_RESETFLAG_DISABLE								//系统复位获取
 
 #define	SYSTEM_PERIPHERAL_GATE_TICK		TRUE												//SysTick
 #define	SYSTEM_PERIPHERAL_GATE_GPIO		TRUE												//GPIO
@@ -93,17 +93,17 @@
 
 
 
+#define	USART0_DISABLE					0
+#define	USART0_ENABLE					1
+#define	USART0_TYPE					USART0_ENABLE										//串口0状态
+
 #define	USART1_DISABLE					0
 #define	USART1_ENABLE					1
 #define	USART1_TYPE					USART1_ENABLE										//串口1状态
 
-#define	USART2_DISABLE					0
-#define	USART2_ENABLE					1
-#define	USART2_TYPE					USART2_ENABLE										//串口2状态
-
-
-
-
+#define	RTC_DISABLE					0
+#define	RTC_ENABLE					1
+#define	RTC_TYPE						RTC_DISABLE										//RTC状态
 
 
 

@@ -30,20 +30,21 @@
 
 #define RADIO_RF_PAYLOAD_MAC_SN			0x81011001
 
-#define RADIO_RF_HEARTBT_MAJOR_SOFTVER		2
-#define RADIO_RF_HEARTBT_SUB_SOFTVER		2
-#define RADIO_RF_HEARTBT_SUB_HARDVER		2
-#define RADIO_RF_HEARTBT_DEV_TYPE			51
+#define RADIO_RF_HEARTBT_MAJOR_SOFTVER		MVB_BOOT_SOFTWARE_MAJOR
+#define RADIO_RF_HEARTBT_SUB_SOFTVER		MVB_BOOT_SOFTWARE_SUB
+#define RADIO_RF_HEARTBT_SUB_HARDVER		MVB_BOOT_HARDWARE
+#define RADIO_RF_HEARTBT_DEV_TYPE			MVB_MODEL_TYPE
 #define RADIO_RF_HEARTBT_WORK_STATUS		0
 
 #define RADIO_RF_SENDBUF_SIZE				256
 #define RADIO_RF_RECVBUF_SIZE				256
+#define RADIO_RF_PINTBUF_SIZE				256
 
 static frameInfo_t sInFrameQ[SIZE_INFRAME_Q];
 
 u8 trf_send_buf[RADIO_RF_SENDBUF_SIZE] = {0};
 u8 trf_recv_buf[RADIO_RF_RECVBUF_SIZE] = {0};
-
+u8 trf_pint_buf[RADIO_RF_PINTBUF_SIZE] = {0};
 
 
 
@@ -334,31 +335,24 @@ void Radio_RF_Xmit_Printfbuf(char* info)
 	Radio_RF_Transmit(trf_send_buf, trf_send_buf[0]);
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+/**********************************************************************************************************
+ @Function			void Radio_RF_Trf_Printf(const char *fmt, ...)
+ @Description			Radio_RF_Trf_Printf
+ @Input				fmt
+					...
+ @Return				void
+**********************************************************************************************************/
+void Radio_RF_Trf_Printf(const char *fmt, ...)
+{
+	__va_list args;
+	
+	memset(trf_pint_buf, 0x00, sizeof(trf_pint_buf));
+	
+	va_start (args, fmt);
+	vsprintf ((char*)trf_pint_buf, fmt, args);
+	va_end (args);
+	
+	Radio_RF_Xmit_Printfbuf((char*)trf_pint_buf);
+}
 
 /********************************************** END OF FLEE **********************************************/

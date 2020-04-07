@@ -46,6 +46,8 @@
 **********************************************************************************************************/
 void Uart0_IRQHandler(void)
 {
+#if USART0_TYPE
+	
 	/* 发送数据完成标记 */
 #if UART0_TXD_IRQ
 	if (Uart_GetStatus(M0P_UART0, UartTC)) {
@@ -59,6 +61,8 @@ void Uart0_IRQHandler(void)
 		Uart_ClrStatus(M0P_UART0, UartRC);
 	}
 #endif
+	
+#endif
 }
 
 /**********************************************************************************************************
@@ -69,6 +73,8 @@ void Uart0_IRQHandler(void)
 **********************************************************************************************************/
 void Uart1_IRQHandler(void)
 {
+#if USART1_TYPE
+	
 	/* 发送数据完成标记 */
 #if UART1_TXD_IRQ
 	if (Uart_GetStatus(M0P_UART1, UartTC)) {
@@ -81,6 +87,8 @@ void Uart1_IRQHandler(void)
 	if (Uart_GetStatus(M0P_UART1, UartRC)) {
 		Uart_ClrStatus(M0P_UART1, UartRC);
 	}
+#endif
+	
 #endif
 }
 
@@ -214,6 +222,8 @@ void PortF_IRQHandler(void)
 **********************************************************************************************************/
 void Rtc_IRQHandler(void)
 {
+#if RTC_TYPE
+	
 	/* RTC周期中断产生标记 */
 	if (Rtc_GetPridItStatus()) {
 		Rtc_ClearPrdfItStatus();
@@ -223,6 +233,8 @@ void Rtc_IRQHandler(void)
 	if (Rtc_GetAlmfItStatus()) {
 		Rtc_ClearAlmfItStatus();
 	}
+	
+#endif
 }
 
 

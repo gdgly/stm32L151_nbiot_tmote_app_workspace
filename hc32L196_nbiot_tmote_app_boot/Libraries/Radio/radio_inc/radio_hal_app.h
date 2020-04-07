@@ -58,7 +58,7 @@ void Radio_RF_Xmit_Heartbeat(void);
 
 void Radio_RF_Xmit_Printfbuf(char* info);
 
-
+void Radio_RF_Trf_Printf(const char *fmt, ...);
 
 
 
