@@ -38,6 +38,9 @@
 #include "hal_norflash.h"
 #include "radio_hal_rf.h"
 #include "radio_hal_app.h"
+#include "iap_boot.h"
+#include "iap_core.h"
+#include "iap_ugrade.h"
 
 /****************************************** Select DEBUG *************************************************/
 //#define	DEVICE_DEBUG																	//定义开启设备调试
@@ -120,6 +123,12 @@ int main(void)
 	
 	Radio_Hal_RF_Init();																//SI44382A初始化
 	
+	app_offset = APP_LOWEST_ADDRESS;
+	
+#ifdef MVB_SUBSN
+	TCFG_EEPROM_Set_MAC_SN(MVB_SUBSN);														//写入SN
+	TCFG_EEPROM_Set_Vender(MVB_BRAND);														//写入VENDER
+#endif
 	
 	
 	
@@ -131,20 +140,13 @@ int main(void)
 	
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	HC32_BEEP_Repeat(1, 150, 20);															//di
+	HC32_BEEP_Repeat(1, 150, 30);															//di
 	Delay_MS(100);
-	HC32_BEEP_Repeat(2, 70, 25);															//didi
-	Delay_MS(150);
-	HC32_BEEP_Repeat(1, 150, 20);															//di
+	HC32_BEEP_Repeat(2, 70, 45);															//didi
 	Delay_MS(100);
-	HC32_BEEP_Repeat(2, 70, 25);															//didi
+	HC32_BEEP_Repeat(1, 150, 30);															//di
+	Delay_MS(100);
+	HC32_BEEP_Repeat(2, 70, 45);															//didi
 	
 	
 	
@@ -172,7 +174,7 @@ int main(void)
 		
 		
 		
-		printf("Reset: %d Runing: %d\r\n", HC32_Reset_Flag, HC32_GetMecondTick());
+		printf("Reset: %d Runing: %d SN: 0x%X\r\n", HC32_Reset_Flag, HC32_GetMecondTick(), TCFG_EEPROM_Get_MAC_SN());
 		
 		
 		

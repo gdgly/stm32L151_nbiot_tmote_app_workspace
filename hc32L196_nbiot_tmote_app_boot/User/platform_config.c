@@ -36,7 +36,9 @@
 #include "hal_norflash.h"
 #include "radio_hal_rf.h"
 #include "radio_hal_app.h"
-
+#include "iap_boot.h"
+#include "iap_core.h"
+#include "iap_ugrade.h"
 
 
 

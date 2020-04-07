@@ -36,6 +36,9 @@
 #include "hal_norflash.h"
 #include "radio_hal_rf.h"
 #include "radio_hal_app.h"
+#include "iap_boot.h"
+#include "iap_core.h"
+#include "iap_ugrade.h"
 
 HC32_RESET_FLAG_TypeDef HC32_Reset_Flag = RCC_RESET_FLAG_NONE;
 

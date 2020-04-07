@@ -3,7 +3,7 @@
   * @file    iap_boot.c
   * @author  Movebroad -- KK
   * @version V1.0
-  * @date    2020-03-21
+  * @date    2020-03-07
   * @brief   1TAB = 5Speace
   *********************************************************************************************************
   * @attention
@@ -17,10 +17,24 @@
 #include "platform_config.h"
 #include "platform_map.h"
 #include "iap_boot.h"
-#include "radio_hal_rf.h"
-#include "radio_rfa_boot.h"
 #include "delay.h"
 #include "usart.h"
+#include "radio_hal_rf.h"
+#include "radio_hal_app.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -21,8 +21,8 @@
 #define BEEP_PASSIVE			1
 #define BEEP_MODEL_TYPE			BEEP_PASSIVE												//蜂鸣器类型
 
-#define BEEP_PASSIVE_ON			240														//无源蜂鸣器开时间
-#define BEEP_PASSIVE_OFF			240														//无源蜂鸣器关时间
+#define BEEP_PASSIVE_ON			238														//无源蜂鸣器开时间
+#define BEEP_PASSIVE_OFF			238														//无源蜂鸣器关时间
 
 void BEEP_GPIO_InitControl(bool ctrl);														//蜂鸣器GPIO初始化控制
 
