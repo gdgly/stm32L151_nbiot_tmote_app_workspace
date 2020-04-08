@@ -65,9 +65,13 @@ u8 FLASH_EEPROM_Status(void)
 **********************************************************************************************************/
 u8 FLASH_EEPROM_ReadByte(u32 addr)
 {
+	u8 val = 0;
+	
 	if (FLASH_EEPROM_Status()) return 0;
 	
-	return BL24CXX_ReadOneByte(addr);
+	val = BL24CXX_ReadOneByte(addr);
+	
+	return (val == 0xFF) ? 0x00 : val;
 }
 
 /**********************************************************************************************************
@@ -109,7 +113,7 @@ u16 FLASH_EEPROM_ReadHalfWord(u32 addr)
 	*((unsigned char*)(&val) + 0) = BL24CXX_ReadOneByte(addr + 0);
 	*((unsigned char*)(&val) + 1) = BL24CXX_ReadOneByte(addr + 1);
 	
-	return val;
+	return (val == 0xFFFF) ? 0x0000 : val;
 }
 
 /**********************************************************************************************************
@@ -154,7 +158,7 @@ u32 FLASH_EEPROM_ReadWord(u32 addr)
 	*((unsigned char*)(&val) + 2) = BL24CXX_ReadOneByte(addr + 2);
 	*((unsigned char*)(&val) + 3) = BL24CXX_ReadOneByte(addr + 3);
 	
-	return val;
+	return (val == 0xFFFFFFFF) ? 0x00000000 : val;
 }
 
 /**********************************************************************************************************

@@ -102,6 +102,7 @@ u32  TCFG_EEPROM_Get_MAC_SN(void)
 **********************************************************************************************************/
 void TCFG_EEPROM_Set_Vender(char* vender)
 {
+	vender[TCFG_FACTORY_VENDER_LENGTH - 1] = '\0';
 	FLASH_EEPROM_WriteBuffer(TCFG_FACTORY_VENDER_OFFSET, (u8*)vender, TCFG_FACTORY_VENDER_LENGTH);
 }
 
@@ -114,7 +115,112 @@ void TCFG_EEPROM_Set_Vender(char* vender)
 void TCFG_EEPROM_Get_Vender(char* vender)
 {
 	FLASH_EEPROM_ReadBuffer(TCFG_FACTORY_VENDER_OFFSET, (u8*)vender, TCFG_FACTORY_VENDER_LENGTH);
+	vender[TCFG_FACTORY_VENDER_LENGTH - 1] = '\0';
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/**********************************************************************************************************
+ @Function			void TCFG_EEPROM_Set_BootVersion(u8 bootVer)
+ @Description			TCFG_EEPROM_Set_BootVersion					: 保存BootVersion
+ @Input				bootVer
+ @Return				void
+**********************************************************************************************************/
+void TCFG_EEPROM_Set_BootVersion(u8 bootVer)
+{
+	FLASH_EEPROM_WriteByte(TCFG_BOOT_VERSION_OFFSET, bootVer);
+}
+
+/**********************************************************************************************************
+ @Function			u8   TCFG_EEPROM_Get_BootVersion(void)
+ @Description			TCFG_EEPROM_Get_BootVersion					: 读取BootVersion
+ @Input				void
+ @Return				bootVer
+**********************************************************************************************************/
+u8   TCFG_EEPROM_Get_BootVersion(void)
+{
+	return FLASH_EEPROM_ReadByte(TCFG_BOOT_VERSION_OFFSET);
+}
+
+/**********************************************************************************************************
+ @Function			void TCFG_EEPROM_Set_BootMode(u8 bootMode)
+ @Description			TCFG_EEPROM_Set_BootMode						: 保存BootMode
+ @Input				bootMode
+ @Return				void
+**********************************************************************************************************/
+void TCFG_EEPROM_Set_BootMode(u8 bootMode)
+{
+	FLASH_EEPROM_WriteByte(TCFG_BOOT_RUNMODE_OFFSET, bootMode);
+}
+
+/**********************************************************************************************************
+ @Function			u8   TCFG_EEPROM_Get_BootMode(void)
+ @Description			TCFG_EEPROM_Get_BootMode						: 读取BootMode
+ @Input				void
+ @Return				bootMode
+**********************************************************************************************************/
+u8   TCFG_EEPROM_Get_BootMode(void)
+{
+	return FLASH_EEPROM_ReadByte(TCFG_BOOT_RUNMODE_OFFSET);
+}
+
+/**********************************************************************************************************
+ @Function			void TCFG_EEPROM_Set_BootCount(u8 bootCount)
+ @Description			TCFG_EEPROM_Set_BootCount					: 保存BootCount
+ @Input				bootCount
+ @Return				void
+**********************************************************************************************************/
+void TCFG_EEPROM_Set_BootCount(u8 bootCount)
+{
+	FLASH_EEPROM_WriteByte(TCFG_BOOT_RECOUNT_OFFSET, bootCount);
+}
+
+/**********************************************************************************************************
+ @Function			u8   TCFG_EEPROM_Get_BootCount(void)
+ @Description			TCFG_EEPROM_Get_BootCount					: 读取BootCount
+ @Input				void
+ @Return				bootCount
+**********************************************************************************************************/
+u8   TCFG_EEPROM_Get_BootCount(void)
+{
+	return FLASH_EEPROM_ReadByte(TCFG_BOOT_RECOUNT_OFFSET);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

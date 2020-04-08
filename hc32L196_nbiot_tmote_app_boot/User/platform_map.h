@@ -44,7 +44,7 @@
 #define TCFG_BOOT_RUNMODE_OFFSET					TCFG_BOOT_VERSION_OFFSET + TCFG_BOOT_VERSION_LENGTH						// 0x00000001
 #define TCFG_BOOT_RUNMODE_LENGTH					1																// BootRunMode			BOOT运行模式
 #define TCFG_BOOT_RECOUNT_OFFSET					TCFG_BOOT_RUNMODE_OFFSET + TCFG_BOOT_RUNMODE_LENGTH						// 0x00000002
-#define TCFG_BOOT_RECOUNT_LENGTH					2																// BootCount			BOOT重启次数
+#define TCFG_BOOT_RECOUNT_LENGTH					1																// BootCount			BOOT重启次数
 
 
 
@@ -83,10 +83,14 @@ void TCFG_EEPROM_Get_Vender(char* vender);																			// 读取Vender
 
 
 
+void TCFG_EEPROM_Set_BootVersion(u8 bootVer);																		//保存BootVersion
+u8   TCFG_EEPROM_Get_BootVersion(void);																				//读取BootVersion
 
+void TCFG_EEPROM_Set_BootMode(u8 bootMode);																			//保存BootMode
+u8   TCFG_EEPROM_Get_BootMode(void);																				//读取BootMode
 
-
-
+void TCFG_EEPROM_Set_BootCount(u8 bootCount);																		//保存BootCount
+u8   TCFG_EEPROM_Get_BootCount(void);																				//读取BootCount
 
 
 

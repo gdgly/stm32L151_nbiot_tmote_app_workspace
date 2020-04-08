@@ -58,6 +58,8 @@ void DeBugMain(void);
 **********************************************************************************************************/
 int main(void)
 {
+	int res = 0, index = 0, loop = 0;
+	
 	HC32_PeripheralAll_Reset();															//HC32外设模块复位
 	
 	HC32_PeripheralClockGate_Init();														//HC32外设时钟门控初始化
@@ -130,15 +132,19 @@ int main(void)
 	TCFG_EEPROM_Set_Vender(MVB_BRAND);														//写入VENDER
 #endif
 	
+	TCFG_EEPROM_Set_BootVersion(MVB_BOOT_SOFTWARE_SUB);
 	
+	res = TCFG_EEPROM_Get_BootMode();
+	if (res == TCFG_ENV_BOOTMODE_TOUPDATE)
+		iap_bootmode = TCFG_ENV_BOOTMODE_TOUPDATE;
+	else if (res == TCFG_ENV_BOOTMODE_UPDATING)
+		iap_bootmode = TCFG_ENV_BOOTMODE_UPDATING;
+	else if (res == TCFG_ENV_BOOTMODE_REUPDATE)
+		iap_bootmode = TCFG_ENV_BOOTMODE_REUPDATE;
+	else
+		iap_bootmode = TCFG_ENV_BOOTMODE_NORMALLY;
 	
-	
-	
-	
-	
-	
-	
-	
+	res = TCFG_EEPROM_Get_BootCount();
 	
 	HC32_BEEP_Repeat(1, 150, 30);															//di
 	Delay_MS(100);
@@ -148,25 +154,82 @@ int main(void)
 	Delay_MS(100);
 	HC32_BEEP_Repeat(2, 70, 45);															//didi
 	
+	Radio_RF_Trf_Printf("Boot-%d-mode-%d-count-%d-nor-%d-", MVB_BOOT_SOFTWARE_SUB, iap_bootmode, res, FLASH_NOR_Status() ? 0 : 1);
 	
+	if (res > 7) {
+		if (res % 2 == 0)
+			iap_bootmode = TCFG_ENV_BOOTMODE_UPDATING;
+		else
+			iap_bootmode = TCFG_ENV_BOOTMODE_REUPDATE;
+		
+		if (res >= 100) res = 7;
+	}
 	
+	TCFG_EEPROM_Set_BootCount(res + 1);
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	HC32_IWDG_Feed();																	//HC32喂狗
 	
 #ifdef	DEVICE_DEBUG
 	DeBugMain();
 #endif
 	
+	if (iap_bootmode == TCFG_ENV_BOOTMODE_NORMALLY)
+		goto start;
+	
+	if (iap_bootmode == TCFG_ENV_BOOTMODE_REUPDATE)
+		goto start;
+	
+	if (rTRF_OK != Radio_Hal_RF_Get_Status()) {
+		iap_bootmode = TCFG_ENV_BOOTMODE_NORMALLY;
+		goto start;
+	}
+	
+	HC32_IWDG_Feed();																	//HC32喂狗
+	
+	Radio_Hal_RF_Init();																//SI44382A初始化
+	
+	iap_upgrad_state = NO_APPDOWNLOAD;
+	
+	iap_subsn = TCFG_EEPROM_Get_MAC_SN();
+	
+	memcpy(subsn, &iap_subsn, 4);
+	
+	while (iap_joined_state != JOIN_COMPELET)
+	{
+		for (loop = 200; loop != 0; loop--) {
+			for (index = 1000; index != 0; index--);
+		}
+		
+		index = 0;
+		
+		HC32_IWDG_Feed();
+		
+		Radio_RF_Xmit_Heartbeat();
+		
+		Delay_MS(100 * (HC32_GetMecondTick() % 3));
+		
+		xm_Ugrade_join();
+		
+		while (index < 900) {
+			Delay_MS(1);
+			Radio_RF_Trf_Receive_Task();
+			index++;
+		}
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	}
+	
+start:
 	while (true) {
 		
 		
@@ -174,14 +237,17 @@ int main(void)
 		
 		
 		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		printf("Reset: %d Runing: %d SN: 0x%X\r\n", HC32_Reset_Flag, HC32_GetMecondTick(), TCFG_EEPROM_Get_MAC_SN());
-		
-		
-		
-		
-		
-		
-		
 		
 		HC32_IWDG_Feed();
 		

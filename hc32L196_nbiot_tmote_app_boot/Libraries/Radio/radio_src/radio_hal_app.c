@@ -24,17 +24,20 @@
 #include "radio_core.h"
 #include "radio_comm.h"
 #include "si446x_api_lib.h"
+#include "iap_boot.h"
+#include "iap_core.h"
+#include "iap_ugrade.h"
 #include "delay.h"
 #include "usart.h"
 #include <stdarg.h>
 
-#define RADIO_RF_PAYLOAD_MAC_SN			0x81011001
+#define RADIO_RF_PAYLOAD_MAC_SN			TCFG_EEPROM_Get_MAC_SN()
 
 #define RADIO_RF_HEARTBT_MAJOR_SOFTVER		MVB_BOOT_SOFTWARE_MAJOR
 #define RADIO_RF_HEARTBT_SUB_SOFTVER		MVB_BOOT_SOFTWARE_SUB
 #define RADIO_RF_HEARTBT_SUB_HARDVER		MVB_BOOT_HARDWARE
 #define RADIO_RF_HEARTBT_DEV_TYPE			MVB_MODEL_TYPE
-#define RADIO_RF_HEARTBT_WORK_STATUS		0
+#define RADIO_RF_HEARTBT_WORK_STATUS		iap_upgrad_state
 
 #define RADIO_RF_SENDBUF_SIZE				256
 #define RADIO_RF_RECVBUF_SIZE				256
@@ -46,7 +49,7 @@ u8 trf_send_buf[RADIO_RF_SENDBUF_SIZE] = {0};
 u8 trf_recv_buf[RADIO_RF_RECVBUF_SIZE] = {0};
 u8 trf_pint_buf[RADIO_RF_PINTBUF_SIZE] = {0};
 
-
+u32 last_recvtime = 0;
 
 
 
@@ -220,59 +223,66 @@ char Radio_RF_Operate_Recvmsg(u8 *inmsg, u8 len)
 {
 	char rc = TRF_SUCCESS;
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	if (CFG_GET_FROM_FRAME(CFG_P_FRAME_PRE(inmsg), CFG_PRE_TYPE_OS) == UPGRADE_PRT)
+	{
+		if ((UPGD_GET_FROM_FRAME(UPGD_P_FRAME_PRE(inmsg), UPGD_PRE_VS_OS) == UPGRADEVERSION) && (!memcmp(UPGD_P_FRAME_SN(inmsg), subsn, 4)))
+		{
+			/* This code RF Upgrade */
+			if (UPGD_GET_FROM_FRAME(UPGD_P_FRAME_HEAD(inmsg), UPGD_HEAD_TYPE_OS) == (UPGRADE_REQUEST_RSP))
+			{
+				iap_joined_state = *(UPGD_P_FRAME_PAYLOAD(inmsg));
+			}
+			else {
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+			}
+		}
+	}
+	else {
+		rc = TRF_BAD_PROTOCAL;
+	}
 	
 	return rc;
 }
 
+/**********************************************************************************************************
+ @Function			u32 Radio_RF_Trf_Last_Recvtime(void)
+ @Description			Radio_RF_Trf_Last_Recvtime
+ @Input				void
+ @Return				last_recvtime
+**********************************************************************************************************/
+u32 Radio_RF_Trf_Last_Recvtime(void)
+{
+	return last_recvtime;
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+/**********************************************************************************************************
+ @Function			void Radio_RF_Trf_Receive_Task(void)
+ @Description			Radio_RF_Trf_Receive_Task
+ @Input				void
+ @Return				void
+**********************************************************************************************************/
+void Radio_RF_Trf_Receive_Task(void)
+{
+	u8 len = 0;
+	
+	if (rTRF_OK != Radio_Hal_RF_Get_Status()) return;
+	
+	if (TRF_SUCCESS == Radio_RF_Receive(trf_recv_buf, &len)) {
+		if (TRF_SUCCESS == Radio_RF_Operate_Recvmsg(trf_recv_buf, len)) {
+			last_recvtime = HC32_GetSecondTick();
+		}
+	}
+}
 
 /**********************************************************************************************************
  @Function			void Radio_RF_Xmit_Heartbeat(void)
