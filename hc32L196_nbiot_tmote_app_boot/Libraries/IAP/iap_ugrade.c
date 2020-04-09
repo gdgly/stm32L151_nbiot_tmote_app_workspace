@@ -19,15 +19,27 @@
 #include "iap_ugrade.h"
 #include "delay.h"
 #include "usart.h"
+#include "hal_flash.h"
 #include "radio_hal_rf.h"
 #include "radio_hal_app.h"
+#include "iap_boot.h"
+#include "iap_core.h"
+
+#define PACK_SIZE				128
 
 u32 app_offset = 0;
+u32 firm_offset = 0;
 
 u32 iap_subsn = 0;
 u8  iap_bootmode = 0;
 u8  iap_upgrad_state = 0;
+u8  iap_progrm_state = 0;
 u8  iap_joined_state = JOINING;
+
+u8  overflow = 0;
+
+int packnum_received = 0;
+int firmlen_received = 0;
 
 u8  subsn[4];
 
@@ -83,13 +95,76 @@ void xm_Ugrade_join(void)
 	Radio_RF_Transmit(buf, buf[0]);
 }
 
-
-
-
-
-
-
-
+/**********************************************************************************************************
+ @Function			u8 xm_Ugrade_programUpdate(u8 *recvlong, u8 *sn)
+ @Description			xm_Ugrade_programUpdate
+ @Input				recvlong
+					sn
+ @Return				progrm_state
+**********************************************************************************************************/
+u8 xm_Ugrade_programUpdate(u8 *recvlong, u8 *sn)
+{
+	u8 packetno, rc = 0, *p = NULL, type;
+	
+	u8 buf_send[UPGD_FRAME_PAYLOAD_OFS + UPGD_FRAME_CRC_SIZE + UPGRADE_TYPE_SIZE];
+	
+	int rt;
+	
+	unsigned char* pData;
+	
+	type = (UPGD_GET_FROM_FRAME(UPGD_P_FRAME_HEAD(recvlong), UPGD_HEAD_TYPE_OS));
+	
+	packetno = (UPGD_GET_FROM_FRAME(UPGD_P_FRAME_HEAD(recvlong), UPGD_PKTNUM_OS));
+	
+	if (type == UPGRADE_VALIDDATA)
+	{
+		if ((packetno == 1) && (!overflow))
+		{
+			TCFG_EEPROM_Set_BootMode(TCFG_ENV_BOOTMODE_UPDATING);
+			pData = (unsigned char*)UPGD_P_FRAME_PAYLOAD(recvlong);
+			app_offset &= 0xFFFF00FF;
+			firm_offset = (pData[5]);
+			app_offset |= (firm_offset << 8);
+			if (app_offset >= APP_LOWEST_ADDRESS) {
+				xm_iap_program(APP_LOWEST_ADDRESS - HC32_FLASH_SECTOR_BLOCK, 0, 4, (unsigned char*)(&app_offset));
+			}
+		}
+		
+		if (app_offset < APP_LOWEST_ADDRESS) return TRANSERROR;
+		
+		if ((packnum_received % 256) != packetno)
+		{
+			rt = xm_iap_program(app_offset, packnum_received*PACK_SIZE, PACK_SIZE, (unsigned char*)UPGD_P_FRAME_PAYLOAD(recvlong));
+			
+			if (rt == IAP_OK)
+			{
+				packnum_received += 1;
+				firmlen_received += PACK_SIZE;
+				rc =  UNCOMPLETE;
+			}
+			else {
+				rc =  TRANSERROR;
+			}
+			
+			if (packetno == 255) {
+				overflow++;
+			}
+			
+			if ((packnum_received % 256) != packetno) {
+				rc =  TRANSERROR;
+			}
+		}
+	}
+	else if (type == UPGRADE_END) {
+		rc = COMPLETE;
+	}
+	
+	xm_Ugrade_buildframe(p, UPGRADE_VALIDDATA_RSP, packetno, sn, buf_send, 0);
+	
+	Radio_RF_Transmit(buf_send, buf_send[0]);
+	
+	return rc;
+}
 
 
 

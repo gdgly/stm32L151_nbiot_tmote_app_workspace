@@ -4,7 +4,7 @@
 #include "sys.h"
 
 
-
+#define OVERTIME				900
 
 
 
@@ -112,15 +112,15 @@ typedef enum _upgrad_status
 
 
 extern u32 app_offset;
+extern u32 firm_offset;
 
 extern u32 iap_subsn;
 extern u8  iap_bootmode;
 extern u8  iap_upgrad_state;
+extern u8  iap_progrm_state;
 extern u8  iap_joined_state;
 
 extern u8  subsn[4];
-
-
 
 
 
@@ -140,7 +140,7 @@ void xm_Ugrade_buildframe(u8 *msg, u8 type, u8 pktnum, u8 *sn, u8 *send, u8 len)
 
 void xm_Ugrade_join(void);
 
-
+u8   xm_Ugrade_programUpdate(u8 *recvlong, u8 *sn);
 
 
 

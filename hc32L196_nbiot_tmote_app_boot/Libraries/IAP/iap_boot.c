@@ -19,6 +19,7 @@
 #include "iap_boot.h"
 #include "delay.h"
 #include "usart.h"
+#include "hal_flash.h"
 #include "radio_hal_rf.h"
 #include "radio_hal_app.h"
 

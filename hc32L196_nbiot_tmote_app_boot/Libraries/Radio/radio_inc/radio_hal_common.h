@@ -64,26 +64,4 @@ typedef struct _frameInfo_t
 	mrfiPacket_t				mrfiPkt;
 } frameInfo_t;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #endif /* __RADIO_HAL_COMMON_H */

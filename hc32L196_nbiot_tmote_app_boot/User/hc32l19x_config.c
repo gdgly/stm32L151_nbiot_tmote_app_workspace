@@ -374,6 +374,13 @@ void HC32_AutomaticSystem_Check(void)
 		return;
 	}
 	
+	if (HC32_FLASH_Status() != Ok) {
+		HC32_BEEP_Repeat(1, 3000, 100);
+		Radio_RF_Trf_Printf("Boot: CFLASH Error!!!");
+		Radio_RF_Trf_Printf("Boot: CFLASH Error!!!");
+		return;
+	}
+	
 	if (FLASH_EEPROM_Status() != Ok) {
 		HC32_BEEP_Repeat(1, 3000, 100);
 		Radio_RF_Trf_Printf("Boot: EEPROM Error!!!");

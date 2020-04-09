@@ -51,21 +51,6 @@ u8 trf_pint_buf[RADIO_RF_PINTBUF_SIZE] = {0};
 
 u32 last_recvtime = 0;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /**********************************************************************************************************
  @Function			void tmesh_rf_QInit(void)
  @Description			tmesh_rf_QInit
@@ -233,17 +218,22 @@ char Radio_RF_Operate_Recvmsg(u8 *inmsg, u8 len)
 				iap_joined_state = *(UPGD_P_FRAME_PAYLOAD(inmsg));
 			}
 			else {
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
+				if (iap_upgrad_state != TIME_OUT)
+				{
+					iap_progrm_state = xm_Ugrade_programUpdate(inmsg, subsn);
+					
+					if (iap_progrm_state == COMPLETE)
+					{
+						iap_upgrad_state = READY_TO_JUMP;
+					}
+					else if (iap_progrm_state == UNCOMPLETE)
+					{
+						iap_upgrad_state = DOWNLOADING;
+					}
+					else {
+						iap_upgrad_state = DOWNLOAD_ERROR;
+					}
+				}
 			}
 		}
 	}

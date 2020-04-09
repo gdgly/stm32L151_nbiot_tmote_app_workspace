@@ -50,6 +50,8 @@ void DeBugMain(void);
 #endif
 /****************************************** Debug Ending *************************************************/
 
+void xm_Jump_to_application(unsigned int app_addr);
+
 /**********************************************************************************************************
  @Function			int main(void)
  @Description			Main
@@ -111,6 +113,8 @@ int main(void)
 	
 	HC32_IWDG_Feed();																	//HC32喂狗
 	
+	HC32_FLASH_Init(flashHCLK_32MHz, TRUE);													//FLASH初始化
+	
 	FLASH_EEPROM_Init();																//EEPROM初始化
 	
 	FLASH_NOR_Init();																	//NOR初始化
@@ -147,14 +151,14 @@ int main(void)
 	res = TCFG_EEPROM_Get_BootCount();
 	
 	HC32_BEEP_Repeat(1, 150, 30);															//di
-	Delay_MS(100);
+	Delay_MS(70);
 	HC32_BEEP_Repeat(2, 70, 45);															//didi
 	Delay_MS(100);
 	HC32_BEEP_Repeat(1, 150, 30);															//di
-	Delay_MS(100);
+	Delay_MS(70);
 	HC32_BEEP_Repeat(2, 70, 45);															//didi
 	
-	Radio_RF_Trf_Printf("Boot-%d-mode-%d-count-%d-nor-%d-", MVB_BOOT_SOFTWARE_SUB, iap_bootmode, res, FLASH_NOR_Status() ? 0 : 1);
+	Radio_RF_Trf_Printf("Boot-%d-mode-%d-count-%02d-nor-%d-", MVB_BOOT_SOFTWARE_SUB, iap_bootmode, res, FLASH_NOR_Status() ? 0 : 1);
 	
 	if (res > 7) {
 		if (res % 2 == 0)
@@ -216,47 +220,191 @@ int main(void)
 			index++;
 		}
 		
+		if (HC32_GetSecondTick() >= 120) {
+			iap_upgrad_state = TIME_OUT;
+			HAL_SystemReset();
+		}
 		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
+		if (HC32_GetSecondTick() % 10 == 0) {
+			HC32_BEEP_Repeat(1, 60, 10);
+		}
 	}
 	
 start:
-	while (true) {
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		printf("Reset: %d Runing: %d SN: 0x%X\r\n", HC32_Reset_Flag, HC32_GetMecondTick(), TCFG_EEPROM_Get_MAC_SN());
-		
-		HC32_IWDG_Feed();
-		
-		Delay_MS(1000);
-		
-		
-		
-		
+	while (true)
+	{
+		if (iap_bootmode == TCFG_ENV_BOOTMODE_TOUPDATE)
+		{
+			while (1)
+			{
+				Radio_RF_Trf_Receive_Task();
+				
+				if (iap_upgrad_state == READY_TO_JUMP)
+				{
+					TCFG_EEPROM_Set_BootMode(TCFG_ENV_BOOTMODE_NORMALLY);
+					xm_Jump_to_application(app_offset);
+				}
+				else if (iap_upgrad_state == DOWNLOADING)
+				{
+					Radio_RF_Trf_Receive_Task();
+					if (HC32_GetSecondTick() >= OVERTIME) {
+						iap_upgrad_state = TIME_OUT;
+						HAL_SystemReset();
+					}
+					else if ((HC32_GetSecondTick() > (30 + Radio_RF_Trf_Last_Recvtime())) && (Radio_RF_Trf_Last_Recvtime() > 0)) {
+						iap_upgrad_state = TIME_OUT;
+						HAL_SystemReset();
+					}
+					else if (HC32_GetSecondTick() > (10 + Radio_RF_Trf_Last_Recvtime())) {
+						Radio_RF_Xmit_Heartbeat();
+					}
+				}
+				else if (iap_upgrad_state == NO_APPDOWNLOAD)
+				{
+					Radio_RF_Xmit_Heartbeat();
+					for (index = 500; index != 0; index--) {
+						Delay_MS(1);
+						Radio_RF_Trf_Receive_Task();
+					}
+					Delay_MS(100 * (HC32_GetMecondTick() % 3));
+					xm_Ugrade_join();
+					for (index = 500; index != 0; index--) {
+						Delay_MS(1);
+						Radio_RF_Trf_Receive_Task();
+					}
+					if (HC32_GetSecondTick() >= 120) {
+						TCFG_EEPROM_Set_BootMode(TCFG_ENV_BOOTMODE_NORMALLY);
+						xm_Jump_to_application(app_offset);
+					}
+				}
+				else if (iap_upgrad_state == DOWNLOAD_ERROR)
+				{
+					__NOP();
+					Delay_MS(10000);
+					HAL_SystemReset();
+				}
+				
+				HC32_IWDG_Feed();
+				
+				if (HC32_GetSecondTick() % 10 == 0) {
+					HC32_BEEP_Repeat(1, 70, 130);
+				}
+			}
+		}
+		else if (iap_bootmode == TCFG_ENV_BOOTMODE_UPDATING)
+		{
+			while (1)
+			{
+				while (iap_upgrad_state == NO_APPDOWNLOAD)
+				{
+					Radio_RF_Xmit_Heartbeat();
+					for (index = 500; index != 0; index--) {
+						Delay_MS(1);
+						Radio_RF_Trf_Receive_Task();
+					}
+					Delay_MS(100 * (HC32_GetMecondTick() % 3));
+					xm_Ugrade_join();
+					for (index = 500; index != 0; index--) {
+						Delay_MS(1);
+						Radio_RF_Trf_Receive_Task();
+					}
+					if (HC32_GetSecondTick() >= OVERTIME) {
+						iap_upgrad_state = TIME_OUT;
+						HAL_SystemReset();
+					}
+					
+					HC32_IWDG_Feed();
+					
+					if (HC32_GetSecondTick() % 10 == 0) {
+						HC32_BEEP_Repeat(1, 60, 10);
+					}
+				}
+				
+				if (iap_upgrad_state == DOWNLOADING)
+				{
+					Radio_RF_Trf_Receive_Task();
+					if (HC32_GetSecondTick() >= OVERTIME) {
+						iap_upgrad_state = TIME_OUT;
+						HAL_SystemReset();
+					}
+					else if ((HC32_GetSecondTick() > (30 + Radio_RF_Trf_Last_Recvtime())) && (Radio_RF_Trf_Last_Recvtime() > 0)) {
+						iap_upgrad_state = TIME_OUT;
+						HAL_SystemReset();
+					}
+					else if (HC32_GetSecondTick() > (10 + Radio_RF_Trf_Last_Recvtime())) {
+						Radio_RF_Xmit_Heartbeat();
+					}
+				}
+				else if (iap_upgrad_state == READY_TO_JUMP)
+				{
+					TCFG_EEPROM_Set_BootMode(TCFG_ENV_BOOTMODE_NORMALLY);
+					xm_Jump_to_application(app_offset);
+				}
+				else if (iap_upgrad_state == DOWNLOAD_ERROR)
+				{
+					__NOP();
+					Delay_MS(10000);
+					HAL_SystemReset();
+				}
+				
+				HC32_IWDG_Feed();
+				
+				if (HC32_GetSecondTick() >= OVERTIME) {
+					iap_upgrad_state = TIME_OUT;
+					HAL_SystemReset();
+				}
+				
+				if (HC32_GetSecondTick() % 10 == 0) {
+					HC32_BEEP_Repeat(1, 70, 130);
+				}
+			}
+		}
+		else if (iap_bootmode == TCFG_ENV_BOOTMODE_REUPDATE)
+		{
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			xm_Jump_to_application(app_offset);
+		}
+		else {
+			xm_Jump_to_application(app_offset);
+		}
 	}
+}
+
+/**********************************************************************************************************
+ @Function			void xm_Jump_to_application(unsigned int app_addr)
+ @Description			xm_Jump_to_application
+ @Input				app_addr
+ @Return				void
+**********************************************************************************************************/
+void xm_Jump_to_application(unsigned int app_addr)
+{
+	
+	
+	while (1) {
+		printf("Ready jump to application: 0x%08X!\r\n", app_addr);
+		HC32_IWDG_Feed();
+		Delay_MS(1000);
+	}
+	
+	
 }
 
 #ifdef	DEVICE_DEBUG
