@@ -150,13 +150,13 @@ int main(void)
 	
 	res = TCFG_EEPROM_Get_BootCount();
 	
-	HC32_BEEP_Repeat(1, 150, 30);															//di
+	HC32_BEEP_Repeat(1, 140, 40);															//di
 	Delay_MS(70);
-	HC32_BEEP_Repeat(2, 70, 45);															//didi
+	HC32_BEEP_Repeat(2, 60, 55);															//didi
 	Delay_MS(100);
-	HC32_BEEP_Repeat(1, 150, 30);															//di
+	HC32_BEEP_Repeat(1, 140, 40);															//di
 	Delay_MS(70);
-	HC32_BEEP_Repeat(2, 70, 45);															//didi
+	HC32_BEEP_Repeat(2, 60, 55);															//didi
 	
 	Radio_RF_Trf_Printf("Boot-%d-mode-%d-count-%02d-nor-%d-", MVB_BOOT_SOFTWARE_SUB, iap_bootmode, res, FLASH_NOR_Status() ? 0 : 1);
 	
@@ -226,7 +226,7 @@ int main(void)
 		}
 		
 		if (HC32_GetSecondTick() % 10 == 0) {
-			HC32_BEEP_Repeat(1, 60, 10);
+			HC32_BEEP_Repeat(1, 60, 140);
 		}
 	}
 	
@@ -287,7 +287,7 @@ start:
 				HC32_IWDG_Feed();
 				
 				if (HC32_GetSecondTick() % 10 == 0) {
-					HC32_BEEP_Repeat(1, 70, 130);
+					HC32_BEEP_Repeat(1, 60, 140);
 				}
 			}
 		}
@@ -316,7 +316,7 @@ start:
 					HC32_IWDG_Feed();
 					
 					if (HC32_GetSecondTick() % 10 == 0) {
-						HC32_BEEP_Repeat(1, 60, 10);
+						HC32_BEEP_Repeat(1, 60, 140);
 					}
 				}
 				
@@ -355,7 +355,7 @@ start:
 				}
 				
 				if (HC32_GetSecondTick() % 10 == 0) {
-					HC32_BEEP_Repeat(1, 70, 130);
+					HC32_BEEP_Repeat(1, 60, 140);
 				}
 			}
 		}

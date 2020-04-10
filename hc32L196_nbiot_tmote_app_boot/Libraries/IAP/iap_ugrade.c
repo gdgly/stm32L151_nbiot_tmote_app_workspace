@@ -134,7 +134,7 @@ u8 xm_Ugrade_programUpdate(u8 *recvlong, u8 *sn)
 		
 		if ((packnum_received % 256) != packetno)
 		{
-			rt = xm_iap_program(app_offset, packnum_received*PACK_SIZE, PACK_SIZE, (unsigned char*)UPGD_P_FRAME_PAYLOAD(recvlong));
+			rt = xm_iap_program(app_offset, packnum_received * PACK_SIZE, PACK_SIZE, (unsigned char*)UPGD_P_FRAME_PAYLOAD(recvlong));
 			
 			if (rt == IAP_OK)
 			{
