@@ -13,7 +13,12 @@
   *********************************************************************************************************
   */
 
+#include "hc32l19x_config.h"
+#include "platform_config.h"
 #include "platform_map.h"
+#include "delay.h"
+#include "usart.h"
+
 
 
 

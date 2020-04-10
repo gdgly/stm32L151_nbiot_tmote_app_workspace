@@ -203,7 +203,6 @@ void Pcnt_SetBuf(uint16_t value)
 ******************************************************************************/ 
 void Pcnt_Init(stc_pcnt_initstruct_t*  InitStruct)
 {
-    volatile uint32_t *tmp;
     M0P_PCNT->CTRL_f.S1P = InitStruct->Pcnt_S1Sel;
     M0P_PCNT->CTRL_f.S0P = InitStruct->Pcnt_S0Sel;
     M0P_PCNT->CTRL_f.CLKSEL = InitStruct->Pcnt_Clk;

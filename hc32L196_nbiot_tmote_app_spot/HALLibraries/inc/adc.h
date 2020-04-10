@@ -201,6 +201,8 @@ typedef enum en_adc_in_ref
  ******************************************************************************
  ** \brief ADC周边模块反射源选择
  *****************************************************************************/
+#if 0
+
 typedef enum en_adc_trig_sel
 {
     AdcMskTrigTimer0     =  1u<<0,         /*!<选择timer0中断源，自动触发ADC采样*/
@@ -236,6 +238,43 @@ typedef enum en_adc_trig_sel
     AdcMskTrigPB15       =  1u<<30,        /*!<选择PB15中断源，自动触发ADC采样*/
     AdcMskTrigPC15       =  1u<<31,        /*!<选择PC15中断源，自动触发ADC采样*/
 }en_adc_trig_sel_t;
+
+#else
+
+#define    AdcMskTrigTimer0     uint32_t(1u<<0)         /*!<选择timer0中断源，自动触发ADC采样*/
+#define    AdcMskTrigTimer1     uint32_t(1u<<1)         /*!<选择timer1中断源，自动触发ADC采样*/
+#define    AdcMskTrigTimer2     uint32_t(1u<<2)         /*!<选择timer2中断源，自动触发ADC采样*/
+#define    AdcMskTrigTimer3     uint32_t(1u<<3)         /*!<选择timer3中断源，自动触发ADC采样*/
+#define    AdcMskTrigTimer4     uint32_t(1u<<4)         /*!<选择timer4中断源，自动触发ADC采样*/
+#define    AdcMskTrigTimer5     uint32_t(1u<<5)         /*!<选择timer5中断源，自动触发ADC采样*/
+#define    AdcMskTrigTimer6     uint32_t(1u<<6)         /*!<选择timer6中断源，自动触发ADC采样*/
+#define    AdcMskTrigUart0      uint32_t(1u<<7)         /*!<选择uart0中断源，自动触发ADC采样*/
+#define    AdcMskTrigUart1      uint32_t(1u<<8)         /*!<选择uart1中断源，自动触发ADC采样*/
+#define    AdcMskTrigLpuart0    uint32_t(1u<<9)         /*!<选择lpuart0中断源，自动触发ADC采样*/
+#define    AdcMskTrigLpuart1    uint32_t(1u<<10)        /*!<选择lpuart1中断源，自动触发ADC采样*/
+#define    AdcMskTrigVC0        uint32_t(1u<<11)        /*!<选择VC0中断源，自动触发ADC采样*/
+#define    AdcMskTrigVC1        uint32_t(1u<<12)        /*!<选择VC1中断源，自动触发ADC采样*/
+#define    AdcMskTrigRTC        uint32_t(1u<<13)        /*!<选择RTC中断源，自动触发ADC采样*/
+#define    AdcMskTrigPCA        uint32_t(1u<<14)        /*!<选择PCA中断源，自动触发ADC采样*/
+#define    AdcMskTrigSPI0       uint32_t(1u<<15)        /*!<选择SPI0中断源，自动触发ADC采样*/
+#define    AdcMskTrigSPI1       uint32_t(1u<<16)        /*!<选择SPI1中断源，自动触发ADC采样*/
+#define    AdcMskTrigDMA        uint32_t(1u<<17)        /*!<选择DMA中断源，自动触发ADC采样*/
+#define    AdcMskTrigPA03       uint32_t(1u<<18)        /*!<选择PA03中断源，自动触发ADC采样*/
+#define    AdcMskTrigPB03       uint32_t(1u<<19)        /*!<选择PB03中断源，自动触发ADC采样*/
+#define    AdcMskTrigPC03       uint32_t(1u<<20)        /*!<选择PC03中断源，自动触发ADC采样*/
+#define    AdcMskTrigPD03       uint32_t(1u<<21)        /*!<选择PD03中断源，自动触发ADC采样*/
+#define    AdcMskTrigPA07       uint32_t(1u<<22)        /*!<选择PA07中断源，自动触发ADC采样*/
+#define    AdcMskTrigPB07       uint32_t(1u<<23)        /*!<选择PB07中断源，自动触发ADC采样*/
+#define    AdcMskTrigPC07       uint32_t(1u<<24)        /*!<选择PC07中断源，自动触发ADC采样*/
+#define    AdcMskTrigPD07       uint32_t(1u<<25)        /*!<选择PD07中断源，自动触发ADC采样*/
+#define    AdcMskTrigPA11       uint32_t(1u<<26)        /*!<选择PA11中断源，自动触发ADC采样*/
+#define    AdcMskTrigPB11       uint32_t(1u<<27)        /*!<选择PB11中断源，自动触发ADC采样*/
+#define    AdcMskTrigPC11       uint32_t(1u<<28)        /*!<选择PC11中断源，自动触发ADC采样*/
+#define    AdcMskTrigPA15       uint32_t(1u<<29)        /*!<选择PA15中断源，自动触发ADC采样*/
+#define    AdcMskTrigPB15       uint32_t(1u<<30)        /*!<选择PB15中断源，自动触发ADC采样*/
+#define    AdcMskTrigPC15       uint32_t(1u<<31)        /*!<选择PC15中断源，自动触发ADC采样*/
+
+#endif
 
 /**
  ******************************************************************************
@@ -418,11 +457,11 @@ en_result_t Adc_CfgSqrChannel(en_adc_sqr_chmux_t enstcAdcSqrChMux, en_adc_samp_c
 en_result_t Adc_CfgJqrChannel(en_adc_jqr_chmux_t enstcAdcJqrChMux, en_adc_samp_ch_sel_t enstcAdcSampCh);
 
 ///<ADC 单次转换外部触发源配置
-void Adc_SglExtTrigCfg(en_adc_trig_sel_t enAdcTrigSel, boolean_t bValue);
+void Adc_SglExtTrigCfg(uint32_t enAdcTrigSel, boolean_t bValue);
 ///<ADC 顺序扫描转换外部触发源配置
-void Adc_SqrExtTrigCfg(en_adc_trig_sel_t enAdcTrigSel, boolean_t bValue);
+void Adc_SqrExtTrigCfg(uint32_t enAdcTrigSel, boolean_t bValue);
 ///<ADC 插队扫描转换外部触发源配置
-void Adc_JqrExtTrigCfg(en_adc_trig_sel_t enAdcTrigSel, boolean_t bValue);
+void Adc_JqrExtTrigCfg(uint32_t enAdcTrigSel, boolean_t bValue);
 
 //ADC 阈值比较功能配置
 void Adc_ThresholdCfg(stc_adc_threshold_cfg_t* pstcAdcThrCfg);

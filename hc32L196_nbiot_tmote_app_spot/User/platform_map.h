@@ -6,8 +6,18 @@
 
 
 
-#define APP_LOWEST_ADDRESS						0x00007800
-#define APP_LOWEST_SIZE							0x00038800
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

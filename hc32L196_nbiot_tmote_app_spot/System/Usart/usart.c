@@ -113,7 +113,7 @@ void HC32_Uart0_Init(u32 bound)
 #endif
 	
 	/* Enable UART0 IRQn */
-	EnableNvic(UART0_IRQn, UART0_IRQLevel, TRUE);
+	EnableNvic(UART0_IRQ_Channel, UART0_IRQ_Level, TRUE);
 }
 
 /**********************************************************************************************************
@@ -154,7 +154,22 @@ void HC32_Uart1_Init(u32 bound)
 #endif
 	
 	/* Enable UART1 IRQn */
-	EnableNvic(UART1_IRQn, UART1_IRQLevel, TRUE);
+	EnableNvic(UART1_IRQ_Channel, UART1_IRQ_Level, TRUE);
+}
+
+#if 1
+#pragma import(__use_no_semihosting)
+
+struct __FILE
+{
+	int handle;
+};
+
+FILE __stdout;
+
+void _sys_exit(int x)
+{
+	x = x;
 }
 
 /**********************************************************************************************************
@@ -172,5 +187,6 @@ int fputc(int ch, FILE *f)
 	Uart_ClrStatus(PRINTF_USART, UartTC);
 	return ch;
 }
+#endif
 
 /********************************************** END OF FLEE **********************************************/

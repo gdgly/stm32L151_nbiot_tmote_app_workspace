@@ -21,8 +21,8 @@
 #define UART0_RXD_PIN			GpioPin10
 #define UART0_RXD_AF			GpioAf1
 
-#define UART0_IRQn				UART0_2_IRQn
-#define UART0_IRQLevel			IrqLevel1
+#define UART0_IRQ_Level			IrqLevel1
+#define UART0_IRQ_Channel		UART0_2_IRQn
 
 #define UART1_TXD_GPIOx			GpioPortA
 #define UART1_TXD_PIN			GpioPin2
@@ -32,8 +32,21 @@
 #define UART1_RXD_PIN			GpioPin3
 #define UART1_RXD_AF			GpioAf1
 
-#define UART1_IRQn				UART1_3_IRQn
-#define UART1_IRQLevel			IrqLevel1
+#define UART1_IRQ_Level			IrqLevel1
+#define UART1_IRQ_Channel		UART1_3_IRQn
+
+#define BR_9600				(  9600ul)
+#define BR_19200				( 19200ul)
+#define BR_38400				( 38400ul)
+#define BR_57600				( 57600ul)
+#define BR_76800				( 76800ul)
+#define BR_115200				(115200ul)
+#define BR_256000				(256000ul)
+#define BR_512000				(512000ul)
+#define BR_921600				(921600ul)
+
+#define UART0_BAUD_RATE			BR_9600
+#define UART1_BAUD_RATE			BR_9600
 
 #define UARTX_IRQ_DISABLE		(0)
 #define UARTX_IRQ_ENABLE			(1)
