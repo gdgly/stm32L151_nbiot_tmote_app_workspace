@@ -136,6 +136,10 @@ int main(void)
 	TCFG_EEPROM_Set_Vender(MVB_BRAND);														//写入VENDER
 #endif
 	
+#if SYSTEM_BOOTCOUNT_CNTYPE
+	TCFG_EEPROM_Set_BootCount(0);															//重启次数清零
+#endif
+	
 	TCFG_EEPROM_Set_BootVersion(MVB_BOOT_SOFTWARE_SUB);
 	
 	res = TCFG_EEPROM_Get_BootMode();
@@ -380,6 +384,7 @@ start:
 			
 			
 			
+			
 			xm_Jump_to_application(app_offset);
 		}
 		else {
@@ -396,15 +401,39 @@ start:
 **********************************************************************************************************/
 void xm_Jump_to_application(unsigned int app_addr)
 {
+#if SYSTEM_JUMPTOAPP_TYPE
 	
+	u32 app_real_address;
+	u32 app_jump_address;
+	
+	app_real_address = HC32_FLASH_ReadWord(APP_LOWEST_ADDRESS - HC32_FLASH_SECTOR_BLOCK);
+	
+	if ((app_real_address >= app_addr) && (app_real_address < (HC32_FLASH_BASE + HC32_FLASH_SIZE))) {
+		app_jump_address = app_real_address;
+	}
+	else {
+		app_jump_address = app_addr;
+	}
+	
+	IAP_Boot_form_flash(app_jump_address);
 	
 	while (1) {
-		printf("Ready jump to application: 0x%08X!\r\n", app_addr);
 		HC32_IWDG_Feed();
+		
+		Delay_MS(1000);
+		
+		//HAL_SystemReset();
+	}
+	
+#else
+	
+	while (1) {
+		HC32_IWDG_Feed();
+		
 		Delay_MS(1000);
 	}
 	
-	
+#endif
 }
 
 #ifdef	DEVICE_DEBUG

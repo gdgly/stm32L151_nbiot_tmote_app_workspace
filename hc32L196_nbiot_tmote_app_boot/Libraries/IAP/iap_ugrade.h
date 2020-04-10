@@ -3,19 +3,12 @@
 
 #include "sys.h"
 
-
 #define OVERTIME				900
-
-
 
 #define UNCOMPLETE				0x00
 #define COMPLETE				0x02
 #define TRANSERROR				0x01
 #define PASS					0x03
-
-
-
-
 
 #define NO_APPDOWNLOAD			0x01
 #define DOWNLOADING				0x02
@@ -25,12 +18,6 @@
 
 #define JOIN_COMPELET			0x00
 #define JOINING				0X01
-
-
-
-
-
-
 
 #define UPGRADEVERSION			0
 #define UPGRADE_TYPE_SIZE		1
@@ -86,11 +73,6 @@
 
 #define UPGD_PUT_INTO_FRAME(b,f,v)	do {(b)[f] = ((b)[f] & ~(f##_MSK)) | ((v)<<(f##_SFT)); } while(0)
 
-
-
-
-
-
 typedef enum _upgrad_status
 {
 	UPGRADE_REQUEST			= 0U,
@@ -99,17 +81,6 @@ typedef enum _upgrad_status
 	UPGRADE_VALIDDATA_RSP		= 3U,
 	UPGRADE_END				= 4U,
 } upgrad_status;
-
-
-
-
-
-
-
-
-
-
-
 
 extern u32 app_offset;
 extern u32 firm_offset;
@@ -122,38 +93,10 @@ extern u8  iap_joined_state;
 
 extern u8  subsn[4];
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 void xm_Ugrade_buildframe(u8 *msg, u8 type, u8 pktnum, u8 *sn, u8 *send, u8 len);
 
 void xm_Ugrade_join(void);
 
 u8   xm_Ugrade_programUpdate(u8 *recvlong, u8 *sn);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #endif /* __IAP_UGRADE_H */

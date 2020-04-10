@@ -23,11 +23,6 @@
 #include "radio_hal_rf.h"
 #include "radio_hal_app.h"
 
-
-
-
-
-
 /**********************************************************************************************************
  @Function			u8 xm_iap_program(u32 base_addr, u32 addr_offset, u32 len, u8* buff)
  @Description			xm_iap_program
@@ -69,27 +64,5 @@ u8 xm_iap_program(u32 base_addr, u32 addr_offset, u32 len, u8* buff)
 	
 	return IAP_OK;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /********************************************** END OF FLEE **********************************************/

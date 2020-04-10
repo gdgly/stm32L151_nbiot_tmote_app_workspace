@@ -30,12 +30,20 @@
 
 
 
-
-
-
-
-
-
+/**********************************************************************************************************
+ @Function			void IAP_Boot_form_flash(unsigned int app_address)
+ @Description			IAP_Boot_form_flash
+ @Input				app_address
+ @Return				void
+**********************************************************************************************************/
+void IAP_Boot_form_flash(unsigned int app_address)
+{
+	
+	
+	printf("Ready jump to application: 0x%08X!\r\n", app_address);//Todo Debug
+	
+	
+}
 
 
 

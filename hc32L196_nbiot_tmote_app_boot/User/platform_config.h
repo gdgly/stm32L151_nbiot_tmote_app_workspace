@@ -32,6 +32,14 @@
 #define	SYSTEM_RESETFLAG_ENABLE			1
 #define	SYSTEM_RESETFLAG_TYPE			SYSTEM_RESETFLAG_DISABLE								//系统复位获取
 
+#define	SYSTEM_JUMPTOAPP_DISABLE			0
+#define	SYSTEM_JUMPTOAPP_ENABLE			1
+#define	SYSTEM_JUMPTOAPP_TYPE			SYSTEM_JUMPTOAPP_ENABLE								//跳转APP使能
+
+#define	SYSTEM_BOOTCOUNT_UNCLEAN			0
+#define	SYSTEM_BOOTCOUNT_CLEAN			1
+#define	SYSTEM_BOOTCOUNT_CNTYPE			SYSTEM_BOOTCOUNT_UNCLEAN								//重启次数清零
+
 #define	SYSTEM_PERIPHERAL_GATE_TICK		TRUE												//SysTick
 #define	SYSTEM_PERIPHERAL_GATE_GPIO		TRUE												//GPIO
 #define	SYSTEM_PERIPHERAL_GATE_WDT		TRUE												//Wdt
@@ -47,33 +55,12 @@
 #define	SYSTEM_PERIPHERAL_GATE_AES		FALSE											//AES
 #define	SYSTEM_PERIPHERAL_GATE_CRC		FALSE											//CRC
 
-
-
-
-
-
-
 #define	FLASH_HC32NOR																	//定义开启 FLASH_HC32NOR
 #define	EPROM_BL24CXX																	//定义开启 EPROM BL24CXX
 #define	FLASH_P25QXXH																	//定义开启 FLASH P25QXXH
 #define	RADIO_SI4438A																	//定义开启 RADIO SI4438A
 
 #define	RADIO_RF_CHANNEL1				36												//小无线默认通道
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #define	MVB_BOOT_SOFTWARE_MAJOR			0												//Boot 主固件版本
 #define	MVB_BOOT_SOFTWARE_SUB			40												//Boot 从固件版本
@@ -83,15 +70,6 @@
 #define	MVB_APPL_SOFTWARE_SUB			100												//App  从固件版本
 #define	MVB_APPL_HARDWARE_V1			2												//App  主硬件版本
 #define	MVB_APPL_HARDWARE_V2			12												//App  主硬件版本
-
-
-
-
-
-
-
-
-
 
 #define	USART0_DISABLE					0
 #define	USART0_ENABLE					1
@@ -104,16 +82,5 @@
 #define	RTC_DISABLE					0
 #define	RTC_ENABLE					1
 #define	RTC_TYPE						RTC_DISABLE										//RTC状态
-
-
-
-
-
-
-
-
-
-
-
 
 #endif /* __PLATFORM_CONFIG_H */
