@@ -425,7 +425,7 @@ void xm_Jump_to_application(unsigned int app_addr)
 		
 		Delay_MS(1000);
 		
-		//HAL_SystemReset();
+		HAL_SystemReset();
 	}
 	
 #else

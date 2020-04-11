@@ -23,12 +23,38 @@
 #include "radio_hal_rf.h"
 #include "radio_hal_app.h"
 
+#define HC32_SRAM_BASE			((uint32_t)0x20000000)
+#define HC32_SRAM_SIZE			(0x8000ul)
 
+func_ptr_t JumpToApplication;
 
-
-
-
-
+/**********************************************************************************************************
+ @Function			static en_result_t IAP_JumpToApplication(unsigned int u32Addr)
+ @Description			IAP_JumpToApplication
+ @Input				app_address
+ @Return				void
+**********************************************************************************************************/
+static en_result_t IAP_JumpToApplication(unsigned int u32Addr)
+{
+	__IO uint32_t JumpAddress;
+	
+	uint32_t FirmStackTop = *((__IO u32 *)u32Addr);
+	
+	if ((FirmStackTop > HC32_SRAM_BASE) && (FirmStackTop <= (HC32_SRAM_BASE + HC32_SRAM_SIZE)))
+	{
+		/* Jump to user application */
+		JumpAddress = *(__IO uint32_t *) (u32Addr + 4);
+		
+		JumpToApplication = (func_ptr_t) JumpAddress;
+		
+		/* Initialize user application's Stack Pointer */
+		__set_MSP(*(__IO uint32_t *) u32Addr);
+		
+		JumpToApplication();
+	}
+	
+	return Error;
+}
 
 /**********************************************************************************************************
  @Function			void IAP_Boot_form_flash(unsigned int app_address)
@@ -38,27 +64,7 @@
 **********************************************************************************************************/
 void IAP_Boot_form_flash(unsigned int app_address)
 {
-	
-	
-	printf("Ready jump to application: 0x%08X!\r\n", app_address);//Todo Debug
-	
-	
+	IAP_JumpToApplication(app_address);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /********************************************** END OF FLEE **********************************************/

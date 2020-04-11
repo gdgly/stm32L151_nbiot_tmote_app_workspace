@@ -95,16 +95,8 @@ int main(void)
 	
 	
 	
-	
-	
-	
-	
-	
 	HC32_BEEP_Repeat(10, 60, 25);															//HC32蜂鸣器
 	HC32_IWDG_Feed();																	//HC32喂狗
-	
-	
-	
 	
 	
 	
@@ -123,6 +115,7 @@ int main(void)
 		date = HC32_RTC_GetUnixTimeToCalendar();
 		
 		printf("*******************************************************************************************\r\n");
+		printf("This is Jump Application\r\n");
 		printf("Reset: %d Runing: %8d HCLK: %d PCLK: %d SystemCoreClock: %d\r\n", HC32_Reset_Flag, HC32_GetMecondTick(), Sysctrl_GetHClkFreq(), Sysctrl_GetPClkFreq(), SystemCoreClock);
 		printf("Date:  %02d-%02d-%02d %02d:%02d:%02d week %d\r\n", date.tm_year, date.tm_mon, date.tm_mday, date.tm_hour, date.tm_min, date.tm_sec, date.tm_wday);
 		printf("*******************************************************************************************\r\n\r\n");
@@ -130,10 +123,6 @@ int main(void)
 		Delay_MS(1000);
 		
 		HC32_IWDG_Feed();
-		
-		
-		
-		
 		
 		
 		

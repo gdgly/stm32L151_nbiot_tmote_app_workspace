@@ -53,7 +53,7 @@
 
 Stack_Size      EQU     0x00000800
 
-Vect_Table      EQU     0x00000000
+Vect_Table      EQU     0x00007800
 
                 AREA    STACK, NOINIT, READWRITE, ALIGN=3
 Stack_Mem       SPACE   Stack_Size
