@@ -22,6 +22,9 @@
 #include "hal_iwdg.h"
 #include "hal_rtc.h"
 #include "hal_beep.h"
+#include "hal_vbat.h"
+#include "hal_vptat.h"
+#include "hal_vtemp.h"
 
 /**********************************************************************************************************
  @Function			void Uart0_IRQHandler(void)

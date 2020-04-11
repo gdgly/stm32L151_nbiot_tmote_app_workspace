@@ -23,6 +23,9 @@
 #include "hal_iwdg.h"
 #include "hal_rtc.h"
 #include "hal_beep.h"
+#include "hal_vbat.h"
+#include "hal_vptat.h"
+#include "hal_vtemp.h"
 
 /****************************************** Select DEBUG *************************************************/
 //#define	DEVICE_DEBUG																	//定义开启设备调试
@@ -105,6 +108,36 @@ int main(void)
 	
 	
 	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	struct tm date;
 	
 	HC32_RTC_SetTime(20, 04, 11, 10, 00, 00);
@@ -115,7 +148,7 @@ int main(void)
 		date = HC32_RTC_GetUnixTimeToCalendar();
 		
 		printf("*******************************************************************************************\r\n");
-		printf("This is Jump Application\r\n");
+		printf("This is Upgrade to Jump Application\r\n");
 		printf("Reset: %d Runing: %8d HCLK: %d PCLK: %d SystemCoreClock: %d\r\n", HC32_Reset_Flag, HC32_GetMecondTick(), Sysctrl_GetHClkFreq(), Sysctrl_GetPClkFreq(), SystemCoreClock);
 		printf("Date:  %02d-%02d-%02d %02d:%02d:%02d week %d\r\n", date.tm_year, date.tm_mon, date.tm_mday, date.tm_hour, date.tm_min, date.tm_sec, date.tm_wday);
 		printf("*******************************************************************************************\r\n\r\n");
@@ -123,6 +156,7 @@ int main(void)
 		Delay_MS(1000);
 		
 		HC32_IWDG_Feed();
+		
 		
 		
 		

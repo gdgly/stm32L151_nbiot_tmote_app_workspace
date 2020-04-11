@@ -44,7 +44,7 @@ static void VPtat_ADC_Init(void)
 	DDL_ZERO_STRUCT(ADC_Initure);
 	
 	ADC_Initure.enAdcMode		= AdcSglMode;
-	ADC_Initure.enAdcClkDiv		= AdcMskClkDiv1;
+	ADC_Initure.enAdcClkDiv		= AdcMskClkDiv8;
 	ADC_Initure.enAdcSampCycleSel	= AdcMskSampCycle12Clk;
 	ADC_Initure.enAdcRefVolSel	= AdcMskRefVolSelAVDD;
 	ADC_Initure.enAdcOpBuf		= AdcMskBufDisable;
@@ -80,6 +80,8 @@ u32 HC32_VPtat_Read(u32 timeoutMS)
 	
 	HC32_TimeMeter_CountdownMS(&ADCtimerMS, timeoutMS);
 	
+	Bgr_BgrEnable();
+	
 	Adc_Enable();
 	
 	Delay_US(20);
@@ -100,7 +102,9 @@ u32 HC32_VPtat_Read(u32 timeoutMS)
 	
 	Adc_Disable();
 	
-	return pwr_vol * 100 * 28 / 40960;
+	Bgr_BgrDisable();
+	
+	return pwr_vol * 100 * 28 / 40950;
 }
 
 /********************************************** END OF FLEE **********************************************/

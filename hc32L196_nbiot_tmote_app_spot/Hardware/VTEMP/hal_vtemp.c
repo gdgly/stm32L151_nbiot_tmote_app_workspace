@@ -33,7 +33,7 @@ static void VTemp_ADC_Init(void)
 	DDL_ZERO_STRUCT(ADC_Initure);
 	
 	ADC_Initure.enAdcMode		= AdcSglMode;
-	ADC_Initure.enAdcClkDiv		= AdcMskClkDiv1;
+	ADC_Initure.enAdcClkDiv		= AdcMskClkDiv8;
 	ADC_Initure.enAdcSampCycleSel	= AdcMskSampCycle12Clk;
 	ADC_Initure.enAdcRefVolSel	= AdcMskRefVolSelInBgr2p5;
 	ADC_Initure.enAdcOpBuf		= AdcMskBufEnable;
@@ -61,7 +61,7 @@ static void VTemp_Channel_Init(void)
 **********************************************************************************************************/
 s32 HC32_VTemp_Read(u32 timeoutMS)
 {
-	u32 pwr_vol = 0;
+	s32 pwr_vol = 0;
 	u16 trim_val = 0;
 	s32 temp_val = 0;
 	
@@ -95,9 +95,9 @@ s32 HC32_VTemp_Read(u32 timeoutMS)
 	Bgr_TempSensorDisable();
 	Bgr_BgrDisable();
 	
-	trim_val = (u16) *VTEMP_TRIM2V5_ADDR;
+	trim_val = VTEMP_TRIM2V5_VAL;
 	
-	temp_val = 25 + 0.0795 * 2.5 * ( pwr_vol - trim_val );
+	temp_val = 25 + (0.0795 * 2.5 * ( pwr_vol - trim_val ));
 	
 	return temp_val;
 }

@@ -338,7 +338,7 @@
               <MiscControls></MiscControls>
               <Define></Define>
               <Undefine></Undefine>
-              <IncludePath>..\Core;..\HALLibraries\inc;..\HALLibraries\src;..\User;..\System\Sys;..\System\Delay;..\System\Usart;..\Hardware\IWDG;..\Hardware\RTC;..\Hardware\BEEP</IncludePath>
+              <IncludePath>..\Core;..\HALLibraries\inc;..\HALLibraries\src;..\User;..\System\Sys;..\System\Delay;..\System\Usart;..\Hardware\IWDG;..\Hardware\RTC;..\Hardware\BEEP;..\Hardware\VBAT;..\Hardware\VPTAT;..\Hardware\VTEMP</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -574,6 +574,21 @@
               <FileName>hal_beep.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Hardware\BEEP\hal_beep.c</FilePath>
+            </File>
+            <File>
+              <FileName>hal_vbat.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Hardware\VBAT\hal_vbat.c</FilePath>
+            </File>
+            <File>
+              <FileName>hal_vptat.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Hardware\VPTAT\hal_vptat.c</FilePath>
+            </File>
+            <File>
+              <FileName>hal_vtemp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Hardware\VTEMP\hal_vtemp.c</FilePath>
             </File>
           </Files>
         </Group>

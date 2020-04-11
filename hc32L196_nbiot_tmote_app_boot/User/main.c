@@ -184,6 +184,10 @@ int main(void)
 	DeBugMain();
 #endif
 	
+#if SYSTEM_BOOTUPGRADE_TYPE
+	iap_bootmode = TCFG_ENV_BOOTMODE_TOUPDATE;												//启动进行升级
+#endif
+	
 	if (iap_bootmode == TCFG_ENV_BOOTMODE_NORMALLY)
 		goto start;
 	
