@@ -38,14 +38,10 @@ void BEEP_GPIO_InitControl(bool ctrl)
 	GPIO_Initure.enPd			= GpioPdDisable;
 	GPIO_Initure.enOD			= GpioOdDisable;
 	GPIO_Initure.enCtrlMode		= GpioFastIO;
-	
-	if (ctrl)
-		Gpio_SetIO(BEEP_GPIOx, BEEP_PIN);
-	else
-		Gpio_ClrIO(BEEP_GPIOx, BEEP_PIN);
-	
 	Gpio_Init(BEEP_GPIOx, BEEP_PIN, &GPIO_Initure);
 	Gpio_SetAfMode(BEEP_GPIOx, BEEP_PIN, BEEP_AF);
+	
+	BEEP_IO_SET(ctrl);
 }
 
 /**********************************************************************************************************

@@ -18,9 +18,9 @@
 #include "platform_map.h"
 #include "delay.h"
 #include "usart.h"
-
-
-
+#include "hal_iwdg.h"
+#include "hal_rtc.h"
+#include "hal_beep.h"
 
 
 

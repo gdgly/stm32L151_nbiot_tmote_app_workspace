@@ -72,6 +72,9 @@ int main(void)
 #if (SYSTEM_CLOCK_TYPE == SYSTEM_CLOCK_RCH_32M)
 	HC32_RCHClock32M_Init();																//HC32RCH时钟初始化32MHz
 #endif
+#if (SYSTEM_CLOCK_TYPE == SYSTEM_CLOCK_RCH_16M)
+	HC32_RCHClock16M_Init();																//HC32RCH时钟初始化16MHz
+#endif
 #if (SYSTEM_CLOCK_TYPE == SYSTEM_CLOCK_XTH_24M)
 	HC32_XTHClock24M_Init();																//HC32XTH时钟初始化24MHz
 #endif

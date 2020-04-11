@@ -15,9 +15,10 @@
 #define	MVB_MODEL_TYPE					MVB_STATICMAGNETIC_MODEL								//设备类型
 
 #define	SYSTEM_CLOCK_XTH_24M			24000000
+#define	SYSTEM_CLOCK_RCH_16M			16000000
 #define	SYSTEM_CLOCK_RCH_32M			32000000
 #define	SYSTEM_CLOCK_RCH_48M			48000000
-#define	SYSTEM_CLOCK_TYPE				SYSTEM_CLOCK_RCH_32M								//系统时钟
+#define	SYSTEM_CLOCK_TYPE				SYSTEM_CLOCK_RCH_16M								//系统时钟
 
 #define	SYSTEM_RTCCLOCK_XTL_32768		32768
 #define	SYSTEM_RTCCLOCK_RCL_32000		32000
@@ -30,7 +31,7 @@
 
 #define	SYSTEM_RESETFLAG_DISABLE			0
 #define	SYSTEM_RESETFLAG_ENABLE			1
-#define	SYSTEM_RESETFLAG_TYPE			SYSTEM_RESETFLAG_DISABLE								//系统复位获取
+#define	SYSTEM_RESETFLAG_TYPE			SYSTEM_RESETFLAG_ENABLE								//系统复位获取
 
 
 
@@ -49,11 +50,20 @@
 
 
 
-#define	SYSTEM_PERIPHERAL_GATE_TICK		FALSE											//SysTick
+
+
+
+
+
+
+
+
+
+#define	SYSTEM_PERIPHERAL_GATE_TICK		TRUE												//SysTick
 #define	SYSTEM_PERIPHERAL_GATE_GPIO		TRUE												//GPIO
-#define	SYSTEM_PERIPHERAL_GATE_WDT		FALSE											//Wdt
-#define	SYSTEM_PERIPHERAL_GATE_RTC		FALSE											//RTC
-#define	SYSTEM_PERIPHERAL_GATE_FLASH		FALSE											//Flash
+#define	SYSTEM_PERIPHERAL_GATE_WDT		TRUE												//Wdt
+#define	SYSTEM_PERIPHERAL_GATE_RTC		TRUE												//RTC
+#define	SYSTEM_PERIPHERAL_GATE_FLASH		TRUE												//Flash
 #define	SYSTEM_PERIPHERAL_GATE_UART0		TRUE												//Uart0
 #define	SYSTEM_PERIPHERAL_GATE_UART1		TRUE												//Uart1
 #define	SYSTEM_PERIPHERAL_GATE_I2C0		FALSE											//I2C0
@@ -143,9 +153,9 @@
 #define	USART1_ENABLE					1
 #define	USART1_TYPE					USART1_ENABLE										//串口1状态
 
-#define	RTC_DISABLE					0
-#define	RTC_ENABLE					1
-#define	RTC_TYPE						RTC_DISABLE										//RTC状态
+
+
+
 
 
 

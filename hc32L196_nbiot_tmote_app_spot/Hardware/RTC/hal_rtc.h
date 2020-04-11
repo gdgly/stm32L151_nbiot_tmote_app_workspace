@@ -5,6 +5,13 @@
 #include "rtc.h"
 #include <time.h>
 
+#define RTC_PRD_SOURCE			RtcPrds
+#define RTC_PRD_S				Rtc1S
+#define RTC_PRD_X				0
+
+#define RTC_IRQ_Level			IrqLevel3
+#define RTC_IRQ_Channel			RTC_IRQn
+
 #define RTC_DEFAULT_YEAR			0x20
 #define RTC_DEFAULT_MONTH		0x03
 #define RTC_DEFAULT_DAY			0x01
