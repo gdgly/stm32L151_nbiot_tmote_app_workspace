@@ -26,6 +26,16 @@
 #include "hal_vbat.h"
 #include "hal_vptat.h"
 #include "hal_vtemp.h"
+#include "hal_aes.h"
+#include "hal_crc.h"
+#include "hal_flash.h"
+#include "hal_iic.h"
+#include "hal_bl24cxxp.h"
+#include "hal_eeprom.h"
+#include "hal_qmc5883l.h"
+#include "hal_spi.h"
+#include "hal_p25qxxh.h"
+#include "hal_norflash.h"
 
 /****************************************** Select DEBUG *************************************************/
 //#define	DEVICE_DEBUG																	//定义开启设备调试

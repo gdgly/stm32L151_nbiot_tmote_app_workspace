@@ -338,7 +338,7 @@
               <MiscControls></MiscControls>
               <Define></Define>
               <Undefine></Undefine>
-              <IncludePath>..\Core;..\HALLibraries\inc;..\HALLibraries\src;..\User;..\System\Sys;..\System\Delay;..\System\Usart;..\Hardware\IWDG;..\Hardware\RTC;..\Hardware\BEEP;..\Hardware\VBAT;..\Hardware\VPTAT;..\Hardware\VTEMP</IncludePath>
+              <IncludePath>..\Core;..\HALLibraries\inc;..\HALLibraries\src;..\User;..\System\Sys;..\System\Delay;..\System\Usart;..\Hardware\IWDG;..\Hardware\RTC;..\Hardware\BEEP;..\Hardware\VBAT;..\Hardware\VPTAT;..\Hardware\VTEMP;..\Hardware\AES;..\Hardware\CRC;..\Hardware\FLASH;..\Hardware\IIC;..\Hardware\BL24CXXP;..\Hardware\EEPROM;..\Hardware\QMC5883L;..\Hardware\SPI;..\Hardware\P25QXXH;..\Hardware\NORFLASH</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -589,6 +589,56 @@
               <FileName>hal_vtemp.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Hardware\VTEMP\hal_vtemp.c</FilePath>
+            </File>
+            <File>
+              <FileName>hal_aes.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Hardware\AES\hal_aes.c</FilePath>
+            </File>
+            <File>
+              <FileName>hal_crc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Hardware\CRC\hal_crc.c</FilePath>
+            </File>
+            <File>
+              <FileName>hal_flash.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Hardware\FLASH\hal_flash.c</FilePath>
+            </File>
+            <File>
+              <FileName>hal_iic.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Hardware\IIC\hal_iic.c</FilePath>
+            </File>
+            <File>
+              <FileName>hal_bl24cxxp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Hardware\BL24CXXP\hal_bl24cxxp.c</FilePath>
+            </File>
+            <File>
+              <FileName>hal_eeprom.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Hardware\EEPROM\hal_eeprom.c</FilePath>
+            </File>
+            <File>
+              <FileName>hal_qmc5883l.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Hardware\QMC5883L\hal_qmc5883l.c</FilePath>
+            </File>
+            <File>
+              <FileName>hal_spi.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Hardware\SPI\hal_spi.c</FilePath>
+            </File>
+            <File>
+              <FileName>hal_p25qxxh.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Hardware\P25QXXH\hal_p25qxxh.c</FilePath>
+            </File>
+            <File>
+              <FileName>hal_norflash.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Hardware\NORFLASH\hal_norflash.c</FilePath>
             </File>
           </Files>
         </Group>
