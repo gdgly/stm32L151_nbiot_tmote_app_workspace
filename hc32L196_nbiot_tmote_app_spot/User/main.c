@@ -36,6 +36,8 @@
 #include "hal_spi.h"
 #include "hal_p25qxxh.h"
 #include "hal_norflash.h"
+#include "fifo.h"
+#include "message.h"
 
 /****************************************** Select DEBUG *************************************************/
 //#define	DEVICE_DEBUG																	//定义开启设备调试
@@ -110,6 +112,9 @@ int main(void)
 	
 	HC32_BEEP_Repeat(10, 60, 25);															//HC32蜂鸣器
 	HC32_IWDG_Feed();																	//HC32喂狗
+	
+	
+	
 	
 	
 	

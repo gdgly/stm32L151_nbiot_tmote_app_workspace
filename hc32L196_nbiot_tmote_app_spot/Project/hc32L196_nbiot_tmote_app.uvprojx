@@ -338,7 +338,7 @@
               <MiscControls></MiscControls>
               <Define></Define>
               <Undefine></Undefine>
-              <IncludePath>..\Core;..\HALLibraries\inc;..\HALLibraries\src;..\User;..\System\Sys;..\System\Delay;..\System\Usart;..\Hardware\IWDG;..\Hardware\RTC;..\Hardware\BEEP;..\Hardware\VBAT;..\Hardware\VPTAT;..\Hardware\VTEMP;..\Hardware\AES;..\Hardware\CRC;..\Hardware\FLASH;..\Hardware\IIC;..\Hardware\BL24CXXP;..\Hardware\EEPROM;..\Hardware\QMC5883L;..\Hardware\SPI;..\Hardware\P25QXXH;..\Hardware\NORFLASH</IncludePath>
+              <IncludePath>..\Core;..\HALLibraries\inc;..\HALLibraries\src;..\User;..\System\Sys;..\System\Delay;..\System\Usart;..\Hardware\IWDG;..\Hardware\RTC;..\Hardware\BEEP;..\Hardware\VBAT;..\Hardware\VPTAT;..\Hardware\VTEMP;..\Hardware\AES;..\Hardware\CRC;..\Hardware\FLASH;..\Hardware\IIC;..\Hardware\BL24CXXP;..\Hardware\EEPROM;..\Hardware\QMC5883L;..\Hardware\SPI;..\Hardware\P25QXXH;..\Hardware\NORFLASH;..\Libraries\FifoMessage</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -714,6 +714,21 @@
               <FileName>platform_config.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\User\platform_config.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>FifoMessage</GroupName>
+          <Files>
+            <File>
+              <FileName>fifo.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Libraries\FifoMessage\fifo.c</FilePath>
+            </File>
+            <File>
+              <FileName>message.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Libraries\FifoMessage\message.c</FilePath>
             </File>
           </Files>
         </Group>

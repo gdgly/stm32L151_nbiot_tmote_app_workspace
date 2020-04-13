@@ -35,6 +35,8 @@
 #include "hal_spi.h"
 #include "hal_p25qxxh.h"
 #include "hal_norflash.h"
+#include "fifo.h"
+#include "message.h"
 #include "radio_hal_rf.h"
 #include "radio_hal_app.h"
 #include "iap_boot.h"
