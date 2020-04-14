@@ -7,6 +7,11 @@
 #define NOR_BASE_ADDR			P25Q40H_BASE_ADDR
 #define NOR_BYTE_SIZE			P25Q40H_CHIP512K_BYTE_SIZE
 
+#define NOR_BLOCK64K_BYTE_SIZE	P25Q40H_BLOCK64K_BYTE_SIZE
+#define NOR_BLOCK32K_BYTE_SIZE	P25Q40H_BLOCK32K_BYTE_SIZE
+#define NOR_SECTOR4K_BYTE_SIZE	P25Q40H_SECTOR4K_BYTE_SIZE
+#define NOR_PAGE256B_BYTE_SIZE	P25Q40H_PAGE256B_BYTE_SIZE
+
 #define NOR_BLOCK64K_ADDR(n)		((u32)(n * P25Q40H_BLOCK64K_BYTE_SIZE) + NOR_BASE_ADDR)
 #define NOR_BLOCK32K_ADDR(n)		((u32)(n * P25Q40H_BLOCK32K_BYTE_SIZE) + NOR_BASE_ADDR)
 #define NOR_SECTOR4K_ADDR(n)		((u32)(n * P25Q40H_SECTOR4K_BYTE_SIZE) + NOR_BASE_ADDR)
@@ -32,6 +37,14 @@ u32  FLASH_NOR_Erase(norflash_erase_mode_t mode, u32 addr);
 u32  FLASH_NOR_ReadBuffer(u8* pBuf, u32 addr, u32 len);
 
 u32  FLASH_NOR_WriteBuffer(u8* pBuf, u32 addr, u32 len);
+
+u8   FLASH_NOR_ReadByte(u32 addr);
+u16  FLASH_NOR_ReadHalfWord(u32 addr);
+u32  FLASH_NOR_ReadWord(u32 addr);
+
+u8   FLASH_NOR_WriteByte(u32 addr, u8 data);
+u16  FLASH_NOR_WriteHalfWord(u32 addr, u16 data);
+u32  FLASH_NOR_WriteWord(u32 addr, u32 data);
 
 u32  FLASH_NOR_GetNumByteOfThisData(u32 addr, u32 len, u8 thisData);
 

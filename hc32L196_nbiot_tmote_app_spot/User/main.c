@@ -38,6 +38,7 @@
 #include "hal_norflash.h"
 #include "fifo.h"
 #include "message.h"
+#include "fota.h"
 
 /****************************************** Select DEBUG *************************************************/
 //#define	DEVICE_DEBUG																	//定义开启设备调试

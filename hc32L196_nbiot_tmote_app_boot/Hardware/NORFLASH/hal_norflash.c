@@ -176,6 +176,112 @@ u32 FLASH_NOR_WriteBuffer(u8* pBuf, u32 addr, u32 len)
 }
 
 /**********************************************************************************************************
+ @Function			u8 FLASH_NOR_ReadByte(u32 addr)
+ @Description			FLASH_NOR_ReadByte
+ @Input				addr
+ @Return				data
+**********************************************************************************************************/
+u8 FLASH_NOR_ReadByte(u32 addr)
+{
+	u8 val = 0;
+	
+	FLASH_NOR_ReadBuffer(&val, addr, 1);
+	
+	return val;
+}
+
+/**********************************************************************************************************
+ @Function			u16 FLASH_NOR_ReadHalfWord(u32 addr)
+ @Description			FLASH_NOR_ReadHalfWord
+ @Input				addr
+ @Return				data
+**********************************************************************************************************/
+u16 FLASH_NOR_ReadHalfWord(u32 addr)
+{
+	u16 val = 0;
+	u8 tmpval[2] = {0};
+	
+	FLASH_NOR_ReadBuffer(tmpval, addr, 2);
+	
+	val |= tmpval[0] << 0;
+	val |= tmpval[1] << 8;
+	
+	return val;
+}
+
+/**********************************************************************************************************
+ @Function			u32 FLASH_NOR_ReadWord(u32 addr)
+ @Description			FLASH_NOR_ReadWord
+ @Input				addr
+ @Return				data
+**********************************************************************************************************/
+u32 FLASH_NOR_ReadWord(u32 addr)
+{
+	u32 val = 0;
+	u8 tmpval[4] = {0};
+	
+	FLASH_NOR_ReadBuffer(tmpval, addr, 4);
+	
+	val |= tmpval[0] << 0;
+	val |= tmpval[1] << 8;
+	val |= tmpval[2] << 16;
+	val |= tmpval[3] << 24;
+	
+	return val;
+}
+
+/**********************************************************************************************************
+ @Function			u8 FLASH_NOR_WriteByte(u32 addr, u8 data)
+ @Description			FLASH_NOR_WriteByte
+ @Input				addr
+					data
+ @Return				0 OK
+					1 Err
+**********************************************************************************************************/
+u8 FLASH_NOR_WriteByte(u32 addr, u8 data)
+{
+	return FLASH_NOR_WriteBuffer(&data, addr, 1);
+}
+
+/**********************************************************************************************************
+ @Function			u16 FLASH_NOR_WriteHalfWord(u32 addr, u16 data)
+ @Description			FLASH_NOR_WriteHalfWord
+ @Input				addr
+					data
+ @Return				0 OK
+					1 Err
+**********************************************************************************************************/
+u16 FLASH_NOR_WriteHalfWord(u32 addr, u16 data)
+{
+	u8 tmpval[2] = {0};
+	
+	tmpval[0] = (data >> 0) & 0xFF;
+	tmpval[1] = (data >> 8) & 0xFF;
+	
+	return FLASH_NOR_WriteBuffer(tmpval, addr, 2);
+}
+
+/**********************************************************************************************************
+ @Function			u32 FLASH_NOR_WriteWord(u32 addr, u32 data)
+ @Description			FLASH_NOR_WriteWord
+ @Input				addr
+					data
+ @Return				0 OK
+					1 Err
+**********************************************************************************************************/
+u32 FLASH_NOR_WriteWord(u32 addr, u32 data)
+{
+	u8 tmpval[4] = {0};
+	
+	tmpval[0] = (data >> 0)  & 0xFF;
+	tmpval[1] = (data >> 8)  & 0xFF;
+	tmpval[2] = (data >> 16) & 0xFF;
+	tmpval[3] = (data >> 24) & 0xFF;
+	
+	return FLASH_NOR_WriteBuffer(tmpval, addr, 4);
+}
+
+/**********************************************************************************************************
  @Function			u32 FLASH_NOR_GetNumByteOfThisData(u32 addr, u32 len, u8 thisData)
  @Description			FLASH_NOR_GetNumByteOfThisData
  @Input				addr

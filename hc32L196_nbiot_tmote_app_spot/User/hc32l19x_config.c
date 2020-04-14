@@ -36,6 +36,7 @@
 #include "hal_norflash.h"
 #include "fifo.h"
 #include "message.h"
+#include "fota.h"
 
 HC32_RESET_FLAG_TypeDef HC32_Reset_Flag = RCC_RESET_FLAG_NONE;
 

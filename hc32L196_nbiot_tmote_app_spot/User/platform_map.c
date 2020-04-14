@@ -36,7 +36,7 @@
 #include "hal_norflash.h"
 #include "fifo.h"
 #include "message.h"
-
+#include "fota.h"
 
 
 
