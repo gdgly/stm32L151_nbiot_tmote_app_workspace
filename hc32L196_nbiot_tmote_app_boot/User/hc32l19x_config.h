@@ -35,32 +35,6 @@
 #define VBATE_POWER_IO_SET(n)		(n ? (Gpio_ClrIO(VBATE_POWER_GPIOx, VBATE_POWER_PIN)) : (Gpio_SetIO(VBATE_POWER_GPIOx, VBATE_POWER_PIN)))
 #define VBATE_POWER_IO_GET()		(Gpio_ReadOutputIO(VBATE_POWER_GPIOx, VBATE_POWER_PIN))
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 typedef enum
 {
 	RCC_RESET_FLAG_NONE			= 0x00,													/*!< None Reset Flag				*/
@@ -85,30 +59,8 @@ void HC32_CtrPowerIO_Init(void);															//HC32控制电源初始化
 
 void HC32_AutomaticSystem_Check(void);														//HC32系统自检
 
-
-
-
-
-
-
 void HC32_LowPower_SleepBefor_Init(void);													//进入低功耗stop模式之前初始化
 void HC32_LowPower_SleepEnter_Stop(void);													//进入低功耗stop模式
 void HC32_LowPower_SleepAfter_Init(void);													//进入低功耗stop模式之后初始化
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #endif /* __HC32L19X_CONFIG_H */

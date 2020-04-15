@@ -43,6 +43,7 @@
 #include "iap_boot.h"
 #include "iap_core.h"
 #include "iap_ugrade.h"
+#include "fota.h"
 
 /****************************************** Select DEBUG *************************************************/
 //#define	DEVICE_DEBUG																	//定义开启设备调试
@@ -51,6 +52,15 @@
 void DeBugMain(void);
 #endif
 /****************************************** Debug Ending *************************************************/
+
+#define FOTA_UPDATE_SWAP_BUFFER_LEN		2048
+#define FOTA_UPDATE_STACK_BUFFER_LEN		1024
+
+FotaClientsTypeDef FotaClient;
+
+__IO u8 FotaFirmwareBuf[FOTA_UPDATE_STACK_BUFFER_LEN];
+__IO u8 FotaPackSliceBuf[FOTA_UPDATE_STACK_BUFFER_LEN];
+__IO u8 FotaSwapBuf[FOTA_UPDATE_SWAP_BUFFER_LEN];
 
 void xm_Jump_to_application(unsigned int app_addr);
 
@@ -374,25 +384,91 @@ start:
 		}
 		else if (iap_bootmode == TCFG_ENV_BOOTMODE_REUPDATE)
 		{
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
+			if (FLASH_NOR_Status() == Ok) {
+				FotaResultCode res;
+				
+				Radio_RF_Trf_Printf("NorFlash Recover APP......");
+				
+				if (FLASH_NOR_ReadByte(FOTA_APP1_INFO_UPGRADE_STATUS_OFFSET) == 0x55) {
+					if (TCFG_EEPROM_Get_BootCount() > 3) {
+						FLASH_NOR_Erase(mErase_Mode_Block64K, (FOTA_APP1_BASE_ADDR + NOR_BLOCK64K_ADDR(0)));
+						FLASH_NOR_Erase(mErase_Mode_Block64K, (FOTA_APP1_BASE_ADDR + NOR_BLOCK64K_ADDR(1)));
+						FLASH_NOR_Erase(mErase_Mode_Block64K, (FOTA_APP1_BASE_ADDR + NOR_BLOCK64K_ADDR(2)));
+						FLASH_NOR_Erase(mErase_Mode_Block64K, (FOTA_APP1_BASE_ADDR + NOR_BLOCK64K_ADDR(3)));
+					}
+				}
+				
+				if (FLASH_NOR_ReadByte(FOTA_APP2_INFO_UPGRADE_STATUS_OFFSET) == 0x55) {
+					if (TCFG_EEPROM_Get_BootCount() > 30) {
+						FLASH_NOR_Erase(mErase_Mode_Block64K, (FOTA_APP2_BASE_ADDR + NOR_BLOCK64K_ADDR(0)));
+						FLASH_NOR_Erase(mErase_Mode_Block64K, (FOTA_APP2_BASE_ADDR + NOR_BLOCK64K_ADDR(1)));
+						FLASH_NOR_Erase(mErase_Mode_Block64K, (FOTA_APP2_BASE_ADDR + NOR_BLOCK64K_ADDR(2)));
+						FLASH_NOR_Erase(mErase_Mode_Block64K, (FOTA_APP2_BASE_ADDR + NOR_BLOCK64K_ADDR(3)));
+					}
+				}
+				
+				if (FLASH_NOR_ReadByte(FOTA_APP1_INFO_UPGRADE_STATUS_OFFSET) == 0x55) {
+					FotaClient.FirmwareBuf		= (u8*)FotaFirmwareBuf;
+					FotaClient.PackSliceBuf		= (u8*)FotaPackSliceBuf;
+					FotaClient.SwapBuf			= (u8*)FotaSwapBuf;
+					FotaClient.FirmwareBuf_size	= sizeof(FotaFirmwareBuf);
+					FotaClient.PackSliceBuf_size	= sizeof(FotaPackSliceBuf);
+					FotaClient.SwapBuf_size		= sizeof(FotaSwapBuf);
+					
+					FotaClient.ChangeMode		= Fota_NorToChip;
+					FotaClient.BackupMode		= Fota_Backup_Normal;
+					
+					FotaClient.FirmwareBaseAddr	= app_offset;
+					FotaClient.PackSliceBaseAddr	= FLASH_NOR_ReadWord(FOTA_APP1_INFO_UPGRADE_BASEADDR_OFFSET);
+					FotaClient.PackSliceNum		= FLASH_NOR_ReadHalfWord(FOTA_APP1_INFO_UPGRADE_BLOCKNUM_OFFSET);
+					FotaClient.PackSliceSize		= FLASH_NOR_ReadHalfWord(FOTA_APP1_INFO_UPGRADE_BLOCKLEN_OFFSET);
+					FotaClient.PackSliceLen		= FLASH_NOR_ReadHalfWord(FOTA_APP1_INFO_UPGRADE_DATALEN_OFFSET);
+					
+					FotaClient.app_offset		= app_offset;
+					FotaClient.firm_writelen		= 128;
+					
+					res = FOTA_ConvertFirmware(&FotaClient);
+					
+					Radio_RF_Trf_Printf("Fota Status: %d", res);
+					
+					app_offset = FotaClient.app_offset;
+				}
+				else if (FLASH_NOR_ReadByte(FOTA_APP2_INFO_UPGRADE_STATUS_OFFSET) == 0x55) {
+					FotaClient.FirmwareBuf		= (u8*)FotaFirmwareBuf;
+					FotaClient.PackSliceBuf		= (u8*)FotaPackSliceBuf;
+					FotaClient.SwapBuf			= (u8*)FotaSwapBuf;
+					FotaClient.FirmwareBuf_size	= sizeof(FotaFirmwareBuf);
+					FotaClient.PackSliceBuf_size	= sizeof(FotaPackSliceBuf);
+					FotaClient.SwapBuf_size		= sizeof(FotaSwapBuf);
+					
+					FotaClient.ChangeMode		= Fota_NorToChip;
+					FotaClient.BackupMode		= Fota_Backup_Normal;
+					
+					FotaClient.FirmwareBaseAddr	= app_offset;
+					FotaClient.PackSliceBaseAddr	= FLASH_NOR_ReadWord(FOTA_APP2_INFO_UPGRADE_BASEADDR_OFFSET);
+					FotaClient.PackSliceNum		= FLASH_NOR_ReadHalfWord(FOTA_APP2_INFO_UPGRADE_BLOCKNUM_OFFSET);
+					FotaClient.PackSliceSize		= FLASH_NOR_ReadHalfWord(FOTA_APP2_INFO_UPGRADE_BLOCKLEN_OFFSET);
+					FotaClient.PackSliceLen		= FLASH_NOR_ReadHalfWord(FOTA_APP2_INFO_UPGRADE_DATALEN_OFFSET);
+					
+					FotaClient.app_offset		= app_offset;
+					FotaClient.firm_writelen		= 128;
+					
+					res = FOTA_ConvertFirmware(&FotaClient);
+					
+					Radio_RF_Trf_Printf("Fota Status: %d", res);
+					
+					app_offset = FotaClient.app_offset;
+				}
+				else {
+					iap_upgrad_state = TIME_OUT;
+					HAL_SystemReset();
+				}
+				HC32_BEEP_Repeat(20, 60, 60);
+			}
+			else {
+				iap_upgrad_state = TIME_OUT;
+				HAL_SystemReset();
+			}
 			
 			xm_Jump_to_application(app_offset);
 		}

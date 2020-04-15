@@ -338,7 +338,7 @@
               <MiscControls></MiscControls>
               <Define></Define>
               <Undefine></Undefine>
-              <IncludePath>..\Core;..\HALLibraries\inc;..\HALLibraries\src;..\User;..\System\Sys;..\System\Delay;..\System\Usart;..\Hardware\IWDG;..\Hardware\RTC;..\Hardware\BEEP;..\Hardware\VBAT;..\Hardware\VPTAT;..\Hardware\VTEMP;..\Hardware\AES;..\Hardware\CRC;..\Hardware\FLASH;..\Hardware\IIC;..\Hardware\BL24CXXP;..\Hardware\EEPROM;..\Hardware\QMC5883L;..\Hardware\SPI;..\Hardware\P25QXXH;..\Hardware\NORFLASH;..\Libraries\FifoMessage;..\Libraries\Radio\radio_inc;..\Libraries\Radio\radio_src;..\Libraries\Radio\si446x_inc;..\Libraries\Radio\si446x_src;..\Libraries\Radio;..\Libraries\IAP</IncludePath>
+              <IncludePath>..\Core;..\HALLibraries\inc;..\HALLibraries\src;..\User;..\System\Sys;..\System\Delay;..\System\Usart;..\Hardware\IWDG;..\Hardware\RTC;..\Hardware\BEEP;..\Hardware\VBAT;..\Hardware\VPTAT;..\Hardware\VTEMP;..\Hardware\AES;..\Hardware\CRC;..\Hardware\FLASH;..\Hardware\IIC;..\Hardware\BL24CXXP;..\Hardware\EEPROM;..\Hardware\QMC5883L;..\Hardware\SPI;..\Hardware\P25QXXH;..\Hardware\NORFLASH;..\Libraries\FifoMessage;..\Libraries\Radio\radio_inc;..\Libraries\Radio\radio_src;..\Libraries\Radio\si446x_inc;..\Libraries\Radio\si446x_src;..\Libraries\Radio;..\Libraries\IAP;..\Libraries\Fota</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -789,6 +789,16 @@
               <FileName>iap_ugrade.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Libraries\IAP\iap_ugrade.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Fota</GroupName>
+          <Files>
+            <File>
+              <FileName>fota.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Libraries\Fota\fota.c</FilePath>
             </File>
           </Files>
         </Group>

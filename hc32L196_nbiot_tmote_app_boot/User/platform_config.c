@@ -41,18 +41,6 @@
 #include "iap_boot.h"
 #include "iap_core.h"
 #include "iap_ugrade.h"
-
-
-
-
-
-
-
-
-
-
-
-
-
+#include "fota.h"
 
 /********************************************** END OF FLEE **********************************************/

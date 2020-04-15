@@ -5,8 +5,8 @@
 #include "hal_flash.h"
 #include "hal_norflash.h"
 
-#define FOTA_CHIPFLASH2NORFLASH_ENABLE				1
-#define FOTA_NORFLASH2CHIPFLASH_ENABLE				0
+#define FOTA_CHIPFLASH2NORFLASH_ENABLE				0
+#define FOTA_NORFLASH2CHIPFLASH_ENABLE				1
 
 /* Map:
  *      APP1 => (0 ~ 4095) is Info + (4096 ~ [256K - 1]) is Data: 4K + (512Byte x 504Block) = 4K + 252K = 256K

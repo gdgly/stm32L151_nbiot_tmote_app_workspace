@@ -50,8 +50,8 @@
 #define	SYSTEM_PERIPHERAL_GATE_WDT		TRUE												//Wdt
 #define	SYSTEM_PERIPHERAL_GATE_RTC		FALSE											//RTC
 #define	SYSTEM_PERIPHERAL_GATE_FLASH		TRUE												//Flash
-#define	SYSTEM_PERIPHERAL_GATE_UART0		TRUE												//Uart0
-#define	SYSTEM_PERIPHERAL_GATE_UART1		TRUE												//Uart1
+#define	SYSTEM_PERIPHERAL_GATE_UART0		FALSE											//Uart0
+#define	SYSTEM_PERIPHERAL_GATE_UART1		FALSE											//Uart1
 #define	SYSTEM_PERIPHERAL_GATE_I2C0		FALSE											//I2C0
 #define	SYSTEM_PERIPHERAL_GATE_I2C1		FALSE											//I2C1
 #define	SYSTEM_PERIPHERAL_GATE_SPI0		TRUE												//SPI0
@@ -70,6 +70,8 @@
 #define	MVB_BOOT_SOFTWARE_MAJOR			0												//Boot 主固件版本
 #define	MVB_BOOT_SOFTWARE_SUB			40												//Boot 从固件版本
 #define	MVB_BOOT_HARDWARE				2												//Boot 主硬件版本
+#define	MVB_BOOT_HARDWARE_V1			2												//Boot 主硬件版本
+#define	MVB_BOOT_HARDWARE_V2			12												//Boot 主硬件版本
 
 #define	MVB_APPL_SOFTWARE_MAJOR			20												//App  主固件版本
 #define	MVB_APPL_SOFTWARE_SUB			100												//App  从固件版本
@@ -78,11 +80,11 @@
 
 #define	USART0_DISABLE					0
 #define	USART0_ENABLE					1
-#define	USART0_TYPE					USART0_ENABLE										//串口0状态
+#define	USART0_TYPE					USART0_DISABLE										//串口0状态
 
 #define	USART1_DISABLE					0
 #define	USART1_ENABLE					1
-#define	USART1_TYPE					USART1_ENABLE										//串口1状态
+#define	USART1_TYPE					USART1_DISABLE										//串口1状态
 
 #define	RTC_DISABLE					0
 #define	RTC_ENABLE					1

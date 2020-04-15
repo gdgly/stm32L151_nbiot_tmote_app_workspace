@@ -42,6 +42,7 @@
 #include "iap_boot.h"
 #include "iap_core.h"
 #include "iap_ugrade.h"
+#include "fota.h"
 
 /**********************************************************************************************************
  @Function			void Uart0_IRQHandler(void)
@@ -96,28 +97,6 @@ void Uart1_IRQHandler(void)
 	
 #endif
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /**********************************************************************************************************
  @Function			void PortB_IRQHandler(void)
@@ -189,36 +168,6 @@ void PortF_IRQHandler(void)
 	
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /**********************************************************************************************************
  @Function			void Rtc_IRQHandler(void)
  @Description			Rtc_IRQHandler								: HC32 RTC中断服务函数
@@ -241,25 +190,6 @@ void Rtc_IRQHandler(void)
 	
 #endif
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /**********************************************************************************************************
  @Function			void SysTick_IRQHandler(void)

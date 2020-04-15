@@ -41,6 +41,7 @@
 #include "iap_boot.h"
 #include "iap_core.h"
 #include "iap_ugrade.h"
+#include "fota.h"
 
 HC32_RESET_FLAG_TypeDef HC32_Reset_Flag = RCC_RESET_FLAG_NONE;
 
@@ -398,29 +399,6 @@ void HC32_AutomaticSystem_Check(void)
 	}
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /**********************************************************************************************************
  @Function			void HC32_LowPower_SleepBefor_Init(void)
  @Description			HC32_LowPower_SleepBefor_Init					: 进入低功耗stop模式之前初始化
@@ -441,11 +419,7 @@ void HC32_LowPower_SleepBefor_Init(void)
 void HC32_LowPower_SleepEnter_Stop(void)
 {
 	
-	
-	
 	Lpm_GotoDeepSleep(FALSE);
-	
-	
 	
 }
 
@@ -459,33 +433,5 @@ void HC32_LowPower_SleepAfter_Init(void)
 {
 	
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /********************************************** END OF FLEE **********************************************/

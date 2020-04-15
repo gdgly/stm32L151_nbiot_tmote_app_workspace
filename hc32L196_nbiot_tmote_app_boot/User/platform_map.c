@@ -41,38 +41,7 @@
 #include "iap_boot.h"
 #include "iap_core.h"
 #include "iap_ugrade.h"
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#include "fota.h"
 
 /**********************************************************************************************************
  @Function			void TCFG_EEPROM_Set_MAC_SN(u32 macSN)
@@ -119,20 +88,6 @@ void TCFG_EEPROM_Get_Vender(char* vender)
 	FLASH_EEPROM_ReadBuffer(TCFG_FACTORY_VENDER_OFFSET, (u8*)vender, TCFG_FACTORY_VENDER_LENGTH);
 	vender[TCFG_FACTORY_VENDER_LENGTH - 1] = '\0';
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /**********************************************************************************************************
  @Function			void TCFG_EEPROM_Set_BootVersion(u8 bootVer)
@@ -199,63 +154,5 @@ u8   TCFG_EEPROM_Get_BootCount(void)
 {
 	return FLASH_EEPROM_ReadByte(TCFG_BOOT_RECOUNT_OFFSET);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /********************************************** END OF FLEE **********************************************/

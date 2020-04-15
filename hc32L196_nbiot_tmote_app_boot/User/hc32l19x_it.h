@@ -11,20 +11,6 @@ void Uart0_IRQHandler(void);																//HC32 UART0中断服务函数
 
 void Uart1_IRQHandler(void);																//HC32 UART1中断服务函数
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 void SysTick_IRQHandler(void);															//HC32 系统嘀嗒定时器中断服务函数
 
 #ifdef __cplusplus

@@ -355,45 +355,6 @@ void HC32_SysTick_Init(void)
 	SysTick_Config(SystemCoreClock / 1000);
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /**********************************************************************************************************
  @Function			void HC32_TimeMeter_CountdownMS(timeMeterTypeDef* timer, u32 timeout)
  @Description			HC32_TimeMeter_CountdownMS					: HC32配置计时器倒数时间(MS)
@@ -469,34 +430,5 @@ bool HC32_TimeMeter_IsExpiredSS(timeMeterTypeDef* timer)
 	else
 		return false;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /********************************************** END OF FLEE **********************************************/
