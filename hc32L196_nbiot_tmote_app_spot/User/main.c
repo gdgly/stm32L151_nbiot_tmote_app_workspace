@@ -103,6 +103,60 @@ int main(void)
 	HC32_Uart1_Init(UART1_BAUD_RATE);														//HC32串口1初始化
 #endif
 	
+	HC32_MODEL_POWER_SET(ON);															//HC32外设模块电源开启
+	
+	Delay_MS(10);																		//HC32供电稳定
+	
+	HC32_IWDG_Feed();																	//HC32喂狗
+	
+	HC32_FLASH_Init(flashHCLK_32MHz, TRUE);													//FLASH初始化
+	
+	FLASH_EEPROM_Init();																//EEPROM初始化
+	
+	FLASH_NOR_Init();																	//NOR初始化
+	
+	HC32_IWDG_Feed();																	//HC32喂狗
+	
+	/* Todo: 雷达初始化 */
+	
+	
+	
+	
+	
+	
+#ifdef MVB_SUBSN
+	TCFG_EEPROM_Set_MAC_SN(MVB_SUBSN);
+	TCFG_EEPROM_Set_Vender(MVB_BRAND);
+	TCFG_EEPROM_WriteSystemConfigData();													//写入系统配置信息
+	TCFG_EEPROM_WriteSystemParamtData();													//写入系统参数信息
+#endif
+	
+	if (TCFG_EEPROM_CheckNewSerialInfomation()) {											//检测新的设备厂牌信息
+		TCFG_EEPROM_WriteSystemConfigData();												//写入系统配置信息
+	}
+	if (TCFG_EEPROM_CheckNewSoftwareEditions()) {											//检测新的固件版本信息
+		TCFG_EEPROM_WriteSystemParamtData();												//写入系统参数信息
+	}
+	
+	TCFG_EEPROM_SystemConfigInfo_Init();													//系统配置信息初始化
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	
@@ -136,27 +190,14 @@ int main(void)
 	
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	printf("SN: %x\r\n", TCFG_EEPROM_Get_MAC_SN());
+	printf("SN: %s\r\n", TCFG_EEPROM_Get_MAC_SN_String());
+	printf("Vender: %s\r\n", TCFG_EEPROM_Get_Vender_String());
 	
 	
 	struct tm date;
 	
-	HC32_RTC_SetTime(20, 04, 11, 10, 00, 00);
+	HC32_RTC_SetTime(20, 04, 16, 10, 00, 00);
 	
 	while (true)
 	{

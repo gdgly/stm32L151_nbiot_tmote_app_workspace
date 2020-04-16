@@ -25,6 +25,10 @@ Address | nByte |  Name
 0x0000_0000 ~ 0x0000_0000 | (1Byte) | BootVersion
 0x0000_0001 ~ 0x0000_0001 | (1Byte) | BootMode
 0x0000_0002 ~ 0x0000_0002 | (1Byte) | BootCount
+0x0000_0003 ~ 0x0000_0006 | (4Byte) | SNBackUp
+0x0000_0007 ~ 0x0000_000A | (4Byte) | VenderBackUp
+0x0000_000B ~ 0x0000_000B | (1Byte) | SoftwareMajorBackUp
+0x0000_000C ~ 0x0000_000C | (1Byte) | SoftwareMinorBackUp
 0x0000_00F7 ~ 0x0000_00FA | (4Byte) | Vender
 0x0000_00FB ~ 0x0000_00FE | (4Byte) | SN
 0x0000_00FF ~ 0x0000_00FF | (1Byte) | Check

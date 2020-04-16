@@ -117,12 +117,12 @@
 
 
 #define	MVB_BOOT_SOFTWARE_MAJOR			0												//Boot 主固件版本
-#define	MVB_BOOT_SOFTWARE_SUB			40												//Boot 从固件版本
+#define	MVB_BOOT_SOFTWARE_MINOR			40												//Boot 从固件版本
 #define	MVB_BOOT_HARDWARE_V1			2												//Boot 主硬件版本
 #define	MVB_BOOT_HARDWARE_V2			12												//Boot 主硬件版本
 
 #define	MVB_APPL_SOFTWARE_MAJOR			20												//App  主固件版本
-#define	MVB_APPL_SOFTWARE_SUB			100												//App  从固件版本
+#define	MVB_APPL_SOFTWARE_MINOR			100												//App  从固件版本
 #define	MVB_APPL_HARDWARE_V1			2												//App  主硬件版本
 #define	MVB_APPL_HARDWARE_V2			12												//App  主硬件版本
 
