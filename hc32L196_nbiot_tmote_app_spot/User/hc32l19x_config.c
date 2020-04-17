@@ -36,6 +36,8 @@
 #include "hal_norflash.h"
 #include "fifo.h"
 #include "message.h"
+#include "radio_hal_rf.h"
+//#include "radio_hal_app.h"
 #include "fota.h"
 
 HC32_RESET_FLAG_TypeDef HC32_Reset_Flag = RCC_RESET_FLAG_NONE;
@@ -206,6 +208,46 @@ static void Device_VBatePower_Init(void)
 }
 
 /**********************************************************************************************************
+ @Function			static void Device_FlashNSS_Init(void)
+ @Description			Device_FlashNSS_Init						: 外设FlashNSS初始化
+ @Input				void
+ @Return				void
+**********************************************************************************************************/
+static void Device_FlashNSS_Init(void)
+{
+	stc_gpio_cfg_t GPIO_Initure;
+	
+	DDL_ZERO_STRUCT(GPIO_Initure);
+	
+	GPIO_Initure.enDir			= GpioDirOut;
+	GPIO_Initure.enDrv			= GpioDrvH;
+	Gpio_Init(P25QXXH_SPIx_NSS_GPIOx, P25QXXH_SPIx_NSS_PIN, &GPIO_Initure);
+	Gpio_SetAfMode(P25QXXH_SPIx_NSS_GPIOx, P25QXXH_SPIx_NSS_PIN, GpioAf0);
+	
+	Gpio_SetIO(P25QXXH_SPIx_NSS_GPIOx, P25QXXH_SPIx_NSS_PIN);
+}
+
+/**********************************************************************************************************
+ @Function			static void Device_RadioNSS_Init(void)
+ @Description			Device_RadioNSS_Init						: 外设RadioNSS初始化
+ @Input				void
+ @Return				void
+**********************************************************************************************************/
+static void Device_RadioNSS_Init(void)
+{
+	stc_gpio_cfg_t GPIO_Initure;
+	
+	DDL_ZERO_STRUCT(GPIO_Initure);
+	
+	GPIO_Initure.enDir			= GpioDirOut;
+	GPIO_Initure.enDrv			= GpioDrvH;
+	Gpio_Init(RADIO_SI4438_NSS_GPIOx, RADIO_SI4438_NSS_PIN, &GPIO_Initure);
+	Gpio_SetAfMode(RADIO_SI4438_NSS_GPIOx, RADIO_SI4438_NSS_PIN, GpioAf0);
+	
+	Gpio_SetIO(RADIO_SI4438_NSS_GPIOx, RADIO_SI4438_NSS_PIN);
+}
+
+/**********************************************************************************************************
  @Function			void HC32_RstPowerIO_Init(void)
  @Description			HC32_RstPowerIO_Init						: HC32复位电源初始化
  @Input				void
@@ -227,7 +269,6 @@ void HC32_RstPowerIO_Init(void)
 	NBIOT_POWER_IO_SET(OFF);																//外设NBIoT电源关闭
 	VBATE_POWER_IO_SET(OFF);																//外设VBate电源关闭
 	
-	#if 0
 	/* IIC0 */
 	GPIO_Initure.enDir			= GpioDirOut;
 	GPIO_Initure.enDrv			= GpioDrvH;
@@ -292,7 +333,6 @@ void HC32_RstPowerIO_Init(void)
 	Gpio_ClrIO(RADIO_SI4438_SDN_GPIOx, RADIO_SI4438_SDN_PIN);
 	
 	Gpio_ClrIO(RADIO_SI4438_IRQ_GPIOx, RADIO_SI4438_IRQ_PIN);
-	#endif
 	
 	Delay_MS(3000);																	//外设断电3秒
 }
@@ -305,10 +345,8 @@ void HC32_RstPowerIO_Init(void)
 **********************************************************************************************************/
 void HC32_CtrPowerIO_Init(void)
 {
-	#if 0
 	Device_FlashNSS_Init();																//Flash SPI NSS 未选
 	Device_RadioNSS_Init();																//Radio SPI NSS 未选
-	#endif
 	
 	Device_ModelPower_Init();															//外设模块电源初始化
 	Device_RadarPower_Init();															//外设雷达电源初始化

@@ -36,6 +36,8 @@
 #include "hal_norflash.h"
 #include "fifo.h"
 #include "message.h"
+#include "radio_hal_rf.h"
+//#include "radio_hal_app.h"
 #include "fota.h"
 
 TCFG_SystemDataTypeDef TCFG_SystemData;

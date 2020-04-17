@@ -1,9 +1,8 @@
-#ifndef __SI446X_DEFS_H
-#define   __SI446X_DEFS_H
+#ifndef _SI446X_DEFS_H_
+#define _SI446X_DEFS_H_
 
-#include "sys.h"
-#include "radio_compiler_defs.h"
 #include "si446x_cmd.h"
 #include "si446x_prop.h"
+#include "si446x_patch.h"
 
-#endif /* __SI446X_DEFS_H */
+#endif /* _SI446X_DEFS_H_ */

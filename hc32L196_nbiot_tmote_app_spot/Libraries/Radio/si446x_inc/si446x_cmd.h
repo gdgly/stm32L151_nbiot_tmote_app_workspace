@@ -16,7 +16,7 @@
 #ifndef SI446X_CMD_H
 #define SI446X_CMD_H
 
-#include "radio_compiler_defs.h"
+#include "radio_defs.h"
 
 /* This section contains command map declarations */
 struct si446x_reply_GENERIC_map {

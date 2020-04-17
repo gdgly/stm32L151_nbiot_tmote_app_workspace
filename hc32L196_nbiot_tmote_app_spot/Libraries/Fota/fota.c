@@ -22,6 +22,8 @@
 #include "delay.h"
 #include "usart.h"
 #include "hal_iwdg.h"
+#include "radio_hal_rf.h"
+//#include "radio_hal_app.h"
 
 #define FOTA_DEBUG_LOG_RF_PRINTF
 #define FOTA_DEBUG_LOG_PRINTF				printf
