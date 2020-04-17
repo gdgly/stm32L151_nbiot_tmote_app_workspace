@@ -38,7 +38,7 @@
 #include "fifo.h"
 #include "message.h"
 #include "radio_hal_rf.h"
-//#include "radio_hal_app.h"
+#include "radio_hal_app.h"
 #include "fota.h"
 
 /**********************************************************************************************************

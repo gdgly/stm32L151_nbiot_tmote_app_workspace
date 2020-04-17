@@ -101,7 +101,7 @@
 #define	RADIO_SI4438A																	//定义开启 RADIO SI4438A
 
 #define	RADIO_RF_CHANNEL1				36												//小无线默认通道
-
+#define	RADIO_RF_HEARTVAL				30												//小无线默认心跳
 
 
 

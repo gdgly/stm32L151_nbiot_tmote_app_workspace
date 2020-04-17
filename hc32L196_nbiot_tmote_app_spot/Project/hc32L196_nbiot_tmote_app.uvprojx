@@ -736,6 +736,11 @@
           <GroupName>Radio</GroupName>
           <Files>
             <File>
+              <FileName>radio_hal_rf.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Libraries\Radio\radio_src\radio_hal_rf.c</FilePath>
+            </File>
+            <File>
               <FileName>radio_hal_wrap.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Libraries\Radio\radio_src\radio_hal_wrap.c</FilePath>

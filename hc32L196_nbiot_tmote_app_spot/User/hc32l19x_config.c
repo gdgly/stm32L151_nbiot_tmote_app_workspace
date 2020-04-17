@@ -37,7 +37,7 @@
 #include "fifo.h"
 #include "message.h"
 #include "radio_hal_rf.h"
-//#include "radio_hal_app.h"
+#include "radio_hal_app.h"
 #include "fota.h"
 
 HC32_RESET_FLAG_TypeDef HC32_Reset_Flag = RCC_RESET_FLAG_NONE;
@@ -113,6 +113,8 @@ void HC32_LowPowerIO_Init(void)
 	M0P_GPIO->PDADS = 0xFFFF;
 	M0P_GPIO->PEADS = 0xFFFF;
 	M0P_GPIO->PFADS = 0xFFFF;
+	
+	HC32_BEEP_Init(OFF);
 }
 
 /**********************************************************************************************************
@@ -334,7 +336,7 @@ void HC32_RstPowerIO_Init(void)
 	
 	Gpio_ClrIO(RADIO_SI4438_IRQ_GPIOx, RADIO_SI4438_IRQ_PIN);
 	
-	Delay_MS(3000);																	//外设断电3秒
+	Delay_MS(2500);																	//外设断电2.5秒
 }
 
 /**********************************************************************************************************
@@ -358,6 +360,7 @@ void HC32_CtrPowerIO_Init(void)
 	NBIOT_POWER_IO_SET(OFF);																//外设NBIoT电源关闭
 	VBATE_POWER_IO_SET(OFF);																//外设VBate电源关闭
 }
+
 
 
 
