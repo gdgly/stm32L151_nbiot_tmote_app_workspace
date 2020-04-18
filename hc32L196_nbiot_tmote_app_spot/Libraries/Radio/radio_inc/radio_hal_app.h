@@ -38,20 +38,11 @@ typedef __packed struct _radio_trf_heartbeat
 
 
 
-// Todo list......
 
 
 
 
 
-
-
-
-
-
-
-
-#if 0
 void Radio_RF_Data_Handle_ISR(mrfiPacket_t* rfpacket);
 
 char Radio_RF_Receive(u8 *outmsg, u8 *len);
@@ -60,15 +51,20 @@ char Radio_RF_Transmit(u8 *inmsg, u8 len);
 
 char Radio_RF_Operate_Recvmsg(u8 *inmsg, u8 len);
 
-u32  Radio_RF_Trf_Last_Recvtime(void);
-
-void Radio_RF_Trf_Receive_Task(void);
-
 void Radio_RF_Xmit_Heartbeat(void);
+
+void Radio_Trf_Do_Heartbeat(void);
 
 void Radio_RF_Xmit_Printfbuf(char* info);
 
+void Radio_Trf_Do_Printfbuf(char* info);
+
+
+
+
 void Radio_RF_Trf_Printf(const char *fmt, ...);
-#endif
+
+
+
 
 #endif /* __RADIO_HAL_APP_H */

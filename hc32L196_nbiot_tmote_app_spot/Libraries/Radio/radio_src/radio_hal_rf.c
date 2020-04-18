@@ -233,6 +233,17 @@ char Radio_Hal_RF_Get_Status(void)
 }
 
 /**********************************************************************************************************
+ @Function		char Radio_Hal_RF_Get_Channel(void)
+ @Description 		Radio_Hal_RF_Get_Channel							: Radio RF 获取通道
+ @Input			void
+ @Return		  	void
+**********************************************************************************************************/
+char Radio_Hal_RF_Get_Channel(void)
+{
+	return radio_channel;
+}
+
+/**********************************************************************************************************
  @Function		void Radio_Hal_RF_Set_Sleep(void)
  @Description 		Radio_Hal_RF_Set_Sleep							: Radio RF 设置Sleep模式
  @Input			void
@@ -392,7 +403,7 @@ void Radio_Hal_RF_ISR(void)
 		
 		if (xm_CheckSum(g_Recvlong)) {
 			/* TODO: handle the data received */
-			//Radio_RF_Data_Handle_ISR(&mrfiIncomingPacket);
+			Radio_RF_Data_Handle_ISR(&mrfiIncomingPacket);
 		}
 		memset(g_Recvlong, 0x00, sizeof(mrfiIncomingPacket.frame));
 		

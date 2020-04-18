@@ -38,6 +38,8 @@ void Radio_Hal_RF_Init(void);																//Radio RF 初始化
 
 char Radio_Hal_RF_Get_Status(void);														//Radio RF 获取状态
 
+char Radio_Hal_RF_Get_Channel(void);														//Radio RF 获取通道
+
 void Radio_Hal_RF_Interface_Init(void);														//Radio RF 接口初始化
 
 void Radio_Hal_RF_Interrupt_Enable(void);													//Radio RF 中断引脚使能
