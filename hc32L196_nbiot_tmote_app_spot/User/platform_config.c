@@ -39,6 +39,7 @@
 #include "radio_hal_rf.h"
 #include "radio_hal_app.h"
 #include "fota.h"
+#include "tmesh_xtea.h"
 
 
 

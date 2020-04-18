@@ -39,6 +39,7 @@
 #include "radio_hal_rf.h"
 #include "radio_hal_app.h"
 #include "fota.h"
+#include "tmesh_xtea.h"
 
 TCFG_SystemDataTypeDef TCFG_SystemData;
 
@@ -486,6 +487,31 @@ u8    TCFG_Utility_Get_Minor_SoftwareNumber(void)
 {
 	return MVB_APPL_SOFTWARE_MINOR;
 }
+
+/**********************************************************************************************************
+ @Function			u8    TCFG_Utility_Get_Minor_HardwareNumber(void)
+ @Description			TCFG_Utility_Get_Minor_HardwareNumber			: 读取Minor Hardware Number
+ @Input				void
+ @Return				val
+**********************************************************************************************************/
+u8    TCFG_Utility_Get_Minor_HardwareNumber(void)
+{
+	return MVB_APPL_HARDWARE_V2;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

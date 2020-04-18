@@ -24,25 +24,23 @@
 #include "radio_core.h"
 #include "radio_comm.h"
 #include "si446x_api_lib.h"
+#include "hal_beep.h"
 #include "delay.h"
 #include "usart.h"
 #include <stdarg.h>
 
+#include "tmesh_xtea.h"
+
 #define RADIO_RF_PAYLOAD_MAC_SN			TCFG_EEPROM_Get_MAC_SN()
 
+#define RADIO_RF_HEARTBT_MAJOR_SOFTVER		TCFG_Utility_Get_Major_SoftwareNumber()
+#define RADIO_RF_HEARTBT_MINOR_SOFTVER		TCFG_Utility_Get_Minor_SoftwareNumber()
+#define RADIO_RF_HEARTBT_MINOR_HARDVER		TCFG_Utility_Get_Minor_HardwareNumber()
+#define RADIO_RF_HEARTBT_DEV_TYPE			MVB_MODEL_TYPE
 
-
-
-
-
-
-
-
-
-
-
-
-
+#define RADIO_RF_HEARTBT_WORK_MODE			0
+#define RADIO_RF_HEARTBT_SPOT_STAT			1
+#define RADIO_RF_HEARTBT_NBNT_STAT			1
 
 #define RADIO_RF_SENDBUF_SIZE				256
 #define RADIO_RF_RECVBUF_SIZE				256
@@ -213,6 +211,9 @@ char Radio_RF_Operate_Recvmsg(u8 *inmsg, u8 len)
 {
 	char rc = TRF_SUCCESS;
 	
+	radio_trf_msgdata_s* pPayload;
+	
+	u32 mac_sn = 0;
 	
 	
 	
@@ -220,34 +221,127 @@ char Radio_RF_Operate_Recvmsg(u8 *inmsg, u8 len)
 	
 	
 	
+	mac_sn = RADIO_RF_PAYLOAD_MAC_SN;
 	
+	if (CFG_GET_FROM_FRAME(CFG_P_FRAME_PRE(inmsg), CFG_PRE_TYPE_OS) == XMESHCFG_PRT)
+	{
+		pPayload = (radio_trf_msgdata_s*)CFG_P_FRAME_PAYLOAD(inmsg);
+		
+		if (CFG_GET_FROM_FRAME(CFG_P_FRAME_HEAD(inmsg), CFG_HEAD_TYPE_OS) == TMOTE_PLAIN_SET)
+		{
+			u32 cnt;
+			u32 payloadlen;
+			
+			cnt = CFG_GET_FROM_FRAME(CFG_P_FRAME_HEAD(inmsg), CFG_PKTNUM_OS);
+			
+			payloadlen = CFG_GET_PAYLOAD_LEN(inmsg) + CFG_FRAME_LEN_SIZE;
+			
+			tmesh_securityMix(mac_sn);
+			
+			tmesh_decipher((u8 *)pPayload, payloadlen, &cnt);
+			
+			if (pPayload->head.destSN != mac_sn) return TRF_NOT_FORME;
+			
+			HC32_BEEP_Repeat(1, 300, 0);
+			
+			/* 升级指令 */
+			if (pPayload->head.type == TRF_MSG_UPGRADE) {
+				
+				
+				
+			}
+			/* 传感器灵敏度配置指令 */
+			else if (pPayload->head.type == TRF_MSG_SENSITIVITY) {
+				
+				
+				
+			}
+			/* 工作模式配置指令 */
+			else if (pPayload->head.type == TRF_MSG_WORKMODE) {
+				
+				
+				
+			}
+			/* 无线心跳间隔时间配置指令 */
+			else if (pPayload->head.type == TRF_MSG_RFHEART_INTERVAL) {
+				
+				
+				
+			}
+			/* 初始化传感器指令 */
+			else if (pPayload->head.type == TRF_MSG_INITBACKGROUND) {
+				
+				
+				
+			}
+			/* 其他下行指令 */
+			else if (pPayload->head.type == TRF_MSG_GENERAL_CMD) {
+				
+				
+				
+				
+				
+				
+				printf("SI4438 Cmd\r\n");
+				
+				
+				
+				
+				
+				
+				
+			}
+		}
+		else {
+			if (pPayload->head.destSN != mac_sn) return TRF_NOT_FORME;
+			
+			if (CFG_GET_FROM_FRAME(CFG_P_FRAME_HEAD(inmsg), CFG_HEAD_TYPE_OS) == TMOTE_PLAIN_GET)
+			{
+				
+				
+				
+				
+			}
+			else if (CFG_GET_FROM_FRAME(CFG_P_FRAME_HEAD(inmsg), CFG_HEAD_TYPE_OS) == TMOTE_PLAIN_ACK)
+			{
+				
+				
+				
+				rc = TRF_IS_ACK;
+			}
+			else {
+				rc = TRF_BAD_MSGTYPE;
+			}
+		}
+	}
+	else {
+		rc = TRF_BAD_PROTOCAL;
+	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	if (rc == TRF_SUCCESS) Radio_RF_Xmit_Default_Resp(100, pPayload->head.type);
 	
 	return rc;
+}
+
+/**********************************************************************************************************
+ @Function			void Radio_RF_Xmit_Default_Resp(u8 ret, u8 type)
+ @Description			Radio_RF_Xmit_Default_Resp
+ @Input				void
+ @Return				void
+**********************************************************************************************************/
+void Radio_RF_Xmit_Default_Resp(u8 ret, u8 type)
+{
+	radio_trf_defaultrsp_s * pDefaultRsp = (radio_trf_defaultrsp_s*)(trf_send_buf + 32);
+	
+	pDefaultRsp->head.destSN				= 0xFFFFFFFF;
+	pDefaultRsp->head.version			= TRF_MSG_VERSION;
+	pDefaultRsp->head.type				= type;
+	
+	pDefaultRsp->ret					= ret;
+	
+	Radio_RF_Cfg_Buildframe((u8 *)pDefaultRsp, TMOTE_PLAIN_RSP, trf_xmit_get_pktnum(), RADIO_RF_PAYLOAD_MAC_SN, trf_send_buf, sizeof(radio_trf_defaultrsp_s));
+	
+	Radio_RF_Transmit(trf_send_buf, trf_send_buf[0]);
 }
 
 /**********************************************************************************************************
@@ -262,15 +356,26 @@ void Radio_RF_Xmit_Heartbeat(void)
 	
 	if (rTRF_OK != Radio_Hal_RF_Get_Status()) return;
 	
+	memset((void *)pHeartBeat, 0x00, sizeof(pHeartBeat));
 	
+	pHeartBeat->head.destSN				= 0xFFFFFFFF;
+	pHeartBeat->head.version				= TRF_MSG_VERSION;
+	pHeartBeat->head.type				= TRF_MSG_HEART;
 	
+	pHeartBeat->major_softver			= RADIO_RF_HEARTBT_MAJOR_SOFTVER;
+	pHeartBeat->minor_softver			= RADIO_RF_HEARTBT_MINOR_SOFTVER;
+	pHeartBeat->minor_hardver			= RADIO_RF_HEARTBT_MINOR_HARDVER;
+	pHeartBeat->dev_type				= RADIO_RF_HEARTBT_DEV_TYPE;
 	
+	pHeartBeat->workmode				= RADIO_RF_HEARTBT_WORK_MODE;
+	pHeartBeat->status					= RADIO_RF_HEARTBT_SPOT_STAT;
+	pHeartBeat->nbstate					= RADIO_RF_HEARTBT_NBNT_STAT;
 	
+	Radio_RF_Cfg_Buildframe((u8 *)pHeartBeat, TMOTE_PLAIN_PUB, trf_xmit_get_pktnum(), RADIO_RF_PAYLOAD_MAC_SN, trf_send_buf, sizeof(radio_trf_heartbeat_s));
 	
+	Radio_RF_Transmit(trf_send_buf, trf_send_buf[0]);
 	
-	
-	
-	
+	Delay_MS(10);
 }
 
 /**********************************************************************************************************
@@ -302,6 +407,8 @@ void Radio_RF_Xmit_Printfbuf(char* info)
 	
 	if (infolen > 44) infolen = 44;
 	
+	memset((void *)pMsg, 0x00, sizeof(pMsg));
+	
 	pMsg->head.destSN					= 0xFFFFFFFF;
 	pMsg->head.version					= TRF_MSG_VERSION;
 	pMsg->head.type					= TRF_MSG_DEBUG_INFO;
@@ -328,7 +435,36 @@ void Radio_Trf_Do_Printfbuf(char* info)
 	Radio_RF_Xmit_Printfbuf(info);
 }
 
-
+/**********************************************************************************************************
+ @Function			void Radio_RF_Trf_App_Task(void)
+ @Description			Radio_RF_Trf_App_Task
+ @Input				void
+ @Return				void
+**********************************************************************************************************/
+void Radio_RF_Trf_App_Task(void)
+{
+	u8 len = 0;
+	
+	if (rTRF_OK != Radio_Hal_RF_Get_Status()) return;
+	
+	
+	
+	Radio_Trf_Do_Heartbeat();
+	
+	
+	
+	
+	
+	
+	
+	/* 接收无线下行数据 */
+	if (TRF_SUCCESS == Radio_RF_Receive(trf_recv_buf, &len)) {
+		if (TRF_SUCCESS == Radio_RF_Operate_Recvmsg(trf_recv_buf, len)) {
+			
+			
+		}
+	}
+}
 
 
 

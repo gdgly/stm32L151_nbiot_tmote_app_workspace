@@ -243,7 +243,7 @@ u8    TCFG_EEPROM_Get_BootCount(void);																				// 读取BootCount
 
 u8    TCFG_Utility_Get_Major_SoftwareNumber(void);																	// 读取Major Software Number
 u8    TCFG_Utility_Get_Minor_SoftwareNumber(void);																	// 读取Minor Software Number
-
+u8    TCFG_Utility_Get_Minor_HardwareNumber(void);																	// 读取Minor Hardware Number
 
 
 

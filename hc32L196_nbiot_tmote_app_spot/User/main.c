@@ -41,6 +41,7 @@
 #include "radio_hal_rf.h"
 #include "radio_hal_app.h"
 #include "fota.h"
+#include "tmesh_xtea.h"
 
 /****************************************** Select DEBUG *************************************************/
 //#define	DEVICE_DEBUG																	//定义开启设备调试
@@ -142,11 +143,11 @@ int main(void)
 	
 	TCFG_EEPROM_SystemConfigInfo_Init();													//系统配置信息初始化
 	
+	tmesh_securityInit();																//XTEA加密初始化
 	
+	Radio_Hal_RF_Init();																//SI4438初始化
 	
-	
-	
-	
+	Radio_Trf_Do_Heartbeat();															//SI4438发送心跳包
 	
 	
 	

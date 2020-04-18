@@ -29,6 +29,11 @@ typedef __packed struct _radio_trf_heartbeat
 	u8						nbstate:1;
 } radio_trf_heartbeat_s;
 
+typedef __packed struct _radio_trf_defaultrsp
+{
+	radio_trf_msghead_s			head;
+	u8						ret;
+} radio_trf_defaultrsp_s;
 
 
 
@@ -51,6 +56,8 @@ char Radio_RF_Transmit(u8 *inmsg, u8 len);
 
 char Radio_RF_Operate_Recvmsg(u8 *inmsg, u8 len);
 
+void Radio_RF_Xmit_Default_Resp(u8 ret, u8 type);
+
 void Radio_RF_Xmit_Heartbeat(void);
 
 void Radio_Trf_Do_Heartbeat(void);
@@ -58,6 +65,10 @@ void Radio_Trf_Do_Heartbeat(void);
 void Radio_RF_Xmit_Printfbuf(char* info);
 
 void Radio_Trf_Do_Printfbuf(char* info);
+
+void Radio_RF_Trf_App_Task(void);
+
+
 
 
 
