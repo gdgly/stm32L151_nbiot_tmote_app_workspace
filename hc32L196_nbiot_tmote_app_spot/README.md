@@ -29,6 +29,8 @@ Address | nByte |  Name
 0x0000_0007 ~ 0x0000_000A | (4Byte) | VenderBackUp
 0x0000_000B ~ 0x0000_000B | (1Byte) | SoftwareMajorBackUp
 0x0000_000C ~ 0x0000_000C | (1Byte) | SoftwareMinorBackUp
+0x0000_000D ~ 0x0000_000D | (1Byte) | RadioChannel
+0x0000_000E ~ 0x0000_000E | (1Byte) | RadioHeartval
 0x0000_00F7 ~ 0x0000_00FA | (4Byte) | Vender
 0x0000_00FB ~ 0x0000_00FE | (4Byte) | SN
 0x0000_00FF ~ 0x0000_00FF | (1Byte) | Check

@@ -171,6 +171,8 @@ int main(void)
 	HC32_BEEP_Repeat(10, 60, 25);															//HC32蜂鸣器
 	HC32_IWDG_Feed();																	//HC32喂狗
 	
+	Radio_RF_Trf_Printf("Device Reboot:%d Cause:%d Radar:%d Nor:%s", 0, 0, 0, "Ok");
+	Radio_RF_Trf_Printf("Copyright (C) 2020 Movebroad Version:%d.%d", TCFG_Utility_Get_Major_SoftwareNumber(), TCFG_Utility_Get_Minor_SoftwareNumber());
 	
 	
 	
@@ -193,10 +195,18 @@ int main(void)
 	
 	
 	
-	printf("SN: %x\r\n", TCFG_EEPROM_Get_MAC_SN());
-	printf("SN: %s\r\n", TCFG_EEPROM_Get_MAC_SN_String());
-	printf("Vender: %s\r\n", TCFG_EEPROM_Get_Vender_String());
 	
+	printf("SN: %x\r\n", TCFG_Utility_Get_Factory_MacSN());
+	printf("Vender: %x\r\n", TCFG_Utility_Get_Factory_Vender());
+	printf("SN Str: %s\r\n", TCFG_Utility_Get_Factory_MacSN_String());
+	printf("Vender Str: %s\r\n", TCFG_Utility_Get_Factory_Vender_String());
+	
+	printf("BV : %d\r\n", TCFG_Utility_Get_BootVersion());
+	printf("BM : %d\r\n", TCFG_Utility_Get_BootMode());
+	printf("BC : %d\r\n", TCFG_Utility_Get_BootCount());
+	
+	printf("TCFG_Utility_Get_RadioChannel : %d\r\n", TCFG_Utility_Get_RadioChannel());
+	printf("TCFG_Utility_Get_RadioHeartval : %d\r\n", TCFG_Utility_Get_RadioHeartval());
 	
 	struct tm date;
 	
@@ -221,7 +231,7 @@ int main(void)
 		
 		
 		
-		
+		Radio_RF_Trf_App_Task();
 		
 	}
 }

@@ -42,9 +42,19 @@
 
 
 
-
-
-
+typedef enum
+{
+	REBOOT_MODE_NONE			= 0x00,
+	REBOOT_MODE_SYS_OVERTIME		= 0x01,
+	REBOOT_MODE_CMD_RADIO		= 0x02,
+	REBOOT_MODE_CMD_COAP		= 0x03,
+	REBOOT_MODE_CMD_MQTT		= 0x04,
+	REBOOT_MODE_UPGRADE_RADIO	= 0x05,
+	REBOOT_MODE_UPGRADE_COAP		= 0x06,
+	REBOOT_MODE_UPGRADE_MQTT		= 0x07,
+	REBOOT_MODE_NBIOT_HDRBT		= 0x08,
+	REBOOT_MODE_NBIOT_CONNECT	= 0x09,
+} HC32_REBOOT_MODE_TypeDef;
 
 typedef enum
 {
@@ -55,7 +65,7 @@ typedef enum
 	RCC_RESET_FLAG_PINRST		= 0x08,													/*!< PIN Reset Flag					*/
 	RCC_RESET_FLAG_LPWRRST		= 0x03,													/*!< Low-Power Reset Flag			*/
 	RCC_RESET_FLAG_PCA			= 0x05,													/*!< Options Bytes Loading Reset Flag	*/
-	RCC_RESET_FLAG_LOCKUP		= 0x09													/*!< CPU Lockup Reset Flag			*/
+	RCC_RESET_FLAG_LOCKUP		= 0x09,													/*!< CPU Lockup Reset Flag			*/
 } HC32_RESET_FLAG_TypeDef;
 
 extern HC32_RESET_FLAG_TypeDef HC32_Reset_Flag;												//HC32系统复位标志

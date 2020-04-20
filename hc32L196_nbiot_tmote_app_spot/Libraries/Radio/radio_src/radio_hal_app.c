@@ -31,7 +31,7 @@
 
 #include "tmesh_xtea.h"
 
-#define RADIO_RF_PAYLOAD_MAC_SN			TCFG_EEPROM_Get_MAC_SN()
+#define RADIO_RF_PAYLOAD_MAC_SN			TCFG_Utility_Get_Factory_MacSN()
 
 #define RADIO_RF_HEARTBT_MAJOR_SOFTVER		TCFG_Utility_Get_Major_SoftwareNumber()
 #define RADIO_RF_HEARTBT_MINOR_SOFTVER		TCFG_Utility_Get_Minor_SoftwareNumber()
@@ -51,6 +51,8 @@ static frameInfo_t sInFrameQ[SIZE_INFRAME_Q];
 u8 trf_send_buf[RADIO_RF_SENDBUF_SIZE] = {0};
 u8 trf_recv_buf[RADIO_RF_RECVBUF_SIZE] = {0};
 u8 trf_pint_buf[RADIO_RF_PINTBUF_SIZE] = {0};
+
+static u32 radio_hearttime_pre = 0;
 
 /**********************************************************************************************************
  @Function			void tmesh_rf_QInit(void)
@@ -446,6 +448,15 @@ void Radio_RF_Trf_App_Task(void)
 	u8 len = 0;
 	
 	if (rTRF_OK != Radio_Hal_RF_Get_Status()) return;
+	
+	/* 心跳间隔时间发送心跳包 */
+	if ((radio_hearttime_pre + Radio_Hal_RF_Get_Heartval()) < HC32_GetSecondTick()) {
+		radio_hearttime_pre = HC32_GetSecondTick();
+		Radio_Trf_Do_Heartbeat();
+	}
+	
+	
+	
 	
 	
 	

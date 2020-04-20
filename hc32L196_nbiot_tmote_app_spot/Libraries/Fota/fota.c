@@ -26,7 +26,7 @@
 #include "radio_hal_app.h"
 
 #define FOTA_DEBUG_LOG_RF_PRINTF
-#define FOTA_DEBUG_LOG_PRINTF				printf
+#define FOTA_DEBUG_LOG_PRINTF				Radio_RF_Trf_Printf
 
 static void FOTA_ChokeHandle(void)
 {

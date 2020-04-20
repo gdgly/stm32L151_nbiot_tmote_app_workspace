@@ -57,6 +57,7 @@ typedef enum _radio_trf_check
 static u8 radio_status = rTRF_ERROR;
 static u8 radio_inited = rTRF_Uninited;
 static u8 radio_channel = RADIO_RF_CHANNEL1;
+static u8 radio_heartval = RADIO_RF_HEARTVAL;
 
 static u8 radio_Packet_len;
 static u8 radio_Data_sending = rTRF_Sending;
@@ -187,6 +188,10 @@ void Radio_Hal_RF_Init(void)
 {
 	timeMeterTypeDef radioRFTimer;
 	
+	Radio_Hal_RF_Set_Channel(TCFG_Utility_Get_RadioChannel());
+	
+	Radio_Hal_RF_Set_Heartval(TCFG_Utility_Get_RadioHeartval());
+	
 	/* step 0: radio interface init */
 	Radio_Hal_RF_Interface_Init();
 	
@@ -233,14 +238,47 @@ char Radio_Hal_RF_Get_Status(void)
 }
 
 /**********************************************************************************************************
+ @Function		void Radio_Hal_RF_Set_Channel(char channel)
+ @Description 		Radio_Hal_RF_Set_Channel							: Radio RF 设置通道
+ @Input			channel
+ @Return		  	void
+**********************************************************************************************************/
+void Radio_Hal_RF_Set_Channel(char channel)
+{
+	radio_channel = channel;
+}
+
+/**********************************************************************************************************
  @Function		char Radio_Hal_RF_Get_Channel(void)
  @Description 		Radio_Hal_RF_Get_Channel							: Radio RF 获取通道
  @Input			void
- @Return		  	void
+ @Return		  	channel
 **********************************************************************************************************/
 char Radio_Hal_RF_Get_Channel(void)
 {
 	return radio_channel;
+}
+
+/**********************************************************************************************************
+ @Function		void Radio_Hal_RF_Set_Heartval(char heartval)
+ @Description 		Radio_Hal_RF_Set_Heartval						: Radio RF 设置心跳
+ @Input			heartval
+ @Return		  	void
+**********************************************************************************************************/
+void Radio_Hal_RF_Set_Heartval(char heartval)
+{
+	radio_heartval = heartval;
+}
+
+/**********************************************************************************************************
+ @Function		char Radio_Hal_RF_Get_Heartval(void)
+ @Description 		Radio_Hal_RF_Get_Heartval						: Radio RF 获取心跳
+ @Input			void
+ @Return		  	heartval
+**********************************************************************************************************/
+char Radio_Hal_RF_Get_Heartval(void)
+{
+	return radio_heartval;
 }
 
 /**********************************************************************************************************

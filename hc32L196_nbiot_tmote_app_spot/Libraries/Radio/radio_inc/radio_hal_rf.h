@@ -38,7 +38,13 @@ void Radio_Hal_RF_Init(void);																//Radio RF 初始化
 
 char Radio_Hal_RF_Get_Status(void);														//Radio RF 获取状态
 
+void Radio_Hal_RF_Set_Channel(char channel);													//Radio RF 设置通道
+
 char Radio_Hal_RF_Get_Channel(void);														//Radio RF 获取通道
+
+void Radio_Hal_RF_Set_Heartval(char heartval);												//Radio RF 设置心跳
+
+char Radio_Hal_RF_Get_Heartval(void);														//Radio RF 获取心跳
 
 void Radio_Hal_RF_Interface_Init(void);														//Radio RF 接口初始化
 

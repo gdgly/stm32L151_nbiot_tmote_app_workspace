@@ -55,12 +55,13 @@
 #define TCFG_SOFTWAREBACKUP_MINOR_OFFSET			TCFG_SOFTWAREBACKUP_MAJOR_OFFSET + TCFG_SOFTWAREBACKUP_MAJOR_LENGTH			// 0x0000000C
 #define TCFG_SOFTWAREBACKUP_MINOR_LENGTH			1																// SoftwareMinor BackUp	SoftwareMinor备份比对
 
+#define TCFG_RADIO_CHANNEL_OFFSET					TCFG_SOFTWAREBACKUP_MINOR_OFFSET + TCFG_SOFTWAREBACKUP_MINOR_LENGTH			// 0x0000000D
+#define TCFG_RADIO_CHANNEL_LENGTH					1																// Radio Channel		Radio RF 通道
+#define TCFG_RADIO_HEARTVL_OFFSET					TCFG_RADIO_CHANNEL_OFFSET + TCFG_RADIO_CHANNEL_LENGTH						// 0x0000000E
+#define TCFG_RADIO_HEARTVL_LENGTH					1																// Radio Heartval		Radio RF 心跳
 
-
-
-
-
-
+#define TCFG_DEVICE_RBTMODE_OFFSET					TCFG_RADIO_HEARTVL_OFFSET + TCFG_RADIO_HEARTVL_LENGTH						// 0x0000000F
+#define TCFG_DEVICE_RBTMODE_LENGTH					1																// Device Reboot Mode	设备重启方式
 
 
 
@@ -82,9 +83,13 @@ typedef struct
 {
 	u8		FactoryMacsn[9];
 	u8		FactoryVender[4];
-	
-	
-	
+	u32		MacSN;
+	u32		Vender;
+	u8		BootVersion;
+	u8		BootRunmode;
+	u8		BootRecount;
+	u8		RadioChannel;
+	u8		RadioHeartval;
 	
 	
 	
@@ -200,6 +205,11 @@ u8    TCFG_EEPROM_Get_BootMode(void);																				// 读取BootMode
 void  TCFG_EEPROM_Set_BootCount(u8 bootCount);																		// 保存BootCount
 u8    TCFG_EEPROM_Get_BootCount(void);																				// 读取BootCount
 
+void  TCFG_EEPROM_Set_RadioChannel(u8 channel);																		// 保存RadioChannel
+u8    TCFG_EEPROM_Get_RadioChannel(void);																			// 读取RadioChannel
+
+void  TCFG_EEPROM_Set_RadioHeartval(u8 heartval);																		// 保存RadioHeartval
+u8    TCFG_EEPROM_Get_RadioHeartval(void);																			// 读取RadioHeartval
 
 
 
@@ -223,6 +233,14 @@ u8    TCFG_EEPROM_Get_BootCount(void);																				// 读取BootCount
 
 
 
+/*****************************************************************************************************************************************************/
+
+void  TCFG_Utility_Set_BootVersion(u8 bootVer);																		// 设置BootVersion
+void  TCFG_Utility_Set_BootMode(u8 bootMode);																		// 设置BootMode
+void  TCFG_Utility_Set_BootCount(u8 bootCount);																		// 设置BootCount
+
+void  TCFG_Utility_Set_RadioChannel(u8 channel);																		// 设置RadioChannel
+void  TCFG_Utility_Set_RadioHeartval(u8 heartval);																	// 设置RadioHeartval
 
 
 
@@ -233,6 +251,21 @@ u8    TCFG_EEPROM_Get_BootCount(void);																				// 读取BootCount
 
 
 
+/*****************************************************************************************************************************************************/
+
+/*****************************************************************************************************************************************************/
+
+u32   TCFG_Utility_Get_Factory_MacSN(void);																			// 读取Factory MacSN
+u32   TCFG_Utility_Get_Factory_Vender(void);																			// 读取Factory Vender
+char* TCFG_Utility_Get_Factory_MacSN_String(void);																	// 读取Factory MacSN字符串
+char* TCFG_Utility_Get_Factory_Vender_String(void);																	// 读取Factory Vender字符串
+
+u8    TCFG_Utility_Get_BootVersion(void);																			// 读取BootVersion
+u8    TCFG_Utility_Get_BootMode(void);																				// 读取BootMode
+u8    TCFG_Utility_Get_BootCount(void);																				// 读取BootCount
+
+u8    TCFG_Utility_Get_RadioChannel(void);																			// 读取RadioChannel
+u8    TCFG_Utility_Get_RadioHeartval(void);																			// 读取RadioHeartval
 
 
 
@@ -245,7 +278,7 @@ u8    TCFG_Utility_Get_Major_SoftwareNumber(void);																	// 读取Majo
 u8    TCFG_Utility_Get_Minor_SoftwareNumber(void);																	// 读取Minor Software Number
 u8    TCFG_Utility_Get_Minor_HardwareNumber(void);																	// 读取Minor Hardware Number
 
-
+/*****************************************************************************************************************************************************/
 
 
 #endif /* __PLATFORM_MAP_H */
