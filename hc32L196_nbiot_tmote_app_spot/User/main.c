@@ -143,16 +143,17 @@ int main(void)
 	
 	TCFG_EEPROM_SystemConfigInfo_Init();													//系统配置信息初始化
 	
+	QMC5883L_Init();																	//QMC5883L初始化
+	
 	tmesh_securityInit();																//XTEA加密初始化
 	
 	Radio_Hal_RF_Init();																//SI4438初始化
 	
 	Radio_Trf_Do_Heartbeat();															//SI4438发送心跳包
 	
+	HC32_IWDG_Feed();																	//HC32喂狗
 	
-	
-	
-	
+	HC32_AutomaticSystem_Check();															//HC32系统自检
 	
 	
 	
@@ -171,7 +172,7 @@ int main(void)
 	HC32_BEEP_Repeat(10, 60, 25);															//HC32蜂鸣器
 	HC32_IWDG_Feed();																	//HC32喂狗
 	
-	Radio_RF_Trf_Printf("Device Reboot:%d Cause:%d Radar:%d Nor:%s", 0, 0, 0, "Ok");
+	Radio_RF_Trf_Printf("Device Reboot:%d Cause:%d Radar:%d Nor:%s", 0, HC32_Reset_Flag, 0, "Ok");
 	Radio_RF_Trf_Printf("Copyright (C) 2020 Movebroad Version:%d.%d", TCFG_Utility_Get_Major_SoftwareNumber(), TCFG_Utility_Get_Minor_SoftwareNumber());
 	
 	
@@ -195,7 +196,7 @@ int main(void)
 	
 	
 	
-	
+	#if 0
 	printf("SN: %x\r\n", TCFG_Utility_Get_Factory_MacSN());
 	printf("Vender: %x\r\n", TCFG_Utility_Get_Factory_Vender());
 	printf("SN Str: %s\r\n", TCFG_Utility_Get_Factory_MacSN_String());
@@ -208,6 +209,20 @@ int main(void)
 	printf("TCFG_Utility_Get_RadioChannel : %d\r\n", TCFG_Utility_Get_RadioChannel());
 	printf("TCFG_Utility_Get_RadioHeartval : %d\r\n", TCFG_Utility_Get_RadioHeartval());
 	
+	printf("TCFG_DEVICE_RBTMODE_OFFSET: %x\r\n", TCFG_DEVICE_RBTMODE_OFFSET);
+	printf("TCFG_Utility_Get_DeviceRebootMode: %d\r\n", TCFG_Utility_Get_DeviceRebootMode());
+	#endif
+	
+	printf("TCFG_SENSITIVITY_OFFSET: 0x%08X\r\n", TCFG_SENSITIVITY_OFFSET);
+	printf("TCFG_WORKMODE_OFFSET: 0x%08X\r\n", TCFG_WORKMODE_OFFSET);
+	printf("TCFG_ACTIVEMODE_OFFSET: 0x%08X\r\n", TCFG_ACTIVEMODE_OFFSET);
+	
+	
+	
+	
+	
+	
+	short x, y, z;
 	struct tm date;
 	
 	HC32_RTC_SetTime(20, 04, 16, 10, 00, 00);
@@ -217,15 +232,20 @@ int main(void)
 		
 		date = HC32_RTC_GetUnixTimeToCalendar();
 		
+		QMC5883L_ReadData_Extended(&x, &y, &z);
+		
 		printf("*******************************************************************************************\r\n");
 		printf("This is Upgrade to Jump Application\r\n");
 		printf("Reset: %d Runing: %8d HCLK: %d PCLK: %d SystemCoreClock: %d\r\n", HC32_Reset_Flag, HC32_GetMecondTick(), Sysctrl_GetHClkFreq(), Sysctrl_GetPClkFreq(), SystemCoreClock);
 		printf("Date:  %02d-%02d-%02d %02d:%02d:%02d week %d\r\n", date.tm_year, date.tm_mon, date.tm_mday, date.tm_hour, date.tm_min, date.tm_sec, date.tm_wday);
+		printf("QMC:   X = %d, Y = %d, Z = %d\r\n", x, y, z);
 		printf("*******************************************************************************************\r\n\r\n");
 		
 		Delay_MS(1000);
 		
 		HC32_IWDG_Feed();
+		
+		
 		
 		
 		

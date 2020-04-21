@@ -92,6 +92,11 @@ void  TCFG_EEPROM_WriteSystemConfigData(void)
 	TCFG_SystemData.RadioHeartval = RADIO_RF_HEARTVAL;
 	TCFG_EEPROM_Set_RadioHeartval(TCFG_SystemData.RadioHeartval);
 	
+	/* 写入Device Reboot Mode重启方式 */
+	TCFG_SystemData.DevRebootMode = REBOOT_MODE_NONE;
+	TCFG_EEPROM_Set_DeviceRebootMode(TCFG_SystemData.DevRebootMode);
+	
+	
 	
 	
 	
@@ -175,6 +180,17 @@ void  TCFG_EEPROM_ReadSystemConfigData(void)
 		TCFG_SystemData.RadioHeartval = RADIO_RF_HEARTVAL;
 		TCFG_EEPROM_Set_RadioHeartval(TCFG_SystemData.RadioHeartval);
 	}
+	
+	/* 获取Device Reboot Mode重启方式 */
+	TCFG_SystemData.DevRebootMode = TCFG_EEPROM_Get_DeviceRebootMode();
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	
@@ -428,6 +444,9 @@ char* TCFG_EEPROM_Get_Vender_String(void)
 
 
 
+
+
+
 /**********************************************************************************************************
  @Function			void  TCFG_EEPROM_Set_BootVersion(u8 bootVer)
  @Description			TCFG_EEPROM_Set_BootVersion					: 保存BootVersion
@@ -538,6 +557,101 @@ u8    TCFG_EEPROM_Get_RadioHeartval(void)
 	return FLASH_EEPROM_ReadByte(TCFG_RADIO_HEARTVL_OFFSET);
 }
 
+/**********************************************************************************************************
+ @Function			void  TCFG_EEPROM_Set_DeviceRebootMode(u8 rebootmode)
+ @Description			TCFG_EEPROM_Set_DeviceRebootMode				: 保存DeviceRebootMode
+ @Input				rebootmode
+ @Return				void
+**********************************************************************************************************/
+void  TCFG_EEPROM_Set_DeviceRebootMode(u8 rebootmode)
+{
+	FLASH_EEPROM_WriteByte(TCFG_DEVICE_RBTMODE_OFFSET, rebootmode);
+}
+
+/**********************************************************************************************************
+ @Function			u8    TCFG_EEPROM_Get_DeviceRebootMode(void)
+ @Description			TCFG_EEPROM_Get_DeviceRebootMode				: 读取DeviceRebootMode
+ @Input				void
+ @Return				rebootmode
+**********************************************************************************************************/
+u8    TCFG_EEPROM_Get_DeviceRebootMode(void)
+{
+	return FLASH_EEPROM_ReadByte(TCFG_DEVICE_RBTMODE_OFFSET);
+}
+
+/**********************************************************************************************************
+ @Function			void  TCFG_EEPROM_Set_Sensitivity(u8 sens)
+ @Description			TCFG_EEPROM_Set_Sensitivity					: 保存Sensitivity
+ @Input				sens
+ @Return				void
+**********************************************************************************************************/
+void  TCFG_EEPROM_Set_Sensitivity(u8 sens)
+{
+	FLASH_EEPROM_WriteByte(TCFG_SENSITIVITY_OFFSET, sens);
+}
+
+/**********************************************************************************************************
+ @Function			u8    TCFG_EEPROM_Get_Sensitivity(void)
+ @Description			TCFG_EEPROM_Get_Sensitivity					: 读取Sensitivity
+ @Input				void
+ @Return				sens
+**********************************************************************************************************/
+u8    TCFG_EEPROM_Get_Sensitivity(void)
+{
+	return FLASH_EEPROM_ReadByte(TCFG_SENSITIVITY_OFFSET);
+}
+
+/**********************************************************************************************************
+ @Function			void  TCFG_EEPROM_Set_WorkMode(u8 workmode)
+ @Description			TCFG_EEPROM_Set_WorkMode						: 保存WorkMode
+ @Input				workmode
+ @Return				void
+**********************************************************************************************************/
+void  TCFG_EEPROM_Set_WorkMode(u8 workmode)
+{
+	FLASH_EEPROM_WriteByte(TCFG_WORKMODE_OFFSET, workmode);
+}
+
+/**********************************************************************************************************
+ @Function			u8    TCFG_EEPROM_Get_WorkMode(void)
+ @Description			TCFG_EEPROM_Get_WorkMode						: 读取WorkMode
+ @Input				void
+ @Return				workmode
+**********************************************************************************************************/
+u8    TCFG_EEPROM_Get_WorkMode(void)
+{
+	return FLASH_EEPROM_ReadByte(TCFG_WORKMODE_OFFSET);
+}
+
+/**********************************************************************************************************
+ @Function			void  TCFG_EEPROM_Set_ActiveMode(u8 active)
+ @Description			TCFG_EEPROM_Set_ActiveMode					: 保存ActiveMode
+ @Input				active
+ @Return				void
+**********************************************************************************************************/
+void  TCFG_EEPROM_Set_ActiveMode(u8 active)
+{
+	FLASH_EEPROM_WriteByte(TCFG_ACTIVEMODE_OFFSET, active);
+}
+
+/**********************************************************************************************************
+ @Function			u8    TCFG_EEPROM_Get_ActiveMode(void)
+ @Description			TCFG_EEPROM_Get_ActiveMode					: 读取ActiveMode
+ @Input				void
+ @Return				active
+**********************************************************************************************************/
+u8    TCFG_EEPROM_Get_ActiveMode(void)
+{
+	return FLASH_EEPROM_ReadByte(TCFG_ACTIVEMODE_OFFSET);
+}
+
+
+
+
+
+
+
+
 
 
 
@@ -637,7 +751,17 @@ void  TCFG_Utility_Set_RadioHeartval(u8 heartval)
 	}
 }
 
-
+/**********************************************************************************************************
+ @Function			void  TCFG_Utility_Set_DeviceRebootMode(u8 rebootmode)
+ @Description			TCFG_Utility_Set_DeviceRebootMode				: 设置DeviceRebootMode
+ @Input				val
+ @Return				void
+**********************************************************************************************************/
+void  TCFG_Utility_Set_DeviceRebootMode(u8 rebootmode)
+{
+	TCFG_SystemData.DevRebootMode = rebootmode;
+	TCFG_EEPROM_Set_DeviceRebootMode(TCFG_SystemData.DevRebootMode);
+}
 
 
 
@@ -775,6 +899,21 @@ u8    TCFG_Utility_Get_RadioHeartval(void)
 	return TCFG_SystemData.RadioHeartval;
 }
 
+/**********************************************************************************************************
+ @Function			u8    TCFG_Utility_Get_DeviceRebootMode(void)
+ @Description			TCFG_Utility_Get_DeviceRebootMode				: 读取DeviceRebootMode
+ @Input				void
+ @Return				val
+**********************************************************************************************************/
+u8    TCFG_Utility_Get_DeviceRebootMode(void)
+{
+	return TCFG_SystemData.DevRebootMode;
+}
+
+
+
+
+
 
 
 
@@ -841,6 +980,17 @@ u8    TCFG_Utility_Get_Minor_SoftwareNumber(void)
 u8    TCFG_Utility_Get_Minor_HardwareNumber(void)
 {
 	return MVB_APPL_HARDWARE_V2;
+}
+
+/**********************************************************************************************************
+ @Function			u8    TCFG_Utility_Get_DeviceType(void)
+ @Description			TCFG_Utility_Get_DeviceType					: 读取Device Type
+ @Input				void
+ @Return				val
+**********************************************************************************************************/
+u8    TCFG_Utility_Get_DeviceType(void)
+{
+	return MVB_MODEL_TYPE;
 }
 
 

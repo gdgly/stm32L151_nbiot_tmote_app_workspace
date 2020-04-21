@@ -13,7 +13,7 @@
 #define RTC_IRQ_Channel			RTC_IRQn
 
 #define RTC_DEFAULT_YEAR			0x20
-#define RTC_DEFAULT_MONTH		0x03
+#define RTC_DEFAULT_MONTH		0x04
 #define RTC_DEFAULT_DAY			0x01
 #define RTC_DEFAULT_HOUR			0x12
 #define RTC_DEFAULT_MINUTE		0x30

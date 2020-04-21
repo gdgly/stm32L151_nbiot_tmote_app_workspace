@@ -41,6 +41,9 @@
 #include "fota.h"
 #include "tmesh_xtea.h"
 
+#define HC32_DEBUG_LOG_RF_PRINTF
+#define HC32_DEBUG_LOG_PRINTF				Radio_RF_Trf_Printf
+
 HC32_RESET_FLAG_TypeDef HC32_Reset_Flag = RCC_RESET_FLAG_NONE;
 
 /**********************************************************************************************************
@@ -87,6 +90,19 @@ HC32_RESET_FLAG_TypeDef HC32_SystemReset_GetStatus(void)
 	}
 	
 	return resetStatus;
+}
+
+/**********************************************************************************************************
+ @Function			void HC32_System_Software_Reboot(HC32_REBOOT_MODE_TypeDef mode)
+ @Description			HC32_System_Software_Reboot					: HC32软件重启
+ @Input				mode
+ @Return				void
+**********************************************************************************************************/
+void HC32_System_Software_Reboot(HC32_REBOOT_MODE_TypeDef mode)
+{
+	TCFG_Utility_Set_DeviceRebootMode(mode);
+	
+	HC32_SystemReset();
 }
 
 /**********************************************************************************************************
@@ -362,7 +378,50 @@ void HC32_CtrPowerIO_Init(void)
 	VBATE_POWER_IO_SET(OFF);																//外设VBate电源关闭
 }
 
-
+/**********************************************************************************************************
+ @Function			void HC32_AutomaticSystem_Check(void)
+ @Description			HC32_AutomaticSystem_Check					: HC32系统自检
+ @Input				void
+ @Return				void
+**********************************************************************************************************/
+void HC32_AutomaticSystem_Check(void)
+{
+	if (Radio_Hal_RF_Get_Status() != rTRF_OK) {
+		HC32_BEEP_Repeat(1, 3000, 100);
+#ifdef HC32_DEBUG_LOG_RF_PRINTF
+		HC32_DEBUG_LOG_PRINTF("Application: SI4438 Error!!!");
+		HC32_DEBUG_LOG_PRINTF("Application: SI4438 Error!!!");
+#endif
+		return;
+	}
+	
+	if (HC32_FLASH_Status() != Ok) {
+		HC32_BEEP_Repeat(1, 3000, 100);
+#ifdef HC32_DEBUG_LOG_RF_PRINTF
+		HC32_DEBUG_LOG_PRINTF("Application: CFLASH Error!!!");
+		HC32_DEBUG_LOG_PRINTF("Application: CFLASH Error!!!");
+#endif
+		return;
+	}
+	
+	if (FLASH_EEPROM_Status() != Ok) {
+		HC32_BEEP_Repeat(1, 3000, 100);
+#ifdef HC32_DEBUG_LOG_RF_PRINTF
+		HC32_DEBUG_LOG_PRINTF("Application: EEPROM Error!!!");
+		HC32_DEBUG_LOG_PRINTF("Application: EEPROM Error!!!");
+#endif
+		return;
+	}
+	
+	if (FLASH_NOR_Status() != Ok) {
+		HC32_BEEP_Repeat(1, 3000, 100);
+#ifdef HC32_DEBUG_LOG_RF_PRINTF
+		HC32_DEBUG_LOG_PRINTF("Application: NORFLH Error!!!");
+		HC32_DEBUG_LOG_PRINTF("Application: NORFLH Error!!!");
+#endif
+		return;
+	}
+}
 
 
 

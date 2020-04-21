@@ -23,6 +23,7 @@
 #include "radio_msg_config.h"
 #include "radio_core.h"
 #include "radio_comm.h"
+#include "radio_command.h"
 #include "si446x_api_lib.h"
 #include "hal_beep.h"
 #include "delay.h"
@@ -36,11 +37,14 @@
 #define RADIO_RF_HEARTBT_MAJOR_SOFTVER		TCFG_Utility_Get_Major_SoftwareNumber()
 #define RADIO_RF_HEARTBT_MINOR_SOFTVER		TCFG_Utility_Get_Minor_SoftwareNumber()
 #define RADIO_RF_HEARTBT_MINOR_HARDVER		TCFG_Utility_Get_Minor_HardwareNumber()
-#define RADIO_RF_HEARTBT_DEV_TYPE			MVB_MODEL_TYPE
+#define RADIO_RF_HEARTBT_DEV_TYPE			TCFG_Utility_Get_DeviceType()
 
 #define RADIO_RF_HEARTBT_WORK_MODE			0
 #define RADIO_RF_HEARTBT_SPOT_STAT			1
 #define RADIO_RF_HEARTBT_NBNT_STAT			1
+
+#define RADIO_RF_GATCMD_NEARBY_HEART_SEC	3
+#define RADIO_RF_GATWAY_NEARBY_HEART_SEC	5
 
 #define RADIO_RF_SENDBUF_SIZE				256
 #define RADIO_RF_RECVBUF_SIZE				256
@@ -53,6 +57,9 @@ u8 trf_recv_buf[RADIO_RF_RECVBUF_SIZE] = {0};
 u8 trf_pint_buf[RADIO_RF_PINTBUF_SIZE] = {0};
 
 static u32 radio_hearttime_pre = 0;
+
+static s32 radio_cmdtime_nearby = -180;
+static s32 radio_gateway_nearby = 10;
 
 /**********************************************************************************************************
  @Function			void tmesh_rf_QInit(void)
@@ -248,9 +255,7 @@ char Radio_RF_Operate_Recvmsg(u8 *inmsg, u8 len)
 			
 			/* 升级指令 */
 			if (pPayload->head.type == TRF_MSG_UPGRADE) {
-				
-				
-				
+				Radio_Command_Upgrade();
 			}
 			/* 传感器灵敏度配置指令 */
 			else if (pPayload->head.type == TRF_MSG_SENSITIVITY) {
@@ -284,7 +289,7 @@ char Radio_RF_Operate_Recvmsg(u8 *inmsg, u8 len)
 				
 				
 				
-				printf("SI4438 Cmd\r\n");
+				
 				
 				
 				
@@ -299,15 +304,11 @@ char Radio_RF_Operate_Recvmsg(u8 *inmsg, u8 len)
 			
 			if (CFG_GET_FROM_FRAME(CFG_P_FRAME_HEAD(inmsg), CFG_HEAD_TYPE_OS) == TMOTE_PLAIN_GET)
 			{
-				
-				
-				
-				
+				__NOP();
 			}
 			else if (CFG_GET_FROM_FRAME(CFG_P_FRAME_HEAD(inmsg), CFG_HEAD_TYPE_OS) == TMOTE_PLAIN_ACK)
 			{
-				
-				
+				radio_gateway_nearby = 15;
 				
 				rc = TRF_IS_ACK;
 			}
@@ -357,6 +358,8 @@ void Radio_RF_Xmit_Heartbeat(void)
 	radio_trf_heartbeat_s * pHeartBeat = (radio_trf_heartbeat_s*)(trf_send_buf + 32);
 	
 	if (rTRF_OK != Radio_Hal_RF_Get_Status()) return;
+	
+	if (radio_gateway_nearby) radio_gateway_nearby--;
 	
 	memset((void *)pHeartBeat, 0x00, sizeof(pHeartBeat));
 	
@@ -454,28 +457,58 @@ void Radio_RF_Trf_App_Task(void)
 		radio_hearttime_pre = HC32_GetSecondTick();
 		Radio_Trf_Do_Heartbeat();
 	}
-	
-	
-	
-	
-	
-	
-	Radio_Trf_Do_Heartbeat();
-	
-	
-	
-	
-	
-	
+	/* 接收到下行指令持续180秒连续间隔3秒发送心跳包 */
+	else if (((radio_hearttime_pre + RADIO_RF_GATCMD_NEARBY_HEART_SEC) < HC32_GetSecondTick()) && ((radio_cmdtime_nearby + 180) > HC32_GetSecondTick())) {
+		radio_hearttime_pre = HC32_GetSecondTick();
+		Radio_Trf_Do_Heartbeat();
+	}
+	/* 接收到配置器Ping包连续间隔5秒发送心跳包 */
+	else if (((radio_hearttime_pre + RADIO_RF_GATWAY_NEARBY_HEART_SEC) < HC32_GetSecondTick()) && (radio_gateway_nearby > 0)) {
+		radio_hearttime_pre = HC32_GetSecondTick();
+		Radio_Trf_Do_Heartbeat();
+	}
 	
 	/* 接收无线下行数据 */
 	if (TRF_SUCCESS == Radio_RF_Receive(trf_recv_buf, &len)) {
 		if (TRF_SUCCESS == Radio_RF_Operate_Recvmsg(trf_recv_buf, len)) {
-			
-			
+			radio_cmdtime_nearby = HC32_GetSecondTick();
 		}
 	}
 }
+
+/**********************************************************************************************************
+ @Function			s32  Radio_RF_Get_Cmdtime_nearby(void)
+ @Description			Radio_RF_Get_Cmdtime_nearby
+ @Input				void
+ @Return				radio_cmdtime_nearby
+**********************************************************************************************************/
+s32  Radio_RF_Get_Cmdtime_nearby(void)
+{
+	return radio_cmdtime_nearby;
+}
+
+/**********************************************************************************************************
+ @Function			s32  Radio_RF_Get_Gateway_nearby(void)
+ @Description			Radio_RF_Get_Gateway_nearby
+ @Input				void
+ @Return				radio_gateway_nearby
+**********************************************************************************************************/
+s32  Radio_RF_Get_Gateway_nearby(void)
+{
+	return radio_gateway_nearby;
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

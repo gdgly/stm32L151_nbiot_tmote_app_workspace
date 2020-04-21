@@ -773,6 +773,11 @@
               <FilePath>..\Libraries\Radio\radio_src\radio_comm.c</FilePath>
             </File>
             <File>
+              <FileName>radio_command.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Libraries\Radio\radio_src\radio_command.c</FilePath>
+            </File>
+            <File>
               <FileName>si446x_api_lib.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Libraries\Radio\si446x_src\si446x_api_lib.c</FilePath>

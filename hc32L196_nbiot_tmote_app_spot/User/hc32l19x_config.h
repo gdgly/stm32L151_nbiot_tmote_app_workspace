@@ -72,12 +72,15 @@ extern HC32_RESET_FLAG_TypeDef HC32_Reset_Flag;												//HC32系统复位标
 
 HC32_RESET_FLAG_TypeDef HC32_SystemReset_GetStatus(void);										//HC32获取复位标志位
 
+void HC32_System_Software_Reboot(HC32_REBOOT_MODE_TypeDef mode);									//HC32软件重启
+
 void HC32_PeripheralAll_Reset(void);														//HC32外设模块复位
 
 void HC32_LowPowerIO_Init(void);															//HC32低功耗IO初始化
 void HC32_RstPowerIO_Init(void);															//HC32复位电源初始化
 void HC32_CtrPowerIO_Init(void);															//HC32控制电源初始化
 
+void HC32_AutomaticSystem_Check(void);														//HC32系统自检
 
 
 

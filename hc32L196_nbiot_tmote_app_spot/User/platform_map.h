@@ -63,6 +63,28 @@
 #define TCFG_DEVICE_RBTMODE_OFFSET					TCFG_RADIO_HEARTVL_OFFSET + TCFG_RADIO_HEARTVL_LENGTH						// 0x0000000F
 #define TCFG_DEVICE_RBTMODE_LENGTH					1																// Device Reboot Mode	设备重启方式
 
+#define TCFG_SENSITIVITY_OFFSET					TCFG_DEVICE_RBTMODE_OFFSET + TCFG_DEVICE_RBTMODE_LENGTH					// 0x00000010
+#define TCFG_SENSITIVITY_LENGTH					1																// Sensitivity			传感器灵敏度
+
+#define TCFG_WORKMODE_OFFSET						TCFG_SENSITIVITY_OFFSET + TCFG_SENSITIVITY_LENGTH							// 0x00000011
+#define TCFG_WORKMODE_LENGTH						1																// WorkMode			工作模式
+
+#define TCFG_ACTIVEMODE_OFFSET					TCFG_WORKMODE_OFFSET + TCFG_WORKMODE_LENGTH								// 0x00000012
+#define TCFG_ACTIVEMODE_LENGTH					1																// ActiveMode			运行模式
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -90,9 +112,10 @@ typedef struct
 	u8		BootRecount;
 	u8		RadioChannel;
 	u8		RadioHeartval;
-	
-	
-	
+	u8		DevRebootMode;
+	u8		Sensitivity;
+	u8		WorkMode;
+	u8		ActiveMode;
 	
 	
 	
@@ -211,6 +234,28 @@ u8    TCFG_EEPROM_Get_RadioChannel(void);																			// 读取RadioChanne
 void  TCFG_EEPROM_Set_RadioHeartval(u8 heartval);																		// 保存RadioHeartval
 u8    TCFG_EEPROM_Get_RadioHeartval(void);																			// 读取RadioHeartval
 
+void  TCFG_EEPROM_Set_DeviceRebootMode(u8 rebootmode);																	// 保存DeviceRebootMode
+u8    TCFG_EEPROM_Get_DeviceRebootMode(void);																		// 读取DeviceRebootMode
+
+void  TCFG_EEPROM_Set_Sensitivity(u8 sens);																			// 保存Sensitivity
+u8    TCFG_EEPROM_Get_Sensitivity(void);																			// 读取Sensitivity
+
+void  TCFG_EEPROM_Set_WorkMode(u8 workmode);																			// 保存WorkMode
+u8    TCFG_EEPROM_Get_WorkMode(void);																				// 读取WorkMode
+
+void  TCFG_EEPROM_Set_ActiveMode(u8 active);																			// 保存ActiveMode
+u8    TCFG_EEPROM_Get_ActiveMode(void);																				// 读取ActiveMode
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -242,6 +287,11 @@ void  TCFG_Utility_Set_BootCount(u8 bootCount);																		// 设置BootCo
 void  TCFG_Utility_Set_RadioChannel(u8 channel);																		// 设置RadioChannel
 void  TCFG_Utility_Set_RadioHeartval(u8 heartval);																	// 设置RadioHeartval
 
+void  TCFG_Utility_Set_DeviceRebootMode(u8 rebootmode);																// 设置DeviceRebootMode
+
+
+
+
 
 
 
@@ -267,6 +317,9 @@ u8    TCFG_Utility_Get_BootCount(void);																				// 读取BootCount
 u8    TCFG_Utility_Get_RadioChannel(void);																			// 读取RadioChannel
 u8    TCFG_Utility_Get_RadioHeartval(void);																			// 读取RadioHeartval
 
+u8    TCFG_Utility_Get_DeviceRebootMode(void);																		// 读取DeviceRebootMode
+
+
 
 
 
@@ -277,6 +330,8 @@ u8    TCFG_Utility_Get_RadioHeartval(void);																			// 读取RadioHear
 u8    TCFG_Utility_Get_Major_SoftwareNumber(void);																	// 读取Major Software Number
 u8    TCFG_Utility_Get_Minor_SoftwareNumber(void);																	// 读取Minor Software Number
 u8    TCFG_Utility_Get_Minor_HardwareNumber(void);																	// 读取Minor Hardware Number
+
+u8    TCFG_Utility_Get_DeviceType(void);																			// 读取Device Type
 
 /*****************************************************************************************************************************************************/
 

@@ -68,6 +68,14 @@ void Radio_Trf_Do_Printfbuf(char* info);
 
 void Radio_RF_Trf_App_Task(void);
 
+s32  Radio_RF_Get_Cmdtime_nearby(void);
+
+s32  Radio_RF_Get_Gateway_nearby(void);
+
+
+
+
+
 
 
 
