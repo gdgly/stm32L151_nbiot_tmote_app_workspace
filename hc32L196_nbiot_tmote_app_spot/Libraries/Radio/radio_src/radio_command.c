@@ -70,8 +70,68 @@ void Radio_Command_Sensitivity(u8 sens)
 	TCFG_Utility_Set_Sensitivity(sens);
 	
 #ifdef RADIO_COMMAND_DEBUG_LOG_RF_PRINTF
-	RADIO_COMMAND_DEBUG_LOG_PRINTF("Radio Cmd Sensitivity: %d", TCFG_Utility_Get_Sensitivity());
+	RADIO_COMMAND_DEBUG_LOG_PRINTF("[RadioCmd] Sensitivity: %d", TCFG_Utility_Get_Sensitivity());
 #endif
+}
+
+/**********************************************************************************************************
+ @Function			void Radio_Command_WorkMode(u8 workmode)
+ @Description			Radio_Command_WorkMode						: 工作模式配置指令
+ @Input				workmode
+ @Return				void
+**********************************************************************************************************/
+void Radio_Command_WorkMode(u8 workmode)
+{
+	TCFG_Utility_Set_WorkMode(workmode);
+	
+#ifdef RADIO_COMMAND_DEBUG_LOG_RF_PRINTF
+	RADIO_COMMAND_DEBUG_LOG_PRINTF("[RadioCmd] WorkMode: %d", TCFG_Utility_Get_WorkMode());
+#endif
+}
+
+/**********************************************************************************************************
+ @Function			void Radio_Command_Heartval(u16 hearttime)
+ @Description			Radio_Command_Heartval						: 无线心跳间隔时间配置指令
+ @Input				hearttime
+ @Return				void
+**********************************************************************************************************/
+void Radio_Command_Heartval(u16 hearttime)
+{
+	TCFG_Utility_Set_RadioHeartval(hearttime);
+	Radio_Hal_RF_Set_Heartval(TCFG_Utility_Get_RadioHeartval());
+	
+#ifdef RADIO_COMMAND_DEBUG_LOG_RF_PRINTF
+	RADIO_COMMAND_DEBUG_LOG_PRINTF("[RadioCmd] HeartInterval: %d", TCFG_Utility_Get_RadioHeartval());
+#endif
+}
+
+/**********************************************************************************************************
+ @Function			void Radio_Command_InitBackground(void)
+ @Description			Radio_Command_InitBackground					: 初始化传感器指令
+ @Input				void
+ @Return				void
+**********************************************************************************************************/
+void Radio_Command_InitBackground(void)
+{
+#ifdef RADIO_COMMAND_DEBUG_LOG_RF_PRINTF
+	RADIO_COMMAND_DEBUG_LOG_PRINTF("[RadioCmd] InitSensorBackground");
+#endif
+}
+
+/**********************************************************************************************************
+ @Function			void Radio_Command_Reboot(void)
+ @Description			Radio_Command_Reboot						: Reboot
+ @Input				void
+ @Return				void
+**********************************************************************************************************/
+void Radio_Command_Reboot(void)
+{
+#ifdef RADIO_COMMAND_DEBUG_LOG_RF_PRINTF
+	RADIO_COMMAND_DEBUG_LOG_PRINTF("[RadioCmd] reboot");
+#endif
+	
+	HC32_BEEP_Repeat(1, 500, 0);
+	HC32_System_Software_Reboot(REBOOT_MODE_CMD_RADIO);
 }
 
 
@@ -105,9 +165,18 @@ void Radio_Command_Sensitivity(u8 sens)
 
 
 
-
-
-
+/**********************************************************************************************************
+ @Function			void Radio_Command_NotSupport(void)
+ @Description			Radio_Command_NotSupport						: Not Support
+ @Input				void
+ @Return				void
+**********************************************************************************************************/
+void Radio_Command_NotSupport(void)
+{
+#ifdef RADIO_COMMAND_DEBUG_LOG_RF_PRINTF
+	RADIO_COMMAND_DEBUG_LOG_PRINTF("[RadioCmd] Not Support");
+#endif
+}
 
 
 

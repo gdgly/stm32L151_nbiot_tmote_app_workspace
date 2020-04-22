@@ -100,6 +100,18 @@ void  TCFG_EEPROM_WriteSystemConfigData(void)
 	TCFG_SystemData.Sensitivity = SENSE_MIDDLE;
 	TCFG_EEPROM_Set_Sensitivity(TCFG_SystemData.Sensitivity);
 	
+	/* 写入工作模式 */
+	TCFG_SystemData.WorkMode = WORK_MODE_NORMAL;
+	TCFG_EEPROM_Set_WorkMode(TCFG_SystemData.WorkMode);
+	
+	/* 写入休眠模式 */
+	TCFG_SystemData.IdleMode = IDLE_MODE_DISABLE;
+	TCFG_EEPROM_Set_IdleMode(TCFG_SystemData.IdleMode);
+	
+	/* 写入运行模式 */
+	TCFG_SystemData.ActiveMode = ACTIVE_MODE_ENABLE;
+	TCFG_EEPROM_Set_ActiveMode(TCFG_SystemData.ActiveMode);
+	
 	
 	
 	
@@ -200,13 +212,26 @@ void  TCFG_EEPROM_ReadSystemConfigData(void)
 		TCFG_EEPROM_Set_Sensitivity(TCFG_SystemData.Sensitivity);
 	}
 	
+	/* 获取工作模式 */
+	TCFG_SystemData.WorkMode = TCFG_EEPROM_Get_WorkMode();
+	if ((TCFG_SystemData.WorkMode != WORK_MODE_NORMAL) && (TCFG_SystemData.WorkMode != WORK_MODE_DEBUG)) {
+		TCFG_SystemData.WorkMode = WORK_MODE_NORMAL;
+		TCFG_EEPROM_Set_WorkMode(TCFG_SystemData.WorkMode);
+	}
 	
+	/* 获取休眠模式 */
+	TCFG_SystemData.IdleMode = TCFG_EEPROM_Get_IdleMode();
+	if ((TCFG_SystemData.IdleMode != IDLE_MODE_DISABLE) && (TCFG_SystemData.IdleMode != IDLE_MODE_ENABLE)) {
+		TCFG_SystemData.IdleMode = IDLE_MODE_DISABLE;
+		TCFG_EEPROM_Set_IdleMode(TCFG_SystemData.IdleMode);
+	}
 	
-	
-	
-	
-	
-	
+	/* 获取运行模式 */
+	TCFG_SystemData.ActiveMode = TCFG_EEPROM_Get_ActiveMode();
+	if ((TCFG_SystemData.ActiveMode != ACTIVE_MODE_DISABLE) && (TCFG_SystemData.ActiveMode != ACTIVE_MODE_ENABLE)) {
+		TCFG_SystemData.ActiveMode = ACTIVE_MODE_ENABLE;
+		TCFG_EEPROM_Set_ActiveMode(TCFG_SystemData.ActiveMode);
+	}
 	
 	
 	
@@ -644,6 +669,28 @@ u8    TCFG_EEPROM_Get_WorkMode(void)
 }
 
 /**********************************************************************************************************
+ @Function			void  TCFG_EEPROM_Set_IdleMode(u8 idlemode)
+ @Description			TCFG_EEPROM_Set_IdleMode						: 保存IdleMode
+ @Input				idlemode
+ @Return				void
+**********************************************************************************************************/
+void  TCFG_EEPROM_Set_IdleMode(u8 idlemode)
+{
+	FLASH_EEPROM_WriteByte(TCFG_IDLEMODE_OFFSET, idlemode);
+}
+
+/**********************************************************************************************************
+ @Function			u8    TCFG_EEPROM_Get_IdleMode(void)
+ @Description			TCFG_EEPROM_Get_IdleMode						: 读取IdleMode
+ @Input				void
+ @Return				idlemode
+**********************************************************************************************************/
+u8    TCFG_EEPROM_Get_IdleMode(void)
+{
+	return FLASH_EEPROM_ReadByte(TCFG_IDLEMODE_OFFSET);
+}
+
+/**********************************************************************************************************
  @Function			void  TCFG_EEPROM_Set_ActiveMode(u8 active)
  @Description			TCFG_EEPROM_Set_ActiveMode					: 保存ActiveMode
  @Input				active
@@ -798,11 +845,50 @@ void  TCFG_Utility_Set_Sensitivity(u8 sens)
 	TCFG_EEPROM_Set_Sensitivity(TCFG_SystemData.Sensitivity);
 }
 
+/**********************************************************************************************************
+ @Function			void  TCFG_Utility_Set_WorkMode(u8 workmode)
+ @Description			TCFG_Utility_Set_WorkMode					: 设置WorkMode
+ @Input				val
+ @Return				void
+**********************************************************************************************************/
+void  TCFG_Utility_Set_WorkMode(u8 workmode)
+{
+	TCFG_SystemData.WorkMode = workmode;
+	if ((TCFG_SystemData.WorkMode != WORK_MODE_NORMAL) && (TCFG_SystemData.WorkMode != WORK_MODE_DEBUG)) {
+		TCFG_SystemData.WorkMode = WORK_MODE_NORMAL;
+	}
+	TCFG_EEPROM_Set_WorkMode(TCFG_SystemData.WorkMode);
+}
 
+/**********************************************************************************************************
+ @Function			void  TCFG_Utility_Set_IdleMode(u8 idlemode)
+ @Description			TCFG_Utility_Set_IdleMode					: 设置IdleMode
+ @Input				val
+ @Return				void
+**********************************************************************************************************/
+void  TCFG_Utility_Set_IdleMode(u8 idlemode)
+{
+	TCFG_SystemData.IdleMode = idlemode;
+	if ((TCFG_SystemData.IdleMode != IDLE_MODE_DISABLE) && (TCFG_SystemData.IdleMode != IDLE_MODE_ENABLE)) {
+		TCFG_SystemData.IdleMode = IDLE_MODE_DISABLE;
+	}
+	TCFG_EEPROM_Set_IdleMode(TCFG_SystemData.IdleMode);
+}
 
-
-
-
+/**********************************************************************************************************
+ @Function			void  TCFG_Utility_Set_ActiveMode(u8 activemode)
+ @Description			TCFG_Utility_Set_ActiveMode					: 设置ActiveMode
+ @Input				val
+ @Return				void
+**********************************************************************************************************/
+void  TCFG_Utility_Set_ActiveMode(u8 activemode)
+{
+	TCFG_SystemData.ActiveMode = activemode;
+	if ((TCFG_SystemData.ActiveMode != ACTIVE_MODE_DISABLE) && (TCFG_SystemData.ActiveMode != ACTIVE_MODE_ENABLE)) {
+		TCFG_SystemData.ActiveMode = ACTIVE_MODE_ENABLE;
+	}
+	TCFG_EEPROM_Set_ActiveMode(TCFG_SystemData.ActiveMode);
+}
 
 
 
@@ -962,6 +1048,38 @@ u8    TCFG_Utility_Get_Sensitivity(void)
 	return TCFG_SystemData.Sensitivity;
 }
 
+/**********************************************************************************************************
+ @Function			u8    TCFG_Utility_Get_WorkMode(void)
+ @Description			TCFG_Utility_Get_WorkMode					: 读取WorkMode
+ @Input				void
+ @Return				val
+**********************************************************************************************************/
+u8    TCFG_Utility_Get_WorkMode(void)
+{
+	return TCFG_SystemData.WorkMode;
+}
+
+/**********************************************************************************************************
+ @Function			u8    TCFG_Utility_Get_IdleMode(void)
+ @Description			TCFG_Utility_Get_IdleMode					: 读取IdleMode
+ @Input				void
+ @Return				val
+**********************************************************************************************************/
+u8    TCFG_Utility_Get_IdleMode(void)
+{
+	return TCFG_SystemData.IdleMode;
+}
+
+/**********************************************************************************************************
+ @Function			u8    TCFG_Utility_Get_ActiveMode(void)
+ @Description			TCFG_Utility_Get_ActiveMode					: 读取ActiveMode
+ @Input				void
+ @Return				val
+**********************************************************************************************************/
+u8    TCFG_Utility_Get_ActiveMode(void)
+{
+	return TCFG_SystemData.ActiveMode;
+}
 
 
 
@@ -998,6 +1116,99 @@ u8    TCFG_Utility_Get_Sensitivity(void)
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/**********************************************************************************************************
+ @Function			u8    TCFG_Utility_Get_DeviceMode(void)
+ @Description			TCFG_Utility_Get_DeviceMode					: 读取DeviceMode
+ @Input				void
+ @Return				val
+**********************************************************************************************************/
+u8    TCFG_Utility_Get_DeviceMode(void)
+{
+	if (TCFG_Utility_Get_IdleMode() == IDLE_MODE_ENABLE) {
+		return WORK_MODE_IDLE;
+	}
+	else if (TCFG_Utility_Get_ActiveMode() != ACTIVE_MODE_ENABLE) {
+		return WORK_MODE_STANDBY;
+	}
+	else if (Radio_RF_Get_Gateway_nearby() == 0) {
+		return WORK_MODE_NORMAL;
+	}
+	else {
+		return TCFG_Utility_Get_WorkMode();
+	}
+}
+
+/**********************************************************************************************************
+ @Function			char* TCFG_Utility_Get_DeviceModeInfo(void)
+ @Description			TCFG_Utility_Get_DeviceModeInfo				: 读取DeviceModeInfo
+ @Input				void
+ @Return				devicemodeinfo
+**********************************************************************************************************/
+char* TCFG_Utility_Get_DeviceModeInfo(void)
+{
+	if (TCFG_Utility_Get_IdleMode() == IDLE_MODE_ENABLE) {
+		memset((void *)TCFG_SystemData.DeviceModeInfo, 0x00, sizeof(TCFG_SystemData.DeviceModeInfo));
+		strncpy((char *)TCFG_SystemData.DeviceModeInfo, "idle", strlen("idle"));
+	}
+	else if (TCFG_Utility_Get_ActiveMode() != ACTIVE_MODE_ENABLE) {
+		memset((void *)TCFG_SystemData.DeviceModeInfo, 0x00, sizeof(TCFG_SystemData.DeviceModeInfo));
+		strncpy((char *)TCFG_SystemData.DeviceModeInfo, "notact", strlen("notact"));
+	}
+	else if (TCFG_Utility_Get_WorkMode() == WORK_MODE_NORMAL) {
+		memset((void *)TCFG_SystemData.DeviceModeInfo, 0x00, sizeof(TCFG_SystemData.DeviceModeInfo));
+		strncpy((char *)TCFG_SystemData.DeviceModeInfo, "norm", strlen("norm"));
+	}
+	else if (TCFG_Utility_Get_WorkMode() == WORK_MODE_DEBUG) {
+		memset((void *)TCFG_SystemData.DeviceModeInfo, 0x00, sizeof(TCFG_SystemData.DeviceModeInfo));
+		strncpy((char *)TCFG_SystemData.DeviceModeInfo, "debug", strlen("debug"));
+	}
+	else {
+		memset((void *)TCFG_SystemData.DeviceModeInfo, 0x00, sizeof(TCFG_SystemData.DeviceModeInfo));
+		strncpy((char *)TCFG_SystemData.DeviceModeInfo, "unknown", strlen("unknown"));
+	}
+	
+	return (char *)TCFG_SystemData.DeviceModeInfo;
+}
 
 /**********************************************************************************************************
  @Function			u8    TCFG_Utility_Get_Major_SoftwareNumber(void)
@@ -1042,6 +1253,10 @@ u8    TCFG_Utility_Get_DeviceType(void)
 {
 	return MVB_MODEL_TYPE;
 }
+
+
+
+
 
 
 

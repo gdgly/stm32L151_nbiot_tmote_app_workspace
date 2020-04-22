@@ -66,7 +66,19 @@ typedef enum
 	WORK_MODE_DEBUG			= 0x01,
 	WORK_MODE_STANDBY			= 0x03,
 	WORK_MODE_IDLE				= 0x04,
-} HC32_WORK_MODE_TypeDef;
+} HC32_WORK_MODE_TypeDef;																//工作模式
+
+typedef enum
+{
+	IDLE_MODE_DISABLE			= 0x01,
+	IDLE_MODE_ENABLE			= 0x02,
+} HC32_IDLE_MODE_TypeDef;																//休眠模式
+
+typedef enum
+{
+	ACTIVE_MODE_DISABLE			= 0x01,
+	ACTIVE_MODE_ENABLE			= 0x02,
+} HC32_ACTIVE_MODE_TypeDef;																//运行模式
 
 typedef enum
 {
@@ -116,6 +128,9 @@ void HC32_RstPowerIO_Init(void);															//HC32复位电源初始化
 void HC32_CtrPowerIO_Init(void);															//HC32控制电源初始化
 
 void HC32_AutomaticSystem_Check(void);														//HC32系统自检
+
+
+
 
 
 

@@ -42,11 +42,23 @@ typedef __packed struct _radio_trf_sensitivity
 	u8						sensitivity;
 } radio_trf_sensitivity_s;
 
+typedef __packed struct _radio_trf_workmode
+{
+	radio_trf_msghead_s			head;
+	u8						workmode;
+} radio_trf_workmode_s;
 
+typedef __packed struct _radio_trf_hearttime
+{
+	radio_trf_msghead_s			head;
+	u16						seconds;
+} radio_trf_hearttime_s;
 
-
-
-
+typedef __packed struct _radio_trf_generalcmd
+{
+	radio_trf_msghead_s			head;
+	char						buf[16];
+} radio_trf_generalcmd_s;
 
 
 

@@ -34,7 +34,8 @@ Address | nByte |  Name
 0x0000_000F ~ 0x0000_000F | (1Byte) | DeviceRebootMode
 0x0000_0010 ~ 0x0000_0010 | (1Byte) | Sensitivity
 0x0000_0011 ~ 0x0000_0011 | (1Byte) | WorkMode
-0x0000_0012 ~ 0x0000_0012 | (1Byte) | ActiveMode
+0x0000_0012 ~ 0x0000_0012 | (1Byte) | IdleMode
+0x0000_0013 ~ 0x0000_0013 | (1Byte) | ActiveMode
 0x0000_00F7 ~ 0x0000_00FA | (4Byte) | Vender
 0x0000_00FB ~ 0x0000_00FE | (4Byte) | SN
 0x0000_00FF ~ 0x0000_00FF | (1Byte) | Check

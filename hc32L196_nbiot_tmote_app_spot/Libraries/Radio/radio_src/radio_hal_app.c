@@ -39,8 +39,8 @@
 #define RADIO_RF_HEARTBT_MINOR_HARDVER		TCFG_Utility_Get_Minor_HardwareNumber()
 #define RADIO_RF_HEARTBT_DEV_TYPE			TCFG_Utility_Get_DeviceType()
 
-#define RADIO_RF_HEARTBT_WORK_MODE			0
-#define RADIO_RF_HEARTBT_SPOT_STAT			1
+#define RADIO_RF_HEARTBT_WORK_MODE			trf_xmit_get_workmode()
+#define RADIO_RF_HEARTBT_SPOT_STAT			0
 #define RADIO_RF_HEARTBT_NBNT_STAT			1
 
 #define RADIO_RF_GATCMD_NEARBY_HEART_SEC	3
@@ -209,6 +209,14 @@ static u8 trf_xmit_get_pktnum(void)
 	return pktnum++;
 }
 
+static u8 trf_xmit_get_workmode(void)
+{
+	if (TCFG_Utility_Get_ActiveMode() == ACTIVE_MODE_ENABLE)
+		return TCFG_Utility_Get_WorkMode();
+	else
+		return WORK_MODE_STANDBY;
+}
+
 /**********************************************************************************************************
  @Function			char Radio_RF_Operate_Recvmsg(u8 *inmsg, u8 len)
  @Description			Radio_RF_Operate_Recvmsg
@@ -223,12 +231,6 @@ char Radio_RF_Operate_Recvmsg(u8 *inmsg, u8 len)
 	radio_trf_msgdata_s* pPayload;
 	
 	u32 mac_sn = 0;
-	
-	
-	
-	
-	
-	
 	
 	mac_sn = RADIO_RF_PAYLOAD_MAC_SN;
 	
@@ -264,24 +266,27 @@ char Radio_RF_Operate_Recvmsg(u8 *inmsg, u8 len)
 			}
 			/* 工作模式配置指令 */
 			else if (pPayload->head.type == TRF_MSG_WORKMODE) {
-				
-				
-				
+				u8 workmode = ((radio_trf_workmode_s*)CFG_P_FRAME_PAYLOAD(inmsg))->workmode;
+				Radio_Command_WorkMode(workmode);
 			}
 			/* 无线心跳间隔时间配置指令 */
 			else if (pPayload->head.type == TRF_MSG_RFHEART_INTERVAL) {
-				
-				
-				
+				u16 hearttime = ((radio_trf_hearttime_s*)CFG_P_FRAME_PAYLOAD(inmsg))->seconds;
+				Radio_Command_Heartval(hearttime);
 			}
 			/* 初始化传感器指令 */
 			else if (pPayload->head.type == TRF_MSG_INITBACKGROUND) {
-				
-				
-				
+				Radio_Command_InitBackground();
 			}
 			/* 其他下行指令 */
-			else if (pPayload->head.type == TRF_MSG_GENERAL_CMD) {
+			else if (pPayload->head.type == TRF_MSG_GENERAL_CMD)
+			{
+				((radio_trf_generalcmd_s*)CFG_P_FRAME_PAYLOAD(inmsg))->buf[15] = 0;
+				
+				/* reboot */
+				if (strstr(((radio_trf_generalcmd_s*)CFG_P_FRAME_PAYLOAD(inmsg))->buf, "reboot")) {
+					Radio_Command_Reboot();
+				}
 				
 				
 				
@@ -296,6 +301,19 @@ char Radio_RF_Operate_Recvmsg(u8 *inmsg, u8 len)
 				
 				
 				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				/* Not Support */
+				else {
+					Radio_Command_NotSupport();
+				}
 			}
 		}
 		else {
@@ -496,6 +514,7 @@ s32  Radio_RF_Get_Gateway_nearby(void)
 {
 	return radio_gateway_nearby;
 }
+
 
 
 

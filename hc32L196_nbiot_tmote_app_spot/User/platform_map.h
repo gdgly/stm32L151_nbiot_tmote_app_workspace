@@ -68,8 +68,9 @@
 
 #define TCFG_WORKMODE_OFFSET						TCFG_SENSITIVITY_OFFSET + TCFG_SENSITIVITY_LENGTH							// 0x00000011
 #define TCFG_WORKMODE_LENGTH						1																// WorkMode			工作模式
-
-#define TCFG_ACTIVEMODE_OFFSET					TCFG_WORKMODE_OFFSET + TCFG_WORKMODE_LENGTH								// 0x00000012
+#define TCFG_IDLEMODE_OFFSET						TCFG_WORKMODE_OFFSET + TCFG_WORKMODE_LENGTH								// 0x00000012
+#define TCFG_IDLEMODE_LENGTH						1																// IdleMode			休眠模式
+#define TCFG_ACTIVEMODE_OFFSET					TCFG_IDLEMODE_OFFSET + TCFG_IDLEMODE_LENGTH								// 0x00000013
 #define TCFG_ACTIVEMODE_LENGTH					1																// ActiveMode			运行模式
 
 
@@ -115,9 +116,10 @@ typedef struct
 	u8		DevRebootMode;
 	u8		Sensitivity;
 	u8		WorkMode;
+	u8		IdleMode;
 	u8		ActiveMode;
-	
-	
+	u8		DeviceMode;
+	u8		DeviceModeInfo[8];
 	
 	
 	
@@ -243,6 +245,9 @@ u8    TCFG_EEPROM_Get_Sensitivity(void);																			// 读取Sensitivity
 void  TCFG_EEPROM_Set_WorkMode(u8 workmode);																			// 保存WorkMode
 u8    TCFG_EEPROM_Get_WorkMode(void);																				// 读取WorkMode
 
+void  TCFG_EEPROM_Set_IdleMode(u8 idlemode);																			// 保存IdleMode
+u8    TCFG_EEPROM_Get_IdleMode(void);																				// 读取IdleMode
+
 void  TCFG_EEPROM_Set_ActiveMode(u8 active);																			// 保存ActiveMode
 u8    TCFG_EEPROM_Get_ActiveMode(void);																				// 读取ActiveMode
 
@@ -291,11 +296,9 @@ void  TCFG_Utility_Set_DeviceRebootMode(u8 rebootmode);																// 设置
 
 void  TCFG_Utility_Set_Sensitivity(u8 sens);																			// 设置Sensitivity
 
-
-
-
-
-
+void  TCFG_Utility_Set_WorkMode(u8 workmode);																		// 设置WorkMode
+void  TCFG_Utility_Set_IdleMode(u8 idlemode);																		// 设置IdleMode
+void  TCFG_Utility_Set_ActiveMode(u8 activemode);																		// 设置ActiveMode
 
 
 
@@ -339,6 +342,9 @@ u8    TCFG_Utility_Get_DeviceRebootMode(void);																		// 读取DeviceR
 
 u8    TCFG_Utility_Get_Sensitivity(void);																			// 读取Sensitivity
 
+u8    TCFG_Utility_Get_WorkMode(void);																				// 读取WorkMode
+u8    TCFG_Utility_Get_IdleMode(void);																				// 读取IdleMode
+u8    TCFG_Utility_Get_ActiveMode(void);																			// 读取ActiveMode
 
 
 
@@ -363,9 +369,8 @@ u8    TCFG_Utility_Get_Sensitivity(void);																			// 读取Sensitivity
 
 
 
-
-
-
+u8    TCFG_Utility_Get_DeviceMode(void);																			// 读取DeviceMode
+char* TCFG_Utility_Get_DeviceModeInfo(void);																			// 读取DeviceModeInfo
 
 u8    TCFG_Utility_Get_Major_SoftwareNumber(void);																	// 读取Major Software Number
 u8    TCFG_Utility_Get_Minor_SoftwareNumber(void);																	// 读取Minor Software Number

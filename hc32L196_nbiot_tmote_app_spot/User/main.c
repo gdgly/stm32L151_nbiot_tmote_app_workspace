@@ -215,9 +215,17 @@ int main(void)
 	printf("TCFG_SENSITIVITY_OFFSET: 0x%08X\r\n", TCFG_SENSITIVITY_OFFSET);
 	printf("TCFG_WORKMODE_OFFSET: 0x%08X\r\n", TCFG_WORKMODE_OFFSET);
 	printf("TCFG_ACTIVEMODE_OFFSET: 0x%08X\r\n", TCFG_ACTIVEMODE_OFFSET);
-	#endif
 	
 	printf("TCFG_Utility_Get_Sensitivity: %d\r\n", TCFG_Utility_Get_Sensitivity());
+	printf("TCFG_Utility_Get_WorkMode: %d\r\n", TCFG_Utility_Get_WorkMode());
+	printf("TCFG_Utility_Get_RadioHeartval: %d\r\n", TCFG_Utility_Get_RadioHeartval());
+	#endif
+	
+	printf("TCFG_IDLEMODE_OFFSET: 0x%08X\r\n", TCFG_IDLEMODE_OFFSET);
+	printf("TCFG_ACTIVEMODE_OFFSET: 0x%08X\r\n", TCFG_ACTIVEMODE_OFFSET);
+	
+	printf("TCFG_Utility_Get_IdleMode: %d\r\n", TCFG_Utility_Get_IdleMode());
+	printf("TCFG_Utility_Get_ActiveMode: %d\r\n", TCFG_Utility_Get_ActiveMode());
 	
 	
 	
@@ -225,14 +233,18 @@ int main(void)
 	
 	
 	
+	
+	#if 0
 	short x, y, z;
 	struct tm date;
 	
 	HC32_RTC_SetTime(20, 04, 16, 10, 00, 00);
+	#endif
 	
 	while (true)
 	{
 		
+		#if 0
 		date = HC32_RTC_GetUnixTimeToCalendar();
 		
 		QMC5883L_ReadData_Extended(&x, &y, &z);
@@ -243,10 +255,25 @@ int main(void)
 		printf("Date:  %02d-%02d-%02d %02d:%02d:%02d week %d\r\n", date.tm_year, date.tm_mon, date.tm_mday, date.tm_hour, date.tm_min, date.tm_sec, date.tm_wday);
 		printf("QMC:   X = %d, Y = %d, Z = %d\r\n", x, y, z);
 		printf("*******************************************************************************************\r\n\r\n");
+		#endif
 		
 		Delay_MS(1000);
 		
 		HC32_IWDG_Feed();
+		
+		#if 0
+		printf("TCFG_Utility_Get_Sensitivity: %d\r\n", TCFG_Utility_Get_Sensitivity());
+		printf("TCFG_Utility_Get_WorkMode: %d\r\n", TCFG_Utility_Get_WorkMode());
+		printf("TCFG_Utility_Get_RadioHeartval: %d\r\n", TCFG_Utility_Get_RadioHeartval());
+		
+		printf("TCFG_Utility_Get_DeviceMode: %d\r\n", TCFG_Utility_Get_DeviceMode());
+		printf("TCFG_Utility_Get_DeviceModeInfo: %s\r\n", TCFG_Utility_Get_DeviceModeInfo());
+		#endif
+		
+		
+		
+		
+		
 		
 		
 		
