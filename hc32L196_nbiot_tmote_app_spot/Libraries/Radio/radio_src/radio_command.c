@@ -42,6 +42,9 @@
 #include "radio_command.h"
 #include "tmesh_xtea.h"
 
+#define RADIO_COMMAND_DEBUG_LOG_RF_PRINTF
+#define RADIO_COMMAND_DEBUG_LOG_PRINTF		Radio_RF_Trf_Printf
+
 /**********************************************************************************************************
  @Function			void Radio_Command_Upgrade(void)
  @Description			Radio_Command_Upgrade						: 配置器升级命令
@@ -56,7 +59,20 @@ void Radio_Command_Upgrade(void)
 	HC32_System_Software_Reboot(REBOOT_MODE_UPGRADE_RADIO);
 }
 
-
+/**********************************************************************************************************
+ @Function			void Radio_Command_Sensitivity(u8 sens)
+ @Description			Radio_Command_Sensitivity					: 传感器灵敏度配置指令
+ @Input				sens
+ @Return				void
+**********************************************************************************************************/
+void Radio_Command_Sensitivity(u8 sens)
+{
+	TCFG_Utility_Set_Sensitivity(sens);
+	
+#ifdef RADIO_COMMAND_DEBUG_LOG_RF_PRINTF
+	RADIO_COMMAND_DEBUG_LOG_PRINTF("Radio Cmd Sensitivity: %d", TCFG_Utility_Get_Sensitivity());
+#endif
+}
 
 
 

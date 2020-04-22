@@ -11,6 +11,7 @@ typedef __packed struct _radio_trf_msg_h
 	u8						type;
 } radio_trf_msghead_s;
 
+
 typedef __packed struct _radio_trf_msg_m
 {
 	radio_trf_msghead_s			head;
@@ -34,6 +35,19 @@ typedef __packed struct _radio_trf_defaultrsp
 	radio_trf_msghead_s			head;
 	u8						ret;
 } radio_trf_defaultrsp_s;
+
+typedef __packed struct _radio_trf_sensitivity
+{
+	radio_trf_msghead_s			head;
+	u8						sensitivity;
+} radio_trf_sensitivity_s;
+
+
+
+
+
+
+
 
 
 

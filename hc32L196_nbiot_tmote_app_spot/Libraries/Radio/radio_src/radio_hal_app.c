@@ -259,9 +259,8 @@ char Radio_RF_Operate_Recvmsg(u8 *inmsg, u8 len)
 			}
 			/* 传感器灵敏度配置指令 */
 			else if (pPayload->head.type == TRF_MSG_SENSITIVITY) {
-				
-				
-				
+				u8 sensitivity = ((radio_trf_sensitivity_s*)CFG_P_FRAME_PAYLOAD(inmsg))->sensitivity;
+				Radio_Command_Sensitivity(sensitivity);
 			}
 			/* 工作模式配置指令 */
 			else if (pPayload->head.type == TRF_MSG_WORKMODE) {

@@ -96,6 +96,15 @@ void  TCFG_EEPROM_WriteSystemConfigData(void)
 	TCFG_SystemData.DevRebootMode = REBOOT_MODE_NONE;
 	TCFG_EEPROM_Set_DeviceRebootMode(TCFG_SystemData.DevRebootMode);
 	
+	/* 写入传感器灵敏度值 */
+	TCFG_SystemData.Sensitivity = SENSE_MIDDLE;
+	TCFG_EEPROM_Set_Sensitivity(TCFG_SystemData.Sensitivity);
+	
+	
+	
+	
+	
+	
 	
 	
 	
@@ -183,6 +192,17 @@ void  TCFG_EEPROM_ReadSystemConfigData(void)
 	
 	/* 获取Device Reboot Mode重启方式 */
 	TCFG_SystemData.DevRebootMode = TCFG_EEPROM_Get_DeviceRebootMode();
+	
+	/* 获取传感器灵敏度值 */
+	TCFG_SystemData.Sensitivity = TCFG_EEPROM_Get_Sensitivity();
+	if ((TCFG_SystemData.Sensitivity < SENSE_HIGHEST) || (TCFG_SystemData.Sensitivity > SENSE_LOWEST)) {
+		TCFG_SystemData.Sensitivity = SENSE_MIDDLE;
+		TCFG_EEPROM_Set_Sensitivity(TCFG_SystemData.Sensitivity);
+	}
+	
+	
+	
+	
 	
 	
 	
@@ -732,8 +752,8 @@ void  TCFG_Utility_Set_RadioChannel(u8 channel)
 	TCFG_SystemData.RadioChannel = channel;
 	if ((TCFG_SystemData.RadioChannel != 36) && (TCFG_SystemData.RadioChannel != 4) && (TCFG_SystemData.RadioChannel != 6) && (TCFG_SystemData.RadioChannel != 16) && (TCFG_SystemData.RadioChannel != 26)) {
 		TCFG_SystemData.RadioChannel = RADIO_RF_CHANNEL1;
-		TCFG_EEPROM_Set_RadioChannel(TCFG_SystemData.RadioChannel);
 	}
+	TCFG_EEPROM_Set_RadioChannel(TCFG_SystemData.RadioChannel);
 }
 
 /**********************************************************************************************************
@@ -747,8 +767,8 @@ void  TCFG_Utility_Set_RadioHeartval(u8 heartval)
 	TCFG_SystemData.RadioHeartval = heartval;
 	if ((TCFG_SystemData.RadioHeartval < 1) || (TCFG_SystemData.RadioHeartval > 120)) {
 		TCFG_SystemData.RadioHeartval = RADIO_RF_HEARTVAL;
-		TCFG_EEPROM_Set_RadioHeartval(TCFG_SystemData.RadioHeartval);
 	}
+	TCFG_EEPROM_Set_RadioHeartval(TCFG_SystemData.RadioHeartval);
 }
 
 /**********************************************************************************************************
@@ -762,6 +782,27 @@ void  TCFG_Utility_Set_DeviceRebootMode(u8 rebootmode)
 	TCFG_SystemData.DevRebootMode = rebootmode;
 	TCFG_EEPROM_Set_DeviceRebootMode(TCFG_SystemData.DevRebootMode);
 }
+
+/**********************************************************************************************************
+ @Function			void  TCFG_Utility_Set_Sensitivity(u8 sens)
+ @Description			TCFG_Utility_Set_Sensitivity					: 设置Sensitivity
+ @Input				val
+ @Return				void
+**********************************************************************************************************/
+void  TCFG_Utility_Set_Sensitivity(u8 sens)
+{
+	TCFG_SystemData.Sensitivity = sens;
+	if ((TCFG_SystemData.Sensitivity < SENSE_HIGHEST) || (TCFG_SystemData.Sensitivity > SENSE_LOWEST)) {
+		TCFG_SystemData.Sensitivity = SENSE_MIDDLE;
+	}
+	TCFG_EEPROM_Set_Sensitivity(TCFG_SystemData.Sensitivity);
+}
+
+
+
+
+
+
 
 
 
@@ -910,7 +951,16 @@ u8    TCFG_Utility_Get_DeviceRebootMode(void)
 	return TCFG_SystemData.DevRebootMode;
 }
 
-
+/**********************************************************************************************************
+ @Function			u8    TCFG_Utility_Get_Sensitivity(void)
+ @Description			TCFG_Utility_Get_Sensitivity					: 读取Sensitivity
+ @Input				void
+ @Return				val
+**********************************************************************************************************/
+u8    TCFG_Utility_Get_Sensitivity(void)
+{
+	return TCFG_SystemData.Sensitivity;
+}
 
 
 

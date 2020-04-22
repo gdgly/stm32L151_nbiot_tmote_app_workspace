@@ -289,6 +289,24 @@ void  TCFG_Utility_Set_RadioHeartval(u8 heartval);																	// 设置Radi
 
 void  TCFG_Utility_Set_DeviceRebootMode(u8 rebootmode);																// 设置DeviceRebootMode
 
+void  TCFG_Utility_Set_Sensitivity(u8 sens);																			// 设置Sensitivity
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -319,6 +337,28 @@ u8    TCFG_Utility_Get_RadioHeartval(void);																			// 读取RadioHear
 
 u8    TCFG_Utility_Get_DeviceRebootMode(void);																		// 读取DeviceRebootMode
 
+u8    TCFG_Utility_Get_Sensitivity(void);																			// 读取Sensitivity
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -334,6 +374,11 @@ u8    TCFG_Utility_Get_Minor_HardwareNumber(void);																	// 读取Mino
 u8    TCFG_Utility_Get_DeviceType(void);																			// 读取Device Type
 
 /*****************************************************************************************************************************************************/
+
+
+
+
+
 
 
 #endif /* __PLATFORM_MAP_H */

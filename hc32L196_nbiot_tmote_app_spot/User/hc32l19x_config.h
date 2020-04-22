@@ -42,6 +42,41 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+typedef enum
+{
+	WORK_MODE_NORMAL			= 0x00,
+	WORK_MODE_DEBUG			= 0x01,
+	WORK_MODE_STANDBY			= 0x03,
+	WORK_MODE_IDLE				= 0x04,
+} HC32_WORK_MODE_TypeDef;
+
+typedef enum
+{
+	SENSE_HIGHEST				= 0x01,
+	SENSE_HIGH				= 0x02,
+	SENSE_MIDDLE				= 0x03,
+	SENSE_LOW					= 0x04,
+	SENSE_LOWEST				= 0x05,
+} HC32_SENSITIVITY_MODE_TypeDef;															//传感器灵敏度
+
 typedef enum
 {
 	REBOOT_MODE_NONE			= 0x00,
@@ -54,7 +89,7 @@ typedef enum
 	REBOOT_MODE_UPGRADE_MQTT		= 0x07,
 	REBOOT_MODE_NBIOT_HDRBT		= 0x08,
 	REBOOT_MODE_NBIOT_CONNECT	= 0x09,
-} HC32_REBOOT_MODE_TypeDef;
+} HC32_REBOOT_MODE_TypeDef;																//设备重启方式
 
 typedef enum
 {

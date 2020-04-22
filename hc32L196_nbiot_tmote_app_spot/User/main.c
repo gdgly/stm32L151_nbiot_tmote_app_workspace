@@ -211,11 +211,14 @@ int main(void)
 	
 	printf("TCFG_DEVICE_RBTMODE_OFFSET: %x\r\n", TCFG_DEVICE_RBTMODE_OFFSET);
 	printf("TCFG_Utility_Get_DeviceRebootMode: %d\r\n", TCFG_Utility_Get_DeviceRebootMode());
-	#endif
 	
 	printf("TCFG_SENSITIVITY_OFFSET: 0x%08X\r\n", TCFG_SENSITIVITY_OFFSET);
 	printf("TCFG_WORKMODE_OFFSET: 0x%08X\r\n", TCFG_WORKMODE_OFFSET);
 	printf("TCFG_ACTIVEMODE_OFFSET: 0x%08X\r\n", TCFG_ACTIVEMODE_OFFSET);
+	#endif
+	
+	printf("TCFG_Utility_Get_Sensitivity: %d\r\n", TCFG_Utility_Get_Sensitivity());
+	
 	
 	
 	
