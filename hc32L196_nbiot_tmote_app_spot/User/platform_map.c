@@ -258,6 +258,34 @@ void  TCFG_EEPROM_ReadSystemConfigData(void)
 	
 }
 
+/**********************************************************************************************************
+ @Function			void  TCFG_EEPROM_SystemConfigInfo_Restore(void)
+ @Description			TCFG_EEPROM_SystemConfigInfo_Restore			: 恢复出厂配置信息
+ @Input				void
+ @Return				void
+**********************************************************************************************************/
+void  TCFG_EEPROM_SystemConfigInfo_Restore(void)
+{
+	TCFG_EEPROM_WriteSystemConfigData();
+	TCFG_EEPROM_WriteSystemParamtData();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -751,6 +779,40 @@ u8    TCFG_EEPROM_Get_ActiveMode(void)
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+/**********************************************************************************************************
+ @Function			void  TCFG_Utility_Set_Factory_MacSN(u32 sn)
+ @Description			TCFG_Utility_Set_Factory_MacSN				: 设置Factory MacSN
+ @Input				val
+ @Return				void
+**********************************************************************************************************/
+void  TCFG_Utility_Set_Factory_MacSN(u32 sn)
+{
+	TCFG_SystemData.MacSN = sn;
+	FLASH_EEPROM_WriteWord(TCFG_FACTORY_MAC_SN_OFFSET, TCFG_SystemData.MacSN);
+}
+
+/**********************************************************************************************************
+ @Function			void  TCFG_Utility_Set_Factory_Vender(u32 vender)
+ @Description			TCFG_Utility_Set_Factory_Vender				: 设置Factory Vender
+ @Input				val
+ @Return				void
+**********************************************************************************************************/
+void  TCFG_Utility_Set_Factory_Vender(u32 vender)
+{
+	TCFG_SystemData.Vender = vender;
+	FLASH_EEPROM_WriteWord(TCFG_FACTORY_VENDER_OFFSET, TCFG_SystemData.Vender);
+}
 
 /**********************************************************************************************************
  @Function			void  TCFG_Utility_Set_BootVersion(u8 bootVer)
@@ -1254,7 +1316,16 @@ u8    TCFG_Utility_Get_DeviceType(void)
 	return MVB_MODEL_TYPE;
 }
 
-
+/**********************************************************************************************************
+ @Function			u8    TCFG_Utility_Get_DeviceResetFlag(void)
+ @Description			TCFG_Utility_Get_DeviceResetFlag				: 读取Device Reset Flag
+ @Input				void
+ @Return				val
+**********************************************************************************************************/
+u8    TCFG_Utility_Get_DeviceResetFlag(void)
+{
+	return HC32_Reset_Flag;
+}
 
 
 

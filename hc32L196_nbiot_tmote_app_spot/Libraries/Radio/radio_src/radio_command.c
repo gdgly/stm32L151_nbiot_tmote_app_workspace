@@ -113,6 +113,8 @@ void Radio_Command_Heartval(u16 hearttime)
 **********************************************************************************************************/
 void Radio_Command_InitBackground(void)
 {
+	
+	
 #ifdef RADIO_COMMAND_DEBUG_LOG_RF_PRINTF
 	RADIO_COMMAND_DEBUG_LOG_PRINTF("[RadioCmd] InitSensorBackground");
 #endif
@@ -133,6 +135,52 @@ void Radio_Command_Reboot(void)
 	HC32_BEEP_Repeat(1, 500, 0);
 	HC32_System_Software_Reboot(REBOOT_MODE_CMD_RADIO);
 }
+
+/**********************************************************************************************************
+ @Function			void Radio_Command_Restore(void)
+ @Description			Radio_Command_Restore						: Restore
+ @Input				void
+ @Return				void
+**********************************************************************************************************/
+void Radio_Command_Restore(void)
+{
+	TCFG_EEPROM_SystemConfigInfo_Restore();
+	HC32_BEEP_Repeat(5, 60, 25);
+	
+#ifdef RADIO_COMMAND_DEBUG_LOG_RF_PRINTF
+	RADIO_COMMAND_DEBUG_LOG_PRINTF("[RadioCmd] restore");
+#endif
+}
+
+/**********************************************************************************************************
+ @Function			void Radio_Command_Newsn(u32 sn)
+ @Description			Radio_Command_Newsn							: Newsn
+ @Input				sn
+ @Return				void
+**********************************************************************************************************/
+void Radio_Command_Newsn(u32 sn)
+{
+	TCFG_Utility_Set_Factory_MacSN(sn);
+	TCFG_EEPROM_SystemConfigInfo_Restore();
+	HC32_BEEP_Repeat(5, 60, 25);
+	
+#ifdef RADIO_COMMAND_DEBUG_LOG_RF_PRINTF
+	RADIO_COMMAND_DEBUG_LOG_PRINTF("[RadioCmd] newsn: %08x", TCFG_Utility_Get_Factory_MacSN());
+#endif
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

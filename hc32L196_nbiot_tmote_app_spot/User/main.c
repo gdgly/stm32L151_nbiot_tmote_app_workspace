@@ -172,7 +172,7 @@ int main(void)
 	HC32_BEEP_Repeat(10, 60, 25);															//HC32蜂鸣器
 	HC32_IWDG_Feed();																	//HC32喂狗
 	
-	Radio_RF_Trf_Printf("Device Reboot:%d Cause:%d Radar:%d Nor:%s", 0, HC32_Reset_Flag, 0, "Ok");
+	Radio_RF_Trf_Printf("Device Reboot:%d Cause:%d Radar:%d Nor:%s", 0, TCFG_Utility_Get_DeviceResetFlag(), 0, FLASH_NOR_Status()?"None":"Ok");
 	Radio_RF_Trf_Printf("Copyright (C) 2020 Movebroad Version:%d.%d", TCFG_Utility_Get_Major_SoftwareNumber(), TCFG_Utility_Get_Minor_SoftwareNumber());
 	
 	

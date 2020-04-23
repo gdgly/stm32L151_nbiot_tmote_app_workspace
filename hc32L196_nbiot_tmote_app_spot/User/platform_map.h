@@ -147,7 +147,7 @@ void  TCFG_EEPROM_WriteSystemConfigData(void);																		// 写入系统�
 void  TCFG_EEPROM_WriteSystemParamtData(void);																		// 写入系统参数信息
 void  TCFG_EEPROM_ReadSystemConfigData(void);																		// 读取系统配置信息
 
-
+void  TCFG_EEPROM_SystemConfigInfo_Restore(void);																		// 恢复出厂配置信息
 
 
 
@@ -285,6 +285,9 @@ u8    TCFG_EEPROM_Get_ActiveMode(void);																				// 读取ActiveMode
 
 /*****************************************************************************************************************************************************/
 
+void  TCFG_Utility_Set_Factory_MacSN(u32 sn);																		// 设置Factory MacSN
+void  TCFG_Utility_Set_Factory_Vender(u32 vender);																	// 设置Factory Vender
+
 void  TCFG_Utility_Set_BootVersion(u8 bootVer);																		// 设置BootVersion
 void  TCFG_Utility_Set_BootMode(u8 bootMode);																		// 设置BootMode
 void  TCFG_Utility_Set_BootCount(u8 bootCount);																		// 设置BootCount
@@ -377,6 +380,7 @@ u8    TCFG_Utility_Get_Minor_SoftwareNumber(void);																	// 读取Mino
 u8    TCFG_Utility_Get_Minor_HardwareNumber(void);																	// 读取Minor Hardware Number
 
 u8    TCFG_Utility_Get_DeviceType(void);																			// 读取Device Type
+u8    TCFG_Utility_Get_DeviceResetFlag(void);																		// 读取Device Reset Flag
 
 /*****************************************************************************************************************************************************/
 

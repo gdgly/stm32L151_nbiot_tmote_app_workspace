@@ -287,6 +287,16 @@ char Radio_RF_Operate_Recvmsg(u8 *inmsg, u8 len)
 				if (strstr(((radio_trf_generalcmd_s*)CFG_P_FRAME_PAYLOAD(inmsg))->buf, "reboot")) {
 					Radio_Command_Reboot();
 				}
+				/* restore */
+				else if (strstr(((radio_trf_generalcmd_s*)CFG_P_FRAME_PAYLOAD(inmsg))->buf, "restore")) {
+					Radio_Command_Restore();
+				}
+				/* newsn */
+				else if (strstr(((radio_trf_generalcmd_s*)CFG_P_FRAME_PAYLOAD(inmsg))->buf, "newsn")) {
+					u32 newsn = 0;
+					sscanf(((radio_trf_generalcmd_s*)CFG_P_FRAME_PAYLOAD(inmsg))->buf, "newsn:%08x", &newsn);
+					Radio_Command_Newsn(newsn);
+				}
 				
 				
 				

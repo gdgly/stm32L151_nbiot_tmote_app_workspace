@@ -15,6 +15,11 @@ void Radio_Command_InitBackground(void);													//初始化传感器指令
 
 void Radio_Command_Reboot(void);															//Reboot
 
+void Radio_Command_Restore(void);															//Restore
+
+void Radio_Command_Newsn(u32 sn);															//Newsn
+
+
 
 
 
