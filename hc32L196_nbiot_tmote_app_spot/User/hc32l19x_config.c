@@ -274,9 +274,8 @@ static void Device_RadioNSS_Init(void)
 **********************************************************************************************************/
 void HC32_RstPowerIO_Init(void)
 {
-	stc_gpio_cfg_t GPIO_Initure;
-	
-	DDL_ZERO_STRUCT(GPIO_Initure);
+	Device_FlashNSS_Init();																//Flash SPI NSS 未选
+	Device_RadioNSS_Init();																//Radio SPI NSS 未选
 	
 	Device_ModelPower_Init();															//外设模块电源初始化
 	Device_RadarPower_Init();															//外设雷达电源初始化
@@ -287,71 +286,6 @@ void HC32_RstPowerIO_Init(void)
 	RADAR_POWER_IO_SET(OFF);																//外设雷达电源关闭
 	NBIOT_POWER_IO_SET(OFF);																//外设NBIoT电源关闭
 	VBATE_POWER_IO_SET(OFF);																//外设VBate电源关闭
-	
-	/* IIC0 */
-	GPIO_Initure.enDir			= GpioDirOut;
-	GPIO_Initure.enDrv			= GpioDrvH;
-	GPIO_Initure.enPu			= GpioPuDisable;
-	GPIO_Initure.enPd			= GpioPdDisable;
-	GPIO_Initure.enOD			= GpioOdDisable;
-	Gpio_Init(IIC0_SCL_GPIOx, IIC0_SCL_PIN, &GPIO_Initure);
-	Gpio_Init(IIC0_SDA_GPIOx, IIC0_SDA_PIN, &GPIO_Initure);
-	Gpio_SetAfMode(IIC0_SCL_GPIOx, IIC0_SCL_PIN, GpioAf0);
-	Gpio_SetAfMode(IIC0_SDA_GPIOx, IIC0_SDA_PIN, GpioAf0);
-	
-	/* SPI0 */
-	GPIO_Initure.enDir			= GpioDirOut;
-	GPIO_Initure.enDrv			= GpioDrvH;
-	GPIO_Initure.enPu			= GpioPuDisable;
-	GPIO_Initure.enPd			= GpioPdDisable;
-	GPIO_Initure.enOD			= GpioOdDisable;
-	Gpio_Init(SPI0_SCLK_GPIOx, SPI0_SCLK_PIN, &GPIO_Initure);
-	Gpio_Init(SPI0_MOSI_GPIOx, SPI0_MOSI_PIN, &GPIO_Initure);
-	Gpio_Init(SPI0_MISO_GPIOx, SPI0_MISO_PIN, &GPIO_Initure);
-	Gpio_SetAfMode(SPI0_SCLK_GPIOx, SPI0_SCLK_PIN, GpioAf0);
-	Gpio_SetAfMode(SPI0_MOSI_GPIOx, SPI0_MOSI_PIN, GpioAf0);
-	Gpio_SetAfMode(SPI0_MISO_GPIOx, SPI0_MISO_PIN, GpioAf0);
-	
-	/* FLASH NSS */
-	GPIO_Initure.enDir			= GpioDirOut;
-	GPIO_Initure.enDrv			= GpioDrvH;
-	GPIO_Initure.enPu			= GpioPuDisable;
-	GPIO_Initure.enPd			= GpioPdDisable;
-	GPIO_Initure.enOD			= GpioOdDisable;
-	Gpio_Init(P25QXXH_SPIx_NSS_GPIOx, P25QXXH_SPIx_NSS_PIN, &GPIO_Initure);
-	Gpio_SetAfMode(P25QXXH_SPIx_NSS_GPIOx, P25QXXH_SPIx_NSS_PIN, GpioAf0);
-	
-	/* RADIO NSS */
-	GPIO_Initure.enDir			= GpioDirOut;
-	GPIO_Initure.enDrv			= GpioDrvH;
-	GPIO_Initure.enPu			= GpioPuDisable;
-	GPIO_Initure.enPd			= GpioPdDisable;
-	GPIO_Initure.enOD			= GpioOdDisable;
-	Gpio_Init(RADIO_SI4438_NSS_GPIOx, RADIO_SI4438_NSS_PIN, &GPIO_Initure);
-	Gpio_SetAfMode(RADIO_SI4438_NSS_GPIOx, RADIO_SI4438_NSS_PIN, GpioAf0);
-	
-	/* RADIO SDN */
-	Gpio_Init(RADIO_SI4438_SDN_GPIOx, RADIO_SI4438_SDN_PIN, &GPIO_Initure);
-	Gpio_SetAfMode(RADIO_SI4438_SDN_GPIOx, RADIO_SI4438_SDN_PIN, GpioAf0);
-	
-	/* RADIO IRQ */
-	Gpio_Init(RADIO_SI4438_IRQ_GPIOx, RADIO_SI4438_IRQ_PIN, &GPIO_Initure);
-	Gpio_SetAfMode(RADIO_SI4438_IRQ_GPIOx, RADIO_SI4438_IRQ_PIN, GpioAf0);
-	
-	Gpio_ClrIO(IIC0_SCL_GPIOx, IIC0_SCL_PIN);
-	Gpio_ClrIO(IIC0_SDA_GPIOx, IIC0_SDA_PIN);
-	
-	Gpio_ClrIO(SPI0_SCLK_GPIOx, SPI0_SCLK_PIN);
-	Gpio_ClrIO(SPI0_MOSI_GPIOx, SPI0_MOSI_PIN);
-	Gpio_ClrIO(SPI0_MISO_GPIOx, SPI0_MISO_PIN);
-	
-	Gpio_ClrIO(P25QXXH_SPIx_NSS_GPIOx, P25QXXH_SPIx_NSS_PIN);
-	
-	Gpio_ClrIO(RADIO_SI4438_NSS_GPIOx, RADIO_SI4438_NSS_PIN);
-	
-	Gpio_ClrIO(RADIO_SI4438_SDN_GPIOx, RADIO_SI4438_SDN_PIN);
-	
-	Gpio_ClrIO(RADIO_SI4438_IRQ_GPIOx, RADIO_SI4438_IRQ_PIN);
 	
 	Delay_MS(2500);																	//外设断电2.5秒
 }
@@ -364,14 +298,6 @@ void HC32_RstPowerIO_Init(void)
 **********************************************************************************************************/
 void HC32_CtrPowerIO_Init(void)
 {
-	Device_FlashNSS_Init();																//Flash SPI NSS 未选
-	Device_RadioNSS_Init();																//Radio SPI NSS 未选
-	
-	Device_ModelPower_Init();															//外设模块电源初始化
-	Device_RadarPower_Init();															//外设雷达电源初始化
-	Device_NBIotPower_Init();															//外设NBIoT电源初始化
-	Device_VBatePower_Init();															//外设VBate电源初始化
-	
 	MODEL_POWER_IO_SET(OFF);																//外设模块电源关闭
 	RADAR_POWER_IO_SET(OFF);																//外设雷达电源关闭
 	NBIOT_POWER_IO_SET(OFF);																//外设NBIoT电源关闭
@@ -453,66 +379,80 @@ void HC32_AutomaticSystem_Check(void)
 
 
 
+/**********************************************************************************************************
+ @Function			void HC32_LowPower_SleepBefor_Init(void)
+ @Description			HC32_LowPower_SleepBefor_Init					: 进入低功耗stop模式之前初始化
+ @Input				void
+ @Return				void
+ @attention			不用模拟IO口
+					PA0 PA2 PA3 PA5 PA6 PA7 PA8 PA9 PA10 PA11 PA12 PA15 => 9FED
+					PB3 PB4 PB6 PB7 PB8 PB10 PB11 PB12                  => 1DD8
+**********************************************************************************************************/
+void HC32_LowPower_SleepBefor_Init(void)
+{
+	
+	
+	
+	Radio_Hal_RF_Set_Sleep();
+	Radio_Hal_RF_Interrupt_Disable();
+	
+	QMC5883L_Drdy_DeInit();
+	
+	M0P_GPIO->PAADS |= ~(0x9FED);
+	M0P_GPIO->PBADS |= ~(0x1DD8);
+	M0P_GPIO->PCADS |= ~(0x0000);
+	M0P_GPIO->PDADS |= ~(0x0000);
+	M0P_GPIO->PEADS |= ~(0x0000);
+	M0P_GPIO->PFADS |= ~(0x0000);
+	
+	Device_FlashNSS_Init();
+	Device_RadioNSS_Init();
+	
+	
+	
+}
 
+/**********************************************************************************************************
+ @Function			void HC32_LowPower_SleepEnter_Stop(void)
+ @Description			HC32_LowPower_SleepEnter_Stop					: 进入低功耗stop模式
+ @Input				void
+ @Return				void
+**********************************************************************************************************/
+void HC32_LowPower_SleepEnter_Stop(void)
+{
+	
+	
+	
+	Delay_MS(1000);
+	
+	//Lpm_GotoDeepSleep(FALSE);
+	
+	
+	
+	
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+/**********************************************************************************************************
+ @Function			void HC32_LowPower_SleepAfter_Init(void)
+ @Description			HC32_LowPower_SleepAfter_Init					: 进入低功耗stop模式之后初始化
+ @Input				void
+ @Return				void
+**********************************************************************************************************/
+void HC32_LowPower_SleepAfter_Init(void)
+{
+	
+	
+	
+	
+	Radio_Hal_RF_Interface_Init();
+	Radio_Hal_RF_Interrupt_Enable();
+	
+	QMC5883L_Drdy_Init();
+	
+	
+	
+	
+}
 
 
 

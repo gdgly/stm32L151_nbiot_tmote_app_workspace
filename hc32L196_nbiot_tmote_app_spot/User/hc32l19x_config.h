@@ -135,9 +135,9 @@ void HC32_AutomaticSystem_Check(void);														//HC32系统自检
 
 
 
-
-
-
+void HC32_LowPower_SleepBefor_Init(void);													//进入低功耗stop模式之前初始化
+void HC32_LowPower_SleepEnter_Stop(void);													//进入低功耗stop模式
+void HC32_LowPower_SleepAfter_Init(void);													//进入低功耗stop模式之后初始化
 
 
 

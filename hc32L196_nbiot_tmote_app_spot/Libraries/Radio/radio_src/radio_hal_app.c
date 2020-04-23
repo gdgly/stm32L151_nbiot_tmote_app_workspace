@@ -418,6 +418,9 @@ void Radio_RF_Xmit_Heartbeat(void)
 **********************************************************************************************************/
 void Radio_Trf_Do_Heartbeat(void)
 {
+	Radio_Hal_RF_Interface_Init();
+	Radio_Hal_RF_Interrupt_Enable();
+	
 	Radio_RF_Xmit_Heartbeat();
 }
 
@@ -464,6 +467,9 @@ void Radio_RF_Xmit_Printfbuf(char* info)
 **********************************************************************************************************/
 void Radio_Trf_Do_Printfbuf(char* info)
 {
+	Radio_Hal_RF_Interface_Init();
+	Radio_Hal_RF_Interrupt_Enable();
+	
 	Radio_RF_Xmit_Printfbuf(info);
 }
 

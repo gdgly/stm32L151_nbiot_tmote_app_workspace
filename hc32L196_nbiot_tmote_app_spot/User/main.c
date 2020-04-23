@@ -234,7 +234,7 @@ int main(void)
 	
 	
 	
-	#if 0
+	#if 1
 	short x, y, z;
 	struct tm date;
 	
@@ -244,7 +244,7 @@ int main(void)
 	while (true)
 	{
 		
-		#if 0
+		#if 1
 		date = HC32_RTC_GetUnixTimeToCalendar();
 		
 		QMC5883L_ReadData_Extended(&x, &y, &z);
@@ -257,7 +257,11 @@ int main(void)
 		printf("*******************************************************************************************\r\n\r\n");
 		#endif
 		
-		Delay_MS(1000);
+		Radio_RF_Trf_App_Task();
+		
+		Radio_RF_Trf_Printf("x=%d y=%d z=%d", x, y, z);
+		
+		//Delay_MS(1000);
 		
 		HC32_IWDG_Feed();
 		
@@ -275,13 +279,16 @@ int main(void)
 		
 		
 		
+		HC32_IWDG_Feed();
 		
 		
+		HC32_LowPower_SleepBefor_Init();
+		HC32_LowPower_SleepEnter_Stop();
+		HC32_LowPower_SleepAfter_Init();
 		
 		
+		HC32_IWDG_Feed();
 		
-		
-		Radio_RF_Trf_App_Task();
 		
 	}
 }
