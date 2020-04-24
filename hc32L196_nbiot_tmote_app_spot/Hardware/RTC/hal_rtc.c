@@ -74,9 +74,11 @@ void HC32_RTC_Init(void)
 	RTC_Initure.rtcTime.u8DayOfWeek	= RTC_ByteToBcd2(RTC_WeekDayNum(RTC_Bcd2ToByte(RTC_DEFAULT_YEAR), RTC_Bcd2ToByte(RTC_DEFAULT_MONTH), RTC_Bcd2ToByte(RTC_DEFAULT_DAY)));
 	
 	/* RTC周期设置 */
+#if (SYSTEM_RTCPRIDI_TYPE == SYSTEM_RTCPRIDI_ENABLE)
 	RTC_Initure.rtcPrdsel.rtcPrdsel	= RTC_PRD_SOURCE;
 	RTC_Initure.rtcPrdsel.rtcPrds		= RTC_PRD_S;
 	RTC_Initure.rtcPrdsel.rtcPrdx		= RTC_PRD_X;
+#endif
 	
 	/* RTC补偿设置 */
 	RTC_Initure.rtcCompen			= RtcCompenEnable;
@@ -84,6 +86,16 @@ void HC32_RTC_Init(void)
 	
 	/* RTC初始化 */
 	Rtc_Init(&RTC_Initure);
+	
+	/* RTC启动闹钟中断 */
+#if (SYSTEM_RTCPRIDI_TYPE == SYSTEM_RTCPRIDI_ENABLE)
+	Rtc_AlmIeCmd(TRUE);
+#endif
+	
+	/* RTC使能中断向量 */
+#if (SYSTEM_RTCPRIDI_TYPE == SYSTEM_RTCPRIDI_ENABLE)
+	EnableNvic(RTC_IRQ_Channel, RTC_IRQ_Level, TRUE);
+#endif
 	
 	/* RTC启动计数 */
 	Rtc_Cmd(TRUE);
