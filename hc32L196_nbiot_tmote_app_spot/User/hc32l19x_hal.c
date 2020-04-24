@@ -32,6 +32,19 @@ u32 HAL_IncMecTick(void)
 }
 
 /**********************************************************************************************************
+ @Function			u32 HAL_AddMecTick(u32 ntick)
+ @Description			HAL_AddMecTick								: HAL Add Mec Tick
+ @Input				void
+ @Return				0
+**********************************************************************************************************/
+u32 HAL_AddMecTick(u32 ntick)
+{
+	uwTick += ntick;
+	
+	return 0;
+}
+
+/**********************************************************************************************************
  @Function			u32 HAL_GetMecTick(void)
  @Description			HAL_GetMecTick								: HAL Get Mec Tick
  @Input				void
@@ -62,6 +75,19 @@ u32 HAL_IncSecTick(void)
 		usTick++;
 		SecondTickPre += 1000;
 	}
+	
+	return 0;
+}
+
+/**********************************************************************************************************
+ @Function			u32 HAL_AddSecTick(u32 ntick)
+ @Description			HAL_AddSecTick								: HAL Add Sec Tick
+ @Input				void
+ @Return				0
+**********************************************************************************************************/
+u32 HAL_AddSecTick(u32 ntick)
+{
+	usTick += ntick;
 	
 	return 0;
 }
