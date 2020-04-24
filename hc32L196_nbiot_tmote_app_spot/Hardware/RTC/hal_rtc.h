@@ -28,6 +28,9 @@ void HC32_RTC_Init(void);																//HC32实时时钟初始化
 
 void HC32_RTC_SetTime(u8 year, u8 month, u8 day, u8 hour, u8 min, u8 sec);							//HC32实时时钟设置时间
 
+void HC32_RTC_Interrupt_Enable(void);														//HC32实时时钟中断使能
+void HC32_RTC_Interrupt_Disable(void);														//HC32实时时钟中断失能
+
 time_t    HC32_RTC_GetUnixTimeToStamp(void);													//HC32实时时钟获取当前时间戳
 struct tm HC32_RTC_GetUnixTimeToCalendar(void);												//HC32实时时钟获取当前时间体
 

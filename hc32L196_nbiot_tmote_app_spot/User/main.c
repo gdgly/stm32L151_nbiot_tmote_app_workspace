@@ -196,96 +196,34 @@ int main(void)
 	
 	
 	
-	#if 0
-	printf("SN: %x\r\n", TCFG_Utility_Get_Factory_MacSN());
-	printf("Vender: %x\r\n", TCFG_Utility_Get_Factory_Vender());
-	printf("SN Str: %s\r\n", TCFG_Utility_Get_Factory_MacSN_String());
-	printf("Vender Str: %s\r\n", TCFG_Utility_Get_Factory_Vender_String());
-	
-	printf("BV : %d\r\n", TCFG_Utility_Get_BootVersion());
-	printf("BM : %d\r\n", TCFG_Utility_Get_BootMode());
-	printf("BC : %d\r\n", TCFG_Utility_Get_BootCount());
-	
-	printf("TCFG_Utility_Get_RadioChannel : %d\r\n", TCFG_Utility_Get_RadioChannel());
-	printf("TCFG_Utility_Get_RadioHeartval : %d\r\n", TCFG_Utility_Get_RadioHeartval());
-	
-	printf("TCFG_DEVICE_RBTMODE_OFFSET: %x\r\n", TCFG_DEVICE_RBTMODE_OFFSET);
-	printf("TCFG_Utility_Get_DeviceRebootMode: %d\r\n", TCFG_Utility_Get_DeviceRebootMode());
-	
-	printf("TCFG_SENSITIVITY_OFFSET: 0x%08X\r\n", TCFG_SENSITIVITY_OFFSET);
-	printf("TCFG_WORKMODE_OFFSET: 0x%08X\r\n", TCFG_WORKMODE_OFFSET);
-	printf("TCFG_ACTIVEMODE_OFFSET: 0x%08X\r\n", TCFG_ACTIVEMODE_OFFSET);
-	
-	printf("TCFG_Utility_Get_Sensitivity: %d\r\n", TCFG_Utility_Get_Sensitivity());
-	printf("TCFG_Utility_Get_WorkMode: %d\r\n", TCFG_Utility_Get_WorkMode());
-	printf("TCFG_Utility_Get_RadioHeartval: %d\r\n", TCFG_Utility_Get_RadioHeartval());
-	#endif
-	
-	printf("TCFG_IDLEMODE_OFFSET: 0x%08X\r\n", TCFG_IDLEMODE_OFFSET);
-	printf("TCFG_ACTIVEMODE_OFFSET: 0x%08X\r\n", TCFG_ACTIVEMODE_OFFSET);
-	
-	printf("TCFG_Utility_Get_IdleMode: %d\r\n", TCFG_Utility_Get_IdleMode());
-	printf("TCFG_Utility_Get_ActiveMode: %d\r\n", TCFG_Utility_Get_ActiveMode());
 	
 	
 	
 	
-	
-	
-	
-	
-	#if 1
-	short x, y, z;
-	struct tm date;
-	
-	HC32_RTC_SetTime(20, 04, 16, 10, 00, 00);
-	#endif
 	
 	while (true)
 	{
 		
-		#if 1
-		date = HC32_RTC_GetUnixTimeToCalendar();
-		
-		QMC5883L_ReadData_Extended(&x, &y, &z);
-		
-		printf("*******************************************************************************************\r\n");
-		printf("This is Upgrade to Jump Application\r\n");
-		printf("Reset: %d Runing: %8d HCLK: %d PCLK: %d SystemCoreClock: %d\r\n", HC32_Reset_Flag, HC32_GetMecondTick(), Sysctrl_GetHClkFreq(), Sysctrl_GetPClkFreq(), SystemCoreClock);
-		printf("Date:  %02d-%02d-%02d %02d:%02d:%02d week %d\r\n", date.tm_year, date.tm_mon, date.tm_mday, date.tm_hour, date.tm_min, date.tm_sec, date.tm_wday);
-		printf("QMC:   X = %d, Y = %d, Z = %d\r\n", x, y, z);
-		printf("*******************************************************************************************\r\n\r\n");
-		#endif
-		
-		Radio_RF_Trf_App_Task();
-		
-		Radio_RF_Trf_Printf("x=%d y=%d z=%d", x, y, z);
-		
-		//Delay_MS(1000);
-		
-		HC32_IWDG_Feed();
-		
-		#if 0
-		printf("TCFG_Utility_Get_Sensitivity: %d\r\n", TCFG_Utility_Get_Sensitivity());
-		printf("TCFG_Utility_Get_WorkMode: %d\r\n", TCFG_Utility_Get_WorkMode());
-		printf("TCFG_Utility_Get_RadioHeartval: %d\r\n", TCFG_Utility_Get_RadioHeartval());
-		
-		printf("TCFG_Utility_Get_DeviceMode: %d\r\n", TCFG_Utility_Get_DeviceMode());
-		printf("TCFG_Utility_Get_DeviceModeInfo: %s\r\n", TCFG_Utility_Get_DeviceModeInfo());
-		#endif
 		
 		
 		
 		
 		
 		
-		HC32_IWDG_Feed();
 		
 		
-		HC32_LowPower_SleepBefor_Init();
-		HC32_LowPower_SleepEnter_Stop();
-		HC32_LowPower_SleepAfter_Init();
 		
+		
+		
+		
+		
+		
+		
+		
+		
+		//HC32_IWDG_Feed();
+		
+		//HC32_LowPower_Sleep_Task();
 		
 		HC32_IWDG_Feed();
 		

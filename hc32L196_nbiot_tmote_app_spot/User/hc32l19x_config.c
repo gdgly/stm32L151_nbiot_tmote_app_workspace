@@ -390,9 +390,6 @@ void HC32_AutomaticSystem_Check(void)
 **********************************************************************************************************/
 void HC32_LowPower_SleepBefor_Init(void)
 {
-	
-	
-	
 	Radio_Hal_RF_Set_Sleep();
 	Radio_Hal_RF_Interrupt_Disable();
 	
@@ -407,9 +404,6 @@ void HC32_LowPower_SleepBefor_Init(void)
 	
 	Device_FlashNSS_Init();
 	Device_RadioNSS_Init();
-	
-	
-	
 }
 
 /**********************************************************************************************************
@@ -423,9 +417,8 @@ void HC32_LowPower_SleepEnter_Stop(void)
 	
 	
 	
-	Delay_MS(1000);
 	
-	//Lpm_GotoDeepSleep(FALSE);
+	Lpm_GotoDeepSleep(FALSE);
 	
 	
 	
@@ -440,24 +433,24 @@ void HC32_LowPower_SleepEnter_Stop(void)
 **********************************************************************************************************/
 void HC32_LowPower_SleepAfter_Init(void)
 {
-	
-	
-	
-	
 	Radio_Hal_RF_Interface_Init();
 	Radio_Hal_RF_Interrupt_Enable();
 	
 	QMC5883L_Drdy_Init();
-	
-	
-	
-	
 }
 
-
-
-
-
+/**********************************************************************************************************
+ @Function			void HC32_LowPower_Sleep_Task(void)
+ @Description			HC32_LowPower_Sleep_Task						: HC32低功耗处理
+ @Input				void
+ @Return				void
+**********************************************************************************************************/
+void HC32_LowPower_Sleep_Task(void)
+{
+	HC32_LowPower_SleepBefor_Init();
+	HC32_LowPower_SleepEnter_Stop();
+	HC32_LowPower_SleepAfter_Init();
+}
 
 
 

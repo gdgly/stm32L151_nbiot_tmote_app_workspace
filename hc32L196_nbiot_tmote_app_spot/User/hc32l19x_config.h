@@ -139,6 +139,16 @@ void HC32_LowPower_SleepBefor_Init(void);													//进入低功耗stop模�
 void HC32_LowPower_SleepEnter_Stop(void);													//进入低功耗stop模式
 void HC32_LowPower_SleepAfter_Init(void);													//进入低功耗stop模式之后初始化
 
+void HC32_LowPower_Sleep_Task(void);														//HC32低功耗处理
+
+
+
+
+
+
+
+
+
 
 
 

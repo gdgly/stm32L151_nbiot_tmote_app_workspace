@@ -73,6 +73,11 @@ void HC32_RTC_Init(void)
 	RTC_Initure.rtcTime.u8Second		= RTC_DEFAULT_SECOND;
 	RTC_Initure.rtcTime.u8DayOfWeek	= RTC_ByteToBcd2(RTC_WeekDayNum(RTC_Bcd2ToByte(RTC_DEFAULT_YEAR), RTC_Bcd2ToByte(RTC_DEFAULT_MONTH), RTC_Bcd2ToByte(RTC_DEFAULT_DAY)));
 	
+	/* RTC周期设置 */
+	RTC_Initure.rtcPrdsel.rtcPrdsel	= RTC_PRD_SOURCE;
+	RTC_Initure.rtcPrdsel.rtcPrds		= RTC_PRD_S;
+	RTC_Initure.rtcPrdsel.rtcPrdx		= RTC_PRD_X;
+	
 	/* RTC补偿设置 */
 	RTC_Initure.rtcCompen			= RtcCompenEnable;
 	RTC_Initure.rtcCompValue			= 0;
@@ -107,6 +112,30 @@ void HC32_RTC_SetTime(u8 year, u8 month, u8 day, u8 hour, u8 min, u8 sec)
 	RTC_Time.u8DayOfWeek			= RTC_ByteToBcd2(RTC_WeekDayNum(year, month, day));
 	
 	Rtc_SetTime(&RTC_Time);
+}
+
+/**********************************************************************************************************
+ @Function		void HC32_RTC_Interrupt_Enable(void)
+ @Description 		HC32_RTC_Interrupt_Enable						: HC32实时时钟中断使能
+ @Input			void
+ @Return		  	void
+**********************************************************************************************************/
+void HC32_RTC_Interrupt_Enable(void)
+{
+	Rtc_AlmIeCmd(TRUE);
+	EnableNvic(RTC_IRQ_Channel, RTC_IRQ_Level, TRUE);
+}
+
+/**********************************************************************************************************
+ @Function		void HC32_RTC_Interrupt_Disable(void)
+ @Description 		HC32_RTC_Interrupt_Disable						: HC32实时时钟中断失能
+ @Input			void
+ @Return		  	void
+**********************************************************************************************************/
+void HC32_RTC_Interrupt_Disable(void)
+{
+	EnableNvic(RTC_IRQ_Channel, RTC_IRQ_Level, FALSE);
+	Rtc_AlmIeCmd(FALSE);
 }
 
 /**********************************************************************************************************
@@ -234,6 +263,23 @@ struct tm HC32_RTC_TimeToCalendar(u8 year, u8 month, u8 day, u8 hour, u8 min, u8
 	t_time->tm_mon		+= 1;
 	
 	return *t_time;
+}
+
+/**********************************************************************************************************
+ @Function			void Rtc_IRQHandler(void)
+ @Description			Rtc_IRQHandler								: HC32 RTC中断服务函数
+ @Input				void
+ @Return				void
+**********************************************************************************************************/
+void Rtc_IRQHandler(void)
+{
+	if(Rtc_GetPridItStatus() == TRUE) {
+		Rtc_ClearPrdfItStatus();
+	}
+	
+	if (Rtc_GetAlmfItStatus() == TRUE) {
+		Rtc_ClearAlmfItStatus();
+	}
 }
 
 /********************************************** END OF FLEE **********************************************/
