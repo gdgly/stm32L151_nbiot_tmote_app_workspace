@@ -470,11 +470,69 @@ bool HC32_TimeMeter_IsExpiredSS(timeMeterTypeDef* timer)
 		return false;
 }
 
+/**********************************************************************************************************
+ @Function			void HC32_TimeMeter_RunTimerStartMS(timeMeterTypeDef* timer)
+ @Description			HC32_TimeMeter_RunTimerStartMS				: HC32配置运行计时器启动时间点(MS)
+ @Input				timeMeterTypeDef*							: 计时器结构体指针
+ @Return				void
+**********************************************************************************************************/
+void HC32_TimeMeter_RunTimerStartMS(timeMeterTypeDef* timer)
+{
+	timer->xTicksToRun = HAL_GetMecTick();
+}
 
+/**********************************************************************************************************
+ @Function			u32 HC32_TimeMeter_RunTimerObtainMS(timeMeterTypeDef* timer)
+ @Description			HC32_TimeMeter_RunTimerObtainMS				: HC32获取运行计时器时间(MS)
+ @Input				timeMeterTypeDef*							: 计时器结构体指针
+ @Return				void
+**********************************************************************************************************/
+u32 HC32_TimeMeter_RunTimerObtainMS(timeMeterTypeDef* timer)
+{
+	u32 tickNow, tickOld, tickCnt;
+	
+	tickOld = timer->xTicksToRun;
+	tickNow = HAL_GetMecTick();
+	
+	if (tickNow > tickOld)
+		tickCnt = (tickNow - tickOld);
+	else
+		tickCnt = (0xFFFFFFFF - tickOld + tickNow + 1);
+	
+	return tickCnt;
+}
 
+/**********************************************************************************************************
+ @Function			void HC32_TimeMeter_RunTimerStartSS(timeMeterTypeDef* timer)
+ @Description			HC32_TimeMeter_RunTimerStartSS				: HC32配置运行计时器启动时间点(SS)
+ @Input				timeMeterTypeDef*							: 计时器结构体指针
+ @Return				void
+**********************************************************************************************************/
+void HC32_TimeMeter_RunTimerStartSS(timeMeterTypeDef* timer)
+{
+	timer->xTicksToRun = HAL_GetSecTick();
+}
 
-
-
+/**********************************************************************************************************
+ @Function			u32 HC32_TimeMeter_RunTimerObtainSS(timeMeterTypeDef* timer)
+ @Description			HC32_TimeMeter_RunTimerObtainSS				: HC32获取运行计时器时间(SS)
+ @Input				timeMeterTypeDef*							: 计时器结构体指针
+ @Return				void
+**********************************************************************************************************/
+u32 HC32_TimeMeter_RunTimerObtainSS(timeMeterTypeDef* timer)
+{
+	u32 tickNow, tickOld, tickCnt;
+	
+	tickOld = timer->xTicksToRun;
+	tickNow = HAL_GetSecTick();
+	
+	if (tickNow > tickOld)
+		tickCnt = (tickNow - tickOld);
+	else
+		tickCnt = (0xFFFFFFFF - tickOld + tickNow + 1);
+	
+	return tickCnt;
+}
 
 
 

@@ -10,8 +10,8 @@ typedef struct time_meter
 {
 	u32			xTicksToWait;
 	u32			xTicksToOut;
+	u32			xTicksToRun;
 } timeMeterTypeDef;
-
 
 
 
@@ -51,10 +51,10 @@ bool HC32_TimeMeter_IsExpiredMS(timeMeterTypeDef* timer);														//HC32查
 void HC32_TimeMeter_CountdownSS(timeMeterTypeDef* timer, u32 timeout);											//HC32配置计时器倒数时间(SS)
 bool HC32_TimeMeter_IsExpiredSS(timeMeterTypeDef* timer);														//HC32查询是否到达计时器计时时间(SS)
 
-
-
-
-
+void HC32_TimeMeter_RunTimerStartMS(timeMeterTypeDef* timer);													//HC32配置运行计时器启动时间点(MS)
+u32  HC32_TimeMeter_RunTimerObtainMS(timeMeterTypeDef* timer);													//HC32获取运行计时器时间(MS)
+void HC32_TimeMeter_RunTimerStartSS(timeMeterTypeDef* timer);													//HC32配置运行计时器启动时间点(SS)
+u32  HC32_TimeMeter_RunTimerObtainSS(timeMeterTypeDef* timer);													//HC32获取运行计时器时间(SS)
 
 
 
