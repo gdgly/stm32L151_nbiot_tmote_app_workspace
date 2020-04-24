@@ -414,15 +414,22 @@ void HC32_LowPower_SleepBefor_Init(void)
 **********************************************************************************************************/
 void HC32_LowPower_SleepEnter_Stop(void)
 {
+	static timeMeterTypeDef systemWorkTimer;
 	
+	u32 workTimeMs = 0;
+	u32 idleTimeMs = 0;
 	
+	workTimeMs = HC32_TimeMeter_RunTimerObtainMS(&systemWorkTimer);
 	
+	idleTimeMs = 1000 - (workTimeMs % 1000);
+	
+	HC32_AddMecondTick(idleTimeMs);
+	
+	HC32_IncSecondTick();
 	
 	Lpm_GotoDeepSleep(FALSE);
 	
-	
-	
-	
+	HC32_TimeMeter_RunTimerStartMS(&systemWorkTimer);
 }
 
 /**********************************************************************************************************
@@ -447,10 +454,25 @@ void HC32_LowPower_SleepAfter_Init(void)
 **********************************************************************************************************/
 void HC32_LowPower_Sleep_Task(void)
 {
+#if SYSTEM_LOWPOWER_TYPE == SYSTEM_LOWPOWER_ENABLE
 	HC32_LowPower_SleepBefor_Init();
 	HC32_LowPower_SleepEnter_Stop();
 	HC32_LowPower_SleepAfter_Init();
+#endif
+	
+#if SYSTEM_LOWPOWER_TYPE == SYSTEM_LOWPOWER_DISABLE
+	Delay_MS(1000);
+#endif
 }
+
+
+
+
+
+
+
+
+
 
 
 

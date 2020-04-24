@@ -106,10 +106,10 @@ s32  Radio_RF_Get_Gateway_nearby(void);
 
 
 
-
-
-
-
+void Radio_RF_Trf_Printf_Level0(const char *fmt, ...);
+void Radio_RF_Trf_Printf_Level1(const char *fmt, ...);
+void Radio_RF_Trf_Printf_Level2(const char *fmt, ...);
+void Radio_RF_Trf_Printf_Level3(const char *fmt, ...);
 
 void Radio_RF_Trf_Printf(const char *fmt, ...);
 

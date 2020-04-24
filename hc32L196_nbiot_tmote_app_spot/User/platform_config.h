@@ -106,7 +106,7 @@
 
 #define	RADIO_RF_CHANNEL1				36												//小无线默认通道
 #define	RADIO_RF_HEARTVAL				30												//小无线默认心跳
-
+#define	RADIO_RF_DPRINTFL				RF_DPRINT_LEVEL_2									//小无线调试等级
 
 
 

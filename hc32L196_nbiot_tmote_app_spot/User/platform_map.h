@@ -73,6 +73,13 @@
 #define TCFG_ACTIVEMODE_OFFSET					TCFG_IDLEMODE_OFFSET + TCFG_IDLEMODE_LENGTH								// 0x00000013
 #define TCFG_ACTIVEMODE_LENGTH					1																// ActiveMode			运行模式
 
+#define TCFG_RF_DPRINT_LEVEL_OFFSET				TCFG_ACTIVEMODE_OFFSET + TCFG_ACTIVEMODE_LENGTH							// 0x00000014
+#define TCFG_RF_DPRINT_LEVEL_LENGTH				1																// RFDPrintfLevel		调试信息输出等级
+
+
+
+
+
 
 
 
@@ -121,6 +128,13 @@ typedef struct
 	u8		ActiveMode;
 	u8		DeviceMode;
 	u8		DeviceModeInfo[8];
+	u8		RFDPrintfLevel;
+	
+	
+	
+	
+	
+	
 	
 	
 	
@@ -252,6 +266,11 @@ u8    TCFG_EEPROM_Get_IdleMode(void);																				// 读取IdleMode
 void  TCFG_EEPROM_Set_ActiveMode(u8 active);																			// 保存ActiveMode
 u8    TCFG_EEPROM_Get_ActiveMode(void);																				// 读取ActiveMode
 
+void  TCFG_EEPROM_Set_RFDPrintfLevel(u8 level);																		// 保存RFDPrintfLevel
+u8    TCFG_EEPROM_Get_RFDPrintfLevel(void);																			// 读取RFDPrintfLevel
+
+
+
 
 
 
@@ -304,6 +323,7 @@ void  TCFG_Utility_Set_WorkMode(u8 workmode);																		// 设置WorkMode
 void  TCFG_Utility_Set_IdleMode(u8 idlemode);																		// 设置IdleMode
 void  TCFG_Utility_Set_ActiveMode(u8 activemode);																		// 设置ActiveMode
 
+void  TCFG_Utility_Set_RFDPrintfLevel(u8 level);																		// 设置RFDPrintfLevel
 
 
 
@@ -350,7 +370,7 @@ u8    TCFG_Utility_Get_WorkMode(void);																				// 读取WorkMode
 u8    TCFG_Utility_Get_IdleMode(void);																				// 读取IdleMode
 u8    TCFG_Utility_Get_ActiveMode(void);																			// 读取ActiveMode
 
-
+u8    TCFG_Utility_Get_RFDPrintfLevel(void);																			// 读取RFDPrintfLevel
 
 
 

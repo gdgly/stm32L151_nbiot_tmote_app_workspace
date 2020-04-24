@@ -112,9 +112,9 @@ void  TCFG_EEPROM_WriteSystemConfigData(void)
 	TCFG_SystemData.ActiveMode = ACTIVE_MODE_ENABLE;
 	TCFG_EEPROM_Set_ActiveMode(TCFG_SystemData.ActiveMode);
 	
-	
-	
-	
+	/* 写入调试信息输出等级 */
+	TCFG_SystemData.RFDPrintfLevel = RADIO_RF_DPRINTFL;
+	TCFG_EEPROM_Set_RFDPrintfLevel(TCFG_SystemData.RFDPrintfLevel);
 	
 	
 	
@@ -233,9 +233,12 @@ void  TCFG_EEPROM_ReadSystemConfigData(void)
 		TCFG_EEPROM_Set_ActiveMode(TCFG_SystemData.ActiveMode);
 	}
 	
-	
-	
-	
+	/* 获取调试信息输出等级 */
+	TCFG_SystemData.RFDPrintfLevel = TCFG_EEPROM_Get_RFDPrintfLevel();
+	if ((TCFG_SystemData.RFDPrintfLevel < RF_DPRINT_LEVEL_0) || (TCFG_SystemData.RFDPrintfLevel > RF_DPRINT_LEVEL_3)) {
+		TCFG_SystemData.RFDPrintfLevel = RADIO_RF_DPRINTFL;
+		TCFG_EEPROM_Set_RFDPrintfLevel(TCFG_SystemData.RFDPrintfLevel);
+	}
 	
 	
 	
@@ -740,7 +743,27 @@ u8    TCFG_EEPROM_Get_ActiveMode(void)
 	return FLASH_EEPROM_ReadByte(TCFG_ACTIVEMODE_OFFSET);
 }
 
+/**********************************************************************************************************
+ @Function			void  TCFG_EEPROM_Set_RFDPrintfLevel(u8 active)
+ @Description			TCFG_EEPROM_Set_RFDPrintfLevel				: 保存RFDPrintfLevel
+ @Input				level
+ @Return				void
+**********************************************************************************************************/
+void  TCFG_EEPROM_Set_RFDPrintfLevel(u8 level)
+{
+	FLASH_EEPROM_WriteByte(TCFG_RF_DPRINT_LEVEL_OFFSET, level);
+}
 
+/**********************************************************************************************************
+ @Function			u8    TCFG_EEPROM_Get_RFDPrintfLevel(void)
+ @Description			TCFG_EEPROM_Get_RFDPrintfLevel				: 读取RFDPrintfLevel
+ @Input				void
+ @Return				level
+**********************************************************************************************************/
+u8    TCFG_EEPROM_Get_RFDPrintfLevel(void)
+{
+	return FLASH_EEPROM_ReadByte(TCFG_RF_DPRINT_LEVEL_OFFSET);
+}
 
 
 
@@ -952,7 +975,20 @@ void  TCFG_Utility_Set_ActiveMode(u8 activemode)
 	TCFG_EEPROM_Set_ActiveMode(TCFG_SystemData.ActiveMode);
 }
 
-
+/**********************************************************************************************************
+ @Function			void  TCFG_Utility_Set_RFDPrintfLevel(u8 level)
+ @Description			TCFG_Utility_Set_RFDPrintfLevel				: 设置RFDPrintfLevel
+ @Input				val
+ @Return				void
+**********************************************************************************************************/
+void  TCFG_Utility_Set_RFDPrintfLevel(u8 level)
+{
+	TCFG_SystemData.RFDPrintfLevel = level;
+	if ((TCFG_SystemData.RFDPrintfLevel < RF_DPRINT_LEVEL_0) || (TCFG_SystemData.RFDPrintfLevel > RF_DPRINT_LEVEL_3)) {
+		TCFG_SystemData.RFDPrintfLevel = RADIO_RF_DPRINTFL;
+	}
+	TCFG_EEPROM_Set_RFDPrintfLevel(TCFG_SystemData.RFDPrintfLevel);
+}
 
 
 
@@ -1143,8 +1179,16 @@ u8    TCFG_Utility_Get_ActiveMode(void)
 	return TCFG_SystemData.ActiveMode;
 }
 
-
-
+/**********************************************************************************************************
+ @Function			u8    TCFG_Utility_Get_RFDPrintfLevel(void)
+ @Description			TCFG_Utility_Get_RFDPrintfLevel				: 读取RFDPrintfLevel
+ @Input				void
+ @Return				val
+**********************************************************************************************************/
+u8    TCFG_Utility_Get_RFDPrintfLevel(void)
+{
+	return TCFG_SystemData.RFDPrintfLevel;
+}
 
 
 

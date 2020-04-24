@@ -19,7 +19,7 @@ void Radio_Command_Restore(void);															//Restore
 
 void Radio_Command_Newsn(u32 sn);															//Newsn
 
-
+void Radio_Command_RFDPrintfLevel(u16 level);												//RFDPrintfLevel
 
 
 

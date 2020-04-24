@@ -297,8 +297,12 @@ char Radio_RF_Operate_Recvmsg(u8 *inmsg, u8 len)
 					sscanf(((radio_trf_generalcmd_s*)CFG_P_FRAME_PAYLOAD(inmsg))->buf, "newsn:%08x", &newsn);
 					Radio_Command_Newsn(newsn);
 				}
-				
-				
+				/* rfdplv */
+				else if (strstr(((radio_trf_generalcmd_s*)CFG_P_FRAME_PAYLOAD(inmsg))->buf, "rfdplv")) {
+					u16 level = 0;
+					sscanf(((radio_trf_generalcmd_s*)CFG_P_FRAME_PAYLOAD(inmsg))->buf, "rfdplv:%hu", &level);
+					Radio_Command_RFDPrintfLevel(level);
+				}
 				
 				
 				
@@ -553,16 +557,101 @@ s32  Radio_RF_Get_Gateway_nearby(void)
 
 
 
+/**********************************************************************************************************
+ @Function			void Radio_RF_Trf_Printf_Level3(const char *fmt, ...)
+ @Description			Radio_RF_Trf_Printf_Level3
+ @Input				fmt
+					...
+ @Return				void
+**********************************************************************************************************/
+void Radio_RF_Trf_Printf_Level3(const char *fmt, ...)
+{
+	if ((TCFG_Utility_Get_DeviceMode() == WORK_MODE_DEBUG) && (TCFG_Utility_Get_RFDPrintfLevel() >= RF_DPRINT_LEVEL_3)) {
+		__va_list args;
+		
+		memset(trf_pint_buf, 0x00, sizeof(trf_pint_buf));
+		
+		va_start (args, fmt);
+		vsprintf ((char *)trf_pint_buf, fmt, args);
+		va_end (args);
+		
+		Radio_Trf_Do_Printfbuf((char *)trf_pint_buf);
+		
+		Delay_US(300);
+	}
+}
 
+/**********************************************************************************************************
+ @Function			void Radio_RF_Trf_Printf_Level2(const char *fmt, ...)
+ @Description			Radio_RF_Trf_Printf_Level2
+ @Input				fmt
+					...
+ @Return				void
+**********************************************************************************************************/
+void Radio_RF_Trf_Printf_Level2(const char *fmt, ...)
+{
+	if ((TCFG_Utility_Get_DeviceMode() == WORK_MODE_DEBUG) && (TCFG_Utility_Get_RFDPrintfLevel() >= RF_DPRINT_LEVEL_2)) {
+		__va_list args;
+		
+		memset(trf_pint_buf, 0x00, sizeof(trf_pint_buf));
+		
+		va_start (args, fmt);
+		vsprintf ((char *)trf_pint_buf, fmt, args);
+		va_end (args);
+		
+		Radio_Trf_Do_Printfbuf((char *)trf_pint_buf);
+		
+		Delay_US(300);
+	}
+}
 
+/**********************************************************************************************************
+ @Function			void Radio_RF_Trf_Printf_Level1(const char *fmt, ...)
+ @Description			Radio_RF_Trf_Printf_Level1
+ @Input				fmt
+					...
+ @Return				void
+**********************************************************************************************************/
+void Radio_RF_Trf_Printf_Level1(const char *fmt, ...)
+{
+	if ((TCFG_Utility_Get_DeviceMode() == WORK_MODE_DEBUG) && (TCFG_Utility_Get_RFDPrintfLevel() >= RF_DPRINT_LEVEL_1)) {
+		__va_list args;
+		
+		memset(trf_pint_buf, 0x00, sizeof(trf_pint_buf));
+		
+		va_start (args, fmt);
+		vsprintf ((char *)trf_pint_buf, fmt, args);
+		va_end (args);
+		
+		Radio_Trf_Do_Printfbuf((char *)trf_pint_buf);
+		
+		Delay_US(300);
+	}
+}
 
-
-
-
-
-
-
-
+/**********************************************************************************************************
+ @Function			void Radio_RF_Trf_Printf_Level0(const char *fmt, ...)
+ @Description			Radio_RF_Trf_Printf_Level0
+ @Input				fmt
+					...
+ @Return				void
+**********************************************************************************************************/
+void Radio_RF_Trf_Printf_Level0(const char *fmt, ...)
+{
+	if ((TCFG_Utility_Get_DeviceMode() == WORK_MODE_DEBUG) && (TCFG_Utility_Get_RFDPrintfLevel() >= RF_DPRINT_LEVEL_0)) {
+		__va_list args;
+		
+		memset(trf_pint_buf, 0x00, sizeof(trf_pint_buf));
+		
+		va_start (args, fmt);
+		vsprintf ((char *)trf_pint_buf, fmt, args);
+		va_end (args);
+		
+		Radio_Trf_Do_Printfbuf((char *)trf_pint_buf);
+		
+		Delay_US(300);
+	}
+}
 
 /**********************************************************************************************************
  @Function			void Radio_RF_Trf_Printf(const char *fmt, ...)
@@ -585,6 +674,13 @@ void Radio_RF_Trf_Printf(const char *fmt, ...)
 	
 	Delay_US(300);
 }
+
+
+
+
+
+
+
 
 
 

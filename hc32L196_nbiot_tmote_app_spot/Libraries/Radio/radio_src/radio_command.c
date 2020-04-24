@@ -169,8 +169,20 @@ void Radio_Command_Newsn(u32 sn)
 #endif
 }
 
-
-
+/**********************************************************************************************************
+ @Function			void Radio_Command_RFDPrintfLevel(u16 level)
+ @Description			Radio_Command_RFDPrintfLevel					: RFDPrintfLevel
+ @Input				sn
+ @Return				void
+**********************************************************************************************************/
+void Radio_Command_RFDPrintfLevel(u16 level)
+{
+	TCFG_Utility_Set_RFDPrintfLevel(level + 1);
+	
+#ifdef RADIO_COMMAND_DEBUG_LOG_RF_PRINTF
+	RADIO_COMMAND_DEBUG_LOG_PRINTF("[RadioCmd] rfdplv: %d", TCFG_Utility_Get_RFDPrintfLevel() - 1);
+#endif
+}
 
 
 

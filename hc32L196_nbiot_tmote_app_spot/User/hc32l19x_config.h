@@ -82,6 +82,14 @@ typedef enum
 
 typedef enum
 {
+	RF_DPRINT_LEVEL_0			= 0x01,
+	RF_DPRINT_LEVEL_1			= 0x02,
+	RF_DPRINT_LEVEL_2			= 0x03,
+	RF_DPRINT_LEVEL_3			= 0x04,
+} HC32_RFDPRINT_LEVEL_TypeDef;															//调试信息等级
+
+typedef enum
+{
 	SENSE_HIGHEST				= 0x01,
 	SENSE_HIGH				= 0x02,
 	SENSE_MIDDLE				= 0x03,
@@ -140,9 +148,6 @@ void HC32_LowPower_SleepEnter_Stop(void);													//进入低功耗stop模�
 void HC32_LowPower_SleepAfter_Init(void);													//进入低功耗stop模式之后初始化
 
 void HC32_LowPower_Sleep_Task(void);														//HC32低功耗处理
-
-
-
 
 
 
