@@ -238,6 +238,17 @@ char Radio_Hal_RF_Get_Status(void)
 }
 
 /**********************************************************************************************************
+ @Function		void Radio_Hal_RF_Set_Status(char status)
+ @Description 		Radio_Hal_RF_Set_Status							: Radio RF 设置状态
+ @Input			void
+ @Return		  	void
+**********************************************************************************************************/
+void Radio_Hal_RF_Set_Status(char status)
+{
+	radio_status = status;
+}
+
+/**********************************************************************************************************
  @Function		void Radio_Hal_RF_Set_Channel(char channel)
  @Description 		Radio_Hal_RF_Set_Channel							: Radio RF 设置通道
  @Input			channel

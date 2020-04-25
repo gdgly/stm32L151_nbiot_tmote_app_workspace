@@ -351,6 +351,63 @@ void HC32_AutomaticSystem_Check(void)
 	}
 }
 
+static s32 AutomaticToInitModulePre = 0;
+static s32 AutomaticToInitModuleCnt = 0;
+
+/**********************************************************************************************************
+ @Function			void HC32_AutomaticModule_Init(void)
+ @Description			HC32_AutomaticModule_Init					: HC32模块自动恢复
+ @Input				void
+ @Return				void
+**********************************************************************************************************/
+void HC32_AutomaticModule_Init(void)
+{
+	if (HC32_GetSecondTick() >= (AutomaticToInitModulePre + AUTOMATIC_INIT_MODULE_TIMER)) {
+		Radio_Hal_RF_Interrupt_Disable();
+		HC32_MODEL_POWER_SET(OFF);
+		QMC5883L_Discharge();
+		HC32_MODEL_POWER_SET(ON);
+		QMC5883L_Init();
+		Radio_Hal_RF_Init();
+		AutomaticToInitModulePre = HC32_GetSecondTick();
+	}
+}
+
+/**********************************************************************************************************
+ @Function			void HC32_AutomaticModule_ReInit(void)
+ @Description			HC32_AutomaticModule_ReInit					: HC32模块强制恢复
+ @Input				void
+ @Return				void
+**********************************************************************************************************/
+void HC32_AutomaticModule_ReInit(void)
+{
+	AutomaticToInitModulePre = 0 - AUTOMATIC_INIT_MODULE_TIMER;
+	
+	AutomaticToInitModuleCnt++;
+}
+
+/**********************************************************************************************************
+ @Function			void HC32_AutomaticModule_InitCnt(void)
+ @Description			HC32_AutomaticModule_InitCnt					: HC32模块强制恢复次数
+ @Input				void
+ @Return				Cnt
+**********************************************************************************************************/
+s32 HC32_AutomaticModule_InitCnt(void)
+{
+	return AutomaticToInitModuleCnt;
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -394,8 +451,6 @@ void HC32_LowPower_SleepBefor_Init(void)
 	Radio_Hal_RF_Set_Sleep();
 	Radio_Hal_RF_Interrupt_Disable();
 	
-	QMC5883L_Drdy_DeInit();
-	
 	M0P_GPIO->PAADS |= ~(0x9FED);
 	M0P_GPIO->PBADS |= ~(0x1DF8);
 	M0P_GPIO->PCADS |= ~(0x0000);
@@ -438,7 +493,7 @@ void HC32_LowPower_SleepEnter_Stop(void)
 **********************************************************************************************************/
 void HC32_LowPower_SleepAfter_Init(void)
 {
-	QMC5883L_Drdy_Init();
+	HC32_AutomaticModule_Init();
 }
 
 /**********************************************************************************************************

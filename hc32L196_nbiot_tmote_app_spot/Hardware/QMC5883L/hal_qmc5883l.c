@@ -171,7 +171,7 @@ void QMC5883L_Init(void)
 	/* 引脚中断使能, 数据读取完指针自动偏转失能 */
 	QMC5883L_WriteByte(QMC5883L_CR2, QMC_INT_ENABLE | QMC_POINT_ROLL_DISABLE);
 	
-	QMC5883L_Drdy_Init();
+	QMC5883L_Drdy_DeInit();
 }
 
 /**********************************************************************************************************
@@ -185,6 +185,8 @@ void QMC5883L_ReadData_Simplify(short* x, short* y, short* z)
 	u8 ucReadBuf[QMC_REG_MAG];
 	
 	timeMeterTypeDef qmcTimer;
+	
+	QMC5883L_Drdy_Init();
 	
 	HC32_TimeMeter_CountdownMS(&qmcTimer, 100);
 	
@@ -204,6 +206,10 @@ void QMC5883L_ReadData_Simplify(short* x, short* y, short* z)
 	*z = (int16_t)(ucReadBuf[5] << 8) | ucReadBuf[4];
 	
 	QMC5883L_Mode_Selection(QMC_MODE_STANDBY);
+	
+	QMC5883L_ClearInsideData();
+	
+	QMC5883L_Drdy_DeInit();
 }
 
 /**********************************************************************************************************
@@ -219,6 +225,8 @@ void QMC5883L_ReadData_Extended(short* x, short* y, short* z)
 	s16 sample_times = 0;
 	
 	timeMeterTypeDef qmcTimer;
+	
+	QMC5883L_Drdy_Init();
 	
 	HC32_TimeMeter_CountdownMS(&qmcTimer, (100 * QMC_SAMPLE_TIMES));
 	
@@ -271,6 +279,10 @@ void QMC5883L_ReadData_Extended(short* x, short* y, short* z)
 	}
 	
 	QMC5883L_Mode_Selection(QMC_MODE_STANDBY);
+	
+	QMC5883L_ClearInsideData();
+	
+	QMC5883L_Drdy_DeInit();
 }
 
 /**********************************************************************************************************
@@ -281,55 +293,83 @@ void QMC5883L_ReadData_Extended(short* x, short* y, short* z)
 **********************************************************************************************************/
 void QMC5883L_ReadData_Stronges(short* x, short* y, short* z)
 {
+	u8  ucReadBuf[QMC_SAMPLE_TIMES][QMC_REG_MAG];
+	s16 magdata_x[QMC_SAMPLE_TIMES], magdata_y[QMC_SAMPLE_TIMES], magdata_z[QMC_SAMPLE_TIMES];
+	s16 sample_times = 0;
 	
+	static s16 x_old, y_old, z_old;
 	
+	static s16 same_old_cnt = 0;
 	
+	timeMeterTypeDef qmcTimer;
 	
+	QMC5883L_Drdy_Init();
 	
+	HC32_TimeMeter_CountdownMS(&qmcTimer, (100 * QMC_SAMPLE_TIMES));
 	
+	QMC5883L_Mode_Selection(QMC_MODE_CONTINOUS);
 	
+	while (HC32_TimeMeter_IsExpiredMS(&qmcTimer) != true) {
+		if (QMC_DRDY_READ() == HIGH) {
+			for (int index = 0; index < QMC_REG_MAG; index++) {
+				ucReadBuf[sample_times][index] = QMC5883L_ReadByte(QMC_DATA_OUT_X_L + index);
+			}
+			sample_times++;
+		}
+		
+		if (sample_times >= QMC_SAMPLE_TIMES) {
+			for (int index = 0; index < QMC_SAMPLE_TIMES; index++) {
+				magdata_x[index] = (int16_t)(ucReadBuf[index][1] << 8) | ucReadBuf[index][0];
+				magdata_y[index] = (int16_t)(ucReadBuf[index][3] << 8) | ucReadBuf[index][2];
+				magdata_z[index] = (int16_t)(ucReadBuf[index][5] << 8) | ucReadBuf[index][4];
+			}
+			
+			for (int index = 1; index < QMC_SAMPLE_TIMES; index++) {
+				if (abs(magdata_x[0] - magdata_x[index]) > QMC_DEVIATION_MAX) {
+					sample_times = 0;
+					break;
+				}
+				if (abs(magdata_y[0] - magdata_y[index]) > QMC_DEVIATION_MAX) {
+					sample_times = 0;
+					break;
+				}
+				if (abs(magdata_z[0] - magdata_z[index]) > QMC_DEVIATION_MAX) {
+					sample_times = 0;
+					break;
+				}
+			}
+			
+			if (sample_times != 0) break;
+		}
+	}
 	
+	if (sample_times >= QMC_SAMPLE_TIMES) {
+		*x = 0; *y = 0; *z = 0;
+		
+		for (int index = 0; index < QMC_SAMPLE_TIMES; index++) {
+			*x += (((int16_t)(ucReadBuf[index][1] << 8) | ucReadBuf[index][0]) + QMC_SAMPLE_TIMES/2) / QMC_SAMPLE_TIMES;
+			*y += (((int16_t)(ucReadBuf[index][3] << 8) | ucReadBuf[index][2]) + QMC_SAMPLE_TIMES/2) / QMC_SAMPLE_TIMES;
+			*z += (((int16_t)(ucReadBuf[index][5] << 8) | ucReadBuf[index][4]) + QMC_SAMPLE_TIMES/2) / QMC_SAMPLE_TIMES;
+		}
+		
+		if ((*x == x_old) && (*y == y_old) && (*z == z_old)) same_old_cnt++;
+		
+		x_old = *x; y_old = *y; z_old = *z;
+		
+		if (same_old_cnt > QMC_SAMEERR_COUNT) {
+			same_old_cnt = 0;
+			HC32_AutomaticModule_ReInit();
+		}
+	}
+	else {
+		HC32_AutomaticModule_ReInit();
+	}
 	
+	QMC5883L_Mode_Selection(QMC_MODE_STANDBY);
 	
+	QMC5883L_ClearInsideData();
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	QMC5883L_Drdy_DeInit();
 }
 
 /**********************************************************************************************************

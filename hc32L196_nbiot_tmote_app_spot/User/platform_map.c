@@ -1261,8 +1261,16 @@ u8    TCFG_Utility_Get_RFDPrintfLevel(void)
 
 
 
-
-
+/**********************************************************************************************************
+ @Function			s32   TCFG_Utility_Get_ReInitModuleCnt(void)
+ @Description			TCFG_Utility_Get_ReInitModuleCnt				: 读取ReInitModuleCnt
+ @Input				void
+ @Return				val
+**********************************************************************************************************/
+s32   TCFG_Utility_Get_ReInitModuleCnt(void)
+{
+	return HC32_AutomaticModule_InitCnt();
+}
 
 /**********************************************************************************************************
  @Function			u8    TCFG_Utility_Get_DeviceMode(void)

@@ -137,6 +137,15 @@ void HC32_CtrPowerIO_Init(void);															//HC32控制电源初始化
 
 void HC32_AutomaticSystem_Check(void);														//HC32系统自检
 
+void HC32_AutomaticModule_Init(void);														//HC32模块自动恢复
+void HC32_AutomaticModule_ReInit(void);														//HC32模块强制恢复
+s32  HC32_AutomaticModule_InitCnt(void);													//HC32模块强制恢复次数
+
+
+
+
+
+
 
 
 
@@ -148,15 +157,6 @@ void HC32_LowPower_SleepEnter_Stop(void);													//进入低功耗stop模�
 void HC32_LowPower_SleepAfter_Init(void);													//进入低功耗stop模式之后初始化
 
 void HC32_LowPower_Sleep_Task(void);														//HC32低功耗处理
-
-
-
-
-
-
-
-
-
 
 
 

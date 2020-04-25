@@ -48,6 +48,7 @@
 #define QMC_REG_MAG				6														//地磁数据寄存器
 #define QMC_DEVIATION_MAX		900														//最大跳变值
 #define QMC_SAMPLE_TIMES			5														//采样次数
+#define QMC_SAMEERR_COUNT		60														//异常次数
 
 void QMC5883L_Init(void);																//QMC5883L初始化
 
@@ -71,7 +72,6 @@ void QMC5883L_Softwart_Reset(void);														//QMC5883L软复位
 void QMC5883L_ReadData_Simplify(short* x, short* y, short* z);									//QMC5883L读取数据
 void QMC5883L_ReadData_Extended(short* x, short* y, short* z);									//QMC5883L读取数据
 void QMC5883L_ReadData_Stronges(short* x, short* y, short* z);									//QMC5883L读取数据
-
 
 
 

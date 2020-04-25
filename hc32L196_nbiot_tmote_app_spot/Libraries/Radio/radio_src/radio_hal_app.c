@@ -160,9 +160,24 @@ char Radio_RF_Receive(u8 *outmsg, u8 *len)
 **********************************************************************************************************/
 char Radio_RF_Transmit(u8 *inmsg, u8 len)
 {
+	static int transmit_err_count = 0;
+	
 	char rc;
 	
 	rc = Radio_Hal_RF_PrepareToTx(inmsg, len);
+	
+	if (rc == rTRF_ERROR) {
+		transmit_err_count++;
+		if ((transmit_err_count % 3) == 0) {
+			HC32_AutomaticModule_ReInit();
+		}
+		if (transmit_err_count > 30) {
+			Radio_Hal_RF_Set_Status(rTRF_ERROR);
+		}
+	}
+	else {
+		transmit_err_count = 0;
+	}
 	
 	return rc;
 }

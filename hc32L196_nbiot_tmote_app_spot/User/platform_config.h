@@ -108,6 +108,16 @@
 #define	RADIO_RF_HEARTVAL				30												//小无线默认心跳
 #define	RADIO_RF_DPRINTFL				RF_DPRINT_LEVEL_2									//小无线调试等级
 
+#define	AUTOMATIC_INIT_MODULE_TIMER		(3600 * 24 * 3)									//自动初始化外设模块时间
+
+
+
+
+
+
+
+
+
 
 
 

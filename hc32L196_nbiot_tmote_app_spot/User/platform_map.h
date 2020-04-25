@@ -391,7 +391,7 @@ u8    TCFG_Utility_Get_RFDPrintfLevel(void);																			// 读取RFDPrint
 
 
 
-
+s32   TCFG_Utility_Get_ReInitModuleCnt(void);																		// 读取ReInitModuleCnt
 
 u8    TCFG_Utility_Get_DeviceMode(void);																			// 读取DeviceMode
 char* TCFG_Utility_Get_DeviceModeInfo(void);																			// 读取DeviceModeInfo
