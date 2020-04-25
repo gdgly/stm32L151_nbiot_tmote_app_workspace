@@ -338,7 +338,7 @@
               <MiscControls></MiscControls>
               <Define></Define>
               <Undefine></Undefine>
-              <IncludePath>..\Core;..\HALLibraries\inc;..\HALLibraries\src;..\User;..\System\Sys;..\System\Delay;..\System\Usart;..\Hardware\IWDG;..\Hardware\RTC;..\Hardware\BEEP;..\Hardware\VBAT;..\Hardware\VPTAT;..\Hardware\VTEMP;..\Hardware\AES;..\Hardware\CRC;..\Hardware\FLASH;..\Hardware\IIC;..\Hardware\BL24CXXP;..\Hardware\EEPROM;..\Hardware\QMC5883L;..\Hardware\SPI;..\Hardware\P25QXXH;..\Hardware\NORFLASH;..\Libraries\FifoMessage;..\Libraries\Radio\radio_inc;..\Libraries\Radio\radio_src;..\Libraries\Radio\si446x_inc;..\Libraries\Radio\si446x_src;..\Libraries\Radio;..\Libraries\Fota;..\Libraries\Xtea</IncludePath>
+              <IncludePath>..\Core;..\HALLibraries\inc;..\HALLibraries\src;..\User;..\System\Sys;..\System\Delay;..\System\Usart;..\Hardware\IWDG;..\Hardware\RTC;..\Hardware\BEEP;..\Hardware\VBAT;..\Hardware\VPTAT;..\Hardware\VTEMP;..\Hardware\AES;..\Hardware\CRC;..\Hardware\FLASH;..\Hardware\IIC;..\Hardware\BL24CXXP;..\Hardware\EEPROM;..\Hardware\QMC5883L;..\Hardware\SPI;..\Hardware\P25QXXH;..\Hardware\NORFLASH;..\Hardware\ATTITUDE;..\Hardware\PRODUCTS;..\Libraries\FifoMessage;..\Libraries\Radio\radio_inc;..\Libraries\Radio\radio_src;..\Libraries\Radio\si446x_inc;..\Libraries\Radio\si446x_src;..\Libraries\Radio;..\Libraries\Fota;..\Libraries\Xtea</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -646,6 +646,16 @@
               <FileName>hal_norflash.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Hardware\NORFLASH\hal_norflash.c</FilePath>
+            </File>
+            <File>
+              <FileName>hal_attitude.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Hardware\ATTITUDE\hal_attitude.c</FilePath>
+            </File>
+            <File>
+              <FileName>hal_products.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Hardware\PRODUCTS\hal_products.c</FilePath>
             </File>
           </Files>
         </Group>

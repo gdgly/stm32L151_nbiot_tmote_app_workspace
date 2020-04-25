@@ -34,6 +34,8 @@
 #include "hal_spi.h"
 #include "hal_p25qxxh.h"
 #include "hal_norflash.h"
+#include "hal_attitude.h"
+#include "hal_products.h"
 #include "fifo.h"
 #include "message.h"
 #include "radio_hal_rf.h"
@@ -377,8 +379,6 @@ void HC32_AutomaticSystem_Check(void)
 
 
 
-
-
 /**********************************************************************************************************
  @Function			void HC32_LowPower_SleepBefor_Init(void)
  @Description			HC32_LowPower_SleepBefor_Init					: 进入低功耗stop模式之前初始化
@@ -386,7 +386,8 @@ void HC32_AutomaticSystem_Check(void)
  @Return				void
  @attention			不用模拟IO口
 					PA0 PA2 PA3 PA5 PA6 PA7 PA8 PA9 PA10 PA11 PA12 PA15 => 9FED
-					PB3 PB4 PB6 PB7 PB8 PB10 PB11 PB12                  => 1DD8
+					PB3 PB4 PB5 PB6 PB7 PB8 PB10 PB11 PB12              => 1DF8
+					PF0                                                 => 0001
 **********************************************************************************************************/
 void HC32_LowPower_SleepBefor_Init(void)
 {
@@ -396,14 +397,11 @@ void HC32_LowPower_SleepBefor_Init(void)
 	QMC5883L_Drdy_DeInit();
 	
 	M0P_GPIO->PAADS |= ~(0x9FED);
-	M0P_GPIO->PBADS |= ~(0x1DD8);
+	M0P_GPIO->PBADS |= ~(0x1DF8);
 	M0P_GPIO->PCADS |= ~(0x0000);
 	M0P_GPIO->PDADS |= ~(0x0000);
 	M0P_GPIO->PEADS |= ~(0x0000);
-	M0P_GPIO->PFADS |= ~(0x0000);
-	
-	Device_FlashNSS_Init();
-	Device_RadioNSS_Init();
+	M0P_GPIO->PFADS |= ~(0x0001);
 }
 
 /**********************************************************************************************************
@@ -440,9 +438,6 @@ void HC32_LowPower_SleepEnter_Stop(void)
 **********************************************************************************************************/
 void HC32_LowPower_SleepAfter_Init(void)
 {
-	Radio_Hal_RF_Interface_Init();
-	Radio_Hal_RF_Interrupt_Enable();
-	
 	QMC5883L_Drdy_Init();
 }
 
