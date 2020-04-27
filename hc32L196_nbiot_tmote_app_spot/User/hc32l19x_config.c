@@ -442,9 +442,9 @@ s32 HC32_AutomaticModule_InitCnt(void)
  @Input				void
  @Return				void
  @attention			不用模拟IO口
-					PA0 PA2 PA3 PA5 PA6 PA7 PA8 PA9 PA10 PA11 PA12 PA15 => 9FED
-					PB3 PB4 PB5 PB6 PB7 PB8 PB10 PB11 PB12              => 1DF8
-					PF0                                                 => 0001
+					PA00 PA02 PA03 PA05 PA06 PA07 PA08 PA09 PA10 PA11 PA12 PA15 => 9FED
+					PB01 PB03 PB04 PB05 PB06 PB07 PB08 PB10 PB11 PB12 PB15      => 9DFA
+					PF0                                                         => 0001
 **********************************************************************************************************/
 void HC32_LowPower_SleepBefor_Init(void)
 {
@@ -452,7 +452,7 @@ void HC32_LowPower_SleepBefor_Init(void)
 	Radio_Hal_RF_Interrupt_Disable();
 	
 	M0P_GPIO->PAADS |= ~(0x9FED);
-	M0P_GPIO->PBADS |= ~(0x1DF8);
+	M0P_GPIO->PBADS |= ~(0x9DFA);
 	M0P_GPIO->PCADS |= ~(0x0000);
 	M0P_GPIO->PDADS |= ~(0x0000);
 	M0P_GPIO->PEADS |= ~(0x0000);
