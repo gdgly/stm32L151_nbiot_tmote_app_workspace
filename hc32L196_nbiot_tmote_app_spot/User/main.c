@@ -33,11 +33,15 @@
 #include "hal_bl24cxxp.h"
 #include "hal_eeprom.h"
 #include "hal_qmc5883l.h"
+#include "hal_ist8310m.h"
 #include "hal_spi.h"
 #include "hal_p25qxxh.h"
 #include "hal_norflash.h"
 #include "hal_attitude.h"
 #include "hal_products.h"
+#include "hal_base_tim0.h"
+#include "hal_base_tim1.h"
+#include "hal_base_tim2.h"
 #include "fifo.h"
 #include "message.h"
 #include "radio_hal_rf.h"
@@ -209,20 +213,19 @@ int main(void)
 		#if 0
 		date = HC32_RTC_GetUnixTimeToCalendar();
 		
-		QMC5883L_ReadData_Extended(&x, &y, &z);
+		QMC5883L_ReadData_Stronges(&x, &y, &z);
 		
 		printf("*******************************************************************************************\r\n");
 		printf("This is Upgrade to Jump Application\r\n");
 		printf("Reset: %d Runing: %8d HCLK: %d PCLK: %d SystemCoreClock: %d\r\n", HC32_Reset_Flag, HC32_GetMecondTick(), Sysctrl_GetHClkFreq(), Sysctrl_GetPClkFreq(), SystemCoreClock);
 		printf("Date:  %02d-%02d-%02d %02d:%02d:%02d week %d\r\n", date.tm_year, date.tm_mon, date.tm_mday, date.tm_hour, date.tm_min, date.tm_sec, date.tm_wday);
+		printf("QMC:   X = %d, Y = %d, Z = %d\r\n", x, y, z);
 		printf("*******************************************************************************************\r\n\r\n");
 		
 		Radio_RF_Trf_Printf("x=%d y=%d z=%d", x, y, z);
 		#endif
 		
 		Radio_RF_Trf_App_Task();
-		
-		
 		
 		
 		

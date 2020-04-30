@@ -31,11 +31,15 @@
 #include "hal_bl24cxxp.h"
 #include "hal_eeprom.h"
 #include "hal_qmc5883l.h"
+#include "hal_ist8310m.h"
 #include "hal_spi.h"
 #include "hal_p25qxxh.h"
 #include "hal_norflash.h"
 #include "hal_attitude.h"
 #include "hal_products.h"
+#include "hal_base_tim0.h"
+#include "hal_base_tim1.h"
+#include "hal_base_tim2.h"
 #include "fifo.h"
 #include "message.h"
 #include "radio_hal_rf.h"
@@ -363,12 +367,16 @@ static s32 AutomaticToInitModuleCnt = 0;
 void HC32_AutomaticModule_Init(void)
 {
 	if (HC32_GetSecondTick() >= (AutomaticToInitModulePre + AUTOMATIC_INIT_MODULE_TIMER)) {
+		
 		Radio_Hal_RF_Interrupt_Disable();
+		
 		HC32_MODEL_POWER_SET(OFF);
 		QMC5883L_Discharge();
 		HC32_MODEL_POWER_SET(ON);
+		
 		QMC5883L_Init();
 		Radio_Hal_RF_Init();
+		
 		AutomaticToInitModulePre = HC32_GetSecondTick();
 	}
 }
@@ -396,8 +404,6 @@ s32 HC32_AutomaticModule_InitCnt(void)
 {
 	return AutomaticToInitModuleCnt;
 }
-
-
 
 
 

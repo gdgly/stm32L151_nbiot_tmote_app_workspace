@@ -67,6 +67,9 @@ void HC32_PeripheralClockGate_Init(void)
 	
 	/* -使能CRC外设时钟门控- */
 	Sysctrl_SetPeripheralGate(SysctrlPeripheralCrc, SYSTEM_PERIPHERAL_GATE_CRC);
+	
+	/* -使能BaseTim外设时钟门控- */
+	Sysctrl_SetPeripheralGate(SysctrlPeripheralBaseTim, SYSTEM_PERIPHERAL_GATE_BASETIM);
 }
 
 /**********************************************************************************************************

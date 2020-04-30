@@ -338,7 +338,7 @@
               <MiscControls></MiscControls>
               <Define></Define>
               <Undefine></Undefine>
-              <IncludePath>..\Core;..\HALLibraries\inc;..\HALLibraries\src;..\User;..\System\Sys;..\System\Delay;..\System\Usart;..\Hardware\IWDG;..\Hardware\RTC;..\Hardware\BEEP;..\Hardware\VBAT;..\Hardware\VPTAT;..\Hardware\VTEMP;..\Hardware\AES;..\Hardware\CRC;..\Hardware\FLASH;..\Hardware\IIC;..\Hardware\BL24CXXP;..\Hardware\EEPROM;..\Hardware\QMC5883L;..\Hardware\SPI;..\Hardware\P25QXXH;..\Hardware\NORFLASH;..\Hardware\ATTITUDE;..\Hardware\PRODUCTS;..\Libraries\FifoMessage;..\Libraries\Radio\radio_inc;..\Libraries\Radio\radio_src;..\Libraries\Radio\si446x_inc;..\Libraries\Radio\si446x_src;..\Libraries\Radio;..\Libraries\Fota;..\Libraries\Xtea</IncludePath>
+              <IncludePath>..\Core;..\HALLibraries\inc;..\HALLibraries\src;..\User;..\System\Sys;..\System\Delay;..\System\Usart;..\Hardware\IWDG;..\Hardware\RTC;..\Hardware\BEEP;..\Hardware\VBAT;..\Hardware\VPTAT;..\Hardware\VTEMP;..\Hardware\AES;..\Hardware\CRC;..\Hardware\FLASH;..\Hardware\IIC;..\Hardware\BL24CXXP;..\Hardware\EEPROM;..\Hardware\QMC5883L;..\Hardware\IST8310M;..\Hardware\SPI;..\Hardware\P25QXXH;..\Hardware\NORFLASH;..\Hardware\ATTITUDE;..\Hardware\PRODUCTS;..\Hardware\BASETIMER;..\Libraries\FifoMessage;..\Libraries\Radio\radio_inc;..\Libraries\Radio\radio_src;..\Libraries\Radio\si446x_inc;..\Libraries\Radio\si446x_src;..\Libraries\Radio;..\Libraries\Fota;..\Libraries\Xtea</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -633,6 +633,11 @@
               <FilePath>..\Hardware\QMC5883L\hal_qmc5883l.c</FilePath>
             </File>
             <File>
+              <FileName>hal_ist8310m.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Hardware\IST8310M\hal_ist8310m.c</FilePath>
+            </File>
+            <File>
               <FileName>hal_spi.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Hardware\SPI\hal_spi.c</FilePath>
@@ -656,6 +661,21 @@
               <FileName>hal_products.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Hardware\PRODUCTS\hal_products.c</FilePath>
+            </File>
+            <File>
+              <FileName>hal_base_tim0.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Hardware\BASETIMER\hal_base_tim0.c</FilePath>
+            </File>
+            <File>
+              <FileName>hal_base_tim1.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Hardware\BASETIMER\hal_base_tim1.c</FilePath>
+            </File>
+            <File>
+              <FileName>hal_base_tim2.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Hardware\BASETIMER\hal_base_tim2.c</FilePath>
             </File>
           </Files>
         </Group>

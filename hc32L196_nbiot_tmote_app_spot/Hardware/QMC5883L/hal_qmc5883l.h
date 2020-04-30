@@ -45,6 +45,16 @@
 #define QMC_POINT_ROLL_DISABLE	(0<<6)													//数据读取完指针自动偏转失能
 #define QMC_SOFT_REST			(1<<7)													//软件复位
 
+#define QMC5883L_CHIP_ID			0x0D														//QMC5883L芯片ID
+
+#define QMC5883L_ADDR_CFGC		0x20
+#define QMC5883L_ADDR_CFGD		0x21
+#define QMC5883L_ADDR_PERIORC		0x0B
+
+#define QMC_CFGC_VALUE			0x40
+#define QMC_CFGD_VALUE			0x01
+#define QMC_PERIORC_VALUE		0x01
+
 #define QMC_REG_MAG				6														//地磁数据寄存器
 #define QMC_DEVIATION_MAX		900														//最大跳变值
 #define QMC_SAMPLE_TIMES			5														//采样次数
@@ -66,14 +76,10 @@ void QMC5883L_Osr_Selection(u8 osr);														//QMC5883L内置滤波器带�
 void QMC5883L_Interrupt_Selection(u8 interrupt);												//QMC5883L引脚中断选择
 void QMC5883L_Softwart_Reset(void);														//QMC5883L软复位
 
-
-
-
 void QMC5883L_ReadData_Simplify(short* x, short* y, short* z);									//QMC5883L读取数据
 void QMC5883L_ReadData_Extended(short* x, short* y, short* z);									//QMC5883L读取数据
 void QMC5883L_ReadData_Stronges(short* x, short* y, short* z);									//QMC5883L读取数据
 
-
-
+void QMC5883L_ReadData_Temperature(u16* vtemp);												//QMC5883L读取温度
 
 #endif /* __HAL_QMC5883L_H */

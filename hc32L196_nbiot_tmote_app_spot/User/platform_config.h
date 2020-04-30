@@ -77,7 +77,7 @@
 #define	SYSTEM_PERIPHERAL_GATE_ADC		TRUE												//ADC
 #define	SYSTEM_PERIPHERAL_GATE_AES		FALSE											//AES
 #define	SYSTEM_PERIPHERAL_GATE_CRC		FALSE											//CRC
-
+#define	SYSTEM_PERIPHERAL_GATE_BASETIM	TRUE												//BaseTim
 
 
 

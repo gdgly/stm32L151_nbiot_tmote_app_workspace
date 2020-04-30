@@ -78,6 +78,42 @@ static u8 QMC5883L_ReadByte(u8 ucRegAddr)
 }
 
 /**********************************************************************************************************
+ @Function			static u8 QMC5883L_MultiRead(u8 ucRegAddr, u8 nByte, u8* outbuf)
+ @Description			QMC5883L读取nByte数据( 内部调用 )
+ @Input				ucRegAddr : 读取数据地址
+					nByte	: 字节个数
+					outbuf	: 存储地址
+ @Return				0
+					Err
+**********************************************************************************************************/
+static u8 QMC5883L_MultiRead(u8 ucRegAddr, u8 nByte, u8* outbuf)
+{
+	if (nByte == 0) return 1;
+	
+	HC32_IIC0_Start();																	//发送起始信号
+	
+	HC32_IIC0_Send_Byte(QMC5883L_SLAVE_ADDRESS_W);											//发送I2C从机地址写
+	HC32_IIC0_Wait_Ack();																//等待应答
+	
+	HC32_IIC0_Send_Byte(ucRegAddr);														//发送待读取数据地址
+	HC32_IIC0_Wait_Ack();																//等待应答
+	
+	HC32_IIC0_Start();																	//发送起始信号
+	
+	HC32_IIC0_Send_Byte(QMC5883L_SLAVE_ADDRESS_R);											//发送I2C从机地址读
+	HC32_IIC0_Wait_Ack();																//等待应答
+	
+	for (u8 index = 0; index < (nByte - 1); index++) {										//读取数据
+		outbuf[index] = HC32_IIC0_Read_Byte(1);
+	}
+	outbuf[nByte - 1] = HC32_IIC0_Read_Byte(0);
+	
+	HC32_IIC0_Stop();																	//发送停止信号
+	
+	return 0;
+}
+
+/**********************************************************************************************************
  @Function			void QMC5883L_Drdy_Init(void)
  @Description			QMC5883L引脚配置PA11高电平读取
  @Input				void
@@ -162,9 +198,12 @@ void QMC5883L_Init(void)
 	
 	QMC5883L_WriteByte(QMC5883L_CR2, QMC_SOFT_REST);
 	
-	QMC5883L_WriteByte(0x0B, 0x01);
-	QMC5883L_WriteByte(0x20, 0x40);
-	QMC5883L_WriteByte(0x21, 0x01);
+	Delay_MS(60);
+	
+	QMC5883L_WriteByte(QMC5883L_ADDR_PERIORC, QMC_PERIORC_VALUE);
+	
+	QMC5883L_WriteByte(QMC5883L_ADDR_CFGC, QMC_CFGC_VALUE);
+	QMC5883L_WriteByte(QMC5883L_ADDR_CFGD, QMC_CFGD_VALUE);
 	
 	/* 64滤波, 8高斯范围, 200Hz输出, 初始化为StandBy */
 	QMC5883L_WriteByte(QMC5883L_CR1, QMC_OSR_64 | QMC_RANGE_8G | QMC_RATES_200HZ | QMC_MODE_STANDBY);
@@ -194,9 +233,7 @@ void QMC5883L_ReadData_Simplify(short* x, short* y, short* z)
 	
 	while (HC32_TimeMeter_IsExpiredMS(&qmcTimer) != true) {
 		if (QMC_DRDY_READ() == HIGH) {
-			for (int index = 0; index < QMC_REG_MAG; index++) {
-				ucReadBuf[index] = QMC5883L_ReadByte(QMC_DATA_OUT_X_L + index);
-			}
+			QMC5883L_MultiRead(QMC_DATA_OUT_X_L, QMC_REG_MAG, ucReadBuf);
 			break;
 		}
 	}
@@ -234,9 +271,7 @@ void QMC5883L_ReadData_Extended(short* x, short* y, short* z)
 	
 	while (HC32_TimeMeter_IsExpiredMS(&qmcTimer) != true) {
 		if (QMC_DRDY_READ() == HIGH) {
-			for (int index = 0; index < QMC_REG_MAG; index++) {
-				ucReadBuf[sample_times][index] = QMC5883L_ReadByte(QMC_DATA_OUT_X_L + index);
-			}
+			QMC5883L_MultiRead(QMC_DATA_OUT_X_L, QMC_REG_MAG, ucReadBuf[sample_times]);
 			sample_times++;
 		}
 		
@@ -311,9 +346,7 @@ void QMC5883L_ReadData_Stronges(short* x, short* y, short* z)
 	
 	while (HC32_TimeMeter_IsExpiredMS(&qmcTimer) != true) {
 		if (QMC_DRDY_READ() == HIGH) {
-			for (int index = 0; index < QMC_REG_MAG; index++) {
-				ucReadBuf[sample_times][index] = QMC5883L_ReadByte(QMC_DATA_OUT_X_L + index);
-			}
+			QMC5883L_MultiRead(QMC_DATA_OUT_X_L, QMC_REG_MAG, ucReadBuf[sample_times]);
 			sample_times++;
 		}
 		
@@ -380,12 +413,10 @@ void QMC5883L_ReadData_Stronges(short* x, short* y, short* z)
 **********************************************************************************************************/
 void QMC5883L_ClearInsideData(void)
 {
-	u8 index = 0;
+	u8 ucReadBuf[QMC_REG_MAG];
 	
-	if (QMC_DRDY_READ() == 1) {
-		for (index = 0; index < QMC_REG_MAG; index++) {
-			QMC5883L_ReadByte(QMC_DATA_OUT_X_L + index);
-		}
+	if (QMC_DRDY_READ() == HIGH) {
+		QMC5883L_MultiRead(QMC_DATA_OUT_X_L, QMC_REG_MAG, ucReadBuf);
 	}
 }
 
@@ -531,49 +562,33 @@ void QMC5883L_Softwart_Reset(void)
 {
 	QMC5883L_WriteByte(QMC5883L_CR2, QMC_SOFT_REST);
 	
-	QMC5883L_WriteByte(0x0B, 0x01);
-	QMC5883L_WriteByte(0x20, 0x40);
-	QMC5883L_WriteByte(0x21, 0x01);
+	Delay_MS(60);
 	
-	/* 64滤波, 8高斯范围, 10Hz输出, 初始化为StandBy */
-	QMC5883L_WriteByte(QMC5883L_CR1, QMC_OSR_64 | QMC_RANGE_8G | QMC_RATES_10HZ | QMC_MODE_STANDBY);
+	QMC5883L_WriteByte(QMC5883L_ADDR_PERIORC, QMC_PERIORC_VALUE);
+	
+	QMC5883L_WriteByte(QMC5883L_ADDR_CFGC, QMC_CFGC_VALUE);
+	QMC5883L_WriteByte(QMC5883L_ADDR_CFGD, QMC_CFGD_VALUE);
+	
+	/* 64滤波, 8高斯范围, 200Hz输出, 初始化为StandBy */
+	QMC5883L_WriteByte(QMC5883L_CR1, QMC_OSR_64 | QMC_RANGE_8G | QMC_RATES_200HZ | QMC_MODE_STANDBY);
 	/* 引脚中断使能, 数据读取完指针自动偏转失能 */
 	QMC5883L_WriteByte(QMC5883L_CR2, QMC_INT_ENABLE | QMC_POINT_ROLL_DISABLE);
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+/**********************************************************************************************************
+ @Function			void QMC5883L_ReadData_Temperature(u16* vtemp)
+ @Description			QMC5883L读取温度
+ @Input				vtemp
+ @Return				void
+**********************************************************************************************************/
+void QMC5883L_ReadData_Temperature(u16* vtemp)
+{
+	u8 temp_l = 0, temp_h = 0;
+	
+	temp_l = QMC5883L_ReadByte(QMC_TEMPERATURE_L);
+	temp_h = QMC5883L_ReadByte(QMC_TEMPERATURE_H);
+	
+	*vtemp = ((u16)(temp_h << 8) | (u16)(temp_l << 0));
+}
 
 /********************************************** END OF FLEE **********************************************/
